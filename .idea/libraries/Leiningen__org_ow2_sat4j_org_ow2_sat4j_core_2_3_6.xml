@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: org.ow2.sat4j/org.ow2.sat4j.core:2.3.6">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/ow2/sat4j/org.ow2.sat4j.core/2.3.6/org.ow2.sat4j.core-2.3.6.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,0 +1,75 @@
+(ns locus.semiring.set.real-set
+  (:require [locus.elementary.logic.base.core :refer :all]
+            [locus.elementary.group.term.signed-multiset :refer :all]
+            [locus.semiring.core.object :refer :all]
+            [locus.semiring.set.rset :refer :all]
+            [locus.ring.core.protocols :refer :all]
+            [locus.ring.core.object :refer :all])
+  (:import (locus.elementary.logic.base.core Multiset)
+           (locus.elementary.group.term.signed_multiset SignedMultiset)))
+
+(use 'clojure.walk)
+
+; Real valued sets
+; A real-valued set is simply an object of a vector space over the real numbers.
+(deftype RealSet [data]
+  RingedSet
+  (ring-of-coefficients [this] qq)
+  (terms [this] (set (keys data)))
+  (coefficient [this x]
+    (let [rval (get data x)]
+      (if (nil? rval)
+        0
+        rval))))
+
+(defmethod print-method RealSet [^RealSet v ^java.io.Writer w]
+  (.write w ^String (.toString v)))
+
+; Create real valued sets
+(defmulti to-real-set type)
+
+(defmethod to-real-set RealSet
+  [x] x)
+
+(defmethod to-real-set SignedMultiset
+  [x] (RealSet. (.multiplicities x)))
+
+; Arithmetic operations in modules of real valued sets
+(defn negate-real-set
+  [^RealSet rs]
+
+  (RealSet.
+    (clojure.walk/walk
+      (fn [[k v]]
+        [k (- v)])
+      identity
+      (.data rs))))
+
+(defn add-real-sets
+  [& real-sets]
+
+  (if (empty? real-sets)
+    (RealSet. {})
+    (let [all-terms (apply union (map terms real-sets))]
+      (RealSet.
+        (let [combined-multiplicities (apply
+                                        merge
+                                        (for [key all-terms
+                                              :let [sum (apply
+                                                          +
+                                                          (map
+                                                            #(coefficient % key)
+                                                            real-sets))]
+                                              :when (not (zero? sum))]
+                                          {key sum}))]
+          (if (nil? combined-multiplicities)
+            {}
+            combined-multiplicities))))))
+
+; Ontology of real valued sets
+(defn real-set?
+  [x]
+
+  (= (type x) RealSet))
+
+

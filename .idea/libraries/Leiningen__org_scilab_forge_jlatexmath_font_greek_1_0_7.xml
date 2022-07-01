@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: org.scilab.forge/jlatexmath-font-greek:1.0.7">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/scilab/forge/jlatexmath-font-greek/1.0.7/jlatexmath-font-greek-1.0.7.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

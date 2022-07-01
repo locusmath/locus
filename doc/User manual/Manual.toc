@@ -1,0 +1,36 @@
+\contentsline {chapter}{\numberline {1}Preliminaries}{3}%
+\contentsline {section}{\numberline {1.1}Introduction}{3}%
+\contentsline {section}{\numberline {1.2}Copresheaf viewer}{5}%
+\contentsline {chapter}{\numberline {2}Topoi as foundations}{7}%
+\contentsline {section}{\numberline {2.1}Mathematical overview}{7}%
+\contentsline {section}{\numberline {2.2}The topos of sets}{10}%
+\contentsline {section}{\numberline {2.3}The topos of functions}{18}%
+\contentsline {section}{\numberline {2.4}The topos of pairs of sets}{24}%
+\contentsline {section}{\numberline {2.5}The topos of bijections}{26}%
+\contentsline {chapter}{\numberline {3}Topos theory of computation}{28}%
+\contentsline {section}{\numberline {3.1}The geometry of computation}{28}%
+\contentsline {section}{\numberline {3.2}Memory locations and data dependencies}{29}%
+\contentsline {section}{\numberline {3.3}Abstract formalisation of lenses}{30}%
+\contentsline {section}{\numberline {3.4}Product decompositions and flow models}{32}%
+\contentsline {section}{\numberline {3.5}Representing knowledge about computation}{34}%
+\contentsline {chapter}{\numberline {4}Elementary topos theory}{35}%
+\contentsline {section}{\numberline {4.1}The topos of quivers}{35}%
+\contentsline {section}{\numberline {4.2}Lattices and partial orders}{37}%
+\contentsline {section}{\numberline {4.3}Semigroups, monoids, and groups}{39}%
+\contentsline {section}{\numberline {4.4}MSet topoi}{41}%
+\contentsline {section}{\numberline {4.5}Category theory}{43}%
+\contentsline {section}{\numberline {4.6}Copresheaves over arbitrary categories}{45}%
+\contentsline {section}{\numberline {4.7}Incidence functors and set systems}{46}%
+\contentsline {section}{\numberline {4.8}Higher order quivers and relations}{48}%
+\contentsline {section}{\numberline {4.9}Functional dependencies as copresheaves}{49}%
+\contentsline {section}{\numberline {4.10}Simplicial methods}{50}%
+\contentsline {chapter}{\numberline {5}Grothendeick topos theory}{51}%
+\contentsline {section}{\numberline {5.1}Sites}{51}%
+\contentsline {section}{\numberline {5.2}Sheaves}{52}%
+\contentsline {chapter}{\numberline {6}Topos theory of structure}{53}%
+\contentsline {section}{\numberline {6.1}Multi-sorted structures}{53}%
+\contentsline {section}{\numberline {6.2}Topos theoretic foundations of algebra}{55}%
+\contentsline {chapter}{\numberline {7}Ontology}{58}%
+\contentsline {section}{\numberline {7.1}Classification of copresheaves}{58}%
+\contentsline {chapter}{\numberline {8}Interfaces}{59}%
+\contentsline {section}{\numberline {8.1}Apache commons math}{59}%
