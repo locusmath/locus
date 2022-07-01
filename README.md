@@ -9,22 +9,20 @@ Developments in elementary copresheaf topos theory suggest a new approach to cre
 
 Traditional knowledge graphs are primarily focused on formalising knowledge about subobjects. By extending this with the new theory of congruence lattices of copresheaves, we can create a more effective means of systematizing mathematical knowledge. These same mechanisms can be used to create a mathematical theory of computation.
 
-## Implementation architecture
-The Locus code base has two separate components:
+## Program architecture
+We can divide the Locus code base into two components:
 
-- Data visualisation
-- Data processing
+* Data visualisation : components for visualising knowlede graphs, copresheaves, and other mathematical objects
+* Data processing : mechanisms for raw data processing on algebraic structures, symbolic expressions, and other mathematical objects
 
-The data visualisation component handles visualising knowledge graphs, copresheaves, and other mathematical objects. In particular, we are working on a copresheaf viewer to make working with copresheaves easier. The data processing subsystem contains everything else.
-
-## Copresheaf viewer
+## Data visualisation
 A Swing based graphical user interface is provided to handle the visualisation copresheaves over finitely generated categories. It consists of the generating system of a category displayed as a labeled directed graph and a system of directed graphs associated to each of those generators.
 
 <img width="700" alt="nje" src="https://i.ibb.co/jVFZmV4/Copresheaf-viewer.png">
 
 It is currently implemented using a combination of Swing widgets and Grapviz routines. Swing is used for the user interface and Graphviz is used to display the directed graphs. 
 
-## Features
+## Data processing
 In addition to our foundational support for topoi, the following more advanced features are implemented:
 
 * support for semigroup theoretic functionality like Green's relations, commuting graphs, subsemigroups, congruences, semigroup homomorphisms, regular semigroups, inverse semigroups, etc
