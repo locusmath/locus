@@ -51,7 +51,7 @@ Apache license version 2.0
 Copyright © 2022 John Bernier
 
 ## Version
-1.0 release
+1.0.1 release
 
 ## Contributing
 Contributions of tests, documentation, code, ideas, etc are welcome.
