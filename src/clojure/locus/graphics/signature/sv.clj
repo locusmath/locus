@@ -1,11 +1,25 @@
 (ns locus.graphics.signature.sv
-  (:require [locus.elementary.logic.base.core :refer :all])
+  (:require [locus.elementary.logic.base.core :refer :all]
+            [locus.elementary.function.core.protocols :refer :all]
+            [locus.elementary.logic.base.young-diagram :refer :all])
   (:import [java.awt.image BufferedImage]
-           [javax.swing JFrame JLabel ImageIcon]))
+           [javax.swing JFrame JLabel ImageIcon]
+           (locus.elementary.logic.base.young_diagram YoungDiagram)))
 
 ; An additive partition is also equivalently a Young diagram, and there is a customary
 ; way of visualizing such diagrams. This file exists to create graphical visualisations
 ; of such Young diagrams that we can use in our programs.
+
+(defn random-signature
+  []
+
+  (let [rwidth (int (* (Math/random) 200))
+        rheight (int (* (Math/random) 75))]
+    (multiset
+      (map
+        (fn [i]
+          (int (* rheight (Math/random))))
+        (range rwidth)))))
 
 (defn determine-coordinates
   [coll]
@@ -59,7 +73,7 @@
     (.pack f)
     (.setVisible f true)))
 
-(defn sigvis
+(defn visualize-young-diagram
   [sig]
 
   (display-image
@@ -72,16 +86,12 @@
         20
         20)))))
 
-(defn random-signature
-  []
+; Visualization routines
+(defmethod visualize YoungDiagram
+  [^YoungDiagram diagram]
 
-  (let [rwidth (int (* (Math/random) 200))
-        rheight (int (* (Math/random) 75))]
-    (multiset
-     (map
-      (fn [i]
-        (int (* rheight (Math/random))))
-      (range rwidth)))))
+  (visualize-young-diagram (.nums diagram)))
+
 
 
 
