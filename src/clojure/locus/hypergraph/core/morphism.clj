@@ -45,4 +45,24 @@
 
   (HypergraphMorphism. hypergraph hypergraph identity))
 
+; Ontology of hypergraph homomorphisms
+(defn hypergraph-homomorphism?
+  [morphism]
 
+  (= (type morphism) HypergraphMorphism))
+
+(defn graph-homomorphism?
+  [morphism]
+
+  (and
+    (hypergraph-homomorphism? morphism)
+    (graph? (source-object morphism))
+    (graph? (target-object morphism))))
+
+(defn simple-graph-homorphism?
+  [morphism]
+
+  (and
+    (hypergraph-homomorphism? morphism)
+    (simple-graph? (source-object morphism))
+    (simple-graph? (target-object morphism))))

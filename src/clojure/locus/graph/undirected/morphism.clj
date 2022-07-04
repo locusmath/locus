@@ -3,31 +3,13 @@
             [locus.elementary.function.core.protocols :refer :all]
             [locus.elementary.function.core.object :refer :all]
             [locus.hypergraph.core.object :refer :all]
-            [locus.hypergraph.core.morphism :refer :all]))
+            [locus.hypergraph.core.morphism :refer :all])
+  (:import (locus.hypergraph.core.morphism HypergraphMorphism)))
 
-;  Morphisms in the category of graphs
-(deftype GraphMorphism [source target func]
-  AbstractMorphism
-  (source-object [this] source)
-  (target-object [this] target)
-
-  ConcreteMorphism
-  (inputs [this] (underlying-set source))
-  (outputs [this] (underlying-set target))
-
-  clojure.lang.IFn
-  (invoke [this arg] (func arg))
-  (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
-
-; Composition and identities of the category of graphs
-(defmethod compose* GraphMorphism
-  [a b]
-
-  (GraphMorphism. (source-object b) (target-object a) (comp (.func a) (.func b))))
-
+; Identities in the category of graphs
 (defmethod identity-morphism Graph
   [graph]
 
-  (GraphMorphism. graph graph identity))
+  (HypergraphMorphism graph graph identity))
 
 
