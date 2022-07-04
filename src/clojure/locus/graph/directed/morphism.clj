@@ -24,8 +24,7 @@
   (SetFunction.
     (underlying-relation (source-object morphism))
     (underlying-relation (target-object morphism))
-    (fn [[a b]]
-      (list (morphism a) (morphism b)))))
+    (fn [[a b]] (list (morphism a) (morphism b)))))
 
 ; Composition and identities of the category of directed graphs
 (defmethod compose* DigraphMorphism

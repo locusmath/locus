@@ -22,9 +22,7 @@
 (defmethod to-quiver Digraph
   [^Digraph digraph]
 
-  (thin-quiver
-    (underlying-set digraph)
-    (underlying-relation digraph)))
+  (thin-quiver (underlying-set digraph) (underlying-relation digraph)))
 
 (defmethod underlying-relation Digraph
   [^Digraph digraph]
@@ -34,37 +32,10 @@
 (defmethod visualize Digraph
   [^Digraph digraph] (visualize (underlying-relation digraph)))
 
-; Mechanisms for creating digraphs
 (defn digraph
   [rel]
 
   (Digraph. (vertices rel) rel))
 
-; Ontology of directed graphs
-(defn digraph?
-  [digraph]
-
-  (= (type digraph) Digraph))
-
-(defn directed-acyclic-graph?
-  [digraph]
-
-  (and
-    (digraph? digraph)
-    (acyclic-relation? (underlying-relation digraph))))
-
-(defn strongly-connected-digraph?
-  [digraph]
-
-  (and
-    (digraph? digraph)
-    (strongly-connected-relation? (underlying-relation digraph))))
-
-(defn weakly-connected-digraph?
-  [digraph]
-
-  (and
-    (digraph? digraph)
-    (weakly-connected-relation? (underlying-relation digraph))))
 
 
