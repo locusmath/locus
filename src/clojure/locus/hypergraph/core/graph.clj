@@ -1,4 +1,4 @@
-(ns locus.graph.undirected.object
+(ns locus.hypergraph.core.graph
   (:require [locus.elementary.logic.base.core :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.logic.order.seq :refer :all]
@@ -15,7 +15,8 @@
 ; The category of graphs can be interpreted presheaf topos theoretically as thin permutable
 ; quivers. Therefore, we provide the to-permutable-quiver method to convert a given
 ; graph into an object of the topos of permutable quivers in order to support the topos
-; theory of undirected graphs.
+; theory of undirected graphs. We also implement graphs in terms of hypergraphs which
+; are described by the topos of span copresheaves.
 
 (deftype Graph [vertices edges]
   ConcreteObject
