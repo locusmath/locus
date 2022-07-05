@@ -688,14 +688,22 @@
     (thin-quiver? quiv)
     (complete-relation? (underlying-relation quiv))))
 
-; Connectivity classes of thin quivers
-(defn directed-acyclic-thin-quiver?
+; Connectivity classes for more general quivers
+(defn weakly-connected-ouiver?
   [quiv]
 
   (and
-    (thin-quiver? quiv)
-    (acyclic-relation? (underlying-relation quiv))))
+    (quiver? quiv)
+    (weakly-connected-relation? (underlying-relation quiv))))
 
+(defn strongly-connected-quiver?
+  [quiv]
+
+  (and
+    (quiver? quiv)
+    (strongly-connected-relation? (underlying-relation quiv))))
+
+; Connectivity classes of thin quivers
 (defn strongly-connected-thin-quiver?
   [quiv]
 
@@ -709,6 +717,14 @@
   (and
     (thin-quiver? quiv)
     (weakly-connected-relation? (underlying-relation quiv))))
+
+; Directed acyclic quivers
+(defn directed-acyclic-thin-quiver?
+  [quiv]
+
+  (and
+    (thin-quiver? quiv)
+    (acyclic-relation? (underlying-relation quiv))))
 
 ; Antisymmetric quivers
 (defn antisymmetric-quiver?

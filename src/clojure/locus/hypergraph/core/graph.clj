@@ -82,57 +82,7 @@
             :when (not (empty? (intersection a b)))]
         #{a b}))))
 
-(defn complete-graph
-  [coll]
-
-  (->Graph
-    coll
-    (selections coll 2)))
-
-(defn empty-graph
-  [coll]
-
-  (->Graph coll #{}))
-
-(defn star-graph
-  [coll elem]
-
-  (->Graph
-    (conj coll elem)
-    (set
-      (map
-        (fn [i]
-          #{i elem})
-        coll))))
-
-(defn cycle-graph
-  [coll]
-
-  (cond
-    (<= (count coll) 1) (empty-graph coll)
-    (= (count coll) 2) (Graph. (set coll) #{(set coll)})
-    :else (->Graph
-            (set coll)
-            (set
-              (map
-               (fn [i]
-                 (if (= i (dec (count coll)))
-                   #{(nth coll i) (nth coll 0)}
-                   #{(nth coll i) (nth coll (inc i))}))
-               (range (count coll)))))))
-
-(defn path-graph
-  [coll]
-
-  (->Graph
-    (set coll)
-    (map
-      (fn [i]
-        #{i (inc i)})
-      (if (empty? coll)
-        '()
-        (range (dec (count coll)))))))
-
+; Graphs related to intersection and set systems
 (defn johnson-graph
   [coll k]
 

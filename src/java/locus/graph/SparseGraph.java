@@ -8,6 +8,11 @@ public class SparseGraph extends AGraph {
     int order;
     List<Integer>[] edges;
 
+    public SparseGraph(int order, List<Integer>[] edges) {
+        this.order = order;
+        this.edges = edges;
+    }
+
     @Override
     public int order() {
         return order;

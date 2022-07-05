@@ -27,11 +27,12 @@
     (boolean-matrix
       coll)))
 
-(def g
-  (make-digraph
-    [[false true false]
-     [false false false]
-     [true true true]]))
+(defn make-graph
+  [coll]
+
+  (DenseGraph.
+    (boolean-matrix
+      coll)))
 
 ; Unlabeled graph visualisation
 (defn unlabeled-vertices

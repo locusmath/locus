@@ -64,6 +64,13 @@
 (defmethod hypergraph? :default
   [obj] false)
 
+(defn empty-hypergraph?
+  [obj]
+
+  (and
+    (hypergraph? obj)
+    (empty? (edge-set obj))))
+
 (defn graph?
   [obj]
 
@@ -77,6 +84,20 @@
   (and
     (hypergraph? obj)
     (binary-family? (edge-set obj))))
+
+(defn complete-graph?
+  [obj]
+
+  (and
+    (graph? obj)
+    (= (complete-dependency-family (underlying-set obj)) (edge-set obj))))
+
+(defn complete-simple-graph?
+  [obj]
+
+  (and
+    (graph? obj)
+    (= (selections (underlying-set obj) 2) (edge-set obj))))
 
 (defn uniform-hypergraph?
   [obj]

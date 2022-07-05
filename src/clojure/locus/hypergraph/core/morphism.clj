@@ -51,6 +51,14 @@
 
   (= (type morphism) HypergraphMorphism))
 
+(defn hypergraph-endomorphism?
+  [morphism]
+
+  (and
+    (hypergraph-homomorphism? morphism)
+    (= (source-object morphism) (target-object morphism))))
+
+; Graph homomorphisms as special cases of hypergraph homomorphisms
 (defn graph-homomorphism?
   [morphism]
 
@@ -58,6 +66,13 @@
     (hypergraph-homomorphism? morphism)
     (graph? (source-object morphism))
     (graph? (target-object morphism))))
+
+(defn graph-endomorphism?
+  [morphism]
+
+  (and
+    (graph-homomorphism? morphism)
+    (= (source-object morphism) (target-object morphism))))
 
 (defn simple-graph-homorphism?
   [morphism]
