@@ -1,6 +1,7 @@
-(ns locus.algebra.magma.object
+(ns locus.magmoid.magma.object
   (:require [locus.elementary.logic.base.core :refer :all]
             [locus.elementary.logic.order.seq :refer :all]
+            [locus.elementary.quiver.core.object :refer  :all]
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
@@ -21,6 +22,16 @@
 (deftype Magma [coll op]
   ConcreteObject
   (underlying-set [this] coll)
+
+  StructuredDiset
+  (first-set [this] coll)
+  (second-set [this] #{0})
+
+  StructuredQuiver
+  (underlying-quiver [this] (singular-quiver coll 0))
+  (source-fn [this] (constantly 0))
+  (target-fn [this] (constantly 0))
+  (transition [this obj] (list 0 0))
 
   ConcreteMorphism
   (inputs [this] (complete-relation coll))

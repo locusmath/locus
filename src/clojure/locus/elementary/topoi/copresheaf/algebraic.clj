@@ -7,13 +7,13 @@
             [locus.hypergraph.core.object :refer :all]
             [locus.hypergraph.incidence.incidence-structure :refer :all]
             [locus.hypergraph.core.graph :refer :all]
-            [locus.algebra.magma.object :refer :all]
+            [locus.magmoid.magma.object :refer :all]
             [locus.algebra.pointed-set.object :refer :all]
             [locus.algebra.partial-magma.object :refer :all]
             [locus.ring.core.protocols :refer :all]
             [locus.semiring.core.object :refer :all])
   (:import (locus.elementary.topoi.copresheaf.object Copresheaf)
-           (locus.algebra.magma.object Magma)
+           (locus.magmoid.magma.object Magma)
            (locus.algebra.pointed_set.object PointedSet)
            (locus.algebra.partial_magma.object PartialMagma)
            (locus.semiring.core.object Semiring)
