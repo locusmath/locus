@@ -36,7 +36,7 @@ In addition to our foundational support for topoi, the following more advanced f
 * generic arithmetic operations based upon semirings and their specialisations
 * a number of basic arithmetical structures like complex numbers, quaternions, matrices, polynomials, rational functions, power series, formal laurent series, elements of semigroup semirings, etc
 * support for modules, semimodules, and vector spaces as well as algorithms for treating commutative monoids as semimodules and commutative groups as modules
-* basic support for magmas and non-associative algebraic structures
+* support for non-associative generalisations of categories
 * the hyperarithmetic of additive partitions
 * topoi as foundations of computation
 * interfaces with apache commons math 
@@ -51,7 +51,7 @@ Apache license version 2.0
 Copyright © 2022 John Bernier
 
 ## Version
-1.0.1 release
+1.0.2 release
 
 ## Contributing
 Contributions of tests, documentation, code, ideas, etc are welcome.
