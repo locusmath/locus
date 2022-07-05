@@ -9,9 +9,9 @@
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.incidence.system.family :refer :all]
             [locus.hypergraph.core.object :refer :all]
-            [locus.graph.undirected.object :refer :all])
+            [locus.hypergraph.core.graph :refer :all])
   (:import (locus.elementary.quiver.core.object Quiver)
-           (locus.graph.undirected.object Graph)))
+           (locus.hypergraph.core.graph Graph)))
 
 (defn build-diagonal-matrix
   [coll]

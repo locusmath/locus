@@ -6,11 +6,10 @@
             [locus.elementary.incidence.system.multiclan :refer :all]
             [locus.semiring.core.object :refer :all]
             [locus.hypergraph.core.object :refer :all]
-            [locus.graph.undirected.object :refer :all]
-            [locus.graph.directed.object :refer :all]
+            [locus.hypergraph.core.graph :refer :all]
             [locus.hypergraph.incidence.incidence-structure :refer :all])
   (:import (locus.hypergraph.core.object Hypergraph)
-           (locus.graph.undirected.object Graph)
+           (locus.hypergraph.core.graph Graph)
            (locus.hypergraph.incidence.incidence_structure IncidenceStructure)))
 
 ; Incidence matrices of various structures

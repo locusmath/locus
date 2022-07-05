@@ -28,7 +28,7 @@
             [locus.elementary.incidence.core.object :refer :all]
 
     ;[locus.hypergraph.core.object :refer :all]
-    ;[locus.graph.undirected.object :refer :all]
+    ;[locus.hypergraph.core.graph :refer :all]
     ;[locus.hypergraph.incidence.incidence-structure :refer :all]
     ;[locus.elementary.topoi.copresheaf.algebraic :refer :all]
     ;[locus.algebra.magma.object :refer :all]

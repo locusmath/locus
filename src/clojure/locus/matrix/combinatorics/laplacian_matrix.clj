@@ -10,7 +10,7 @@
             [locus.elementary.incidence.system.family :refer :all]
             [locus.hypergraph.incidence.incidence-structure :refer :all]
             [locus.hypergraph.core.object :refer :all]
-            [locus.graph.undirected.object :refer :all]
+            [locus.hypergraph.core.graph :refer :all]
             [locus.matrix.combinatorics.adjacency-matrix :refer :all]
             [locus.matrix.combinatorics.degree-matrix :refer :all]))
 

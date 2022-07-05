@@ -6,8 +6,7 @@
             [locus.elementary.category.core.object :refer :all]
             [locus.hypergraph.core.object :refer :all]
             [locus.hypergraph.incidence.incidence-structure :refer :all]
-            [locus.graph.undirected.object :refer :all]
-            [locus.graph.directed.object :refer :all]
+            [locus.hypergraph.core.graph :refer :all]
             [locus.algebra.magma.object :refer :all]
             [locus.algebra.pointed-set.object :refer :all]
             [locus.algebra.partial-magma.object :refer :all]
@@ -19,9 +18,8 @@
            (locus.algebra.partial_magma.object PartialMagma)
            (locus.semiring.core.object Semiring)
            (locus.hypergraph.core.object Hypergraph)
-           (locus.graph.undirected.object Graph)
-           (locus.hypergraph.incidence.incidence_structure IncidenceStructure)
-           (locus.graph.directed.object Digraph)))
+           (locus.hypergraph.core.graph Graph)
+           (locus.hypergraph.incidence.incidence_structure IncidenceStructure)))
 
 ; Graph category
 (def graph-category
@@ -59,11 +57,6 @@
   [^Graph graph]
 
   (graph-copresheaf (.vertices graph) (.edges graph)))
-
-(defmethod to-copresheaf Digraph
-  [^Digraph digraph]
-
-  (graph-copresheaf (underlying-set digraph) (underlying-relation digraph)))
 
 (defmethod to-copresheaf Hypergraph
   [^Hypergraph graph]
