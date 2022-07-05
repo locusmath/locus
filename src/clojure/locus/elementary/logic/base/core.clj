@@ -1,5 +1,6 @@
 (ns locus.elementary.logic.base.core
-  (:require [clojure.set]))
+  (:require [clojure.set])
+  (:import (java.util Set)))
 
 ; Our basic mathematical foundation is in the topos of sets and similar topoi. The basic notion of a
 ; set can be extended to other objects of distributive lattices. One such example is a multiset, which
@@ -1396,6 +1397,7 @@
 
   (or
    (intrinsic-universal? coll)
+   (instance? Set coll)
    (and
     (multiset? coll)
     (= (count coll) (count (support coll))))))

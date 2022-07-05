@@ -1,8 +1,7 @@
 package locus.graph;
 import clojure.lang.IFn;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class DenseDigraph extends ADigraph {
     int order;
@@ -93,6 +92,20 @@ public class DenseDigraph extends ADigraph {
         }
 
         return new DenseDigraph(order, newMatrix);
+    }
+
+    public Set<List<Integer>> edgeLocations() {
+        var rval = new HashSet<List<Integer>>();
+
+        for(int x = 0; x < order; x++) {
+            for(int y = 0; y < order; y++) {
+                if(edges[x][y]) {
+                    rval.add(Arrays.asList((Integer) x, (Integer) y));
+                }
+            }
+        }
+
+        return rval;
     }
 
 }

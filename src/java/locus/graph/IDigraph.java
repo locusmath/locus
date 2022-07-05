@@ -1,5 +1,6 @@
 package locus.graph;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The core abstraction of unlabeled directed graphs. A labeled directed graph can
@@ -51,4 +52,11 @@ public interface IDigraph {
      */
     public List<Integer> inNeighbours(int n);
 
+
+    /**
+     * This returns the edges of the graph described as ordered pairs
+     *
+     * @return the edge locations of the graph
+     */
+    public Set<List<Integer>> edgeLocations();
 }

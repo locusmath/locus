@@ -1,5 +1,6 @@
  package locus.graph;
  import java.util.List;
+ import java.util.Set;
 
  /**
   * The core abstraction of undirected unlabeled graphs. A labeled undirected
@@ -38,5 +39,12 @@
       * @return the neighbours of the vertex
       */
     public List<Integer> neighbours(int n);
+
+     /**
+      * Get the edges of the graph as a set system.
+      *
+      * @return the location of edges in the graph
+      */
+    public Set<Set<Integer>> edgeLocations();
 
 }

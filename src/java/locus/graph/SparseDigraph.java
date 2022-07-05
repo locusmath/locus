@@ -1,7 +1,6 @@
 package locus.graph;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class SparseDigraph extends ADigraph {
     int order;
@@ -50,6 +49,19 @@ public class SparseDigraph extends ADigraph {
         for(int i = 0; i < order; i++) {
             if(containsEdge(i,n)) {
                 rval.add(i);
+            }
+        }
+
+        return rval;
+    }
+
+    @Override
+    public Set<List<Integer>> edgeLocations() {
+        var rval = new HashSet<List<Integer>>();
+
+        for(int i = 0; i < order; i++) {
+            for(var item : edges[i]) {
+                rval.add(Arrays.asList(i,item));
             }
         }
 
