@@ -8,10 +8,10 @@
             [locus.elementary.function.core.protocols :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.incidence.system.family :refer :all]
-            [locus.hypergraph.core.object :refer :all]
-            [locus.hypergraph.core.graph :refer :all])
+            [locus.combinat.hypergraph.object :refer :all]
+            [locus.combinat.hypergraph.graph :refer :all])
   (:import (locus.elementary.quiver.core.object Quiver)
-           (locus.hypergraph.core.graph Graph)))
+           (locus.combinat.hypergraph.graph Graph)))
 
 (defn build-diagonal-matrix
   [coll]

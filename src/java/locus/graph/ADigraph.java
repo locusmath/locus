@@ -8,6 +8,14 @@ import java.util.List;
  */
 public abstract class ADigraph implements IDigraph {
 
+    public boolean isVertexLabeled() {
+        return false;
+    }
+
+    public boolean isEdgeLabeled() {
+        return false;
+    }
+
     /**
      * This computes the out degree of a vertex in a directed graph, where the out degree
      * is the number of vertices that are out neighbours of that element of the graph.

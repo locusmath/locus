@@ -8,6 +8,14 @@ import java.util.List;
  */
 public abstract class AGraph implements IGraph {
 
+    public boolean isVertexLabeled() {
+        return false;
+    }
+
+    public boolean isEdgeLabeled() {
+        return false;
+    }
+
     /**
      * The degree of a vertex in an undirected graph is the number of vertices that are
      * adjacent to that vertex in the graph.

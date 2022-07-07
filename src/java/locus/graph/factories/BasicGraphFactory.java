@@ -1,4 +1,4 @@
-package locus.graph.generators;
+package locus.graph.factories;
 import locus.graph.DenseGraph;
 import locus.graph.SparseGraph;
 
@@ -24,6 +24,18 @@ public class BasicGraphFactory {
         Arrays.fill(matrix, rowArray);
 
         return new DenseGraph(n, matrix);
+    }
+
+    public static DenseGraph completeSimpleGraph(int n) {
+        var rval = new boolean[n][n];
+
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < n; j++) {
+                rval[i][j] = !(i == j);
+            }
+        }
+
+        return new DenseGraph(n, rval);
     }
 
     public static SparseGraph starGraph(int n) {

@@ -4,7 +4,8 @@
             [locus.elementary.function.core.protocols :refer :all]
             [locus.elementary.function.core.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all])
-  (:import (locus.graph DenseDigraph IDigraph IGraph DenseGraph)))
+  (:import (locus.graph DenseDigraph IDigraph IGraph DenseGraph)
+           (locus.graph.factories BasicGraphFactory BasicDigraphFactory)))
 
 (require '[dorothy.core :as dot])
 (require '[dorothy.jvm :refer (render save! show!)])
@@ -85,3 +86,4 @@
 
 
   (-> (dot/dot (unlabeled-graph (set (range (.order graph))) (set (.edgeLocations graph)))) show!))
+

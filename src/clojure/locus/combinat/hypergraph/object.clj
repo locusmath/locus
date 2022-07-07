@@ -1,4 +1,4 @@
-(ns locus.hypergraph.core.object
+(ns locus.combinat.hypergraph.object
   (:require [locus.elementary.logic.base.core :refer :all]
             [locus.elementary.logic.order.seq :refer :all]
             [locus.elementary.incidence.system.family :refer :all]

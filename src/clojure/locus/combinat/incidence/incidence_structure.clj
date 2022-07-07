@@ -1,4 +1,4 @@
-(ns locus.hypergraph.incidence.incidence-structure
+(ns locus.combinat.incidence.incidence-structure
   (:require [locus.elementary.logic.base.core :refer :all]
             [locus.elementary.logic.order.seq :refer :all]
             [locus.elementary.incidence.system.family :refer :all]
@@ -8,12 +8,12 @@
             [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.function.core.object :refer :all]
             [locus.elementary.function.core.protocols :refer :all]
-            [locus.hypergraph.core.object :refer :all]
-            [locus.hypergraph.core.graph :refer :all]
+            [locus.combinat.hypergraph.object :refer :all]
+            [locus.combinat.hypergraph.graph :refer :all]
             [locus.elementary.incidence.core.object :refer :all])
   (:import (locus.elementary.function.core.object SetFunction)
-           (locus.hypergraph.core.object Hypergraph)
-           (locus.hypergraph.core.graph Graph)))
+           (locus.combinat.hypergraph.object Hypergraph)
+           (locus.combinat.hypergraph.graph Graph)))
 
 ; Incidence structures
 ; An incidence structure is a triple consisting of points, lines, and flags. They are interpreted

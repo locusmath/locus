@@ -8,9 +8,9 @@
             [locus.elementary.function.core.protocols :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.incidence.system.family :refer :all]
-            [locus.hypergraph.incidence.incidence-structure :refer :all]
-            [locus.hypergraph.core.object :refer :all]
-            [locus.hypergraph.core.graph :refer :all]
+            [locus.combinat.incidence.incidence-structure :refer :all]
+            [locus.combinat.hypergraph.object :refer :all]
+            [locus.combinat.hypergraph.graph :refer :all]
             [locus.matrix.combinatorics.adjacency-matrix :refer :all]
             [locus.matrix.combinatorics.degree-matrix :refer :all]))
 

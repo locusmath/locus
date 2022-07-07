@@ -1,4 +1,4 @@
-(ns locus.hypergraph.incidence.incidence-morphism
+(ns locus.combinat.incidence.incidence-morphism
   (:require [locus.elementary.logic.base.core :refer :all]
             [locus.elementary.logic.order.seq :refer :all]
             [locus.elementary.incidence.system.family :refer :all]
@@ -6,12 +6,12 @@
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.function.core.protocols :refer :all]
             [locus.elementary.function.core.object :refer :all]
-            [locus.hypergraph.core.object :refer :all]
-            [locus.hypergraph.core.morphism :refer :all]
-            [locus.hypergraph.incidence.incidence-structure :refer :all])
+            [locus.combinat.hypergraph.object :refer :all]
+            [locus.combinat.hypergraph.morphism :refer :all]
+            [locus.combinat.incidence.incidence-structure :refer :all])
   (:import (locus.elementary.function.core.object SetFunction)
-           (locus.hypergraph.core.morphism HypergraphMorphism)
-           (locus.hypergraph.incidence.incidence_structure IncidenceStructure)))
+           (locus.combinat.hypergraph.morphism HypergraphMorphism)
+           (locus.combinat.incidence.incidence-structure IncidenceStructure)))
 
 ;  Morphisms in the category of incidence structures
 (deftype IncidenceMorphism [source target f g]

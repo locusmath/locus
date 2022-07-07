@@ -4,9 +4,9 @@
             [locus.elementary.function.core.protocols :refer :all]
             [locus.elementary.topoi.copresheaf.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
-            [locus.hypergraph.core.object :refer :all]
-            [locus.hypergraph.incidence.incidence-structure :refer :all]
-            [locus.hypergraph.core.graph :refer :all]
+            [locus.combinat.hypergraph.object :refer :all]
+            [locus.combinat.hypergraph.graph :refer :all]
+            [locus.combinat.incidence.incidence-structure :refer :all]
             [locus.magmoid.magma.object :refer :all]
             [locus.algebra.pointed-set.object :refer :all]
             [locus.algebra.partial-magma.object :refer :all]
@@ -17,9 +17,9 @@
            (locus.algebra.pointed_set.object PointedSet)
            (locus.algebra.partial_magma.object PartialMagma)
            (locus.semiring.core.object Semiring)
-           (locus.hypergraph.core.object Hypergraph)
-           (locus.hypergraph.core.graph Graph)
-           (locus.hypergraph.incidence.incidence_structure IncidenceStructure)))
+           (locus.combinat.hypergraph.object Hypergraph)
+           (locus.combinat.hypergraph.graph Graph)
+           (locus.combinat.incidence.incidence-structure IncidenceStructure)))
 
 ; Graph category
 (def graph-category

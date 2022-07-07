@@ -7,21 +7,7 @@
   * graph can be defined over an undirected graph of this form using some
   * labeling scheme.
   */
- interface IGraph {
-
-     /**
-      * The number of vertices of a graph.
-      *
-      * @return the number of vertices of this graph.
-      */
-    public int order();
-
-     /**
-      * The number of edges of a graph.
-      *
-      * @return the number of edges in this graph.
-      */
-    public int size();
+ interface IGraph extends IGenericGraph {
 
      /**
       * This method checks if an edge exists at a given location.

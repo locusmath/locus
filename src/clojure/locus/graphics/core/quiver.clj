@@ -27,13 +27,7 @@
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.elementary.incidence.core.object :refer :all]
 
-    ;[locus.hypergraph.core.object :refer :all]
-    ;[locus.hypergraph.core.graph :refer :all]
-    ;[locus.hypergraph.incidence.incidence-structure :refer :all]
     ;[locus.elementary.topoi.copresheaf.algebraic :refer :all]
-    ;[locus.algebra.partial-magma.object :refer :all]
-    ;[locus.algebra.pointed-set.object :refer :all]
-    ;[locus.semiring.core.object :refer :all]
 
             )
   (:import (javax.swing JFrame JLabel ImageIcon JPanel JButton JList JScrollPane JSplitPane SwingConstants CellRendererPane ListCellRenderer UIManager)

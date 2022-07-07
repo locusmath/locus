@@ -1,4 +1,4 @@
-(ns locus.hypergraph.core.graph
+(ns locus.combinat.hypergraph.graph
   (:require [locus.elementary.logic.base.core :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.logic.order.seq :refer :all]
@@ -7,9 +7,9 @@
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.function.core.protocols :refer :all]
-            [locus.hypergraph.core.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
-            [locus.elementary.quiver.permutable.object :refer :all]))
+            [locus.elementary.quiver.permutable.object :refer :all]
+            [locus.combinat.hypergraph.object :refer :all]))
 
 ; Graphs
 ; The category of graphs can be interpreted presheaf topos theoretically as thin permutable

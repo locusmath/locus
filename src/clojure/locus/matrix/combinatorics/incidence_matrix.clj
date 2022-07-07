@@ -5,12 +5,12 @@
             [locus.elementary.incidence.system.clan :refer :all]
             [locus.elementary.incidence.system.multiclan :refer :all]
             [locus.semiring.core.object :refer :all]
-            [locus.hypergraph.core.object :refer :all]
-            [locus.hypergraph.core.graph :refer :all]
-            [locus.hypergraph.incidence.incidence-structure :refer :all])
-  (:import (locus.hypergraph.core.object Hypergraph)
-           (locus.hypergraph.core.graph Graph)
-           (locus.hypergraph.incidence.incidence_structure IncidenceStructure)))
+            [locus.combinat.hypergraph.object :refer :all]
+            [locus.combinat.hypergraph.graph :refer :all]
+            [locus.combinat.incidence.incidence-structure :refer :all])
+  (:import (locus.combinat.incidence.incidence_structure IncidenceStructure)
+           (locus.combinat.hypergraph.object Hypergraph)
+           (locus.combinat.hypergraph.graph Graph)))
 
 ; Incidence matrices of various structures
 ; Such as incidence structures, hypergraphs, graphs, set systems, and multiset systems.

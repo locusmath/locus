@@ -6,21 +6,7 @@ import java.util.Set;
  * The core abstraction of unlabeled directed graphs. A labeled directed graph can
  * be defined over an unlabeled directed graph using some labeling scheme.
  */
-public interface IDigraph {
-
-    /**
-     * The number of vertices of a graph.
-     *
-     * @return the number of vertices of this graph.
-     */
-    public int order();
-
-    /**
-     * The number of edges of a graph.
-     *
-     * @return the number of edges in this graph.
-     */
-    public int size();
+public interface IDigraph extends IGenericGraph {
 
     /**
      * This method checks if an edge exists at a given location. The parameter
