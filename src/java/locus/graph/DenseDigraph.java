@@ -70,6 +70,20 @@ public class DenseDigraph extends ADigraph {
         return rval;
     }
 
+    public Set<List<Integer>> edgeLocations() {
+        var rval = new HashSet<List<Integer>>();
+
+        for(int x = 0; x < order; x++) {
+            for(int y = 0; y < order; y++) {
+                if(edges[x][y]) {
+                    rval.add(Arrays.asList((Integer) x, (Integer) y));
+                }
+            }
+        }
+
+        return rval;
+    }
+
     public DenseDigraph complement() {
         var newMatrix = new boolean[order][order];
 
@@ -94,18 +108,20 @@ public class DenseDigraph extends ADigraph {
         return new DenseDigraph(order, newMatrix);
     }
 
-    public Set<List<Integer>> edgeLocations() {
-        var rval = new HashSet<List<Integer>>();
+    public DenseDigraph symmetricClosure() {
+        var newMatrix = new boolean[order][order];
 
-        for(int x = 0; x < order; x++) {
-            for(int y = 0; y < order; y++) {
-                if(edges[x][y]) {
-                    rval.add(Arrays.asList((Integer) x, (Integer) y));
+        for(int i = 0; i < order; i++) {
+            for(int j = 0; j <= i; j++) {
+                var testCondition = edges[i][j] || edges[j][i];
+                if(testCondition) {
+                    newMatrix[i][j] = true;
+                    newMatrix[j][i] = true;
                 }
             }
         }
 
-        return rval;
+        return new DenseDigraph(order, newMatrix);
     }
 
 }
