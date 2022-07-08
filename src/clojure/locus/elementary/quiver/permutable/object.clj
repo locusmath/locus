@@ -46,7 +46,9 @@
   (underlying-permutable-quiver [this] this)
   (invert-morphism [this morphism] (inv morphism)))
 
-(derive PermutableQuiver :locus.elementary.function.core.protocols/structured-quiver)
+(derive ::permutable-quiver :locus.elementary.function.core.protocols/structured-quiver)
+(derive ::thin-permutable-quiver ::permutable-quiver)
+(derive PermutableQuiver ::permutable-quiver)
 
 ; Get the inverse function from a permutable quiver data type
 (defmethod inverse-function PermutableQuiver
@@ -205,14 +207,39 @@
     (.inv quiv)))
 
 ; Ontology of permutable quivers
-(defn permutable-quiver?
-  [quiv]
+(defmulti permutable-quiver? type)
 
-  (= (type quiv) PermutableQuiver))
+(defmethod permutable-quiver? ::permutable-quiver
+  [quiv] true)
 
+(defmethod permutable-quiver? :default
+  [quiv] false)
+
+; Special classes of permutable quivers
 (defn thin-permutable-quiver?
   [quiv]
 
   (and
     (permutable-quiver? quiv)
     (universal? (underlying-multirelation quiv))))
+
+(defn coreflexive-thin-permutable-quiver?
+  [quiv]
+
+  (and
+    (thin-permutable-quiver? quiv)
+    (coreflexive? (underlying-relation quiv))))
+
+(defn reflexive-thin-permutable-quiver?
+  [quiv]
+
+  (and
+    (thin-permutable-quiver? quiv)
+    (reflexive? (underlying-relation quiv))))
+
+(defn irreflexive-thin-permutable-quiver?
+  [quiv]
+
+  (and
+    (thin-permutable-quiver? quiv)
+    (irreflexive? (underlying-relation quiv))))

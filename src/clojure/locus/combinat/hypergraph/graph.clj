@@ -48,23 +48,6 @@
 
   (count (edge-set graph)))
 
-; Complementation mechanisms in the category of graphs
-(defn complement-graph
-  [graph]
-
-  (Graph.
-    (underlying-set graph)
-    (difference
-      (complete-dependency-family (underlying-set graph))
-      (edge-set graph))))
-
-(defn complement-simple-graph
-  [graph]
-
-  (Graph.
-    (underlying-set graph)
-    (difference (selections (underlying-set graph) 2) (edge-set graph))))
-
 ; Construct a graph from a set system
 (defn graph
   [family]

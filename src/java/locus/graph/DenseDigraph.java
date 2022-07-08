@@ -124,4 +124,9 @@ public class DenseDigraph extends ADigraph {
         return new DenseDigraph(order, newMatrix);
     }
 
+    public DenseGraph toUndirected() {
+        var symmetricClosureDigraph = symmetricClosure();
+        return new DenseGraph(order, symmetricClosureDigraph.edges);
+    }
+
 }

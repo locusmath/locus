@@ -1,4 +1,4 @@
-(defproject locus "1.0.2-SNAPSHOT"
+(defproject locus "1.0.3-SNAPSHOT"
   :description "A computer algebra system based upon topos theory."
   :license {:name "Apache License"
             :url "https://www.apache.org/licenses/LICENSE-2.0"}
@@ -17,7 +17,7 @@
                  [org.jfree/jfreechart "1.5.3"]
                  [org.scilab.forge/jlatexmath "1.0.7"]]
 
-  :main locus.graphics.graph.view
+  :main locus.elementary.quiver.permutable.thin-object
 
   :source-paths ["src/clojure"]
   :java-source-paths ["src/java"]

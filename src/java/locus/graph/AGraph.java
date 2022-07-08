@@ -16,6 +16,14 @@ public abstract class AGraph implements IGraph {
         return false;
     }
 
+    public boolean isDirected() {
+        return false;
+    }
+
+    public boolean isUndirected() {
+        return true;
+    }
+
     /**
      * The degree of a vertex in an undirected graph is the number of vertices that are
      * adjacent to that vertex in the graph.

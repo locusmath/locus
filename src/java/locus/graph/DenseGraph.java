@@ -70,4 +70,28 @@ public class DenseGraph extends AGraph {
         return rval;
     }
 
+    public DenseGraph complement() {
+        var newMatrix = new boolean[order][order];
+
+        for(int i = 0; i < order; i++) {
+            for(int j = 0; j < order; j++) {
+                newMatrix[i][j] = !edges[i][j];
+            }
+        }
+
+        return new DenseGraph(order, newMatrix);
+    }
+
+    public DenseGraph irreflexiveComplement() {
+        var newMatrix = new boolean[order][order];
+
+        for(int i = 0; i < order; i++) {
+            for(int j = 0; j < order; j++) {
+                newMatrix[i][j] = !(i == j) && !edges[i][j];
+            }
+        }
+
+        return new DenseGraph(order, newMatrix);
+    }
+
 }

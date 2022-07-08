@@ -1,6 +1,5 @@
 package locus.graph;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * An abstract unlabeled directed graph. This defines the most common operations for dealing with
@@ -13,6 +12,14 @@ public abstract class ADigraph implements IDigraph {
     }
 
     public boolean isEdgeLabeled() {
+        return false;
+    }
+
+    public boolean isDirected() {
+        return true;
+    }
+
+    public boolean isUndirected() {
         return false;
     }
 
@@ -318,6 +325,28 @@ public abstract class ADigraph implements IDigraph {
 
         for(int i = 0; i < vertexCount; i++) {
             rval &= !isSource(i);
+        }
+
+        return rval;
+    }
+
+    public Set<List<Integer>> outgoingEdgeLocations(int n) {
+        var rval = new HashSet<List<Integer>>();
+        var out = outNeighbours(n);
+
+        for(Integer i : out) {
+            rval.add(List.of(n,i));
+        }
+
+        return rval;
+    }
+
+    public Set<List<Integer>> incomingEdgeLocations(int n) {
+        var rval = new HashSet<List<Integer>>();
+        var out = inNeighbours(n);
+
+        for(Integer i : out) {
+            rval.add(List.of(i, n));
         }
 
         return rval;
