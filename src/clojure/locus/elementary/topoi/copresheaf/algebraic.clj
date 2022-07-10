@@ -5,7 +5,6 @@
             [locus.elementary.topoi.copresheaf.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
             [locus.combinat.hypergraph.object :refer :all]
-            [locus.combinat.hypergraph.graph :refer :all]
             [locus.combinat.incidence.incidence-structure :refer :all]
             [locus.magmoid.magma.object :refer :all]
             [locus.algebra.pointed-set.object :refer :all]
@@ -18,11 +17,10 @@
            (locus.algebra.partial_magma.object PartialMagma)
            (locus.semiring.core.object Semiring)
            (locus.combinat.hypergraph.object Hypergraph)
-           (locus.combinat.hypergraph.graph Graph)
-           (locus.combinat.incidence.incidence-structure IncidenceStructure)))
+           (locus.combinat.incidence.incidence_structure IncidenceStructure)))
 
 ; Graph category
-(def graph-category
+(def hypergraph-category
   (simple-labeled-category
     #{"edges" "vertices"}
     {"1ₑ" ["edges" "edges"]
@@ -43,7 +41,7 @@
   [vertices edges]
 
   (Copresheaf.
-    graph-category
+    hypergraph-category
     (fn [obj]
       (case obj
         "vertices" vertices
@@ -52,11 +50,6 @@
       (case elem
         "1ₑ" (identity-function edges)
         "1ᵥ" (identity-function vertices)))))
-
-(defmethod to-copresheaf Graph
-  [^Graph graph]
-
-  (graph-copresheaf (.vertices graph) (.edges graph)))
 
 (defmethod to-copresheaf Hypergraph
   [^Hypergraph graph]

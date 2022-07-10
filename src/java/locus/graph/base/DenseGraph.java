@@ -1,4 +1,4 @@
-package locus.graph;
+package locus.graph.base;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

@@ -8,10 +8,8 @@
             [locus.elementary.function.core.protocols :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.incidence.system.family :refer :all]
-            [locus.combinat.hypergraph.object :refer :all]
-            [locus.combinat.hypergraph.graph :refer :all])
-  (:import (locus.elementary.quiver.core.object Quiver)
-           (locus.combinat.hypergraph.graph Graph)))
+            [locus.combinat.hypergraph.object :refer :all])
+  (:import (locus.elementary.quiver.core.object Quiver)))
 
 (defn build-diagonal-matrix
   [coll]
@@ -37,16 +35,6 @@
       (fn [i]
         (degree family i))
       (apply union family))))
-
-(defmethod degree-matrix Graph
-  [graph]
-
-  (build-diagonal-matrix
-    (let [edges (edge-set graph)]
-      (map
-       (fn [vertex]
-         (degree edges vertex))
-       (underlying-set graph)))))
 
 (defn display-degree-matrix
   [structure]

@@ -9,11 +9,9 @@
             [locus.elementary.function.core.object :refer :all]
             [locus.elementary.function.core.protocols :refer :all]
             [locus.combinat.hypergraph.object :refer :all]
-            [locus.combinat.hypergraph.graph :refer :all]
             [locus.elementary.incidence.core.object :refer :all])
   (:import (locus.elementary.function.core.object SetFunction)
-           (locus.combinat.hypergraph.object Hypergraph)
-           (locus.combinat.hypergraph.graph Graph)))
+           (locus.combinat.hypergraph.object Hypergraph)))
 
 ; Incidence structures
 ; An incidence structure is a triple consisting of points, lines, and flags. They are interpreted
@@ -47,11 +45,6 @@
         points
         lines
         (fn [[point line]] (contains? line point))))))
-
-(defmethod to-incidence-structure Graph
-  [graph]
-
-  (to-incidence-structure (Hypergraph. (underlying-set graph) (edge-set graph))))
 
 ; convert the incidence structure into a span copresheaf
 (defn to-span-copresheaf
@@ -209,7 +202,7 @@
   [structure]
 
   (let [blocks (set (lines structure))]
-    (Graph.
+    (graph
       blocks
       (for [[a b] (cartesian-power blocks 2)
             :when (intersecting-blocks? structure a b)]

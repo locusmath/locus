@@ -17,7 +17,7 @@
                  [org.jfree/jfreechart "1.5.3"]
                  [org.scilab.forge/jlatexmath "1.0.7"]]
 
-  :main locus.elementary.quiver.permutable.thin-object
+  :main locus.graphics.graph.view
 
   :source-paths ["src/clojure"]
   :java-source-paths ["src/java"]

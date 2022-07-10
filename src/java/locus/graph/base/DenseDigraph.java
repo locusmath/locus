@@ -1,5 +1,4 @@
-package locus.graph;
-import clojure.lang.IFn;
+package locus.graph.base;
 
 import java.util.*;
 

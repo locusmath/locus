@@ -1,4 +1,4 @@
-package locus.graph;
+package locus.graph.base;
 
 /**
  * Methods for graphs that are common to both directed

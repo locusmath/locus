@@ -1,5 +1,6 @@
 (ns locus.combinat.hypergraph.object
   (:require [locus.elementary.logic.base.core :refer :all]
+            [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.logic.order.seq :refer :all]
             [locus.elementary.incidence.system.family :refer :all]
             [locus.elementary.incidence.system.multifamily :refer :all]
@@ -19,14 +20,6 @@
 
 (derive Hypergraph :locus.elementary.function.core.protocols/structured-set)
 
-(defn family->hypergraph
-  [family]
-
-  (let [coll (apply union family)]
-    (Hypergraph.
-      coll
-      family)))
-
 (defn edge-set
   [hypergraph]
 
@@ -37,7 +30,70 @@
 
   (Hypergraph.
     (underlying-set hypergraph)
-    (difference (power-set (underlying-set hypergraph)) (edge-set hypergraph))))
+    (difference
+      (power-set (underlying-set hypergraph))
+      (edge-set hypergraph))))
+
+; Hypergraph constructors
+(defn hypergraph
+  ([family]
+   (let [coll (apply union family)]
+     (Hypergraph.
+       coll
+       family)))
+  ([coll family]
+   (Hypergraph. coll family)))
+
+(defn complete-hypergraph
+  [coll]
+
+  (hypergraph coll (power-set coll)))
+
+(defn empty-hypergraph
+  [coll]
+
+  (hypergraph coll #{}))
+
+; Support for graphs as special cases of hypergraphs
+(defn graph
+  ([family]
+   (Hypergraph. (apply union family) family))
+  ([coll family]
+   (Hypergraph. coll family)))
+
+(defn line-graph
+  [graph]
+
+  (graph
+    (edge-set graph)
+    (set
+      (for [[a b] (cartesian-power (edge-set graph) 2)
+            :when (not (empty? (intersection a b)))]
+        #{a b}))))
+
+(defn johnson-graph
+  [coll k]
+
+  (let [elems (selections coll k)]
+    (graph
+      elems
+      (set
+        (filter
+          (fn [pair]
+            (= (count (apply intersection pair)) (dec k)))
+          (selections elems 2))))))
+
+(defn kneser-graph
+  [coll k]
+
+  (let [elems (selections coll k)]
+    (graph
+      elems
+      (set
+        (filter
+          (fn [pair]
+            (empty? (apply intersection pair)))
+          (selections elems 2))))))
 
 ; Hypergraph statistics
 (defn hypergraph-order
@@ -70,6 +126,13 @@
   (and
     (hypergraph? obj)
     (empty? (edge-set obj))))
+
+(defn complete-hypergraph?
+  [obj]
+
+  (and
+    (hypergraph? obj)
+    (power-set? (edge-set obj))))
 
 (defn graph?
   [obj]

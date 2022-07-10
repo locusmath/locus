@@ -1,7 +1,6 @@
 package locus.graph.factories;
-import locus.graph.DenseGraph;
-import locus.graph.SparseGraph;
-
+import locus.graph.base.DenseGraph;
+import locus.graph.base.SparseGraph;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
