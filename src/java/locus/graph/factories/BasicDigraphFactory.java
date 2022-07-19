@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class BasicDigraphFactory {
-
     public static DenseDigraph completeDigraph(int n) {
         // full true boolean matrix
         boolean[] rowArray = new boolean[n];

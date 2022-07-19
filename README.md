@@ -1,7 +1,7 @@
 # Locus
 An expert system based upon topos theory.
 
-## Topos theoretic knowledge graphs
+## Topos theoretic knowledge representation
 Developments in elementary copresheaf topos theory suggest a new approach to creating knowledge graphs for systematizing mathematical knowledge. This leads us to two new fundamental primitives.
 
 - Memory locations: congruences in Sets
