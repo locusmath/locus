@@ -12,12 +12,17 @@
                  ; utility libraries
                  [org.ow2.sat4j/org.ow2.sat4j.core "2.3.6"]
 
+                 ; javafx
+                 [org.openjfx/javafx-base "19-ea+8"]
+                 [org.openjfx/javafx-controls "19-ea+8"]
+                 [org.openjfx/javafx-graphics "19-ea+8"]
+                 [org.openjfx/javafx-swing "19-ea+8"]
+
                  ; utility visualisation libraries
                  [dorothy "0.0.7"]
-                 [org.jfree/jfreechart "1.5.3"]
                  [org.scilab.forge/jlatexmath "1.0.7"]]
 
-  :main locus.graphics.graph.view
+  :main locus.graphics.core.alt
 
   :source-paths ["src/clojure"]
   :java-source-paths ["src/java"]

@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: org.openjfx/javafx-swing:19-ea+8:linux">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-swing/19-ea+8/javafx-swing-19-ea+8-linux.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

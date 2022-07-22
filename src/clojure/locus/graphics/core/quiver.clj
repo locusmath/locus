@@ -284,3 +284,4 @@
     (.setLocationRelativeTo frame nil)
     (.setTitle frame "Copresheaf viewer")))
 
+(locus.ui.quiver.BaseApplication/main (make-array String 0))

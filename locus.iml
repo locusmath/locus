@@ -25,7 +25,14 @@
     <orderEntry type="library" name="Leiningen: org.clojure/clojure:1.10.0" level="project" />
     <orderEntry type="library" name="Leiningen: org.clojure/core.specs.alpha:0.2.44" level="project" />
     <orderEntry type="library" name="Leiningen: org.clojure/spec.alpha:0.2.176" level="project" />
-    <orderEntry type="library" name="Leiningen: org.jfree/jfreechart:1.5.3" level="project" />
+    <orderEntry type="library" name="Leiningen: org.openjfx/javafx-base:19-ea+8" level="project" />
+    <orderEntry type="library" name="Leiningen: org.openjfx/javafx-base:19-ea+8:linux" level="project" />
+    <orderEntry type="library" name="Leiningen: org.openjfx/javafx-controls:19-ea+8" level="project" />
+    <orderEntry type="library" name="Leiningen: org.openjfx/javafx-controls:19-ea+8:linux" level="project" />
+    <orderEntry type="library" name="Leiningen: org.openjfx/javafx-graphics:19-ea+8" level="project" />
+    <orderEntry type="library" name="Leiningen: org.openjfx/javafx-graphics:19-ea+8:linux" level="project" />
+    <orderEntry type="library" name="Leiningen: org.openjfx/javafx-swing:19-ea+8" level="project" />
+    <orderEntry type="library" name="Leiningen: org.openjfx/javafx-swing:19-ea+8:linux" level="project" />
     <orderEntry type="library" name="Leiningen: org.ow2.sat4j/org.ow2.sat4j.core:2.3.6" level="project" />
     <orderEntry type="library" name="Leiningen: org.scilab.forge/jlatexmath-font-cyrillic:1.0.7" level="project" />
     <orderEntry type="library" name="Leiningen: org.scilab.forge/jlatexmath-font-greek:1.0.7" level="project" />
