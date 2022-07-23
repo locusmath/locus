@@ -41,23 +41,15 @@ public class HomMaker {
         return rval;
     }
 
-    public static boolean isSimilarEdge(String[] e1, String[] e2) {
-        var a1 = e1[1];
-        var b1 = e1[2];
-        var a2 = e2[1];
-        var b2 = e2[2];
-        return (a1.equals(b1) && a2.equals(b2)) || (a1.equals(b2) && a2.equals(b1));
+    public static ArrayList<ArrayList<Integer>> partition(EdgeData[] coll) {
+        return partition(coll, (x,y) -> ((EdgeData) x).isSimilarTo((EdgeData) y));
     }
 
-    public static ArrayList<ArrayList<Integer>> partition(Object[][] coll) {
-        return partition(coll, (x,y) -> isSimilarEdge((String[]) x, (String[]) y));
-    }
-
-    public static Object[][] getHomClasses(Object[][] edges) {
+    public static Object[][] getHomClasses(EdgeData[] edges) {
         return getHomClassesByPartition(edges, partition(edges));
     }
 
-    public static Object[][] getHomClassesByPartition(Object[][] edges, ArrayList<ArrayList<Integer>> partition) {
+    public static Object[][] getHomClassesByPartition(EdgeData[] edges, ArrayList<ArrayList<Integer>> partition) {
         var len = partition.size();
         var rval = new Object[len][4];
 
@@ -67,16 +59,18 @@ public class HomMaker {
 
             var firstEdge = edges[part.get(0)];
 
-            var start = firstEdge[1];
-            var end = firstEdge[2];
+            var start = firstEdge.source;
+            var end = firstEdge.target;
+
             String[] labels = new String[partLength];
             boolean[] directions = new boolean[partLength];
 
             for(int j = 0; j < partLength; j++) {
                 var edgeLocation = part.get(j);
                 var currentEdge = edges[edgeLocation];
-                labels[j] = currentEdge[0].toString();
-                directions[j] = start.equals(currentEdge[1]);
+
+                labels[j] = currentEdge.label;
+                directions[j] = start.equals(currentEdge.source);
             }
 
             rval[i] = new Object[]{start, end, labels, directions};

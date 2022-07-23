@@ -28,8 +28,8 @@ public class GraphMaker {
         }
 
         for(var i : homClasses) {
-            var source = i[0].toString();
-            var target = i[1].toString();
+            var source = i[0];
+            var target = i[1];
             var labels = (String[]) i[2];
 
             var sourceData = nodes.get(source);
