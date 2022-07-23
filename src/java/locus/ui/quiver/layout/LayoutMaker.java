@@ -21,7 +21,7 @@ public class LayoutMaker {
         double[] heights = new double[coll.length];
 
         // gaps between nodes
-        double hgap = 50;
+        double hgap = 100;
         double vgap = 100;
 
         for(int i = 0; i < coll.length; i++) {

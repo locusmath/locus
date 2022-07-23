@@ -6,24 +6,74 @@ import javafx.scene.Group;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.function.BiPredicate;
 
 public class HomMaker {
 
-    public static Object[][] getHomClassesByPartition(Object[][] edges, Integer[][] partition) {
-        var rval = new Object[partition.length][4];
+    public static ArrayList<ArrayList<Integer>> partition(Object[] coll, BiPredicate<Object, Object> comparator) {
+        var rval = new ArrayList<ArrayList<Integer>>();
+        var seenValues = new ArrayList<Object>();
 
-        for(int i = 0; i < partition.length; i++) {
-            Integer[] part = partition[i];
-            var firstEdge = edges[part[0]];
+        for(int i = 0, l = coll.length; i < l; i++) {
+            var currentValue = coll[i];
+
+            var currentIndex = -1;
+            for(int j = 0; j < seenValues.size(); j++) {
+                if(comparator.test(seenValues.get(j), currentValue)) {
+                    currentIndex = j;
+                    break;
+                }
+            }
+
+            if(currentIndex == -1) {
+                seenValues.add(currentValue);
+                var currentArrayList = new ArrayList<Integer>();
+                currentArrayList.add(i);
+                rval.add(currentArrayList);
+            } else {
+                rval.get(currentIndex).add(i);
+            }
+
+        }
+
+        return rval;
+    }
+
+    public static boolean isSimilarEdge(String[] e1, String[] e2) {
+        var a1 = e1[1];
+        var b1 = e1[2];
+        var a2 = e2[1];
+        var b2 = e2[2];
+        return (a1.equals(b1) && a2.equals(b2)) || (a1.equals(b2) && a2.equals(b1));
+    }
+
+    public static ArrayList<ArrayList<Integer>> partition(Object[][] coll) {
+        return partition(coll, (x,y) -> isSimilarEdge((String[]) x, (String[]) y));
+    }
+
+    public static Object[][] getHomClasses(Object[][] edges) {
+        return getHomClassesByPartition(edges, partition(edges));
+    }
+
+    public static Object[][] getHomClassesByPartition(Object[][] edges, ArrayList<ArrayList<Integer>> partition) {
+        var len = partition.size();
+        var rval = new Object[len][4];
+
+        for(int i = 0; i < len; i++) {
+            var part = partition.get(i);
+            var partLength = part.size();
+
+            var firstEdge = edges[part.get(0)];
 
             var start = firstEdge[1];
             var end = firstEdge[2];
-            String[] labels = new String[part.length];
-            boolean[] directions = new boolean[part.length];
+            String[] labels = new String[partLength];
+            boolean[] directions = new boolean[partLength];
 
-            for(int j = 0; j < part.length; j++) {
-                var edgeLocation = part[j];
+            for(int j = 0; j < partLength; j++) {
+                var edgeLocation = part.get(j);
                 var currentEdge = edges[edgeLocation];
                 labels[j] = currentEdge[0].toString();
                 directions[j] = start.equals(currentEdge[1]);

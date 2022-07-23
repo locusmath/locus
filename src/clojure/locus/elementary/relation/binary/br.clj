@@ -2102,6 +2102,27 @@
       superset?
       (cartesian-product coll coll))))
 
+; Rankings
+(defn lower-first-ranking
+  [rel]
+
+  (if (empty? rel)
+    '()
+    (let [current-minima (minimal-vertices rel)]
+      (cons
+        current-minima
+        (lower-first-ranking (subrelation rel (difference (vertices rel) current-minima)))))))
+
+(defn upper-first-ranking
+  [rel]
+
+  (if (empty? rel)
+    '()
+    (let [current-maxima (maximal-vertices rel)]
+      (cons
+        current-maxima
+        (lower-first-ranking (subrelation rel (difference (vertices rel) current-maxima)))))))
+
 ; Lattice related functionality
 (defn monoidalize
   "This turns a function into a monoid."
