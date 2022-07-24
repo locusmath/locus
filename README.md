@@ -12,15 +12,15 @@ Traditional knowledge graphs are primarily focused on formalising knowledge abou
 ## Program architecture
 We can divide the Locus code base into two components:
 
-* Data visualisation : components for visualising knowlede graphs, copresheaves, and other mathematical objects
+* Data visualisation : components for visualising knowledge graphs, copresheaves, and other mathematical objects
 * Data processing : mechanisms for raw data processing on algebraic structures, symbolic expressions, and other mathematical objects
 
 ## Data visualisation
-A Swing based graphical user interface is provided to handle the visualisation copresheaves over finitely generated categories. It consists of the generating system of a category displayed as a labeled directed graph and a system of directed graphs associated to each of those generators.
+A JavaFX based graphical user interface is provided to handle the visualisation copresheaves over finitely generated categories. It consists of the generating system of a category displayed as a labeled directed graph and a system of directed graphs associated to each of those generators.
 
-<img width="700" alt="nje" src="https://i.ibb.co/jVFZmV4/Copresheaf-viewer.png">
+<img width="700" alt="nje" style="border:1px solid black;" src="https://i.ibb.co/bms95TJ/copresheaf-viewer.png">
 
-It is currently implemented using a combination of Swing widgets and Grapviz routines. Swing is used for the user interface and Graphviz is used to display the directed graphs. 
+Clicking on one of the objects or morphisms of the category produces the resulting set or function produced by the copresheaf. The copresheaf viewer also supports panning and zooming using JavaFX transforms.
 
 ## Data processing
 In addition to our foundational support for topoi, the following more advanced features are implemented:

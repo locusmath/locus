@@ -22,7 +22,8 @@ public class EdgeMaker {
         q.setStroke(Color.BLACK);
         q.setStrokeWidth(1);
 
-        var edgeLabel = new Text(midPoint.getX(), midPoint.getY(), label);
+        var width = (new Text(0,0,label)).getLayoutBounds().getWidth();
+        var edgeLabel = new Text(midPoint.getX()-width/2, midPoint.getY()-4, label);
 
         var ori = CubicCurveEvaluator.eval(q, 1);
         var tan = CubicCurveEvaluator.evalDt(q, 1).normalize().multiply(6);
@@ -84,6 +85,5 @@ public class EdgeMaker {
 
         return getEdge(start, control1, midPoint, control2, end, label);
     }
-
 
 }

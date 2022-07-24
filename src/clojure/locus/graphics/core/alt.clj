@@ -3,8 +3,10 @@
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.function.core.object :refer :all]
             [locus.elementary.function.core.protocols :refer :all]
+            [locus.elementary.bijection.core.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
+            [locus.elementary.category.core.morphism :refer :all]
             [locus.elementary.topoi.copresheaf.object :refer :all])
   (:import (javafx.scene Group Scene)
            (javafx.scene.layout Pane)
@@ -69,7 +71,18 @@
                 listener
                 600
                 600)]
-    (SceneViewer. "Quiver viewer" scene)))
+    (SceneViewer. "Copresheaf viewer" scene)))
+
+(defn display-copresheaf
+  [copresheaf]
+
+  (display-quiver
+    (morphically-generated-subquiver (source-object copresheaf))
+    (reify GraphActionListener
+      (vertexAction [this e]
+        (visualize (identity-function (object-apply copresheaf e))))
+      (edgeAction [this e]
+        (visualize (morphism-apply copresheaf e))))))
 
 ; This is the main function
 (defn main
@@ -78,8 +91,5 @@
   (Platform/startup
     (reify Runnable
       (run [this]
-        (display-quiver
-          (to-quiver {:x 1 :y 2})
-          (reify GraphActionListener
-            (vertexAction [this e])
-            (edgeAction [this e])))))))
+        (display-copresheaf
+          (to-copresheaf (to-quiver {:x 1 :y 2})))))))

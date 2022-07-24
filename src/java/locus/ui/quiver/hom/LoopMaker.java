@@ -24,16 +24,17 @@ public class LoopMaker {
         return edge;
     }
 
-    public static Group makeLoopClass(Rectangle myRect, String[] labels, Hashtable<Object, Group> table) {
+    public static Group makeLoopClass(Rectangle myRect, Object[] ids, String[] labels, Hashtable<Object, Group> table) {
         var len = labels.length;
         var offsetFactor = (len > 4) ? 1.0/len : 0.25;
         var rval = new Group();
 
         for(var i = 0; i < len; i++) {
+            var currentId = ids[i];
             var currentLabel = labels[i];
             var currentLoop = makeLoop(myRect, offsetFactor*i, offsetFactor*(i+1), currentLabel);
 
-            table.put(currentLabel, currentLoop);
+            table.put(currentId, currentLoop);
             rval.getChildren().add(currentLoop);
         }
 

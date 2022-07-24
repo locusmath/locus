@@ -11,7 +11,7 @@ import java.util.Hashtable;
 import java.util.function.BiPredicate;
 
 public class HomMaker {
-
+    // partition utilities
     public static ArrayList<ArrayList<Integer>> partition(Object[] coll, BiPredicate<Object, Object> comparator) {
         var rval = new ArrayList<ArrayList<Integer>>();
         var seenValues = new ArrayList<Object>();
@@ -45,13 +45,14 @@ public class HomMaker {
         return partition(coll, (x,y) -> ((EdgeData) x).isSimilarTo((EdgeData) y));
     }
 
+    // get the hom classes
     public static Object[][] getHomClasses(EdgeData[] edges) {
         return getHomClassesByPartition(edges, partition(edges));
     }
 
     public static Object[][] getHomClassesByPartition(EdgeData[] edges, ArrayList<ArrayList<Integer>> partition) {
         var len = partition.size();
-        var rval = new Object[len][4];
+        var rval = new Object[len][5];
 
         for(int i = 0; i < len; i++) {
             var part = partition.get(i);
@@ -64,16 +65,18 @@ public class HomMaker {
 
             String[] labels = new String[partLength];
             boolean[] directions = new boolean[partLength];
+            Object[] ids = new Object[partLength];
 
             for(int j = 0; j < partLength; j++) {
                 var edgeLocation = part.get(j);
                 var currentEdge = edges[edgeLocation];
 
+                ids[j] = currentEdge.obj;
                 labels[j] = currentEdge.label;
                 directions[j] = start.equals(currentEdge.source);
             }
 
-            rval[i] = new Object[]{start, end, labels, directions};
+            rval[i] = new Object[]{start, end, labels, directions, ids};
         }
 
         return rval;
@@ -98,7 +101,7 @@ public class HomMaker {
         return rval;
     }
 
-    public static Group makeHomClass(Point2D start, Point2D end, Rectangle source, Rectangle target, String[] labels, boolean[] directions, Hashtable<Object, Group> table) {
+    public static Group makeHomClass(Point2D start, Point2D end, Rectangle source, Rectangle target, Object[] ids, String[] labels, boolean[] directions, Hashtable<Object, Group> table) {
         var startFactor = RectangleRotator.getRectangleFactor(source, start);
         var endFactor = RectangleRotator.getRectangleFactor(target, end);
 
@@ -113,12 +116,13 @@ public class HomMaker {
             var newStart = RectangleRotator.getRectangleCoordinate(source, startFactor + newOffset);
             var newEnd = RectangleRotator.getRectangleCoordinate(target, endFactor - newOffset);
 
+            var currentId = ids[i];
             var currentLabel = labels[i];
             var currentEdge = (directions[i]) ?
                     EdgeMaker.makeEdge(newStart, newEnd, offsets[i], currentLabel) :
                     EdgeMaker.makeEdge(newEnd, newStart, offsets[i], currentLabel);
 
-            table.put(currentLabel, currentEdge);
+            table.put(currentId, currentEdge);
             rval.getChildren().add(currentEdge);
         }
 

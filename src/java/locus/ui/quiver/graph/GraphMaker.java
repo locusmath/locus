@@ -43,11 +43,12 @@ public class GraphMaker {
             var end = new Point2D(connector.getEndX(), connector.getEndY());
 
             boolean[] directions = (boolean[]) i[3];
+            Object[] ids = (Object[]) i[4];
 
             var table = new Hashtable<Object, Group>();
             var currentHom = (!source.equals(target)) ?
-                    HomMaker.makeHomClass(start, end, rect1, rect2, labels, directions, table) :
-                    LoopMaker.makeLoopClass(rect1, labels, table);
+                    HomMaker.makeHomClass(start, end, rect1, rect2, ids, labels, directions, table) :
+                    LoopMaker.makeLoopClass(rect1, ids, labels, table);
 
             for(var entry : table.entrySet()) {
                 var key = entry.getKey();
