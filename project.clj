@@ -22,7 +22,7 @@
                  [dorothy "0.0.7"]
                  [org.scilab.forge/jlatexmath "1.0.7"]]
 
-  :main locus.graphics.core.alt
+  :main locus.graphics.core.quiver
 
   :source-paths ["src/clojure"]
   :java-source-paths ["src/java"]
