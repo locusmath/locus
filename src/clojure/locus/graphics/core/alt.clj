@@ -7,7 +7,10 @@
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.category.core.morphism :refer :all]
-            [locus.elementary.topoi.copresheaf.object :refer :all])
+            [locus.elementary.topoi.copresheaf.object :refer :all]
+            [locus.elementary.semigroup.core.object :refer :all]
+            [locus.elementary.semigroup.monoid.object :refer :all]
+            [locus.elementary.action.global.object :refer :all])
   (:import (javafx.scene Group Scene)
            (javafx.scene.layout Pane)
            (javafx.application Platform)

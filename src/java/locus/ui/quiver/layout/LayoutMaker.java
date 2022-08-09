@@ -59,8 +59,8 @@ public class LayoutMaker {
                 var currentObject = column[j].obj;
                 var currentString = column[j].label;
                 var currentText = texts[i][j];
-                var currentWidth = currentText.getLayoutBounds().getWidth()+10;
-                var currentHeight = currentText.getLayoutBounds().getHeight()+10;
+                var currentWidth = currentText.getLayoutBounds().getWidth()+100;
+                var currentHeight = currentText.getLayoutBounds().getHeight()+100;
 
                 rval.put(currentObject, new VertexData(currentString, new Rectangle(currentX, currentY, currentWidth, currentHeight)));
 
