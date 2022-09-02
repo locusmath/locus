@@ -10,35 +10,8 @@
             [locus.elementary.relation.ternary.op :refer :all]
             [locus.elementary.relation.ternary.tr :refer :all]
             [locus.elementary.relation.nary.product :refer :all]
-            [locus.elementary.relation.unary.ur :refer :all]))
-
-; Quaternary multirelations
-(defn complete-quaternary-relation
-  [coll]
-
-  (cartesian-power coll 4))
-
-(defn complete-quaternary-relation?
-  [rel]
-
-  (and
-    (relation? rel)
-    (equal-universals? rel (complete-quaternary-relation (vertices rel)))))
-
-(defn quaternary-multirelation?
-  [rel]
-
-  (and
-    (multiset? rel)
-    (every? size-four-seq? rel)))
-
-(def quaternary-relation?
-  (power-set size-four-seq?))
-
-(def single-valued-quaternary-relation?
-  (intersection
-    quaternary-relation?
-    (functional-dependency #{0 1 2} #{3})))
+            [locus.elementary.relation.unary.ur :refer :all]
+            [locus.elementary.relation.quaternary.qr :refer :all]))
 
 ; Other classes of multirelations
 (defn nary-multirelation?

@@ -5,6 +5,10 @@
             [locus.elementary.function.core.object :refer :all]
             [locus.elementary.function.core.util :refer :all]))
 
+; A multiplicity function is a function from a set to some
+; set of counting numbers, where each output value represents the
+; multiplicity of the element in the collection
+
 ; Get a multiplicity function from a multiset or other collection
 (defn multiplicity-function
   [coll]

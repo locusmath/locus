@@ -10,7 +10,7 @@
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.category.core.morphism :refer :all]
             [locus.elementary.category.core.natural-transformation :refer :all]
-            [locus.elementary.relational.relation.set-relation :refer :all]
+            [locus.elementary.function.image.set-relation :refer :all]
             [locus.elementary.order.core.poset :refer :all]
             [locus.linear.semimodule.object :refer :all]
             [locus.linear.semimodule.morphism :refer :all]))

@@ -42,6 +42,8 @@
   (action-domain [this elem] coll)
   (apply-action [this elem arg] (action elem arg)))
 
+(derive MSet :locus.elementary.function.core.protocols/mset)
+
 (def ems1
   (->MSet
     (semigroup-by-table
@@ -592,11 +594,15 @@
 ; The fundamental constructs of our topos theoretic ontology are objects of topoi
 ; such as the topos of sets. This naturally also includes the topos of monoid actions,
 ; with which we can model a number of situations that emerge in abstract algebra.
-(defn mset?
-  [ms]
+(defmulti mset? type)
 
-  (= (type ms) MSet))
+(defmethod mset? :locus.elementary.function.core.protocols/mset
+  [x] true)
 
+(defmethod mset? :default
+  [x] false)
+
+; Special types of monoid actions
 (defn faithful-mset?
   [ms]
 

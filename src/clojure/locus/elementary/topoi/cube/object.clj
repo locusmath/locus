@@ -22,7 +22,7 @@
 (deftype Cube [source target f g h i]
   AbstractMorphism
   (source-object [this] source)
-  (target-object [this] target))
+  (target-object [this] target))d
 
 ; The morphic components of the cube morphism
 (defn source-input-function
@@ -73,6 +73,29 @@
     (comp (.g a) (.g b))
     (comp (.h a) (.h b))
     (comp (.i a) (.i b))))
+
+; Products and coproducts in the topos of cubes
+(defmethod product Cube
+  [& args]
+
+  (->Cube
+    (apply product (map source-object args))
+    (apply product (map target-object args))
+    (apply product (map source-input-function args))
+    (apply product (map source-output-function args))
+    (apply product (map target-input-function args))
+    (apply product (map target-output-function args)) ))
+
+(defmethod coproduct Cube
+  [& args]
+
+  (->Cube
+    (apply coproduct (map source-object args))
+    (apply coproduct (map target-object args))
+    (apply coproduct (map source-input-function args))
+    (apply coproduct (map source-output-function args))
+    (apply coproduct (map target-input-function args))
+    (apply coproduct (map target-output-function args))))
 
 ; Ontology of cubes
 (defn cube?

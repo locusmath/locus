@@ -27,7 +27,7 @@
   (invoke [this i] (nth coll i))
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
-(derive IndexingFunction :locus.elementary.function.core.protocols/identity-function)
+(derive IndexingFunction :locus.elementary.function.core.protocols/set-function)
 
 ; Constructor for indexing functions
 (defn indexing-function

@@ -13,7 +13,7 @@
            [locus.elementary.function.core.object SetFunction]))
 
 ; A morphism in the topos of quivers is a natural transformation of the underlying
-; copresheafs of the two quivers. It follows that there are Sets^(->) valued functors
+; copresheaves of the two quivers. It follows that there are Sets^(->) valued functors
 ; that define commutative diagrams over the source and target functions of the quiver,
 ; with respect to any morphism in the topos of quivers. Furthermore, there is a subobject
 ; classifier of Quivers, which we implement in this file.
@@ -39,6 +39,8 @@
 
   StructuredMorphismOfQuivers
   (underlying-morphism-of-quivers [this] this))
+
+(derive MorphismOfQuivers :locus.elementary.function.core.protocols/morphism-of-structured-quivers)
 
 ; Composition and identities in the topos of quivers
 (defmethod compose* MorphismOfQuivers

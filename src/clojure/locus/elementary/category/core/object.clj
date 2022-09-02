@@ -19,7 +19,7 @@
             [locus.elementary.order.core.poset :refer :all]
             [locus.elementary.order.core.preposet :refer :all]
             [locus.elementary.order.setoid.object :refer :all]
-            [locus.elementary.relational.relation.set-relation :refer :all])
+            [locus.elementary.function.image.set-relation :refer :all])
   (:import (locus.elementary.lattice.core.object Lattice)
            (locus.elementary.semigroup.monoid.object Monoid)
            (locus.elementary.group.core.object Group)
@@ -238,20 +238,9 @@
     universal?
     inputs
     outputs
-    (fn [[a b]] (compose a b))
-    identity-function))
-
-; The allegory rel
-(def set-relations
-  (->Category
-    set-relation?
-    universal?
-    source-object
-    target-object
     (fn [[a b]]
       (compose a b))
-    (fn [coll]
-      (identity-relation coll))))
+    identity-function))
 
 ; We now need some way of getting the products and coproducts of categories
 (defmethod product :locus.elementary.function.core.protocols/category
@@ -480,9 +469,11 @@
 (defn nth-complete-thin-groupoid
   [n]
 
-  (thin-category (complete-relation (set (range n)))))
+  (thin-category
+    (complete-relation (set (range n)))))
 
 ; Functional logic index categories
+; An n pair category is the coproduct of ordered pair categories
 (defn n-pair-category
   [n]
 
@@ -499,6 +490,37 @@
           (fn [i]
             (list (* 2 i) (inc (* 2 i))))
           (range n))))))
+
+; Get an unordered n pair category
+; An undordered n pair category is the coproduct of unordered pair categories
+(defn unordered-n-pair-category
+  [n]
+
+  (thin-category
+    (seqable-interval 0 (* 2 n))
+    (apply
+      union
+      (map
+        (fn [i]
+          #{(list i i)
+            (list (inc i) (inc i))
+            (list i (inc i))
+            (list (inc i) i)})
+        (range 0 (* 2 n) 2)))))
+
+; Higher diamond categories
+; Higher diamond categories are height three lattices described as categories
+; Every height three lattice is a weak order with no more than one upper bound
+; and no more then one lower bound, so they are always fully determined
+; by their object count.
+(defn nth-higher-diamond-category
+  [n]
+
+  (thin-category
+    (weak-order
+      [#{0}
+       (set (range 1 (inc n)))
+       #{(inc n)}])))
 
 ; N arrow categories
 ; If we are to combine N different arrows in a category, then they can either be
@@ -602,7 +624,7 @@
 
   (and
     (category? x)
-    (symmetric-thin-quiver? x)))
+    (symmetric-thin-quiver? (underlying-quiver x))))
 
 (defmethod lattice? :locus.elementary.function.core.protocols/semigroupoid
   [x]
@@ -646,6 +668,14 @@
     (category? category)
     (coreflexive-thin-quiver? (underlying-quiver category))))
 
+; A connected category has no more then one weakly connected component
+(defn connected-category?
+  [category]
+
+  (and
+    (category? category)
+    (<= (count (weak-connectivity (underlying-relation category))) 1)))
+
 ; Skeletal categories
 (defn skeletal-category?
   [category]
@@ -672,6 +702,13 @@
   (and
     (thin-category? category)
     (total-order? (underlying-relation category))))
+
+(defn total-preorder-category?
+  [category]
+
+  (and
+    (thin-category? category)
+    (total-preorder? (underlying-relation category))))
 
 (defn endomorphically-trivial-category?
   [category]
@@ -705,6 +742,13 @@
   (and
     (thin-category? category)
     (set-of-ordered-pairs? (underlying-relation category))))
+
+(defn unordered-n-pair-category?
+  [category]
+
+  (and
+    (thin-category? category)
+    (two-regular-equivalence-relation? (underlying-relation category))))
 
 ; Ontology of two object categories
 (defn two-object-category?
@@ -778,7 +822,7 @@
               (= (category (list source transpose)) target)
               (= (category (list target transpose)) source))))))))
 
-; Ontology of three or four object categories
+; Ontology of three
 (defn three-object-category?
   [category]
 
@@ -786,12 +830,38 @@
     (category? category)
     (= (count (objects category)) 3)))
 
+; Ontology of four object categories
 (defn four-object-category?
   [category]
 
   (and
     (category? category)
     (= (count (objects category)) 4)))
+
+(defn diamond-category?
+  [category]
+
+  (and
+    (four-object-category? category)
+    (thin-category? category)
+    (let [rel (underlying-relation category)]
+      (and
+        (weak-order? rel)
+        (= [1 2 1] (vec (map count (lower-first-ranking rel))))))))
+
+(defn gem-category?
+  [category]
+
+  (and
+    (four-object-category? category)
+    (thin-category? category)
+    (let [rel (underlying-relation category)]
+      (and
+        (total-preorder? rel)
+        (every?
+          (fn [i]
+            (= (count i) 2))
+          (strong-connectivity rel))))))
 
 ; The new theory of doubles of categories
 ; A double of a category C combines it in an ordered fashion with

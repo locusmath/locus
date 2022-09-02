@@ -74,8 +74,7 @@
   (morphism-to-function [this morphism] (SetFunction. coll coll (fn [x] (action morphism x)))))
 
 ; Permutation groups are both groups and concrete categories
-(derive PermutationGroup :locus.elementary.function.core.protocols/concrete-category)
-(derive PermutationGroup :locus.elementary.function.core.protocols/group)
+(derive PermutationGroup :locus.elementary.function.core.protocols/concrete-group)
 
 ; Parts of permutation groups
 (defmethod identity-elements PermutationGroup

@@ -15,7 +15,6 @@
 ; over the index category 2+2, and therefore it is an object of a topos. We apply
 ; all the common topos theoretic constructions like subobjects, quotients, products,
 ; coproducts, etc to difunctions by doubling up their counterparts in functions.
-
 (deftype Difunction [f g]
   StructuredDifunction
   (first-function [this] f)
@@ -26,6 +25,8 @@
     (Diset. (inputs f) (inputs g)))
   (target-object [this]
     (Diset. (outputs f) (outputs g))))
+
+(derive Difunction :locus.elementary.function.core.protocols/difunction)
 
 ; Difunction applications
 (defn first-apply
@@ -40,6 +41,14 @@
 
 ; Difunction builders
 (defn difunction
+  ([obj]
+   (if (or (vector? obj) (seq? obj))
+     (Difunction. (first obj) (second obj))
+     (Difunction. (first-function obj) (second-function obj))))
+  ([a b]
+   (Difunction. a b)))
+
+(defn underlying-difunction
   [morphism]
 
   (Difunction.
@@ -113,6 +122,17 @@
 
   (list (function-kernel-pair morphism) (function-image-pair morphism)))
 
+; Subobject classifier
+(def truth-diset
+  (Diset. #{false true} #{false true}))
+
+(defn subdiset-character
+  [pair new-in new-out]
+
+  (Difunction.
+    (subset-character new-in (first-set pair))
+    (subset-character new-out (second-set pair))))
+
 ; Products and coproducts in the topos of difunctions
 (defn difunction-product
   [& pairs]
@@ -137,17 +157,6 @@
   [& args]
 
   (apply difunction-coproduct args))
-
-; Subobject classifier
-(def truth-diset
-  (Diset. #{false true} #{false true}))
-
-(defn subdiset-character
-  [pair new-in new-out]
-
-  (Difunction.
-    (subset-character new-in (first-set pair))
-    (subset-character new-out (second-set pair))))
 
 ; Operations for getting subobjects of difunctions
 (defn restrict-first-function

@@ -48,6 +48,8 @@
   (applyTo [this args]
     (clojure.lang.AFn/applyToHelper this args)))
 
+(derive MorphismOfThinPermutableQuivers :locus.elementary.function.core.protocols/morphism-of-structured-permutable-quivers)
+
 ; Composition and identities in the category of thin permutable quivers
 (defmethod compose* MorphismOfThinPermutableQuivers
   [a b]

@@ -23,24 +23,24 @@ A JavaFX based graphical user interface is provided to handle the visualisation 
 Clicking on one of the objects or morphisms of the category produces the resulting set or function produced by the copresheaf. The copresheaf viewer also supports panning and zooming using JavaFX transforms.
 
 ## Data processing
-In addition to our foundational support for topoi, the following more advanced features are implemented:
+The features of Locus fall into two main areas: topos theory and commutative algebra. In particular, the following features have been implemented:
 
-* support for semigroup theoretic functionality like Green's relations, commuting graphs, subsemigroups, congruences, semigroup homomorphisms, regular semigroups, inverse semigroups, etc
-* algorithms for handling finite groups, permutation groups, free groups, etc
-* generic lattice theoretic functionality so that any object can be associated to lattices using the sub and con multimethods.
-* support for elementary categories, functors, natural transformations, adjunctions, relational functors, arrow categories, subobject classifiers, internal hom, etc.
-* elementary topos theory: sets, functions, morphisms of functions, bijections, disets, nsets, quivers, permutable quivers, unital quivers, dependency quivers, compositional quivers, compositional unital quivers, higher arity quivers, MSets, dependency functors, and copresheaves over arbitrary categories
-* grothendeick topos theory: sheaves on sites 
-* enriched categories such as 2-categories, 2-posets, and categories of modules
-* graphs, hypergraphs, incidence structures, and their span copresheaves
-* generic arithmetic operations based upon semirings and their specialisations
-* a number of basic arithmetical structures like complex numbers, quaternions, matrices, polynomials, rational functions, power series, formal laurent series, elements of semigroup semirings, etc
+* broad support for categories including preorders, lattices, monoids, and groups as special cases.
+* support for a wide variety of copresheaves: sets, functions, bijections, disets, nsets, nfunctions, nbijections, triangles, diamonds, gems, quivers, permutable quivers, unital quivers, dependency quivers, compositional quivers, compositional unital quivers, higher arity quivers, spans, cospans, MSets, GSets, simplicial sets, dependency functors, and copresheaves over arbitrary categories
+* computations involving subobject and congruence lattices of copresheaves
+* dataflow analysis using congruence lattices of copresheaf topoi
+* builtin support for sheaves on sites 
+* extensive built in support for structure presheaves over a wide variety of concrete categories 
+* support for structure sheaves as a special case of structure presheaves
+* an overall ontology of mathematics based upon structured presheaves: structured sets, structured functions, structured pairs of sets, structured pairs of functions, structured quivers, structure presheaves, structure sheaves, etc.
+* a library of a wide variety of structured sets 
+* enriched categories such as 2-categories, 2-posets, and abelian categories of R-modules
+* generic arithmetic operations based upon rings and semirings
+* a number of basic arithmetical structures like complex numbers, quaternions, matrices, polynomials, rational functions, power series, formal laurent series, etc
+* builtin support for semigroup algebras over a variety of rings and semirings
 * support for modules, semimodules, and vector spaces as well as algorithms for treating commutative monoids as semimodules and commutative groups as modules
-* support for non-associative generalisations of categories
 * the hyperarithmetic of additive partitions
-* topoi as foundations of computation
-* interfaces with apache commons math 
-* an upper ontology of mathematical structures
+* interfaces with apache commons math
 
 ## Documentation 
 A user manual is provided in the documentation folder. It describes our original research into the topos theoretic foundations of computation and their implementation.
@@ -51,7 +51,7 @@ Apache license version 2.0
 Copyright © 2022 John Bernier
 
 ## Version
-1.0.5 release
+1.1.0 release
 
 ## Contributing
-Contributions of tests, documentation, code, ideas, etc are welcome.
+Contributions are welcome.

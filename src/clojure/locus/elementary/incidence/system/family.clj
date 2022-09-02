@@ -1597,6 +1597,37 @@
      (<= (degree family i) 4))
    (apply union family)))
 
+; Special classes of regular families
+(defn two-regular-family?
+  [family]
+
+  (and
+    (family-of-universals? family)
+    (every?
+      (fn [i]
+        (= (degree family i) 2))
+      (apply union family))))
+
+(defn three-regular-family?
+  [family]
+
+  (and
+    (family-of-universals? family)
+    (every?
+      (fn [i]
+        (= (degree family i) 3))
+      (apply union family))))
+
+(defn four-regular-family?
+  [family]
+
+  (and
+    (family-of-universals? family)
+    (every?
+      (fn [i]
+        (= (degree family i) 4)
+      (apply union family)))))
+
 ; Independent families of special sizes
 (def max-order-two-independent-family?
   (intersection

@@ -27,6 +27,12 @@
   (inputs [this] (underlying-set in-group))
   (outputs [this] (underlying-set out-group))
 
+  StructuredDifunction
+  (first-function [this]
+    (SetFunction. (inputs this) (outputs this) func))
+  (second-function [this]
+    (SetFunction. #{0} #{0} {0 0}))
+
   clojure.lang.IFn
   (invoke [this arg] (func arg))
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args))

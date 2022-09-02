@@ -19,7 +19,7 @@
             [locus.elementary.order.core.poset :refer :all]
             [locus.elementary.order.core.preposet :refer :all]
             [locus.elementary.order.setoid.object :refer :all]
-            [locus.elementary.relational.relation.set-relation :refer :all]
+            [locus.elementary.function.image.set-relation :refer :all]
             [locus.elementary.category.core.object :refer :all]))
 
 ; A generated category is a category with a specifically specified morphic generating set.

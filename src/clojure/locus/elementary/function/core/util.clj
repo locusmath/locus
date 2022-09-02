@@ -116,18 +116,6 @@
 
   (inclusion-function (set-inverse-image func coll) (inputs coll)))
 
-; Concatenate functions together
-(defn concat-functions
-  "These functions need to have a common input"
-  [& functions]
-
-  (when (not (empty? functions))
-    (SetFunction.
-     (inputs (first functions))
-     (apply cartesian-product (map outputs functions))
-     (fn [x]
-       (map (fn [f] (f x)) functions)))))
-
 ; Projection functions of products
 (defn first-projection
   [a b]
@@ -153,6 +141,19 @@
    (nth coll i)
    (fn [arg] (nth arg i))))
 
+(defn product-projections
+  [& coll]
+
+  (let [product-collection (apply product coll)]
+    (map-indexed
+      (fn [i v]
+        (SetFunction.
+          product-collection
+          v
+          (fn [arg]
+            (nth arg i))))
+      coll)))
+
 ; Inclusion functions corresponding to coproducts
 (defn first-inclusion
   [a b]
@@ -174,3 +175,14 @@
   (inclusion-function
    (map #(list i %) (nth coll i))
    (apply cartesian-coproduct coll)))
+
+(defn coproduct-inclusions
+  [& coll]
+
+  (let [coproduct-collection (apply coproduct coll)]
+    (map-indexed
+      (fn [i v]
+        (inclusion-function
+          (map #(list i %) v)
+          coproduct-collection))
+      coll)))

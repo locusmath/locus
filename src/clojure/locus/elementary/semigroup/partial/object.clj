@@ -12,9 +12,11 @@
             [locus.elementary.group.core.object :refer :all]
             [locus.elementary.action.partial.object :refer :all]
             [locus.elementary.action.core.protocols :refer :all]
-            [locus.elementary.relational.relation.set-relation :refer :all]
-            [locus.elementary.relational.function.partial-set-function :refer :all]
-            [locus.elementary.relational.function.partial-transformation :refer :all]))
+            [locus.elementary.function.image.set-relation :refer :all]
+            [locus.elementary.function.image.partial-function :refer :all]
+            [locus.elementary.function.image.partial-transformation :refer :all]
+            [locus.elementary.function.image.partial-bijection :refer :all]
+            [locus.elementary.function.image.partial-permutation :refer :all]))
 
 ; Partial transformation semigroups
 (deftype PartialTransformationSemigroup [semigroup coll func]

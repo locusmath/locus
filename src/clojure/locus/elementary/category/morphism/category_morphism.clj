@@ -10,8 +10,7 @@
             [locus.elementary.category.object.category-object :refer :all]
             [locus.elementary.semigroup.monoid.end :refer :all]
             [locus.elementary.group.core.aut :refer :all])
-  (:import (locus.elementary.category.core.object Category)
-           (locus.elementary.category.object.category_object CategoryObject)))
+  (:import (locus.elementary.category.core.object Category)))
 
 ; We need to distinguish between source and target elements on the one
 ; hand and source and target objects on the other, by the fact that

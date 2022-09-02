@@ -46,7 +46,7 @@
   (underlying-permutable-quiver [this] this)
   (invert-morphism [this morphism] (inv morphism)))
 
-(derive ::permutable-quiver :locus.elementary.function.core.protocols/structured-quiver)
+(derive ::permutable-quiver :locus.elementary.function.core.protocols/structured-permutable-quiver)
 (derive ::thin-permutable-quiver ::permutable-quiver)
 (derive PermutableQuiver ::permutable-quiver)
 

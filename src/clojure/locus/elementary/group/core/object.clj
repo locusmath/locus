@@ -66,12 +66,12 @@
   (invoke [this obj] (op obj))
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
+; Tagging groups
+(derive Group :locus.elementary.function.core.protocols/group)
+
 ; A special method for inverting elements of groups
 (defmethod invert-element Group
   [^Group group, x] ((.inv group) x))
-
-; Tagging groups
-(derive Group :locus.elementary.function.core.protocols/group)
 
 ; This makes getting the identity element of a group easier
 (defmethod identity-elements Group

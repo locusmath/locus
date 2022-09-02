@@ -1,6 +1,78 @@
 (ns locus.elementary.function.core.protocols
   (:require [locus.elementary.relation.binary.product :refer :all]))
 
+; Ontology of structured copresheaves
+(derive ::structured-set ::structure)
+(derive ::mset ::structured-set)
+
+(derive ::structured-diset ::structure)
+(derive ::diset ::structured-diset)
+
+(derive ::structured-function ::structured-diset)
+(derive ::structured-bijection ::structured-function)
+(derive ::bijection ::structured-bijection)
+
+(derive ::set-function ::structured-function)
+(derive ::inclusion-function ::set-function)
+(derive ::identity-function ::inclusion-function)
+(derive ::equivariant-map ::structured-function)
+
+(derive ::structured-quiver ::structured-diset)
+(derive ::structured-unital-quiver ::structured-quiver)
+(derive ::structured-permutable-quiver ::structured-quiver)
+(derive ::structured-dependency-quiver ::structured-unital-quiver)
+(derive ::structured-dependency-quiver ::structured-permutable-quiver)
+
+(derive ::semigroupoid ::structured-quiver)
+(derive ::category ::semigroupoid)
+(derive ::category ::structured-unital-quiver)
+(derive ::groupoid ::category)
+(derive ::groupoid ::structured-dependency-quiver)
+
+(derive ::semigroup ::semigroupoid)
+(derive ::monoid ::semigroupoid)
+(derive ::monoid ::category)
+(derive ::group ::groupoid)
+(derive ::group ::monoid)
+
+(derive ::thin-semigroupoid ::semigroupoid)
+(derive ::thin-category ::thin-semigroupoid)
+(derive ::thin-category ::category)
+(derive ::thin-groupoid ::groupoid)
+(derive ::thin-groupoid ::thin-category)
+(derive ::lattice ::thin-category)
+
+(derive ::concrete-category ::category)
+(derive ::concrete-monoid ::monoid)
+(derive ::concrete-monoid ::concrete-category)
+(derive ::concrete-group ::group)
+(derive ::concrete-group ::concrete-category)
+
+; Ontology of structured difunctions
+(derive ::structured-difunction ::structure)
+(derive ::difunction ::structured-difunction)
+
+(derive ::diamond ::structured-difunction)
+(derive ::gem ::structured-difunction)
+
+(derive ::morphism-of-structured-quivers ::structured-difunction)
+(derive ::morphism-of-structured-unital-quivers ::morphism-of-structured-quivers)
+(derive ::morphism-of-structured-permutable-quivers ::morphism-of-structured-quivers)
+(derive ::morphism-of-structured-dependency-quivers ::morphism-of-structured-unital-quivers)
+(derive ::morphism-of-structured-dependency-quivers ::morphism-of-structured-permutable-quivers)
+
+(derive ::semifunctor ::morphism-of-structured-quivers)
+(derive ::functor ::semifunctor)
+(derive ::functor ::morphism-of-structured-unital-quivers)
+(derive ::groupoid-functor ::functor)
+(derive ::groupoid-functor ::morphism-of-structured-dependency-quivers)
+
+(derive ::semigroup-homomorphism ::semifunctor)
+(derive ::monoid-homomorphism ::semigroup-homomorphism)
+(derive ::monoid-homomorphism ::functor)
+(derive ::group-homomorphism ::monoid-homomorphism)
+(derive ::group-homomorphism ::groupoid-functor)
+
 ; This file provides generic methods for dealing with categories and topoi. In particular,
 ; we define a makeshift hierarchy of symbols for use with Clojure's multimethods.
 
@@ -21,6 +93,12 @@
   (inv [this]
     "Produce the inverse morphism of an invertible morphism of a category."))
 
+; Structured sets, set pairs, functions, and bijections
+; There are three types of preorders on two elements: an empty two element preorder,
+; an arrow preorder, and the symmetric preorder of two objects and two arrows going
+; back and forth between them. These three fundamental preorders correspond to
+; three of the most fundamental topoi: the topoi of pairs of sets, functions, and of
+; bijections which together play a fundamental role in topos theoretic foundations.
 (defprotocol ConcreteObject
   "Let C be a concrete category. Then C is naturally associated to a forgetful functor
    of the form f: C->Sets. This forgetful functor has the data of an object function
@@ -30,12 +108,6 @@
   (underlying-set [this]
     "The underlying set of an object of a concrete category."))
 
-; Structured set pairs, functions, and bijections
-; There are three types of preorders on two elements: an empty two element preorder,
-; an arrow preorder, and the symmetric preorder of two objects and two arrows going
-; back and forth between them. These three fundamental preorders correspond to
-; three of the most fundamental topoi: the topoi of pairs of sets, functions, and of
-; bijections which together play a fundamental role in topos theoretic foundations.
 (defprotocol ConcreteMorphism
   "Let C be a concrete category. Then C is naturally asssociated to a forgetful functor
   of the form f:C->Sets. Suppose that m : A to B is a morphism, then f(m) : f(A) -> f(B)
@@ -80,6 +152,17 @@
   (second-function [this]
     "The second function in the mapping of a morphism to the topos Sets^2."))
 
+(defprotocol StructuredDibijection
+  "A dibijection is a pair of bijections, which can be considered to be an object
+  in the topos Sets^{K_2 + K_2} or an isomorphism in the topos Sets^2. In either
+  case, it is defined by an object that implements an interface defining accessors
+  for the two bijections in the structured pair of bijections."
+
+  (first-bijection [this]
+    "The first bijection in a structured pair of bijections.")
+  (second-bijection [this]
+    "The second bijection in a structured pair of bijections."))
+
 (defprotocol StructuredBijection
   "A bijection is an object of the topos Sets^{K2} where K2 is the thin category
   consisting of two objects and four morphisms. The structured bijection protocol
@@ -98,6 +181,8 @@
     "Map a morphism in a category to a morphism in the topos of bijections."))
 
 ; Concrete categories
+; Concrete categories must have special methods for dealing with the conversion of objects
+; and morphisms to members of the topos Sets.
 (defprotocol ConcreteCategoricalStructure
   "While concrete object and morphism protocols handle the elements of a concrete category,
   this protocol handles concrete categories themselves. This requires the data of a forgetful
@@ -108,37 +193,6 @@
     "Map an object of a concrete category to a set.")
   (morphism-to-function [this morphism]
     "Map a morphism of a concrete category to a function."))
-
-; A hierarchy of structured quivers
-(derive ::semigroupoid ::structured-quiver)
-(derive ::category ::semigroupoid)
-(derive ::groupoid ::category)
-(derive ::semigroup ::semigroupoid)
-(derive ::monoid ::semigroup)
-(derive ::monoid ::category)
-(derive ::group ::groupoid)
-(derive ::group ::monoid)
-(derive ::thin-semigroupoid ::semigroupoid)
-(derive ::thin-category ::category)
-(derive ::thin-category ::thin-semigroupoid)
-(derive ::thin-groupoid ::groupoid)
-(derive ::thin-groupoid ::thin-category)
-(derive ::lattice ::thin-category)
-(derive ::concrete-category ::category)
-
-; A corresponding hierarchy of morphisms of structured quivers
-(derive ::semifunctor ::morphism-of-structured-quivers)
-(derive ::functor ::semifunctor)
-(derive ::groupoid-functor ::functor)
-(derive ::semigroup-homomorphism ::semifunctor)
-(derive ::monoid-homomorphism ::semigroup-homomorphism)
-(derive ::monoid-homomorphism ::functor)
-(derive ::group-homomorphism ::monoid-homomorphism)
-(derive ::group-homomorphism ::groupoid-functor)
-
-; Hierarchy of structured sets
-(derive ::semigroup ::structured-set)
-(derive ::thin-category ::structured-set)
 
 ; Multimethods for category theory
 ; Morphisms and objects can be defined in terms of the mapping to the topos Sets^2 but in
@@ -209,6 +263,23 @@
 ; Adjoin composition to various types of quivers
 (defmulti adjoin-composition (fn [quiv f] (type quiv)))
 
+; Structured sets
+(defmulti structured-set? type)
+
+(defmethod structured-set? :default
+  [x] (isa? (type x) ::structured-set))
+
+; Structured disets
+(defmulti structured-diset? type)
+
+(defmethod structured-diset? :default
+  [x] (isa? (type x) ::structured-diset))
+
+(defmulti structured-function? type)
+
+(defmethod structured-function? :default
+  [x] (isa? (type x) ::structured-function))
+
 ; The ontology of categories comes in two parts: firstly we have an ontology of categories
 ; which we can construct using Clojure's makeshift hierarchy system. Secondly, we can
 ; construct an ontology of categories corresponding to classes and predicates and the
@@ -219,6 +290,22 @@
 (defmethod structured-quiver? :default
   [x] (isa? (type x) ::structured-quiver))
 
+(defmulti structured-unital-quiver? type)
+
+(defmethod structured-unital-quiver? :default
+  [x] (isa? (type x) ::structured-unital-quiver))
+
+(defmulti structured-permutable-quiver? type)
+
+(defmethod structured-permutable-quiver? :default
+  [x] (isa? (type x) ::structured-permutable-quiver))
+
+(defmulti structured-dependency-quiver? type)
+
+(defmethod structured-dependency-quiver? :default
+  [x] (isa? (type x) ::structured-dependency-quiver))
+
+; Structured semigroupoids
 (defmulti lattice? type)
 
 (defmethod lattice? :default
@@ -257,6 +344,11 @@
 ; In addition to our basic ontology of categories and groupoids, we need to construct
 ; an additional ontology of functors, semifunctors, and groupoid homomorphisms. These
 ; are morphisms in the corresponding categories of structures.
+(defmulti structured-difunction? type)
+
+(defmethod structured-difunction? :default
+  [x] (isa? (type x) ::structured-difunction))
+
 (defmulti semifunctor? type)
 
 (defmethod semifunctor? :default
@@ -271,15 +363,3 @@
 
 (defmethod groupoid-functor? :default
   [x] (isa? (type x) ::groupoid-functor))
-
-; Structured sets
-(defmulti structured-set? type)
-
-(defmethod structured-set? :default
-  [x] (isa? (type x) ::structured-set))
-
-; Ontology of morphisms in the topos of functions
-(derive ::inclusion-function ::set-function)
-(derive ::identity-function ::inclusion-function)
-
-

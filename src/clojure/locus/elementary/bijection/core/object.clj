@@ -41,6 +41,8 @@
   (applyTo [this args]
     (clojure.lang.AFn/applyToHelper this args)))
 
+(derive Bijection :locus.elementary.function.core.protocols/bijection)
+
 ; Visualizer
 (defmethod visualize Bijection
   [a]
@@ -340,6 +342,16 @@
 
   (and (= (type bijection) Bijection)
        (= (bijection-cardinality bijection) 4)))
+
+(defn identity-bijection?
+  [bijection]
+
+  (and
+    (bijection? bijection)
+    (every?
+      (fn [x]
+        (= (bijection x) x))
+      (inputs bijection))))
 
 ; Ontology of properties of bijections
 (defn !=bijection

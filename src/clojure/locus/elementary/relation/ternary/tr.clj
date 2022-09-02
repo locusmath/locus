@@ -9,7 +9,7 @@
             [locus.elementary.relation.ternary.op :refer :all]))
 
 ; A ternary relation is a set of ordered triples.
-; The theory of ternary relations is less known then the theory of binary relations.
+; The theory of ternary relations is less known than the theory of binary relations.
 ; However, a number of important classes of ternary relations are well known and
 ; have been explored such as cyclic ordering relations, betweenness relations,
 ; and binary operations expressed as ternary relations.
@@ -266,4 +266,11 @@
 
   (and
     (multiset? rel)
+    (every? size-three-seq? rel)))
+
+(defn equal-ternary-multirelation?
+  [rel]
+
+  (and
+    (equal-multiset? rel)
     (every? size-three-seq? rel)))

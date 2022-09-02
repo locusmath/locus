@@ -23,6 +23,8 @@
   (toString [this]
     (str "*(" a " " b ")")))
 
+(derive Diset :locus.elementary.function.core.protocols/diset)
+
 (defmethod print-method Diset [^Diset v ^java.io.Writer w]
   (.write w (.toString v)))
 
@@ -36,6 +38,14 @@
   ([a b]
 
    (Diset. a b)))
+
+; Underlying diset
+(defn underlying-diset
+  [coll]
+
+  (Diset.
+    (first-set coll)
+    (second-set coll)))
 
 ; The cardinality of a diset
 (defn diset-cardinality

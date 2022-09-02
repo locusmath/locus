@@ -8,9 +8,13 @@
             [locus.elementary.function.core.protocols :refer :all]
             [locus.elementary.function.core.object :refer :all]
             [locus.elementary.function.core.util :refer :all]
-            [locus.elementary.function.inclusion.identity :refer :all])
+            [locus.elementary.function.inclusion.identity :refer :all]
+            [locus.elementary.incidence.core.object :refer :all]
+            [locus.elementary.cospan.core.object :refer :all])
   (:import [locus.elementary.function.core.object SetFunction]
-           (locus.elementary.function.inclusion.identity IdentityFunction)))
+           (locus.elementary.function.inclusion.identity IdentityFunction)
+           (locus.elementary.incidence.core.object Span)
+           (locus.elementary.cospan.core.object Cospan)))
 
 ; Objects in the topos Sets^[1, {1,1} 1]
 ; A diamond is so called because when depicted its defining commutative diagram appears
@@ -43,6 +47,9 @@
   (first-function [this] input-function)
   (second-function [this] output-function))
 
+(derive Diamond :locus.elementary.function.core.protocols/diamond)
+
+; Validity test for diamonds
 (defn valid-diamond?
   [m]
 
@@ -123,6 +130,48 @@
   [morphism]
 
   (compose (output-set-function morphism) (first-function morphism)))
+
+; The upper cospan and the lower span in the topos Sets^[1,2,1]
+; relates it to te topoi Sets^[1,2] and Sets^[2,1]
+(defn upper-cospan
+  [func]
+
+  (cospan
+    (second-function func)
+    (target-object func)))
+
+(defn lower-span
+  [func]
+
+  (span
+    (first-function func)
+    (source-object func)))
+
+; The cartias diamond of a cospan copresheaf
+(defn cartesian-diamond
+  [^Cospan cospan]
+
+  (let [cospan1 (first-cospan-function cospan)
+        cospan2 (second-cospan-function cospan)
+        [predecessor1 predecessor2] (fiber-product-projections cospan1 cospan2)]
+    (Diamond.
+      predecessor1
+      cospan2
+      predecessor1
+      cospan1)))
+
+; A cocartesian diamond of a span copresheaf
+(defn cocartesian-diamond
+  [^Span span]
+
+  (let [span1 (edge-function span)
+        span2 (vertex-function span)
+        [successor1 successor2] (fiber-coproduct-projections span1 span2)]
+    (Diamond.
+      span1
+      successor2
+      span2
+      successor1)))
 
 ; There are subalgebra and congruence components of morphisms of functions
 ; which can also be expressed as diamonds

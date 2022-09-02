@@ -1688,6 +1688,81 @@
 
   (set (map set rel)))
 
+; Classes of equivalence relations
+(def equivalence-relation?
+  (moore-family
+    size-two-seq?
+    (fn [rel]
+      (equivalence-relation (weak-connectivity rel)))))
+
+(def complete-relation?
+  (assoc (Universal.
+           (fn [coll]
+             (or
+               (= (type coll) CompleteRelation)
+               (and
+                 (= (type coll) BinaryCartesianProduct)
+                 (= (relation-domain coll) (relation-codomain coll)))
+               (and (binary-relation? coll)
+                    (equal-universals? coll (complete-relation (vertices coll)))))))
+    :closure (fn [rel]
+               (complete-relation (vertices rel)))))
+
+(def threshold-equivalence-relation?
+  (moore-family
+    size-two-seq?
+    (fn [rel]
+      (let [isolated-elements (apply
+                                union
+                                (intersection
+                                  singular-universal?
+                                  (weak-connectivity rel)))]
+        (equivalence-relation
+          (union
+            (set (map (fn [i] #{i}) isolated-elements))
+            #{(clojure.set/difference (vertices rel) isolated-elements)}))))))
+
+(defn regular-equivalence-relation?
+  [rel]
+
+  (and
+    (equivalence-relation? rel)
+    (let [coll (weak-connectivity rel)]
+      (equal-seq? (map count coll)))))
+
+(defn two-regular-equivalence-relation?
+  [rel]
+
+  (and
+    (equivalence-relation? rel)
+    (let [coll (weak-connectivity rel)]
+      (every?
+        (fn [i]
+          (= (count i) 2))
+        coll))))
+
+(defn three-regular-equivalence-relation?
+  [rel]
+
+  (and
+    (equivalence-relation? rel)
+    (let [coll (weak-connectivity rel)]
+      (every?
+        (fn [i]
+          (= (count i) 3))
+        coll))))
+
+(defn four-regular-equivalence-relation?
+  [rel]
+
+  (and
+    (equivalence-relation? rel)
+    (let [coll (weak-connectivity rel)]
+      (every?
+        (fn [i]
+          (= (count i) 4))
+        coll))))
+
 ; Classes of symmetric binary relations
 (def independency-relation?
   (moore-family
@@ -1696,25 +1771,6 @@
      (union
       rel
       (set (map reverse rel))))))
-
-(def equivalence-relation?
-  (moore-family
-   size-two-seq?
-   (fn [rel]
-     (equivalence-relation (weak-connectivity rel)))))
-
-(def complete-relation?
-  (assoc (Universal.
-          (fn [coll]
-            (or
-             (= (type coll) CompleteRelation)
-             (and
-              (= (type coll) BinaryCartesianProduct)
-              (= (relation-domain coll) (relation-codomain coll)))
-             (and (binary-relation? coll)
-                  (equal-universals? coll (complete-relation (vertices coll)))))))
-         :closure (fn [rel]
-                    (complete-relation (vertices rel)))))
 
 (defn perfect-relation?
   [rel]
@@ -2724,20 +2780,6 @@
   (and
    (preorder? rel)
    (series-parallel-order? (condensation rel))))
-
-(def threshold-equivalence-relation?
-  (moore-family
-   size-two-seq?
-   (fn [rel]
-     (let [isolated-elements (apply
-                              union
-                              (intersection
-                               singular-universal?
-                               (weak-connectivity rel)))]
-       (equivalence-relation
-        (union
-         (set (map (fn [i] #{i}) isolated-elements))
-         #{(clojure.set/difference (vertices rel) isolated-elements)}))))))
 
 ; Uniquely connected preorders
 (defn uniquely-connected-preorder?

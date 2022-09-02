@@ -24,8 +24,7 @@
     (locus.elementary.function.core.object SetFunction)
     (locus.elementary.semigroup.monoid.morphism MonoidMorphism)
     (locus.elementary.action.effects.permutation Permutation)
-    (locus.elementary.action.effects.transformation Transformation)
-    (locus.elementary.lens.core.lens_type LensType)))
+    (locus.elementary.action.effects.transformation Transformation)))
 
 ; Let C be a concrete category with a single object. Then by the fact that the set-valued functor on C
 ; is faithful, each element of C is uniquely mapped to a distinct function. It follows that C
@@ -65,8 +64,7 @@
   (morphism-to-function [this morphism] (SetFunction. coll coll (fn [x] (action morphism x)))))
 
 ; Tagging transformation monoids as semigroupoids
-(derive TransformationMonoid :locus.elementary.function.core.protocols/monoid)
-(derive TransformationMonoid :locus.elementary.function.core.protocols/concrete-category)
+(derive TransformationMonoid :locus.elementary.function.core.protocols/concrete-monoid)
 
 (defmethod identity-elements TransformationMonoid
   [monoid]

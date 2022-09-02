@@ -65,7 +65,7 @@
   (ThinPermutableQuiver.
     (objects quiv)
     (difference
-      (cartesian-power (object quiv) 2)
+      (cartesian-power (objects quiv) 2)
       (underlying-relation quiv))))
 
 ; Get the underlying relation of a thin permutable quiver

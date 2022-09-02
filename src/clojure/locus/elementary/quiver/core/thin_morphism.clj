@@ -49,6 +49,8 @@
   (applyTo [this args]
     (clojure.lang.AFn/applyToHelper this args)))
 
+(derive MorphismOfThinQuivers :locus.elementary.function.core.protocols/morphism-of-structured-quivers)
+
 ; We have a conversion function just in case
 (defn to-morphism-of-quivers
   [morphism]

@@ -31,6 +31,8 @@
   (applyTo [this args]
     (clojure.lang.AFn/applyToHelper this args)))
 
+(derive EquivariantMap :locus.elementary.function.core.protocols/equivariant-map)
+
 ; Composition and identities in the topos of monoid actions
 (defmethod compose* EquivariantMap
   [f g]

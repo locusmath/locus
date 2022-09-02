@@ -38,6 +38,9 @@
       (fn [prop]
         (apply-action mset action prop)))))
 
+(derive LocalMSet :locus.elementary.function.core.protocols/mset)
+
+; Special methods for local monoid actions
 (defmethod globalize LocalMSet
   [ms]
 

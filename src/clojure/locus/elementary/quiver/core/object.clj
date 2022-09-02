@@ -160,6 +160,27 @@
      first
      second)))
 
+; An empty quiver doesn't have any edges
+(defn empty-quiver
+  [coll]
+
+  (->Quiver
+    #{}
+    coll
+    first
+    second))
+
+; Create a coreflexive quiver by taking a function and making it play the role of both
+; the source and the target functions of the resulting quiver copresheaf.
+(defn coreflexive-quiver
+  [func]
+
+  (->Quiver
+    (inputs func)
+    (outputs func)
+    func
+    func))
+
 ; These are useful constructors for quivers
 (defmulti to-quiver type)
 
@@ -417,7 +438,7 @@
     (fn [part]
       (projection edge-partition (target-element q (first part))))))
 
-; Induced subquiver
+; Full subquivers preserve all morphisms on objects
 (defn full-subquiver
   [quiver new-vertices]
 
@@ -433,6 +454,7 @@
     (source-fn quiver)
     (target-fn quiver)))
 
+; Wide subquivers preserve all objects
 (defn wide-subquiver
   [quiver new-edges]
 
@@ -579,18 +601,97 @@
 (defn quiver-loops
   [quiver]
 
-  (filter
-    (fn [i]
-      (equal-seq? (transition quiver i)))
-    (first-set quiver)))
+  (set
+    (filter
+     (fn [i]
+       (equal-seq? (transition quiver i)))
+     (first-set quiver))))
 
 (defn quiver-nonloops
   [quiver]
 
-  (filter
-    (fn [i]
-      (distinct-seq? (transition quiver i)))
-    (first-set quiver)))
+  (set
+    (filter
+     (fn [i]
+       (distinct-seq? (transition quiver i)))
+     (first-set quiver))))
+
+; Equalizers and coequalizers in the topos of quivers
+(defn quiver-equalizer
+  [quiver]
+
+  (set
+    (filter
+      (fn [i]
+        (= (source-element quiver i)
+           (target-element quiver i)))
+      (morphisms quiver))))
+
+(defn quiver-coequalizer
+  [quiver]
+
+  (coequalizer
+    (source-function quiver)
+    (target-function quiver)))
+
+(defn quiver-equalizer-function
+  [quiver]
+
+  (equalizer-function
+    (source-function quiver)
+    (target-function quiver)))
+
+(defn quiver-coequalizer-function
+  [quiver]
+
+  (coequalizer-function
+    (source-function quiver)
+    (target-function quiver)))
+
+; Reflexive and irreflexive components form wide subquivers
+(defn reflexive-subquiver
+  [quiver]
+
+  (wide-subquiver
+    quiver
+    (quiver-loops quiver)))
+
+(defn irreflexive-subquiver
+  [quiver]
+
+  (wide-subquiver
+    quiver
+    (quiver-nonloops quiver)))
+
+; Get all objects not appearing as the source of an edge
+(defn missing-sources
+  [quiver]
+
+  (difference
+    (set (objects quiver))
+    (set
+      (map
+        (fn [i]
+          (source-element quiver i))
+        (morphisms quiver)))))
+
+(defn missing-targets
+  [quiver]
+
+  (difference
+    (set (objects quiver))
+    (set
+      (map
+        (fn [i]
+          (target-element quiver i))
+        (morphisms quiver)))))
+
+(defn missing-objects
+  [quiver]
+
+  (intersection
+    (missing-sources quiver)
+    (missing-targets quiver)))
 
 ; Ontology of quivers
 (defmulti quiver? type)

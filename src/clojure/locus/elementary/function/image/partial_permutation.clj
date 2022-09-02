@@ -1,4 +1,4 @@
-(ns locus.elementary.relational.function.partial-transformation
+(ns locus.elementary.function.image.partial-permutation
   (:require [locus.elementary.logic.base.core :refer :all]
             [locus.elementary.logic.order.seq :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
@@ -8,16 +8,18 @@
             [locus.elementary.relation.binary.vertexset :refer :all]
             [locus.elementary.function.core.protocols :refer :all]
             [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.relational.function.partial-set-function :refer :all])
-  (:import (clojure.lang PersistentArrayMap PersistentHashSet PersistentHashMap)))
+            [locus.elementary.function.image.image-function :refer :all]
+            [locus.elementary.function.image.partial-function :refer :all]
+            [locus.elementary.function.image.partial-bijection :refer :all]
+            [locus.elementary.function.image.partial-transformation :refer :all])
+  (:import (locus.elementary.function.image.partial_transformation PartialTransformation)))
 
-; A partial transformation is an endomorphism in the category of sets and
-; partial functions. In our ontology, we define partial transformations as special
-; types of partial set functions by using derive. Partial transformations are distinguished
-; from ordinary functions by the fact that they are only defined on a subset of their inputs.
-(deftype PartialTransformation
-  [domain coll func]
-
+; Partial permutations:
+; One to one partial transformations are called partial permutations, or sometimes charts.
+; A special case is that of an atomic chart, which can be defined by a single ordered pair
+; on a set. These atomic charts are the action of preorders. Every partial permutation can be
+; determined by its decomposition into nilpotent and permutation parts.
+(deftype PartialPermutation [domain codomain coll forward backward]
   AbstractMorphism
   (source-object [this] coll)
   (target-object [this] coll)
@@ -26,156 +28,76 @@
   (first-set [this] coll)
   (second-set [this] coll)
 
+  Invertible
+  (inv [this]
+    (PartialPermutation.
+      codomain
+      domain
+      coll
+      backward
+      forward))
+
   clojure.lang.IFn
   (invoke [this arg]
-    (func arg))
+    (forward arg))
   (applyTo [this args]
     (clojure.lang.AFn/applyToHelper this args)))
 
-(derive PartialTransformation :locus.elementary.relational.function.partial-set-function/partial-set-function)
+(derive PartialPermutation :locus.elementary.function.image.partial-function/partial-permutation)
 
-; Defined domains of partial transformations
-(defmethod defined-domain PartialTransformation
-  [^PartialTransformation func]
+; Defined domains and codomains
+(defmethod defined-domain PartialPermutation
+  [^PartialPermutation func]
 
   (.domain func))
 
-; Composition and identities in terms of partial transformations
-(defn identity-partial-transformation
+(defmethod partial-function-image PartialPermutation
+  [^PartialPermutation func]
+
+  (.codomain func))
+
+; Composition and identities in the category of partial permutations
+(defn identity-partial-permutation
   [coll]
 
-  (PartialTransformation.
+  (PartialPermutation.
     coll
     coll
-    (fn [x]
-      x)))
+    coll
+    (fn [x] x)
+    (fn [x] x)))
 
-(defmethod compose* PartialTransformation
+(defmethod compose* :locus.elementary.function.image.partial-function/partial-permutation
   [a b]
 
-  (let [new-coll (set
-                   (filter
-                     (fn [i]
-                       (boolean
-                         ((defined-domain a) (b i))))
-                     (.coll b)))]
-    (PartialTransformation.
-      new-coll
+  (let [new-domain (set
+                     (filter
+                       (fn [i]
+                         (let [next-val (b i)]
+                           (boolean
+                             ((defined-domain a) next-val))))
+                       (defined-domain b)))
+        new-codomain (set
+                       (map
+                         (fn [i]
+                           (a (b i)))
+                         new-domain))]
+    (PartialPermutation.
+      new-domain
+      new-codomain
       (source-object b)
-      (comp (.func a) (.func b)))))
+      (comp (.forward a) (.forward b))
+      (comp (.backward a) (.backward b)))))
 
-; The action preorder of a partial transformation
-(defn partial-transformation-preorder
-  [func]
+; Conversion routines
+(defmulti to-partial-permutation type)
 
-  (cl preorder? (underlying-relation func)))
-
-; Partial transformation producers
-(defn empty-partial-transformation
-  [coll]
-
-  (PartialTransformation.
-    #{}
-    coll
-    {}))
-
-(defn map-to-partial-transformation
-  [coll]
-
-  (let [all-values (union (set (keys coll)) (set (vals coll)))
-        source-values (set (keys coll))]
-    (PartialTransformation.
-      source-values
-      all-values
-      (fn [i]
-        (get coll i)))))
-
-(defn relational-partial-transformation
-  [coll rel]
-
-  (let [source-values (relation-domain rel)]
-    (PartialTransformation.
-      source-values
-      coll
-      (fn [i]
-        (call rel i)))))
-
-(defn relation-to-partial-transformation
-  [rel]
-
-  (relational-partial-transformation (vertices rel) rel))
-
-; Conversion multimethod
-(defmulti to-partial-transformation type)
-
-(defmethod to-partial-transformation PartialTransformation
+(defmethod to-partial-permutation PartialPermutation
   [func] func)
 
-(defmethod to-partial-transformation PersistentArrayMap
-  [coll] (map-to-partial-transformation coll))
-
-(defmethod to-partial-transformation PersistentHashMap
-  [coll] (map-to-partial-transformation coll))
-
-; Convert partial transformations into partial set functions
-(defmethod to-partial-set-function PartialTransformation
-  [func]
-
-  (->PartialSetFunction
-    (defined-domain func)
-    (source-object func)
-    (target-object func)
-    (fn [i]
-      (func i))))
-
-; Join and meet of partial transformations
-(defn joinable-partial-transformations?
-  [a b]
-
-  (every?
-    (fn [i]
-      (= (a i) (b i)))
-    (intersection (defined-domain a) (defined-domain b))))
-
-(defn meet-partial-transformations
-  [& transformations]
-
-  (when (not (empty? transformations))
-    (let [common-domain (filter
-                          (fn [i]
-                            (equal-seq?
-                              (map
-                                (fn [transformation]
-                                  (transformation i))
-                                transformations)))
-                          (apply
-                            intersection
-                            (map defined-domain transformations)))]
-      (PartialTransformation.
-        common-domain
-        (apply intersection (map target-object transformations))
-        (fn [i]
-          ((.func (first transformations)) i))))))
-
-(defn join-partial-transformations
-  [& transformations]
-
-  (letfn [(to-map [transformation]
-            (apply
-              merge
-              (map
-                (fn [i]
-                  {i (transformation i)})
-                (defined-domain transformation))))]
-    (PartialTransformation.
-      (apply union (map defined-domain transformations))
-      (apply union (map target-object transformations))
-      (apply merge (map to-map transformations)))))
-
-; Charts:
-; One to one partial transformations are called charts. Every chart can be
-; reduced to a nilpotent and a permutation part. A special case is an
-; atomic chart which has only one transition.
+; Atomic charts are the simplest means of generating preorders by an action
+; Semigroups of atomic charts are all equivalent to preorders. They can be formed,
+; for example from the object preorders of categories.
 (deftype AtomicChart
   [coll first second]
 
@@ -201,9 +123,9 @@
   (applyTo [this args]
     (clojure.lang.AFn/applyToHelper this args)))
 
-(derive AtomicChart :locus.elementary.relational.function.partial-set-function/atomic-chart)
+(derive AtomicChart :locus.elementary.function.image.partial-function/atomic-chart)
 
-(defmethod print-method AtomicChart [^AtomicChart v ^java.io.Writer w]
+(defmethod print-method AtomicChart [^AtomicChart v, ^java.io.Writer w]
   (.write w (.toString v)))
 
 (defmethod defined-domain AtomicChart
@@ -217,6 +139,18 @@
     #{(.first func)}
     (.coll func)
     (fn [x] (.second func))))
+
+(defmethod to-partial-bijection AtomicChart
+  [^AtomicChart func]
+
+  (->PartialPermutation
+    #{(.first func)}
+    #{(.second func)}
+    (.coll func)
+    (fn [x]
+      (.second func))
+    (fn [x]
+      (.first func))))
 
 ; Composition of atomic charts
 (defmethod compose* AtomicChart
@@ -394,11 +328,10 @@
         (and
           (partial-transformation? transformation)
           (= (source-object transformation)
-            (target-object transformation)
-            coll)))
+             (target-object transformation)
+             coll)))
       (enumerate-partial-transformations ordered-coll)
       {:count (number-of-partial-transformations (count coll))})))
-
 
 ; We now also need something that deals specifically with the enumeration
 ; and description of charts, which are a special type of relation

@@ -1,21 +1,22 @@
-(ns locus.elementary.relational.function.partial-set-function
+(ns locus.elementary.function.image.partial-function
   (:require [locus.elementary.logic.base.core :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.function.core.protocols :refer :all]
             [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.bijection.core.object :refer :all])
+            [locus.elementary.bijection.core.object :refer :all]
+            [locus.elementary.function.image.image-function :refer :all])
   (:import (locus.elementary.function.core.object SetFunction)
            (locus.elementary.bijection.core.object Bijection)
            (clojure.lang PersistentArrayMap)))
 
-; Partial set functions form a special category: the category of sets and
-; functions between them. This is a subcategory of Rel, the category of sets
-; and relations and it is a supercategory of the topos Sets of sets and functions.
-; It is important, for example in semigroup theory, that we can construct this
-; category to define for example semigroups of partial transformations and
-; partial permutations.
-(deftype PartialSetFunction [domain source target func]
+; Partial functions form a concrete category PF of sets and partial functions
+; between them. The category of partial functions can be considered to be
+; the subcategory of the topos Sets that consists of sets and functions
+; with a fixed point element adjoined represented the empty set. This way,
+; elements can map to the empty set to indicate that they are not defined there.
+; The subcategory of image functions is a yet larger category.
+(deftype PartialFunction [domain source target func]
   AbstractMorphism
   (source-object [this] source)
   (target-object [this] target)
@@ -31,18 +32,18 @@
     (clojure.lang.AFn/applyToHelper this args)))
 
 ; Ontology of derivations
-(derive ::partial-transformation ::partial-set-function)
-(derive ::partial-bijection ::partial-set-function)
+(derive ::partial-transformation ::partial-function)
+(derive ::partial-bijection ::partial-function)
 (derive ::partial-permutation ::partial-transformation)
 (derive ::partial-permutation ::partial-bijection)
 (derive ::atomic-chart ::partial-permutation)
-(derive PartialSetFunction ::partial-set-function)
+(derive PartialFunction ::partial-function)
 
-; The defined domain is where the value of the partial set function is not zero
+; The defined domain is where the output of the partial function is not empty
 (defmulti defined-domain type)
 
-(defmethod defined-domain PartialSetFunction
-  [^PartialSetFunction x]
+(defmethod defined-domain PartialFunction
+  [^PartialFunction x]
 
   (.-domain x))
 
@@ -51,13 +52,44 @@
 
   (inputs func))
 
-; Category of partial set functions
+; Images generalised for partial functions
+(defmulti partial-function-image type)
+
+(defmethod partial-function-image :default
+  [func]
+
+  (set
+    (map
+      (fn [i]
+        (func i))
+      (defined-domain func))))
+
+; Adjoin undefined inputs to a partial function
+(defmethod adjoin-inputs ::partial-function
+  [func coll]
+
+  (PartialFunction.
+    (defined-domain func)
+    (union coll (source-object func))
+    (target-object func)
+    func))
+
+(defmethod adjoin-outputs ::partial-function
+  [func coll]
+
+  (PartialFunction.
+    (defined-domain func)
+    (source-object func)
+    (union coll (target-object func))
+    func))
+
+; Category of partial functions
 (defn partial-identity-function
   [coll]
 
-  (PartialSetFunction. coll coll coll (fn [i] i)))
+  (PartialFunction. coll coll coll (fn [i] i)))
 
-(defmethod compose* ::partial-set-function
+(defmethod compose* ::partial-function
   [a b]
 
   (let [new-defined-domain (set
@@ -67,15 +99,15 @@
                                    (boolean
                                      ((defined-domain a) next-val))))
                                (defined-domain b)))]
-    (PartialSetFunction.
+    (PartialFunction.
       new-defined-domain
       (source-object b)
       (target-object a)
       (fn [x]
         (a (b x))))))
 
-; Underlying relations for all partial set functions
-(defmethod underlying-relation ::partial-set-function
+; Underlying relations for all partial functions
+(defmethod underlying-relation ::partial-function
   [func]
 
   (set
@@ -84,12 +116,18 @@
         (list i (func i)))
       (defined-domain func))))
 
-(defmethod visualize ::partial-set-function
+(defmethod visualize ::partial-function
   [func]
 
   (visualize (underlying-relation func)))
 
-; Dual concepts of missing inputs and outputs exist for partial set functions
+; Every partial function can be defined by a triple
+(defn partial-function-triple
+  [func]
+
+  (list (source-object func) (target-object func) (underlying-relation func)))
+
+; Dual concepts of missing inputs and outputs exist for partial functions
 (defn missing-inputs
   [func]
 
@@ -106,49 +144,53 @@
           (func i))
         (defined-domain func)))))
 
-; Images generalised for partial functions
-(defn partial-function-image
-  [func]
+; Convert partial functions to image functions
+(defmethod to-function ::partial-function
+  [^PartialFunction func]
 
-  (set
-    (map
-      (fn [i]
-        (func i))
-      (defined-domain func))))
+  (->ImageFunction
+    (source-object func)
+    (target-object func)
+    (fn [x]
+      (if ((defined-domain func) x)
+        #{(func x)}
+        #{}))))
 
-; Empty partial set functions have an empty defined domain
-(defn empty-partial-set-function
+; Empty partial functions have an empty defined domain
+(defn empty-partial-function
   [source target]
 
-  (PartialSetFunction.
+  (PartialFunction.
     #{}
     source
     target
     (fn [x] x)))
 
 ; Conversion routines
-(defmulti to-partial-set-function type)
+(defmulti to-partial-function type)
 
-(defmethod to-partial-set-function PartialSetFunction
+(defmethod to-partial-function PartialFunction
   [func] func)
 
-(defmethod to-partial-set-function SetFunction
+(defmethod to-partial-function :locus.elementary.function.core.protocols/set-function
   [func]
 
-  (PartialSetFunction.
+  (PartialFunction.
     (inputs func)
     (inputs func)
     (outputs func)
     (fn [x]
       (func x))))
 
-(defmethod to-partial-set-function Bijection
+(defmethod to-partial-function :locus.elementary.function.core.protocols/bijection
   [func]
 
-  (to-partial-set-function (underlying-function func)))
+  (to-partial-function (underlying-function func)))
 
-; Partial set function -> total set function
-(defn total-component
+; Partial function -> total function
+(defmulti total-component type)
+
+(defmethod total-component ::partial-function
   [func]
 
   (SetFunction.
@@ -157,11 +199,11 @@
     (fn [i]
       (func i))))
 
-; Ontology of partial set functions
-(defn partial-set-function?
+; Ontology of partial functions
+(defn partial-function?
   [x]
 
-  (isa? (type x) ::partial-set-function))
+  (isa? (type x) ::partial-function))
 
 (defmulti partial-transformation? type)
 
@@ -172,7 +214,7 @@
   [x]
 
   (and
-    (partial-set-function? x)
+    (partial-function? x)
     (= (source-object x) (target-object x))))
 
 (defmulti partial-bijection? type)
@@ -180,11 +222,11 @@
 (defmethod partial-bijection? ::partial-bijection
   [x] true)
 
-(defmethod partial-bijection? ::partial-set-function
+(defmethod partial-bijection? ::partial-function
   [x]
 
   (and
-    (partial-set-function? x)
+    (partial-function? x)
     (let [domain (seq (defined-domain x))]
       (loop [remaining-elements domain
              mapped-outputs '()]
@@ -231,15 +273,16 @@
   [x]
 
   (and
-    (partial-set-function? x)
+    (partial-function? x)
     (= (source-object x) (target-object x))
     (= (count (defined-domain x)) 1)))
 
+; Ontology of partial functions not defined by core multimethods
 (defn surjective-partial-function?
   [x]
 
   (and
-    (partial-set-function? x)
+    (partial-function? x)
     (empty? (missing-outputs x))))
 
 (defn surjective-partial-bijection?
@@ -253,14 +296,14 @@
   [x]
 
   (and
-    (partial-set-function? x)
+    (partial-function? x)
     (= (count (defined-domain x)) 0)))
 
 (defn identity-partial-function?
   [x]
 
   (and
-    (partial-set-function? x)
+    (partial-function? x)
     (every?
       (fn [i]
         (= (x i) i))
@@ -272,4 +315,3 @@
   (and
     (identity-partial-function? x)
     (= (source-object x) (target-object x))))
-

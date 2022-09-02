@@ -50,6 +50,8 @@
   StructuredMorphismOfPermutableQuivers
   (underlying-morphism-of-permutable-quivers [this] this))
 
+(derive MorphismOfPermutableQuivers :locus.elementary.function.core.protocols/morphism-of-structured-permutable-quivers)
+
 ; These types of morphisms are basically distinguished by the fact that they preserve
 ; the inverse functions of their permutable quivers.
 (defn morphism-of-inverse-functions

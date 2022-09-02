@@ -2,35 +2,61 @@
   (:require [locus.elementary.logic.base.core :refer :all]
             [locus.elementary.logic.order.seq :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
+            [locus.elementary.relation.unary.ur :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
+            [locus.elementary.relation.ternary.op :refer :all]
+            [locus.elementary.relation.ternary.tr :refer :all]
+            [locus.elementary.relation.quaternary.qr :refer :all]
             [locus.elementary.incidence.system.setpart :refer :all]
             [locus.elementary.function.core.object :refer :all]
             [locus.elementary.function.core.protocols :refer :all])
   (:import (locus.elementary.function.core.object SetFunction)))
 
-; Operations
+; Ontology of operations
 (defn operation?
   [func]
 
-  (relation? (inputs func)))
+  (and
+    (set-function? func)
+    (relation? (inputs func))))
 
 (defn nary-operation?
   [func]
 
-  (nary-relation? (inputs func)))
+  (and
+    (set-function? func)
+    (nary-relation? (inputs func))))
 
 (defn unary-operation?
   [func]
 
-  (and (relation? (inputs func))
-       (every? singular-seq? (inputs func))))
+  (and
+    (set-function? func)
+    (unary-relation? (inputs func))))
 
 (defn binary-operation?
   [func]
 
-  (binary-relation? (inputs func)))
+  (and
+    (set-function? func)
+    (binary-relation? (inputs func))))
 
+(defn ternary-operation?
+  [func]
+
+  (and
+    (set-function? func)
+    (ternary-relation? (inputs func))))
+
+(defn quaternary-operation?
+  [func]
+
+  (and
+    (set-function? func)
+    (quaternary-relation? (inputs func))))
+
+; Table functions
 (defn table-function?
   [func]
 

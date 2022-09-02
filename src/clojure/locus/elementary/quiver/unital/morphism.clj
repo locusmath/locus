@@ -52,6 +52,8 @@
   StructuredMorphismOfUnitalQuivers
   (underlying-morphism-of-unital-quivers [this] this))
 
+(derive MorphismOfUnitalQuivers :locus.elementary.function.core.protocols/morphism-of-structured-unital-quivers)
+
 ; Get the morphisms of identity element functions of a morphism of unital quivers
 ; the order of the functions in the morphism is transposed because the identity
 ; element function goes backwards between vertices and edges.

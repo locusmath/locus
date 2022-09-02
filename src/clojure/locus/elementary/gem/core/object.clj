@@ -38,6 +38,8 @@
   (first-function [this] input-function)
   (second-function [this] output-function))
 
+(derive Gem :locus.elementary.function.core.protocols/gem)
+
 ; Composition and identities in the topos of bijections
 (defmethod compose* Gem
   [a b]

@@ -26,7 +26,7 @@
 
   (TriangleCopresheaf. (identity-function (target-object func)) func))
 
-; The two function components of the triangle copresheaf
+; Function components of triangles
 (defn prefunction
   [^TriangleCopresheaf triangle]
 
@@ -42,6 +42,7 @@
 
   (compose (.f triangle) (.g triangle)))
 
+; Set components of triangles
 (defn triangle-source
   [^TriangleCopresheaf triangle]
 
@@ -57,7 +58,22 @@
 
   (target-object (postfunction triangle)))
 
-; Input and output action triangles
+; Get the kernels of the triangle
+(defn triangle-source-kernels
+  [^TriangleCopresheaf triangle]
+
+  (list
+    (function-kernel (prefunction triangle))
+    (function-kernel (compfunction triangle))))
+
+(defn triangle-target-images
+  [^TriangleCopresheaf triangle]
+
+  (list
+    (function-image (postfunction triangle))
+    (function-image (compfunction triangle))))
+
+; Input and output action triangles of diamond copresheaves
 (defn input-action-triangle
   [^Diamond diamond]
 
@@ -72,6 +88,26 @@
     (output-set-function diamond)
     (source-object diamond)))
 
+(defn diamond-triangles
+  [^Diamond diamond]
+
+  (list
+    (input-action-triangle diamond)
+    (output-action-triangle diamond)))
+
+(defn combine-triangles
+  [^TriangleCopresheaf in, ^TriangleCopresheaf out]
+
+  (let [target-function (.-f in)
+        input-function (.-g in)
+        output-function (.-f out)
+        source-function (.-g out)]
+    (Diamond.
+      source-function
+      target-function
+      input-function
+      output-function)))
+
 ; Convert triangles into diamonds
 (defn to-input-action-diamond
   [^TriangleCopresheaf triangle]
@@ -83,12 +119,80 @@
 
   (output-action-diamond (.g triangle) (.f triangle)))
 
+; Products and coproducts in the topoi of triangle copresheaves
+(defmethod product TriangleCopresheaf
+  [& args]
+
+  (TriangleCopresheaf.
+    (apply product (map postfunction args))
+    (apply product (map prefunction args))))
+
+(defmethod coproduct TriangleCopresheaf
+  [& args]
+
+  (TriangleCopresheaf.
+    (apply coproduct (map postfunction args))
+    (apply coproduct (map prefunction args))))
+
+; Compute the substructure of a triangle copresheaf
+(defn subtriangle?
+  [triangle new-source new-middle new-target]
+
+  (and
+    (subfunction? (postfunction triangle) new-middle new-target)
+    (subfunction? (prefunction triangle) new-source new-middle)))
+
+(defn subtriangle
+  [triangle new-source new-middle new-target]
+
+  (TriangleCopresheaf.
+    (subfunction (postfunction triangle) new-middle new-target)
+    (subfunction (prefunction triangle) new-source new-middle)))
+
+; Compute the quotients of a triangle copresheaf
+(defn triangle-congruence?
+  [triangle source-partition middle-partition target-partition]
+
+  (and
+    (io-relation? (postfunction triangle) middle-partition target-partition)
+    (io-relation? (prefunction triangle) source-partition middle-partition)))
+
+(defn quotient-triangle
+  [triangle source-partition middle-partition target-partition]
+
+  (TriangleCopresheaf.
+    (quotient-function (postfunction triangle) middle-partition target-partition)
+    (quotient-function (prefunction triangle) source-partition middle-partition)))
+
 ; Ontology of triangle copresheaves
 (defn triangle?
   [x]
 
   (= (type x) TriangleCopresheaf))
 
+(defn prefunction-invertible-triangle?
+  [x]
+
+  (and
+    (triangle? x)
+    (invertible? (prefunction x))))
+
+(defn postfunction-invertible-triangle?
+  [x]
+
+  (and
+    (triangle? x)
+    (invertible? (postfunction x))))
+
+(defn invertible-triangle?
+  [x]
+
+  (and
+    (triangle? x)
+    (invertible? (prefunction x))
+    (invertible? (postfunction x))))
+
+; Identity functions are special cases of invertible ones
 (defn prefunction-trivial-triangle?
   [x]
 

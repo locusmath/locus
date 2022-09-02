@@ -4,7 +4,7 @@
             [locus.elementary.function.core.protocols :refer :all]
             [locus.elementary.dataflow.functional.relations :refer :all]
             [locus.elementary.dataflow.functional.decomposition :refer :all]
-            [locus.elementary.relational.relation.set-relation :refer :all]))
+            [locus.elementary.function.image.set-relation :refer :all]))
 
 ; We need this to function as the classifier for inputs and outputs of flow functions
 (defn map-key-classifier

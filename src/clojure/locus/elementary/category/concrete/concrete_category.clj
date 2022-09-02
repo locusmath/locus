@@ -13,7 +13,8 @@
             [locus.elementary.semigroup.transformation.transformation-monoid :refer :all]
             [locus.elementary.group.permutation.permutation-group :refer :all]
             [locus.elementary.lattice.core.object :refer :all]
-            [locus.elementary.category.core.object :refer :all])
+            [locus.elementary.category.core.object :refer :all]
+            [locus.elementary.function.image.set-relation :refer :all])
   (:import (locus.elementary.semigroup.transformation.transformation_monoid TransformationMonoid)
            (locus.elementary.group.permutation.permutation_group PermutationGroup)))
 
@@ -101,4 +102,30 @@
     (.-object_function category)
     (.-morphism_function category)))
 
+; The category of set relations is a concrete category
+(def rel
+  (ConcreteCategory.
+    set-relation?
+    universal?
+    source-object
+    target-object
+    (fn [[a b]] (compose a b))
+    identity-relation
+    (fn [obj]
+      (->PowerSet obj))
+    (fn [morphism]
+      (to-function morphism))))
 
+; This is where we will add the dual to the topos of sets
+(def sets-opposite
+  (ConcreteCategory.
+    inverse-functional-set-relation?
+    universal?
+    source-object
+    target-object
+    (fn [[a b]] (compose a b))
+    identity-relation
+    (fn [obj]
+      (->PowerSet obj))
+    (fn [morphism]
+      (to-function morphism))))

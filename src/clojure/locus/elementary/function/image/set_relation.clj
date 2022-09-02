@@ -1,20 +1,36 @@
-(ns locus.elementary.relational.relation.set-relation
+(ns locus.elementary.function.image.set-relation
   (:require [locus.elementary.logic.base.core :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.function.core.protocols :refer :all]
             [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.bijection.core.object :refer :all])
+            [locus.elementary.bijection.core.object :refer :all]
+            [locus.elementary.function.image.image-function :refer :all])
   (:import (locus.elementary.function.core.object SetFunction)
            (locus.elementary.bijection.core.object Bijection)
-           (clojure.lang PersistentArrayMap)))
+           (clojure.lang PersistentArrayMap)
+           (locus.elementary.function.image.image_function ImageFunction)))
 
-; Set relations are morphisms in the allegory Rel
-; A set relation (I,O, R) is a pair of sets I and O as well as a binary relation
-; R which is a subset of IxO. A set relation is primarily defined as a type of
-; multivalued function. In other words, given an input we can produce the set of outputs
-; for which the relation holds. Thus SetRelation is defined to implement the
-; clojure.lang.IFn interface.
+; Set relations:
+; The category Rel of sets and relations does not form an elementary topos. As a consequence,
+; it lacks many of the desirable features of a topos. In order to get around this, we represent
+; Rel as a concrete subcategory of Sets consisting of image functions, where an image
+; function is a complete union homomorphism of power sets. The category Rel can then be
+; embedded in the topos Sets, with reference to this special class of functions.
+
+; In our implementation of set relations, you can convert a set relation into an image
+; function by using the to-function method. In the other direction, we provide the
+; singleton-images-relation function to convert a member of the image functions class
+; into a set relation. This lets us transfer back and forth between the category Rel
+; and the topos Sets.
+
+; While a set relation in Rel is primarily related to an image function of power
+; sets, another classes of functions corresponds to set relations: the set valued
+; functions produced by singleton images. This correspondence states that a set
+; relation from A to B is like a function from A to the power set of B. As a consequence,
+; set relations implement the clojure.lang.IFn interface in such a manner that
+; the application of an element a is the set of elements b that form ordered pairs
+; in the set relation.
 
 ; Set relations are important in the topos theoretic foundations of computing
 ; as a means of defining an abstraction layer over the topoi of sets and functions.
@@ -29,7 +45,6 @@
 ; This subalgebra lattice is basically implemented in the lattice folder. It restores
 ; the subobject lattice of a function in the special case in which a function is
 ; expressed as a set relation.
-
 (deftype SetRelation [source target func]
   AbstractMorphism
   (source-object [this] source)
@@ -44,6 +59,14 @@
     (func arg))
   (applyTo [this args]
     (clojure.lang.AFn/applyToHelper this args)))
+
+(defmethod to-function SetRelation
+  [^SetRelation rel]
+
+  (->ImageFunction
+    (.source rel)
+    (.target rel)
+    (.func rel)))
 
 (defmethod underlying-relation SetRelation
   [rel]
@@ -62,6 +85,24 @@
 (defmethod visualize SetRelation
   [rel] (visualize (underlying-relation rel)))
 
+; Set relation triples
+(defn relation-triple
+  [rel]
+
+  (list
+    (source-object rel)
+    (target-object rel)
+    (underlying-relation rel)))
+
+; Convert an image function into a set relation
+(defn singleton-images-relation
+  [^ImageFunction func]
+
+  (->SetRelation
+    (.source func)
+    (.target func)
+    (.func func)))
+
 ; Set relations form a category Rel of sets and relations
 (defmethod compose* SetRelation
   [a b]
@@ -69,7 +110,8 @@
   (SetRelation.
     (source-object b)
     (target-object a)
-    (fn [x] (apply union (map a (b x))))))
+    (fn [x]
+      (apply union (map a (b x))))))
 
 (defn identity-relation
   [coll]
@@ -153,6 +195,25 @@
   (SetRelation.
     (source-object rel)
     new-target
+    (fn [i]
+      (rel i))))
+
+; Adjoin inputs and outputs to set relations
+(defmethod adjoin-inputs SetRelation
+  [rel coll]
+
+  (SetRelation.
+    (union coll (source-object rel))
+    (target-object rel)
+    (fn [i]
+      (rel i))))
+
+(defmethod adjoin-outputs SetRelation
+  [rel coll]
+
+  (SetRelation.
+    (source-object rel)
+    (union coll (target-object rel))
     (fn [i]
       (rel i))))
 
@@ -426,5 +487,10 @@
     (= (source-object rel) (target-object rel))
     (symmetric-binary-relation? (underlying-relation rel))))
 
+(defn antisymmetric-set-relation?
+  [rel]
 
+  (and
+    (set-relation? rel)
+    (antisymmetric? (underlying-relation rel))))
 

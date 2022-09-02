@@ -182,6 +182,76 @@
 (def quaternary-clan?
   (power-set size-four-multiset?))
 
+; Classification of clans by degrees
+(defn regular-clan?
+  [clan]
+
+  (and
+    (clan? clan)
+    (let [degree-sequence (map (partial degree clan) (apply union (map set clan)))]
+      (or (empty? degree-sequence) (apply = degree-sequence)))))
+
+(defn two-regular-clan?
+  [clan]
+
+  (and
+    (clan? clan)
+    (every?
+      (fn [i]
+        (= (degree clan i) 2))
+      (apply union (map set clan)))))
+
+(defn three-regular-clan?
+  [clan]
+
+  (and
+    (clan? clan)
+    (every?
+      (fn [i]
+        (= (degree clan i) 3))
+      (apply union (map set clan)))))
+
+(defn four-regular-clan?
+  [clan]
+
+  (and
+    (clan? clan)
+    (every?
+      (fn [i]
+        (= (degree clan i) 3))
+      (apply union (map set clan)))))
+
+; Maximum degrees
+(defn maximum-degree-two-clan?
+  [clan]
+
+  (and
+    (clan? clan)
+    (every?
+      (fn [i]
+        (<= (degree clan i) 2))
+      (apply union (map set clan)))))
+
+(defn maximum-degree-three-clan?
+  [clan]
+
+  (and
+    (clan? clan)
+    (every?
+      (fn [i]
+        (<= (degree clan i) 3))
+      (apply union (map set clan)))))
+
+(defn maximum-degree-four-clan?
+  [clan]
+
+  (and
+    (clan? clan)
+    (every?
+      (fn [i]
+        (<= (degree clan i) 4))
+      (apply union (map set clan)))))
+
 ; Order rank
 (defn order-rank
   [coll]
@@ -653,6 +723,7 @@
 
   (set (map parse-kuratowski-pair-multiset coll)))
 
+; Ontology of kuratowski clans
 (def kuratowski-clan?
   (power-set kuratowski-pair-multiset?))
 

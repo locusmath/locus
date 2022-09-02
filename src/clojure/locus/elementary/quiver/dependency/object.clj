@@ -55,7 +55,7 @@
   StructuredDependencyQuiver
   (underlying-dependency-quiver [this] this))
 
-(derive DependencyQuiver :locus.elementary.function.core.protocols/structured-quiver)
+(derive DependencyQuiver :locus.elementary.function.core.protocols/structured-dependency-quiver)
 
 (defmethod visualize DependencyQuiver
   [^DependencyQuiver quiv]

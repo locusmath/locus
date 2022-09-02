@@ -57,7 +57,7 @@
   (when (universal? coll)
     (NSet. [coll])))
 
-; Products and coproducts in
+; Products and coproducts in the topos of copresheaves over a discrete category
 (defmethod product NSet
   [& args]
 

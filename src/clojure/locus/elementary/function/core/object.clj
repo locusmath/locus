@@ -84,17 +84,26 @@
 
 (derive SetFunction :locus.elementary.function.core.protocols/set-function)
 
-; Underlying transition of a morphism
-(defn underlying-transition
-  [morphism]
-
-  (list (source-object morphism) (target-object morphism)))
-
 ; Underlying function of a concrete morphism
 (defn underlying-function
   [func]
 
   (SetFunction. (inputs func) (outputs func) func))
+
+; Generalized conversions
+(defmulti to-function type)
+
+(defmethod to-function :locus.elementary.function.core.protocols/set-function
+  [func] func)
+
+(defmethod to-function :default
+  [func] (underlying-function func))
+
+; Underlying transition of a morphism
+(defn underlying-transition
+  [morphism]
+
+  (list (source-object morphism) (target-object morphism)))
 
 ; This is an interface between maps and functions
 (defn mapfn
@@ -355,8 +364,7 @@
 
   (- (count (outputs func)) (count (function-image func))))
 
-; Equalizers and coequalizers are fundamental
-; notions of category theory
+; Equalizers are limits of a parallel arrow diagram
 (defn equalizer
   [a b]
 
@@ -366,19 +374,34 @@
         (= (a x) (b x)))
       (inputs a))))
 
+(defn equalizer-function
+  [a b]
+
+  (when (= (inputs a) (inputs b))
+    (inclusion-function
+      (equalizer a b)
+      (inputs a))))
+
+; Coequalizers are colimits of a parallel arrow diagram
 (defn coequalizer
   [a b]
 
   (when (= (inputs a) (inputs b))
-    (cl equivalence-relation?
-        (set
-          (map
-            (fn [x]
-              (list (a x) (b x)))
-            (inputs a))))))
+    (weak-connectivity
+      (cl equivalence-relation?
+         (set
+           (map
+             (fn [x]
+               (list (a x) (b x)))
+             (inputs a)))))))
 
-; We can try to create conditions for dealing with
-; fiber products and coproducts
+(defn coequalizer-function
+  [a b]
+
+  (projection-function
+    (coequalizer a b)))
+
+; We can try to create conditions for dealing with fiber products
 (defn fiber-product
   [f g]
 
@@ -387,18 +410,60 @@
       (= (f x) (g y)))
     (cartesian-product (inputs f) (inputs g))))
 
+(defn fiber-product-projections
+  [f g]
+
+  (let [fiber-product-object (fiber-product f g)
+        first-input (inputs f)
+        second-input (inputs g)]
+    (list
+      (SetFunction.
+        fiber-product-object
+        first-input
+        (fn [x]
+          (first x)))
+      (SetFunction.
+        fiber-product-object
+        second-input
+        (fn [x]
+          (second x))))))
+
+; Fiber products are categorically dual to fiber products
 (defn fiber-coproduct
   [f g]
 
   (let [output (cartesian-coproduct (outputs f) (outputs g))]
-    (cl equivalence-relation?
-        (union
-          (coreflexive-relation output)
-          (set
-            (map
-              (fn [z]
-                #{(0 (f z)) #{1 (g z)}})
-              (inputs f)))))))
+    (set
+      (map
+        set
+        (weak-connectivity
+         (union
+           (coreflexive-relation output)
+           (set
+             (map
+               (fn [z]
+                 (list
+                   (list 0 (f z))
+                   (list 1 (g z))))
+               (inputs f)))))))))
+
+(defn fiber-coproduct-projections
+  [f g]
+
+  (let [fiber-coproduct-object (fiber-coproduct f g)
+        first-output (outputs f)
+        second-output (outputs g)]
+    (list
+      (SetFunction.
+        first-output
+        fiber-coproduct-object
+        (fn [x]
+          (projection fiber-coproduct-object (list 0 x))))
+      (SetFunction.
+        second-output
+        fiber-coproduct-object
+        (fn [x]
+          (projection fiber-coproduct-object (list 1 x)))))))
 
 ; An evaluation arrow as a set function
 (defn in-hom-class?
@@ -453,6 +518,20 @@
   [func coll]
 
   (SetFunction. (inputs func) coll func))
+
+; Adjoin inputs to a mapping
+(defmulti adjoin-inputs (fn [a b] (type a)))
+
+; Adjoin outputs to a set function
+(defmulti adjoin-outputs (fn [a b] (type a)))
+
+(defmethod adjoin-outputs :locus.elementary.function.core.protocols/set-function
+  [func coll]
+
+  (SetFunction.
+    (inputs func)
+    (union (outputs func) coll)
+    func))
 
 ; This is an attempt to deal with the enumeration of subalgebras
 (defn number-of-subalgebras

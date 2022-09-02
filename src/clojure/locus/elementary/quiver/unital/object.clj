@@ -48,7 +48,7 @@
   (underlying-unital-quiver [this] this)
   (identity-morphism-of [this obj] (id obj)))
 
-(derive UnitalQuiver :locus.elementary.function.core.protocols/structured-quiver)
+(derive UnitalQuiver :locus.elementary.function.core.protocols/structured-unital-quiver)
 
 ; Identity element functions of structured quivers
 (defn identity-element-function

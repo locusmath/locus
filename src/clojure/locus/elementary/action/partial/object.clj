@@ -16,8 +16,10 @@
             [locus.elementary.group.core.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.action.core.protocols :refer :all]
-            [locus.elementary.relational.function.partial-set-function :refer :all]
-            [locus.elementary.relational.function.partial-transformation :refer :all]))
+            [locus.elementary.function.image.partial-function :refer :all]
+            [locus.elementary.function.image.partial-transformation :refer :all]
+            [locus.elementary.function.image.partial-bijection :refer :all]
+            [locus.elementary.function.image.partial-permutation :refer :all]))
 
 ; Let C be a category, and Arrows(C) its morphism set. Then the morphisms of C act on Arrows(C)
 ; by self induced actions. This produces a structure which we call a partial action system,
@@ -36,6 +38,9 @@
   (action-domain [this action]
     (relation-domain (underlying-relation (func action)))))
 
+(derive PartialActionSystem :locus.elementary.function.core.protocols/structured-set)
+
+; Conversion of structures to partial action systems
 (defmulti to-partial-action-system type)
 
 (defmethod to-partial-action-system PartialActionSystem

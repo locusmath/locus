@@ -58,6 +58,8 @@
   StructuredMorphismOfDependencyQuivers
   (underlying-morphism-of-dependency-quivers [this] this))
 
+(derive MorphismOfDependencyQuivers :locus.elementary.function.core.protocols/morphism-of-structured-dependency-quivers)
+
 ; Composition and morphisms in the topos of dependency quivers
 (defmethod compose* MorphismOfDependencyQuivers
   [a b]
