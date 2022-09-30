@@ -41,7 +41,7 @@ Locus is based upon the idea of organizing mathematical theories using presheaf 
 * interfaces with apache commons math
 
 ## Geometric philosophy
-Computer science is like geometry. Instead of spatial locations, we deal with memory locations and memory addresses. Presheaf topos theory is the fundamental means we have of reasoning about these memory addresses, just as it is the key means we have of reasoning about spatial locations in geometry. Topos theory is not only the key to algebraic geometry, it is also the key to understanding computation as well. With this program we can research the end results of this philosophy.
+Computer science is like geometry. Instead of spatial locations, we deal with memory locations and memory addresses. Presheaf topos theory is the fundamental means we have of reasoning about these memory addresses, just as it is the key means we have of reasoning about spatial locations in geometry. Topos theory is not only the key to algebraic geometry, it is also the key to understanding computation as well.
 
 ## Documentation 
 A user manual is provided in the documentation folder. It describes our original research into the topos theoretic foundations of computation and their implementation.
