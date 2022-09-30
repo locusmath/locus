@@ -1,49 +1,53 @@
 # Locus
-An expert system based upon topos theory.
+An expert system based upon presheaf topos theory.
 
-## Topos theoretic knowledge representation
-Developments in elementary copresheaf topos theory suggest a new approach to creating knowledge graphs for systematizing mathematical knowledge. This leads us to two new fundamental primitives.
+## Visualisation of presheaves
+A typical presheaf over a partial order can be displayed using Graphviz clusters. Each cluster of nodes represents a set of the copresheaf and the arrows between them represent generating functions. These generalize the box and arrow diagrams for typically functions.
 
-- Memory locations: congruences in Sets
-- Data dependencies: congruences in Sets^(->)
+<img width="500" style="border:1px solid black;" src="https://i.ibb.co/gFW1y3P/triangle.png">
 
-Traditional knowledge graphs are primarily focused on formalising knowledge about subobjects. By extending this with the new theory of congruence lattices of copresheaves, we can create a more effective means of systematizing mathematical knowledge. These same mechanisms can be used to create a mathematical theory of computation.
+The resulting diagram is like an extended Hasse diagram with clusters instead of nodes. Here is another example from the topos Sets^(2,1).
 
-## Program architecture
-We can divide the Locus code base into two components:
+<img width="500" style="border:1px solid black;" src="https://i.ibb.co/mF94BTj/cospan.png">
 
-* Data visualisation : components for visualising knowledge graphs, copresheaves, and other mathematical objects
-* Data processing : mechanisms for raw data processing on algebraic structures, symbolic expressions, and other mathematical objects
+Copresheaves in the topos Sets^(1,2) are used in the topos theory of hypegraphs. Any hypergraph or finite set system produces a corresponding span copresheaf.
 
-## Data visualisation
-A JavaFX based graphical user interface is provided to handle the visualisation copresheaves over finitely generated categories. It consists of the generating system of a category displayed as a labeled directed graph and a system of directed graphs associated to each of those generators.
+<img width="500" style="border:1px solid black;" src="https://i.ibb.co/1GL27JV/span.png">
+
+This method of visualisation works best for copresheaves over partial orders. Otherwise, a JavaFX based graphical user interface is provided to handle the visualisation of copresheaves over finitely generated categories. It displays an interactive quiver that opens up a set or function diagram when you click on its objects or morphisms.
 
 <img width="700" alt="nje" style="border:1px solid black;" src="https://i.ibb.co/ygn314S/Screenshot-20220724-150704.png">
 
-Clicking on one of the objects or morphisms of the category produces the resulting set or function produced by the copresheaf. The copresheaf viewer also supports panning and zooming using JavaFX transforms.
+The same technique used in the copresheaf viewer can be used to view globular sets, which associate arbitrary quivers to the hom classes in a directed graph, instead of functions. So alternative mechanisms of visualisations are available for globular sets, which are another important class of presheaf encountered in topos theory.
 
-## Data processing
-The features of Locus fall into two main areas: topos theory and commutative algebra. In particular, the following features have been implemented:
+## Mathematical features
+Locus is based upon the idea of organizing mathematical theories using presheaf theory. Presheaves can be reasoned about using topos theory.
 
-* broad support for categories including preorders, lattices, monoids, and groups as special cases.
-* support for a wide variety of copresheaves: sets, functions, bijections, disets, nsets, nfunctions, nbijections, triangles, diamonds, gems, quivers, permutable quivers, unital quivers, dependency quivers, compositional quivers, compositional unital quivers, higher arity quivers, spans, cospans, MSets, GSets, simplicial sets, dependency functors, and copresheaves over arbitrary categories
+* basic support for presheaves over preorders: including the functional dependencies of relations, sets, functions, disets, bijections, difunctions, dibijections, nsets, nfunctions, nbijections, triangles, spans, cospans diamonds, gems, chains, ditriangles, cubes, trijections, multijections, and so on.
+* fundamental support for presheaves over monoids: MSets, GSets, and related structures.
+* support for a broad variety of presheaves over general categories: quivers, permutable quivers, unital quivers, dependency quivers, ternary quivers, higher arity quivers, functional quivers, compositional quivers, two quivers, n-quivers, path quivers, globular sets, simplicial sets, and presheaves over arbitrary categories.
+* support sheaves over sites
 * computations involving subobject and congruence lattices of copresheaves
-* dataflow analysis using congruence lattices of copresheaf topoi
-* builtin support for sheaves on sites 
-* extensive built in support for structure presheaves over a wide variety of concrete categories 
-* support for structure sheaves as a special case of structure presheaves
+* functional dataflow analysis using congruence lattices of copresheaves
+* widespread use of concrete categories throughout the system for use in presheaf theory
+* extensive built in support for structure copresheaves over a wide variety of concrete categories: presheaves of groups, presheaves of rings, etc
 * an overall ontology of mathematics based upon structured presheaves: structured sets, structured functions, structured pairs of sets, structured pairs of functions, structured quivers, structure presheaves, structure sheaves, etc.
-* a library of a wide variety of structured sets 
-* enriched categories such as 2-categories, 2-posets, and abelian categories of R-modules
+* presheaf theoretic approaches to higher structures using globular and simplicial sets. Two-categories as structured two-globular sets.
 * generic arithmetic operations based upon rings and semirings
 * a number of basic arithmetical structures like complex numbers, quaternions, matrices, polynomials, rational functions, power series, formal laurent series, etc
-* builtin support for semigroup algebras over a variety of rings and semirings
+* basic support for algebraic varieties and their coordinate rings
 * support for modules, semimodules, and vector spaces as well as algorithms for treating commutative monoids as semimodules and commutative groups as modules
 * the hyperarithmetic of additive partitions
 * interfaces with apache commons math
 
+## Geometric philosophy
+Computer science is like geometry. Instead of spatial locations, we deal with memory locations and memory addresses. Presheaf topos theory is the fundamental means we have of reasoning about these memory addresses, just as it is the key means we have of reasoning about spatial locations in geometry. Topos theory is not only the key to algebraic geometry, it is also the key to understanding computation as well.
+
 ## Documentation 
 A user manual is provided in the documentation folder. It describes our original research into the topos theoretic foundations of computation and their implementation.
+
+## Authors
+John Bernier
 
 ## License
 Apache license version 2.0
@@ -51,7 +55,7 @@ Apache license version 2.0
 Copyright © 2022 John Bernier
 
 ## Version
-1.1.0 release
+1.2.0 release
 
 ## Contributing
 Contributions are welcome.
