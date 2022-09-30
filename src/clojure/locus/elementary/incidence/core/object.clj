@@ -1,15 +1,17 @@
 (ns locus.elementary.incidence.core.object
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.order.seq :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.sequence.core.object :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.function.core.util :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
-            [locus.elementary.function.core.util :refer :all]
             [locus.elementary.diset.core.object :refer :all]
             [locus.elementary.bijection.core.object :refer :all])
-  (:import (locus.elementary.function.core.object SetFunction)
+  (:import (locus.base.function.core.object SetFunction)
            (locus.elementary.relation.binary.sr SeqableRelation)))
 
 ; Objects in the topos Sets^[1,2]
@@ -20,15 +22,38 @@
 ; vertex within an edge. In order to get around this we can get the together injective
 ; quotient of a span copresheaf, which always avoids repeated membership of edges
 ; within vertices.
-(deftype Span [flags edges vertices efn vfn])
+(deftype Span [flags edges vertices efn vfn]
+  ConcreteObject
+  (underlying-set [this]
+    (->CartesianCoproduct [flags edges vertices])))
 
+(derive Span :locus.base.logic.structure.protocols/structured-set)
+
+; Create a span from a pair of functions
 (defn span
-  [f g]
+  [edge-function vertex-function]
 
-  (let [a (inputs f)
-        b (outputs f)
-        c (outputs g)]
-    (Span. a b c f g)))
+  (let [a (inputs edge-function)
+        b (outputs edge-function)
+        c (outputs vertex-function)]
+    (Span. a b c edge-function vertex-function)))
+
+; Create a span copresheaf from a relation by functional dependencies
+(defn relation-to-span
+  [rel]
+
+  (span
+    (relation-transition-map rel 0 1)
+    (relation-transition-map rel 0 2)))
+
+; Conversion routines for span copresheaves
+(defmulti to-span type)
+
+(defmethod to-span Span
+  [span] span)
+
+(defmethod to-span :locus.base.logic.core.set/universal
+  [rel] (relation-to-span rel))
 
 ; Components of the span copresheaf
 (defn span-flags
@@ -83,6 +108,19 @@
     (span-edges span)
     (fn [flag]
       (vertex-component span flag))))
+
+; The underlying relations of span copresheaves
+(defmethod underlying-relation Span
+  [^Span span]
+
+  (set
+    (map
+      (fn [flag]
+        (list flag (edge-component span flag) (vertex-component span flag)))
+      (span-flags span))))
+
+(defmethod underlying-multirelation Span
+  [^Span span] (underlying-relation span))
 
 ; Numeric properties of spans
 (def span-order
@@ -219,14 +257,31 @@
           (= (vfn flag) vertex)))
       (span-flags span))))
 
+; Access the relational preorders of a span copresheaf directly
+(defn preceding-edge?
+  [span edge1 edge2]
+
+  (superbag?
+    (list
+      (get-incident-vertices span edge1)
+      (get-incident-vertices span edge2))))
+
+(defn preceding-vertex?
+  [span vertex1 vertex2]
+
+  (superbag?
+    (list
+      (get-incident-edges span vertex1)
+      (get-incident-edges span vertex2))))
+
 ; Vertex and edge preorders
 (defn edge-preorder
   [span]
 
   (SeqableRelation.
     (span-edges span)
-    (fn [[e1 e2]]
-      (superbag? (list (get-incident-vertices span e1) (get-incident-vertices span e2))))
+    (fn [[edge1 edge2]]
+      (preceding-edge? span edge1 edge2))
     {}))
 
 (defn vertex-preorder
@@ -234,9 +289,79 @@
 
   (SeqableRelation.
     (span-vertices span)
-    (fn [[v1 v2]]
-      (superbag? (list (get-incident-vertices span v1) (get-incident-vertices span v2))))
+    (fn [[vertex1 vertex2]]
+      (preceding-vertex? span vertex1 vertex2))
     {}))
+
+; Minimal and maximal vertices
+(defn minimal-vertex?
+  [span vertex]
+
+  (every?
+    (fn [other-vertex]
+      (not (preceding-vertex? span other-vertex vertex)))
+    (span-vertices span)))
+
+(defn maximal-vertex?
+  [span vertex]
+
+  (every?
+    (fn [other-vertex]
+      (not (preceding-vertex? span vertex other-vertex)))
+    (span-vertices span)))
+
+(defn minimal-vertices
+  [span]
+
+  (set
+    (filter
+      (fn [vertex]
+        (minimal-vertex? span vertex))
+      (span-vertices span))))
+
+(defn maximal-vertices
+  [span]
+
+  (set
+    (filter
+      (fn [vertex]
+        (maximal-vertex? span vertex))
+      (span-vertices span))))
+
+; Minimal and maximal edges
+(defn minimal-edge?
+  [span edge]
+
+  (every?
+    (fn [other-edge]
+      (not (preceding-edge? span other-edge edge)))
+    (span-edges span)))
+
+(defn maximal-edge?
+  [span edge]
+
+  (every?
+    (fn [other-edge]
+      (not (preceding-edge? span edge other-edge)))
+    (span-edges span)))
+
+(defn minimal-edges
+  [span]
+
+  (set
+    (filter
+      (fn [edge]
+        (minimal-edge? span edge))
+      (span-edges span))))
+
+(defn maximal-edges
+  [span]
+
+  (set
+    (filter
+      (fn [edge]
+        (maximal-edge? span edge))
+      (span-edges span))))
 
 ; Get flag equality
 (defn flag-partition
@@ -298,16 +423,6 @@
   [span]
 
   (set (flag-pairs span)))
-
-(defmethod underlying-relation Span
-  [^Span span]
-
-  (incidence-relation span))
-
-(defmethod underlying-multirelation Span
-  [^Span span]
-
-  (flag-pairs span))
 
 ; Duality in the incidence topos
 (defn dual-span
@@ -387,11 +502,14 @@
   [edges]
 
   (let [vertices (dimembers edges)
-        rel (seqable-binary-relation
-              edges
-              vertices
-              (fn [[edge vertex]]
-                (contains? edge vertex)))]
+        rel (set
+              (map
+                seq
+                (seqable-binary-relation
+                 edges
+                 vertices
+                 (fn [[edge vertex]]
+                   (contains? edge vertex)))))]
     (simple-span
       edges
       vertices
@@ -887,5 +1005,16 @@
         (complete-setlike-edge? span edge))
       (span-edges span))))
 
+; Visualisation method for span copresheaves
+(defmethod visualize Span
+  [^Span span]
+
+  (let [[p v] (generate-copresheaf-data
+                {0 (span-flags span)
+                 1 (span-edges span)
+                 2 (span-vertices span)}
+                #{(list 0 1 (edge-function span))
+                  (list 0 2 (vertex-function span))})]
+    (visualize-clustered-digraph* "BT" p v)))
 
 

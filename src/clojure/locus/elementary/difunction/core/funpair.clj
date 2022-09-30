@@ -1,10 +1,12 @@
 (ns locus.elementary.difunction.core.funpair
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.order.seq :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.sequence.core.object :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.base.function.core.object :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.incidence.system.setpart :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
-            [locus.elementary.function.core.object :refer :all]))
+            [locus.base.partition.core.setpart :refer :all]))
 
 ; The topos of Sets^2 defines morphisms consisting of pairs of functions. This leads to a
 ; separate class for dealing with such morphisms of pairs of sets. This leads to an implementation

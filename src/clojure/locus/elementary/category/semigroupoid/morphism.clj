@@ -1,8 +1,9 @@
 (ns locus.elementary.category.semigroupoid.morphism
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.order.seq :refer :all]
-            [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.sequence.core.object :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.diamond.core.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.quiver.core.morphism :refer :all]
@@ -14,7 +15,7 @@
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.category.semigroupoid.object :refer :all])
   (:import (locus.elementary.category.semigroupoid.object Semigroupoid)
-           (locus.elementary.function.core.object SetFunction)))
+           (locus.base.function.core.object SetFunction)))
 
 ; A functor is a morphism of categories that preserves composition, the
 ; underlying quiver relations, and identities. So by generalisation a semifunctor
@@ -55,11 +56,11 @@
         morphism-function))))
 
 ; The position of semifunctors in the type hierarchy
-(derive Semifunctor :locus.elementary.function.core.protocols/semifunctor)
+(derive Semifunctor :locus.elementary.copresheaf.core.protocols/semifunctor)
 
 ; Composition functions
 (defmethod compose* Semifunctor
-  [^Semifunctor f ^Semifunctor g]
+  [^Semifunctor f, ^Semifunctor g]
 
   (Semifunctor.
     (source-object g)

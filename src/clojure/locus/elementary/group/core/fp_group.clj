@@ -1,10 +1,12 @@
 (ns locus.elementary.group.core.fp-group
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.order.np :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.sequence.numeric.np :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.group.core.object :refer :all]))
@@ -17,7 +19,7 @@
 
 (deftype FPGroup [n relators])
 
-(derive FPGroup :locus.elementary.function.core.protocols/group)
+(derive FPGroup :locus.elementary.copresheaf.core.protocols/group)
 
 (defmethod morphic-gens FPGroup
   [^FPGroup group]

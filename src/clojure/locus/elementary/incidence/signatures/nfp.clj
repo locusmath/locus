@@ -1,6 +1,7 @@
 (ns locus.elementary.incidence.signatures.nfp
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.base.ap :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.logic.numeric.ap :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.incidence.signatures.nf :refer :all]))
 

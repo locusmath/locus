@@ -1,8 +1,10 @@
 (ns locus.grothendieck.topology.metric.open-set
-  (:require [locus.elementary.logic.base.core :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
-            [locus.elementary.function.core.object :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.base.function.core.object :refer :all]
             [locus.grothendieck.topology.metric.object :refer :all]
             [locus.grothendieck.topology.metric.open-ball :refer :all]))
 

@@ -1,9 +1,10 @@
 (ns locus.algebra.universal.structure
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
-            [locus.elementary.function.core.object :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.base.function.core.object :refer :all]
             [locus.elementary.diamond.core.object :refer :all]
-            [locus.elementary.function.core.util :refer :all]
+            [locus.base.function.core.util :refer :all]
             [locus.algebra.universal.field :refer :all])
   (:import (locus.algebra.universal.field SimpleToposFieldType TotalOperatorFieldType PartialOperatorFieldType RelationalFieldType)))
 

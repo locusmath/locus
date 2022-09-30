@@ -1,7 +1,7 @@
 (ns locus.transcendental.functions.special
   (:refer-clojure :exclude [+ * - /])
-  (:require [locus.elementary.logic.base.core :refer :all :exclude [add]]
-            [locus.ring.core.arithmetic :refer :all]
+  (:require [locus.base.logic.core.set :refer :all :exclude [add]]
+            [locus.additive.base.generic.arithmetic :refer :all]
             [locus.transcendental.functions.rings :refer :all])
   (:import [org.apache.commons.math3.special Gamma Erf Beta BesselJ]
            [org.apache.commons.math3.analysis.function Abs Acos Acosh Add Asin Asinh Atan Atanh Atan2 HarmonicOscillator Divide Cosh Cos Ceil Cbrt Exp Expm1 Floor Gaussian Identity Inverse Constant Log10 Log1p Max Min Minus Multiply Pow Power Rint Signum Sin Sinc Sinh Sqrt Subtract Tan Tanh Ulp StepFunction Logit Log Sigmoid Logistic]

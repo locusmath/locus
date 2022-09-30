@@ -1,8 +1,8 @@
 (ns locus.elementary.lattice.core.fp-lattice
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
-
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.lattice.core.object :refer :all]
             [locus.elementary.lattice.term.lattice-term :refer :all]
             [locus.elementary.lattice.term.lattice-equation :refer :all]
@@ -14,10 +14,9 @@
 ; as well as a system of lattice equations on those generators. In this sense,
 ; they are like finitely presented monoids and other systems in abstract
 ; algebra that are defined by systems of equations.
-
 (deftype FPLattice [gens relations])
 
-(derive FPLattice :locus.elementary.function.core.protocols/lattice)
+(derive FPLattice :locus.elementary.copresheaf.core.protocols/lattice)
 
 ; Lattice theoretic generating sets
 (defmulti lattice-generators type)

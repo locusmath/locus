@@ -1,10 +1,12 @@
 (ns locus.elementary.semigroup.monoid.group-with-zero
-  (:require [locus.elementary.logic.base.core :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.base.function.core.object :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
-            [locus.elementary.function.core.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
@@ -45,10 +47,12 @@
   (invoke [this obj] (op obj))
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
-(derive GroupWithZero :locus.elementary.function.core.protocols/monoid)
+(derive GroupWithZero :locus.elementary.copresheaf.core.protocols/group-with-zero)
 
-(defmethod group-with-zero? GroupWithZero
-  [group] true)
+(defmethod invert-element :locus.elementary.copresheaf.core.protocols/group-with-zero
+  [^GroupWithZero group, x]
+
+  ((.inv group) x))
 
 (defmethod identity-elements GroupWithZero
   [^GroupWithZero group] #{(.id group)})
@@ -56,7 +60,7 @@
 (defmethod zero-elements GroupWithZero
   [^GroupWithZero group] #{(.zero group)})
 
-(defmethod adjoin-zero :locus.elementary.function.core.protocols/group
+(defmethod adjoin-zero :locus.elementary.copresheaf.core.protocols/group
   [group]
 
   (GroupWithZero.

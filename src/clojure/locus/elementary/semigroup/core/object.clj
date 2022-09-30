@@ -1,19 +1,22 @@
 (ns locus.elementary.semigroup.core.object
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.order.seq :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.sequence.core.object :refer :all]
+            [locus.base.partition.core.object :refer [projection]]
+            [locus.base.partition.core.setpart :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.elementary.incidence.system.family :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.relation.binary.vertexset :refer :all]
-            [locus.elementary.incidence.system.setpart :refer :all]
-            [locus.elementary.incidence.system.family :refer :all]
-            [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
             [locus.elementary.lattice.core.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all])
   (:import (locus.elementary.lattice.core.object Lattice)
            (java.util Optional)
-           (locus.elementary.function.core.object SetFunction)))
+           (locus.base.function.core.object SetFunction)))
 
 ; A semigroup is simply a semigroupoid with a single object. We further define
 ; semigroups to be structured sets by defining a functor to Sets as well
@@ -111,9 +114,9 @@
 
   (set
     (filter
-     (fn [zero-element]
-       (zero-element? semigroup zero-element))
-     (morphisms semigroup))))
+      (fn [zero-element]
+        (zero-element? semigroup zero-element))
+      (morphisms semigroup))))
 
 (defn zero-element
   [semigroup]
@@ -244,14 +247,14 @@
         inverses))))
 
 ; Classification of semigroups
-(derive Semigroup :locus.elementary.function.core.protocols/semigroup)
+(derive Semigroup :locus.elementary.copresheaf.core.protocols/semigroup)
 
 (defmulti semigroup? type)
 
-(defmethod semigroup? :locus.elementary.function.core.protocols/semigroup
+(defmethod semigroup? :locus.elementary.copresheaf.core.protocols/semigroup
   [x] true)
 
-(defmethod semigroup? :locus.elementary.function.core.protocols/semigroupoid
+(defmethod semigroup? :locus.elementary.copresheaf.core.protocols/semigroupoid
   [x] (= (count (objects x)) 1))
 
 (defmethod semigroup? :default
@@ -260,7 +263,7 @@
 ; Classification of monoids
 (defmulti intrinsic-monoid? type)
 
-(defmethod intrinsic-monoid? :locus.elementary.function.core.protocols/monoid
+(defmethod intrinsic-monoid? :locus.elementary.copresheaf.core.protocols/monoid
   [x] true)
 
 (defmethod intrinsic-monoid? :default
@@ -268,10 +271,10 @@
 
 (defmulti monoid? type)
 
-(defmethod monoid? :locus.elementary.function.core.protocols/monoid
+(defmethod monoid? :locus.elementary.copresheaf.core.protocols/monoid
   [x] true)
 
-(defmethod monoid? :locus.elementary.function.core.protocols/semigroupoid
+(defmethod monoid? :locus.elementary.copresheaf.core.protocols/semigroupoid
   [x]
 
   (and
@@ -281,7 +284,7 @@
 (defmethod monoid? :default
   [x] false)
 
-(defmethod category? :locus.elementary.function.core.protocols/semigroup
+(defmethod category? :locus.elementary.copresheaf.core.protocols/semigroup
   [semigroup] (not (empty? (identity-elements semigroup))))
 
 ; Special classes of semigroups
@@ -378,7 +381,7 @@
 ; Test for groups
 (defmulti intrinsic-group? type)
 
-(defmethod intrinsic-group? :locus.elementary.function.core.protocols/group
+(defmethod intrinsic-group? :locus.elementary.copresheaf.core.protocols/group
   [x] true)
 
 (defmethod intrinsic-group? :default
@@ -386,10 +389,10 @@
 
 (defmulti group? type)
 
-(defmethod group? :locus.elementary.function.core.protocols/group
+(defmethod group? :locus.elementary.copresheaf.core.protocols/group
   [x] true)
 
-(defmethod group? :locus.elementary.function.core.protocols/semigroupoid
+(defmethod group? :locus.elementary.copresheaf.core.protocols/semigroupoid
   [obj]
 
   (and
@@ -462,7 +465,7 @@
       ((.meet lattice) a b))))
 
 ; Get the dual of a semigroup
-(defmethod dual :locus.elementary.function.core.protocols/semigroup
+(defmethod dual :locus.elementary.copresheaf.core.protocols/semigroup
   [semigroup]
 
   (Semigroup.
@@ -487,7 +490,7 @@
     (apply cartesian-product (map underlying-set semigroups))
     (apply semigroup-product-function semigroups)))
 
-(defmethod product :locus.elementary.function.core.protocols/semigroup
+(defmethod product :locus.elementary.copresheaf.core.protocols/semigroup
   [& args]
 
   (apply semigroup-product args))
@@ -549,15 +552,15 @@
               semigroup
               (cartesian-power coll 2)))]
     (loop [current-elements (set coll)]
-     (let [next-elements (get-all-composites semigroup current-elements)]
-       (if (every?
-             (fn [i]
-               (contains? current-elements i))
-             next-elements)
-         current-elements
-         (recur (union current-elements (set next-elements))))))))
+      (let [next-elements (get-all-composites semigroup current-elements)]
+        (if (every?
+              (fn [i]
+                (contains? current-elements i))
+              next-elements)
+          current-elements
+          (recur (union current-elements (set next-elements))))))))
 
-(defmethod sub :locus.elementary.function.core.protocols/semigroup
+(defmethod sub :locus.elementary.copresheaf.core.protocols/semigroup
   [semigroup]
 
   (Lattice.
@@ -595,7 +598,7 @@
       (semigroup-congruence? semigroup partition))
     (set-partitions (set (underlying-set semigroup)))))
 
-(defmethod con :locus.elementary.function.core.protocols/semigroup
+(defmethod con :locus.elementary.copresheaf.core.protocols/semigroup
   [semigroup]
 
   (Lattice.
@@ -650,7 +653,7 @@
 
 (defmulti display-table type)
 
-(defmethod display-table :locus.elementary.function.core.protocols/semigroupoid
+(defmethod display-table :locus.elementary.copresheaf.core.protocols/semigroupoid
   [semigroup]
 
   (let [table (if (semigroup? semigroup)
@@ -664,21 +667,21 @@
   [n]
 
   (Semigroup.
-    (seqable-interval 0 n)
+    (->Upto n)
     (fn [[a b]] 0)))
 
 (defn left-zero-semigroup
   [n]
 
   (Semigroup.
-    (seqable-interval 0 n)
+    (->Upto n)
     (fn [[a b]] a)))
 
 (defn right-zero-semigroup
   [n]
 
   (Semigroup.
-    (seqable-interval 0 n)
+    (->Upto n)
     (fn [[a b]] b)))
 
 (defn rectangular-band
@@ -758,7 +761,7 @@
   [index period]
 
   (Semigroup.
-    (seqable-interval 1 (+ index period))
+    (->RangeSet 1 (+ index period))
     (fn [[a b]]
       (monogenic-simplification index period (+ a b)))))
 
@@ -815,27 +818,27 @@
 
   (transpose
     (logical-preorder
-     (fn [i]
-       (principal-left-ideal semigroup i))
-     (morphisms semigroup))))
+      (fn [i]
+        (principal-left-ideal semigroup i))
+      (morphisms semigroup))))
 
 (defn rpreorder
   [semigroup]
 
   (transpose
     (logical-preorder
-     (fn [i]
-       (principal-right-ideal semigroup i))
-     (morphisms semigroup))))
+      (fn [i]
+        (principal-right-ideal semigroup i))
+      (morphisms semigroup))))
 
 (defn jpreorder
   [semigroup]
 
   (transpose
     (logical-preorder
-     (fn [i]
-       (principal-two-sided-ideal semigroup i))
-     (morphisms semigroup))))
+      (fn [i]
+        (principal-two-sided-ideal semigroup i))
+      (morphisms semigroup))))
 
 (defn lrelation
   [semigroup]
@@ -849,9 +852,9 @@
   [semigroup]
 
   (pn (fn [a b]
-         (= (principal-right-ideal semigroup a)
-            (principal-right-ideal semigroup b)))
-       (morphisms semigroup)))
+        (= (principal-right-ideal semigroup a)
+           (principal-right-ideal semigroup b)))
+      (morphisms semigroup)))
 
 (defn jrelation
   [semigroup]
@@ -1003,12 +1006,12 @@
   (union
     (unary-family (underlying-set semigroup))
     (set
-     (filter
-       (fn [pair]
-         (let [[a b] (seq pair)]
-           (= (semigroup (list a b))
-              (semigroup (list b a)))))
-       (selections (underlying-set semigroup) 2)))))
+      (filter
+        (fn [pair]
+          (let [[a b] (seq pair)]
+            (= (semigroup (list a b))
+               (semigroup (list b a)))))
+        (selections (underlying-set semigroup) 2)))))
 
 (defn commutativity-preorder
   [semigroup]
@@ -1110,9 +1113,9 @@
     (semigroup-with-zero? semigroup)
     (let [z (first (zero-elements semigroup))]
       (every?
-       (fn [[a b]]
-         (not= (semigroup (list a b)) z))
-       (cartesian-power (disj (underlying-set semigroup) z) 2)))))
+        (fn [[a b]]
+          (not= (semigroup (list a b)) z))
+        (cartesian-power (disj (underlying-set semigroup) z) 2)))))
 
 (def monoid-with-adjoined-zero?
   (intersection
@@ -1195,6 +1198,9 @@
 
 (defmulti group-with-zero? type)
 
+(defmethod group-with-zero? :locus.elementary.copresheaf.core.protocols/group-with-zero
+  [group-with-zero] true)
+
 (defmethod group-with-zero? :default
   [semigroup]
 
@@ -1203,7 +1209,9 @@
     (group?
       (restrict-semigroup
         semigroup
-        (difference (set (morphisms semigroup)) (zero-elements semigroup))))))
+        (difference
+          (set (morphisms semigroup))
+          (zero-elements semigroup))))))
 
 (def commutative-group-with-zero?
   (intersection
@@ -1216,9 +1224,9 @@
   (and
     (semigroup? semigroup)
     (every?
-     (fn [hclass]
-       (group? (restrict-semigroup semigroup hclass)))
-     (hrelation semigroup))))
+      (fn [hclass]
+        (group? (restrict-semigroup semigroup hclass)))
+      (hrelation semigroup))))
 
 (defn group-symmetric?
   [semigroup]
@@ -1226,10 +1234,10 @@
   (and
     (semigroup? semigroup)
     (every?
-     (fn [coll]
-       (or (= (count coll) 1)
-           (group? (restrict-semigroup semigroup coll))))
-     (hrelation semigroup))))
+      (fn [coll]
+        (or (= (count coll) 1)
+            (group? (restrict-semigroup semigroup coll))))
+      (hrelation semigroup))))
 
 (defn divisibility-commutative-semigroup?
   [semigroup]
@@ -1327,11 +1335,26 @@
         (nilpotent-element? semigroup i))
       (underlying-set semigroup))))
 
+(defn nilpotent-commutative-semigroup?
+  [semigroup]
+
+  (and
+    (nilpotent-semigroup? semigroup)
+    (commutative-semigroup? semigroup)))
+
+; Reduced semigroups with zero have no non-trivial nilpotents
 (defn reduced-semigroup-with-zero?
   [semigroup]
 
   (and
     (semigroup-with-zero? semigroup)
+    (<= (count (nilpotent-elements semigroup)) 1)))
+
+(defn reduced-commutative-semigroup-with-zero?
+  [semigroup]
+
+  (and
+    (commutative-semigroup-with-zero? semigroup)
     (<= (count (nilpotent-elements semigroup)) 1)))
 
 ; The iteration preorder of a semigroup
@@ -1340,9 +1363,9 @@
 
   (transpose
     (logical-preorder
-     (fn [elem]
-       (semigroup-element-iterates semigroup elem))
-     (underlying-set semigroup))))
+      (fn [elem]
+        (semigroup-element-iterates semigroup elem))
+      (underlying-set semigroup))))
 
 (defn semigroup-element-roots
   [semigroup elem]
@@ -1374,16 +1397,16 @@
 
   (let [rel (iteration-preorder semigroup)]
     (filter
-     (fn [i]
-       (ideal-vertex-set? rel i))
-     (two-sided-ideals semigroup))))
+      (fn [i]
+        (ideal-vertex-set? rel i))
+      (two-sided-ideals semigroup))))
 
 ; A constructor for a basic class of commutative aperiodic semigroups
 (defn height-two-tree-ordered-semigroup
   [n m]
 
   (Semigroup.
-    (seqable-interval 0 (inc (+ n m)))
+    (->Upto (inc (+ n m)))
     (fn [[a b]]
       (if (= a b)
         (if (<= b n) b 0)
@@ -1498,10 +1521,10 @@
   (restrict-semigroup
     semigroup
     (set
-     (map
-       (fn [morphism]
-         (apply-semigroup semigroup (list e morphism e)))
-       (morphisms semigroup)))))
+      (map
+        (fn [morphism]
+          (apply-semigroup semigroup (list e morphism e)))
+        (morphisms semigroup)))))
 
 (defn locally-inverse-semigroup?
   [semigroup]
@@ -1517,6 +1540,6 @@
 
   (let [n (count coll)]
     (Semigroup.
-      (seqable-interval 0 n)
+      (->Upto n)
       (fn [[i j]]
         (nth (nth coll i) j)))))

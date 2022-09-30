@@ -1,14 +1,17 @@
 (ns locus.elementary.group.core.object
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.base.natural :refer :all]
-            [locus.elementary.logic.order.seq :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.logic.numeric.natural :refer :all]
+            [locus.base.sequence.core.object :refer :all]
+            [locus.base.partition.core.setpart :refer :all]
+            [locus.base.partition.core.object :refer [projection]]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.elementary.incidence.system.family :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.incidence.system.setpart :refer :all]
-            [locus.elementary.incidence.system.family :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
-            [locus.elementary.function.core.object :refer :all]
             [locus.elementary.diamond.core.object :refer :all]
             [locus.elementary.diset.core.object :refer :all]
             [locus.elementary.bijection.core.object :refer :all]
@@ -20,7 +23,7 @@
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all])
   (:import (locus.elementary.lattice.core.object Lattice)
-           (locus.elementary.function.core.object SetFunction)
+           (locus.base.function.core.object SetFunction)
            (locus.elementary.semigroup.monoid.object Monoid)
            (locus.elementary.semigroup.core.object Semigroup)))
 
@@ -67,7 +70,7 @@
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
 ; Tagging groups
-(derive Group :locus.elementary.function.core.protocols/group)
+(derive Group :locus.elementary.copresheaf.core.protocols/group)
 
 ; A special method for inverting elements of groups
 (defmethod invert-element Group
@@ -133,7 +136,7 @@
   [period]
 
   (Group.
-    (seqable-interval 1 (inc period))
+    (->RangeSet 1 (inc period))
     (fn [[a b]]
       (monogenic-simplification 1 period (+ a b)))
     period
@@ -149,10 +152,10 @@
   (let [n (count nums)]
     (Group.
      (apply
-       seqable-cartesian-product
+       cartesian-product
        (map
          (fn [i]
-           (seqable-interval 0 i))
+           (->RangeSet 0 i))
          nums))
      (fn [[coll1 coll2]]
        (map
@@ -187,7 +190,7 @@
 
 ; Product operation
 ; The product of two groups is a group again
-(defmethod product :locus.elementary.function.core.protocols/group
+(defmethod product :locus.elementary.copresheaf.core.protocols/group
   [& monoids]
 
   (Group.
@@ -246,7 +249,7 @@
 
   (minimal-members (nontrivial-subgroups group)))
 
-(defmethod sub :locus.elementary.function.core.protocols/group
+(defmethod sub :locus.elementary.copresheaf.core.protocols/group
   [group]
 
   (Lattice.
@@ -264,7 +267,7 @@
     (.inv group)))
 
 ; Compute the dual of a group
-(defmethod dual :locus.elementary.function.core.protocols/group
+(defmethod dual :locus.elementary.copresheaf.core.protocols/group
   [group]
 
   (Group.
@@ -355,7 +358,7 @@
 
   (maximal-members (proper-normal-subgroups group)))
 
-(defmethod con :locus.elementary.function.core.protocols/group
+(defmethod con :locus.elementary.copresheaf.core.protocols/group
   [group]
 
   (Lattice.

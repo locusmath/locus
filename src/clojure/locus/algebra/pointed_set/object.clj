@@ -1,13 +1,15 @@
 (ns locus.algebra.pointed-set.object
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.order.seq :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.sequence.core.object :refer :all]
+            [locus.base.logic.limit.product :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.incidence.system.setpart :refer :all]
-            [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
+            [locus.base.partition.core.setpart :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.incidence.system.family :refer :all]
             [locus.elementary.lattice.core.object :refer :all])
-  (:import (locus.elementary.function.core.object SetFunction)))
+  (:import (locus.base.function.core.object SetFunction)))
 
 ; Pointed sets are functional algebras so they implement IFn
 ; A pointed set is simply an ordered pair (S,p) of a set S together
@@ -24,7 +26,7 @@
   (invoke [this arg] arg)
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
-(derive PointedSet :locus.elementary.function.core.protocols/structured-set)
+(derive PointedSet :locus.base.logic.structure.protocols/structured-set)
 
 ; Conversion
 (defmulti to-pointed-set type)

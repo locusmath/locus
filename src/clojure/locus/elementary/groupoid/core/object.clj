@@ -1,24 +1,26 @@
 (ns locus.elementary.groupoid.core.object
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.order.seq :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.sequence.core.object :refer :all]
+            [locus.base.partition.core.setpart :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.incidence.system.setpart :refer :all]
-            [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.group.core.object :refer :all]
             [locus.elementary.lattice.core.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
-            [locus.elementary.order.setoid.object :refer :all]
+            [locus.elementary.preorder.setoid.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.elementary.quiver.permutable.object :refer :all]
             [locus.elementary.quiver.dependency.object :refer :all]
             [locus.elementary.bijection.core.object :refer :all])
   (:import (locus.elementary.group.core.object Group)
            (locus.elementary.category.core.object Category)
-           (locus.elementary.order.setoid.object Setoid)
+           (locus.elementary.preorder.setoid.object Setoid)
            (locus.elementary.quiver.dependency.object DependencyQuiver)))
 
 ; A category C has isomorphisms for every object. A groupoid is a category C for which each
@@ -63,7 +65,7 @@
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
 ; The position of groupoids within the type hierarchy
-(derive Groupoid :locus.elementary.function.core.protocols/groupoid)
+(derive Groupoid :locus.elementary.copresheaf.core.protocols/groupoid)
 
 ; Underlying relations
 (defmethod underlying-relation Groupoid
@@ -147,7 +149,7 @@
     (.inv quiv)))
 
 ; Products of groupoids
-(defmethod product :locus.elementary.function.core.protocols/groupoid
+(defmethod product :locus.elementary.copresheaf.core.protocols/groupoid
   [& groupoids]
 
   (Groupoid.
@@ -179,7 +181,7 @@
           ((.inv ^Groupoid (nth groupoids i)) v))
         obj))))
 
-(defmethod coproduct :locus.elementary.function.core.protocols/groupoid
+(defmethod coproduct :locus.elementary.copresheaf.core.protocols/groupoid
   [& groupoids]
 
   (Groupoid.
@@ -198,7 +200,7 @@
     (fn [[i v]]
       (list i ((.inv ^Groupoid (nth groupoids i)) v)))))
 
-(defmethod dual :locus.elementary.function.core.protocols/groupoid
+(defmethod dual :locus.elementary.copresheaf.core.protocols/groupoid
   [groupoid]
 
   (Groupoid.
@@ -211,7 +213,7 @@
     (.inv groupoid)))
 
 ; Coproducts of groups
-(defmethod coproduct :locus.elementary.function.core.protocols/group
+(defmethod coproduct :locus.elementary.copresheaf.core.protocols/group
   [& groups]
 
   (apply coproduct (map to-groupoid groups)))
@@ -219,7 +221,7 @@
 ; Get the underlying groupoid of a category
 (defmulti underlying-groupoid type)
 
-(defmethod underlying-groupoid :locus.elementary.function.core.protocols/category
+(defmethod underlying-groupoid :locus.elementary.copresheaf.core.protocols/category
   [^Category category]
 
   (Groupoid.

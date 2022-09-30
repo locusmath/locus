@@ -1,11 +1,12 @@
 (ns locus.elementary.relation.ternary.op
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.order.seq :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.sequence.core.object :refer :all]
+            [locus.base.partition.core.setpart :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.incidence.system.family :refer :all]
-            [locus.elementary.incidence.system.setpart :refer :all])
-  (:import [locus.elementary.logic.base.core Universal]))
+            [locus.elementary.incidence.system.family :refer :all])
+  (:import [locus.base.logic.core.set Universal]))
 
 ; A number of mathematical constructions have different representations based upon the
 ; different topoi that they are embedded in. A binary operation can be expressed either in

@@ -1,18 +1,26 @@
 (ns locus.elementary.cospan.core.object
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.order.seq :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.sequence.core.object :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
             [locus.elementary.diset.core.object :refer :all])
-  (:import (locus.elementary.function.core.object SetFunction)))
+  (:import (locus.base.function.core.object SetFunction)))
 
 ; Objects of the copresheaf topos Sets^{[2,1]}
 ; A cospan can be created by a pair of set functions with a common target set.
-(deftype Cospan [a b c f g])
+(deftype Cospan [a b c f g]
+  ConcreteObject
+  (underlying-set [this]
+    (->CartesianCoproduct [a b c])))
 
+(derive Cospan :locus.base.logic.structure.protocols/structured-set)
+
+; Create a cospan copresheaf from a pair of functions
 (defn cospan
   [f g]
 
@@ -21,7 +29,26 @@
         c (outputs f)]
     (Cospan. a b c f g)))
 
-; Cospan component sets
+; Convert a relation into a cospan copresheaf
+(defn relation-to-cospan
+  [rel]
+
+  (cospan
+    (relation-transition-map rel 0 2)
+    (relation-transition-map rel 1 2)))
+
+; Generalized conversion routines
+(defmulti to-cospan type)
+
+(defmethod to-cospan Cospan
+  [^Cospan cospan] cospan)
+
+(defmethod to-cospan :locus.base.logic.core.set/universal
+  [rel]
+
+  (relation-to-cospan rel))
+
+; Cospan component sets and functions
 (defn first-cospan-source
   [^Cospan cospan]
 
@@ -37,7 +64,6 @@
 
   (.-c cospan))
 
-; Cospan component functions
 (defn first-cospan-function
   [cospan]
 
@@ -47,6 +73,25 @@
   [cospan]
 
   (SetFunction. (.-b cospan) (.-c cospan) (.-g cospan)))
+
+; The underlying relations of cospan copresheaves
+(defmethod underlying-relation Cospan
+  [^Cospan cospan]
+
+  (let [f (first-cospan-function cospan)
+        g (second-cospan-function cospan)]
+    (apply
+      union
+      (map
+        (fn [[a b]]
+          (set
+            (for [i (inputs f)
+                 :when (= (f i) b)]
+             (list i a b))))
+        (underlying-relation g)))))
+
+(defmethod underlying-multirelation Cospan
+  [^Cospan cospan] (underlying-relation cospan))
 
 ; First source properties
 (defn apply-first-cospan-function
@@ -147,6 +192,14 @@
   [^Cospan cospan]
 
   (cospan (.-g cospan) (.-f cospan)))
+
+; An inclusion cospan describing common inclusions
+(defn inclusion-cospan
+  [a b c]
+
+  (cospan
+    (inclusion-function a c)
+    (inclusion-function b c)))
 
 ; Create a cospan copresheaf from a coproduct of two sets
 (defn coproduct-cospan
@@ -351,3 +404,15 @@
       (or
         (superset? (list a b))
         (superset? (list b a))))))
+
+; Visualisation routines for cospan copresheaves
+(defmethod visualize Cospan
+  [^Cospan cospan]
+
+  (let [[p v] (generate-copresheaf-data
+                {0 (first-cospan-source cospan)
+                 1 (second-cospan-source cospan)
+                 2 (cospan-target cospan)}
+                #{(list 0 2 (first-cospan-function cospan))
+                  (list 1 2 (second-cospan-function cospan))})]
+    (visualize-clustered-digraph* "BT" p v)))

@@ -1,15 +1,17 @@
 (ns locus.elementary.group.core.morphism
-  (:require [locus.elementary.logic.base.core :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.function.core.object :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.diamond.core.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.core.morphism :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.semigroup.monoid.morphism :refer :all]
             [locus.elementary.group.core.object :refer :all])
-  (:import (locus.elementary.function.core.object SetFunction)
+  (:import (locus.base.function.core.object SetFunction)
            (locus.elementary.diamond.core.object Diamond)
            (locus.elementary.group.core.object Group)))
 
@@ -49,7 +51,7 @@
         (function-product sf sf)
         sf))))
 
-(derive GroupMorphism :locus.elementary.function.core.protocols/group-homomorphism)
+(derive GroupMorphism :locus.elementary.copresheaf.core.protocols/group-homomorphism)
 
 ; Ontology
 (defn group-homomorphism?

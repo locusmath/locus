@@ -1,8 +1,10 @@
 (ns locus.elementary.heyting.algebra.object
-  (:require [locus.elementary.logic.base.core :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.quiver.core.thin-object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
@@ -48,7 +50,7 @@
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
 ; Heyting algebras are lattices
-(derive HeytingAlgebra :locus.elementary.function.core.protocols/lattice)
+(derive HeytingAlgebra :locus.elementary.copresheaf.core.protocols/lattice)
 
 ; Underlying relations of heyting algebras
 (defmethod underlying-relation HeytingAlgebra
@@ -108,7 +110,7 @@
   [n]
 
   (HeytingAlgebra.
-    (seqable-interval 0 (inc n))
+    (->Upto (inc n))
     max
     min
     (fn [a b]

@@ -1,8 +1,8 @@
 (ns locus.elementary.incidence.system.multifamily
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.order.seq :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.sequence.core.object :refer :all]
             [locus.elementary.incidence.system.family :refer :all])
-  (:import [locus.elementary.logic.base.core Universal]))
+  (:import [locus.base.logic.core.set Universal]))
 
 ; We call a set system a family of sets. So by generalizing, we say
 ; that a multiset of sets is a multifamily. These emerge for example, from
@@ -192,77 +192,110 @@
 
   (and
    (multiset? coll)
-   (every? (fn [i] (<= 1 (count i))) coll)))
+   (every?
+     (fn [i]
+       (<= 1 (count i)))
+     coll)))
 
 (defn rank-one-multifamily?
   [coll]
 
   (and
    (multiset? coll)
-   (every? (fn [i] (<= (count i) 1)) coll)))
+   (every?
+     (fn [i]
+       (<= (count i) 1))
+     coll)))
 
 (defn rank-two-multifamily?
   [coll]
 
   (and
    (multiset? coll)
-   (every? (fn [i] (<= (count i) 2) coll))))
+   (every?
+     (fn [i]
+       (<= (count i) 2))
+     coll)))
 
 (defn singleton-free-rank-two-multifamily?
   [coll]
 
   (and
    (multiset? coll)
-   (every? (fn [i] (or (= (count i) 0) (= (count i) 2))) coll)))
+   (every?
+     (fn [i]
+       (or (= (count i) 0) (= (count i) 2)))
+     coll)))
 
 (defn nullfree-rank-two-multifamily?
   [coll]
 
   (and
    (multiset? coll)
-   (every? (fn [i] (<= 1 (count i) 2)) coll)))
+   (every?
+     (fn [i]
+       (<= 1 (count i) 2))
+     coll)))
 
 (defn rank-three-multifamily?
   [coll]
 
   (and
    (multiset? coll)
-   (every? (fn [i] (<= (count i) 3) coll))))
+   (every?
+     (fn [i]
+       (<= (count i) 3))
+     coll)))
 
 (defn rank-four-multifamily?
   [coll]
 
   (and
    (multiset? coll)
-   (every? (fn [i] (<= (count i) 4) coll))))
+   (every?
+     (fn [i]
+       (<= (count i) 4))
+     coll)))
 
 (defn unary-multifamily?
   [coll]
 
   (and
    (multiset? coll)
-   (every? (fn [i] (= (count i) 1)) coll)))
+   (every?
+     (fn [i]
+       (= (count i) 1))
+     coll)))
 
 (defn binary-multifamily?
   [coll]
 
   (and
    (multiset? coll)
-   (every? (fn [i] (= (count i) 2)) coll)))
+   (every?
+     (fn [i]
+       (= (count i) 2))
+     coll)))
 
 (defn ternary-multifamily?
   [coll]
 
   (and
    (multiset? coll)
-   (every? (fn [i] (= (count i) 2)) coll)))
+   (every?
+     (fn [i]
+       (= (count i) 2))
+     coll)))
 
 (defn quaternary-multifamily?
   [coll]
 
   (and
    (multiset? coll)
-   (every? (fn [i] (= (count i) 2)) coll)))
+   (every?
+     (fn [i]
+       (= (count i) 2))
+     coll)))
 
 ; Uniform multifamilies
 (defn uniform-multifamily?
@@ -328,9 +361,5 @@
   (and
    (multiset? coll)
    (nullfree-sperner-family? (set coll))))
-
-
-
-
 
 

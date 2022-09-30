@@ -1,13 +1,14 @@
 (ns locus.elementary.action.global.morphism
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.incidence.system.setpart :refer :all]
-            [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.base.partition.core.setpart :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.effects.global.transformation :refer :all]
             [locus.elementary.diamond.core.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.core.morphism :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
-            [locus.elementary.action.effects.transformation :refer :all]
             [locus.elementary.action.global.object :refer :all])
   (:import (locus.elementary.action.global.object MSet)))
 
@@ -31,7 +32,7 @@
   (applyTo [this args]
     (clojure.lang.AFn/applyToHelper this args)))
 
-(derive EquivariantMap :locus.elementary.function.core.protocols/equivariant-map)
+(derive EquivariantMap :locus.elementary.copresheaf.core.protocols/equivariant-map)
 
 ; Composition and identities in the topos of monoid actions
 (defmethod compose* EquivariantMap

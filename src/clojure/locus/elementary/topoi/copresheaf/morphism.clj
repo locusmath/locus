@@ -1,8 +1,9 @@
 (ns locus.elementary.topoi.copresheaf.morphism
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.order.seq :refer :all]
-            [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.sequence.core.object :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.diset.core.object :refer :all]
             [locus.elementary.bijection.core.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
@@ -44,14 +45,14 @@
       (double-category index-category)
       (fn [[i v]]
         (case i
-          0 (source-functor v)
-          1 (target-functor v)))
+          0 (object-apply source-functor v)
+          1 (object-apply target-functor v)))
       (fn [[i v]]
         (case i
-          0 (source-functor v)
-          1 (target-functor v)
+          0 (morphism-apply source-functor v)
+          1 (morphism-apply target-functor v)
           2 (let [src (source-element index-category v)]
-              (compose (target-functor v) (func src))))))))
+              (compose (morphism-apply target-functor v) (func src))))))))
 
 ; Composition and identities in the topos of copresheaves
 (defmethod identity-morphism Copresheaf

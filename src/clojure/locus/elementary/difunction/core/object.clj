@@ -1,12 +1,15 @@
 (ns locus.elementary.difunction.core.object
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.order.seq :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.sequence.core.object :refer :all]
+            [locus.base.partition.core.setpart :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.function.limit.product :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.incidence.system.setpart :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
-            [locus.elementary.function.core.object :refer :all]
             [locus.elementary.diset.core.object :refer :all])
   (:import (locus.elementary.diset.core.object Diset)))
 
@@ -24,9 +27,27 @@
   (source-object [this]
     (Diset. (inputs f) (inputs g)))
   (target-object [this]
-    (Diset. (outputs f) (outputs g))))
+    (Diset. (outputs f) (outputs g)))
 
-(derive Difunction :locus.elementary.function.core.protocols/difunction)
+  ConcreteMorphism
+  (inputs [this]
+    (underlying-set (source-object this)))
+  (outputs [this]
+    (underlying-set (target-object this)))
+
+  ConcreteObject
+  (underlying-set [this]
+    (->CartesianCoproduct [(inputs this) (outputs this)]))
+
+  clojure.lang.IFn
+  (invoke [this [i v]]
+    (cond
+      (= i 0) (list 0 (f v))
+      (= i 1) (list 1 (g v))))
+  (applyTo [this args]
+    (clojure.lang.AFn/applyToHelper this args)))
+
+(derive Difunction :locus.elementary.copresheaf.core.protocols/difunction)
 
 ; Difunction applications
 (defn first-apply
@@ -38,6 +59,18 @@
   [func x]
 
   ((second-function func) x))
+
+; Convert a difunction into a coproduct function
+(defmethod to-function Difunction
+  [^Difunction func]
+
+  (->CoproductFunction [(.-f func) (.-g func)]))
+
+; Conversion mechanisms for converting structures to pairs of functions
+(defmulti to-difunction type)
+
+(defmethod to-difunction Difunction
+  [^Difunction difunc] difunc)
 
 ; Difunction builders
 (defn difunction
@@ -55,10 +88,13 @@
     (first-function morphism)
     (second-function morphism)))
 
-(defn equal-difunction
-  [func]
+; Composition and identities in the topos difunctions
+(defmethod compose* Difunction
+  [a b]
 
-  (Difunction. func func))
+  (Difunction.
+    (compose-functions (first-function a) (first-function b))
+    (compose-functions (second-function a) (second-function b))))
 
 (defn identity-difunction
   [pair]
@@ -69,6 +105,12 @@
 
 (defmethod identity-morphism Diset
   [pair] (identity-difunction pair))
+
+; Equal difunctions having the same first and second parts
+(defn equal-difunction
+  [func]
+
+  (Difunction. func func))
 
 ; Inclusion and projection pairs used for building difunctions
 (defn inclusion-difunction
@@ -85,14 +127,6 @@
     (projection-function in-partition)
     (projection-function out-partition)))
 
-; Composition of difunctions
-(defmethod compose* Difunction
-  [a b]
-
-  (Difunction.
-    (compose-functions (first-function a) (first-function b))
-    (compose-functions (second-function a) (second-function b))))
-
 ; Product and coproduct of the component functions of a difunction
 (defn function-component-coproduct
   [difunction]
@@ -104,7 +138,7 @@
 
   (product (first-function difunction) (second-function difunction)))
 
-; Epi mono factorisation
+; Epi mono factorisation in the topos of difunctoins
 (defn function-kernel-pair
   [morphism]
 
@@ -122,7 +156,22 @@
 
   (list (function-kernel-pair morphism) (function-image-pair morphism)))
 
-; Subobject classifier
+; Images over disets for difunctions
+(defn difunction-image
+  [^Difunction func, ^Diset coll]
+
+  (->Diset
+    (first-apply func (first-set coll))
+    (second-apply func (second-set coll))))
+
+(defn difunction-inverse-image
+  [^Difunction func, ^Diset coll]
+
+  (->Diset
+    (first-apply func (first-set coll))
+    (second-apply func (second-set coll))))
+
+; Subobject classifiers for disets
 (def truth-diset
   (Diset. #{false true} #{false true}))
 
@@ -443,3 +492,15 @@
     (difunction? b)
     (not= (target-object a) (target-object b))))
 
+; A visualisation routine for difunctions as dependency functors
+(defmethod visualize :locus.elementary.copresheaf.core.protocols/structured-difunction
+  [difunction]
+
+  (let [[p t] (generate-copresheaf-data
+                {0 (inputs (first-function difunction))
+                 1 (outputs (first-function difunction))
+                 2 (inputs (second-function difunction))
+                 3 (outputs (second-function difunction))}
+                #{(list 0 1 (first-function difunction))
+                  (list 2 3 (second-function difunction))})]
+    (visualize-clustered-digraph* "BT" p t)))

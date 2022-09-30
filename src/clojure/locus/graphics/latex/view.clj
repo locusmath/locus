@@ -1,6 +1,6 @@
 (ns locus.graphics.latex.view
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.ring.core.object :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.additive.ring.core.object :refer :all]
             [locus.polynomial.core.object :refer :all]
             [locus.variety.affine.impl :refer :all]
             [locus.polynomial.fractional.object :refer :all]

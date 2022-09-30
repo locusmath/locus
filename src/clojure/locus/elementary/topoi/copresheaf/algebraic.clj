@@ -1,7 +1,8 @@
 (ns locus.elementary.topoi.copresheaf.algebraic
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols]
             [locus.elementary.topoi.copresheaf.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
             [locus.combinat.hypergraph.object :refer :all]
@@ -9,15 +10,15 @@
             [locus.magmoid.magma.object :refer :all]
             [locus.algebra.pointed-set.object :refer :all]
             [locus.algebra.partial-magma.object :refer :all]
-            [locus.ring.core.protocols :refer :all]
-            [locus.semiring.core.object :refer :all])
+            [locus.additive.base.core.protocols :refer :all]
+            [locus.additive.semiring.core.object :refer :all])
   (:import (locus.elementary.topoi.copresheaf.object Copresheaf)
            (locus.magmoid.magma.object Magma)
            (locus.algebra.pointed_set.object PointedSet)
            (locus.algebra.partial_magma.object PartialMagma)
-           (locus.semiring.core.object Semiring)
            (locus.combinat.hypergraph.object Hypergraph)
-           (locus.combinat.incidence.incidence_structure IncidenceStructure)))
+           (locus.combinat.incidence.incidence_structure IncidenceStructure)
+           (locus.additive.semiring.core.object Semiring)))
 
 ; Graph category
 (def hypergraph-category

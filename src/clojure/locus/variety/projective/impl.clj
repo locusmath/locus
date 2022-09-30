@@ -1,14 +1,16 @@
 (ns locus.variety.projective.impl
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.group.core.object :refer :all]
-            [locus.ring.core.arithmetic :as arith]
-            [locus.ring.core.protocols :refer :all]
-            [locus.ring.ideal.object :refer :all]
-            [locus.ring.core.quotient-ring :refer :all]
+            [locus.additive.base.generic.arithmetic :as arith]
+            [locus.additive.base.core.protocols :refer :all]
+            [locus.additive.ring.core.object :refer :all]
+            [locus.additive.ring.ideal.object :refer :all]
+            [locus.additive.ring.core.quotient-ring :refer :all]
             [locus.semigroup-algebra.core.object :refer :all]
             [locus.elementary.semigroup.free.free-semigroup :refer :all]))
 

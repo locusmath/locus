@@ -1,5 +1,5 @@
 (ns locus.stat.commons.statistics
-  (:require [locus.elementary.logic.base.core :refer :all])
+  (:require [locus.base.logic.core.set :refer :all])
   (:import [org.apache.commons.math3.stat Frequency StatUtils]
            (org.apache.commons.math3.stat.correlation Covariance)))
 

@@ -1,8 +1,8 @@
 (ns locus.elementary.incidence.system.ec
-  (:require [locus.elementary.logic.base.core :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
             [locus.elementary.incidence.system.family :refer :all]
             [locus.elementary.incidence.system.multifamily :refer :all])
-  (:import [locus.elementary.logic.base.core Universal]))
+  (:import [locus.base.logic.core.set Universal]))
 
 ; An egalitarian clan is simply a clan whose elements are all equal multisets, meaning that all
 ; of their elements are equal. This is distinguished from an equal multiclan which doesn't

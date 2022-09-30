@@ -1,20 +1,21 @@
 (ns locus.elementary.semigroup.monoid.end
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
-            [locus.elementary.function.core.object :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.base.function.core.object :refer :all]
             [locus.elementary.difunction.core.object :refer :all]
             [locus.elementary.diset.core.object :refer :all]
             [locus.elementary.bijection.core.object :refer :all]
             [locus.elementary.diamond.core.object :refer :all]
-            [locus.elementary.gem.core.object :refer :all]
+            [locus.elementary.bijection.core.morphism :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
-            [locus.elementary.hom.functional.sethom :refer :all]
-            [locus.elementary.hom.functional.bhom :refer :all]
-            [locus.elementary.hom.functional.dhom :refer :all]
-            [locus.elementary.hom.functional.funhom :refer :all])
-  (:import (locus.elementary.function.core.object SetFunction)
+            [locus.elementary.category.hom.sethom :refer :all]
+            [locus.elementary.category.hom.bhom :refer :all]
+            [locus.elementary.category.hom.dhom :refer :all]
+            [locus.elementary.category.hom.funhom :refer :all])
+  (:import (locus.base.function.core.object SetFunction)
            (locus.elementary.diset.core.object Diset)
            (locus.elementary.bijection.core.object Bijection)
            (locus.elementary.semigroup.monoid.object Monoid)))
@@ -38,7 +39,7 @@
 ; Endomorphism monoids
 (defmulti end type)
 
-(defmethod end :default
+(defmethod end :locus.base.logic.core.set/universal
   [coll]
 
   (set-endomorphism-monoid coll))

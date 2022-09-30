@@ -1,22 +1,24 @@
 (ns locus.elementary.semigroup.partial.object
-  (:require [locus.elementary.logic.base.core :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.incidence.system.setpart :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
-            [locus.elementary.function.core.object :refer :all]
+            [locus.base.partition.core.setpart :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.base.function.core.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.group.core.object :refer :all]
             [locus.elementary.action.partial.object :refer :all]
             [locus.elementary.action.core.protocols :refer :all]
-            [locus.elementary.function.image.set-relation :refer :all]
-            [locus.elementary.function.image.partial-function :refer :all]
-            [locus.elementary.function.image.partial-transformation :refer :all]
-            [locus.elementary.function.image.partial-bijection :refer :all]
-            [locus.elementary.function.image.partial-permutation :refer :all]))
+            [locus.elementary.category.relation.set-relation :refer :all]
+            [locus.elementary.category.relation.partial-function :refer :all]
+            [locus.elementary.category.relation.partial-bijection :refer :all]
+            [locus.elementary.category.relation.partial-transformation :refer :all]
+            [locus.elementary.category.relation.partial-permutation :refer :all]))
 
 ; Partial transformation semigroups
 (deftype PartialTransformationSemigroup [semigroup coll func]
@@ -42,7 +44,7 @@
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
 ; Semigroups
-(derive PartialTransformationSemigroup :locus.elementary.function.core.protocols/semigroup)
+(derive PartialTransformationSemigroup :locus.elementary.copresheaf.core.protocols/semigroup)
 
 ; Convert partial transformation semigroups into partial action systems
 (defmethod to-partial-action-system PartialTransformationSemigroup

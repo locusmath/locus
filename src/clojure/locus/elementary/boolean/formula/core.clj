@@ -1,8 +1,10 @@
 (ns locus.elementary.boolean.formula.core
-  (:require [locus.elementary.logic.base.core :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
             [locus.elementary.boolean.algebra.object :refer :all]
             [locus.elementary.lattice.core.object :refer :all]
             [locus.elementary.lattice.term.lattice-term :refer :all])

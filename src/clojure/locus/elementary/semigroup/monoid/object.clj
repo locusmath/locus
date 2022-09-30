@@ -1,21 +1,24 @@
 (ns locus.elementary.semigroup.monoid.object
-  (:require [locus.elementary.logic.base.core :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.partition.core.object :refer [projection]]
+            [locus.base.partition.core.setpart :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.incidence.system.setpart :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
-            [locus.elementary.function.core.object :refer :all]
             [locus.elementary.diset.core.object :refer :all]
             [locus.elementary.diamond.core.object :refer :all]
             [locus.elementary.bijection.core.object :refer :all]
-            [locus.elementary.gem.core.object :refer :all]
+            [locus.elementary.bijection.core.morphism :refer :all]
             [locus.elementary.difunction.core.object :refer :all]
             [locus.elementary.lattice.core.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all])
   (:import (locus.elementary.lattice.core.object Lattice)
-           (locus.elementary.function.core.object SetFunction)
+           (locus.base.function.core.object SetFunction)
            (locus.elementary.semigroup.core.object Semigroup)))
 
 ; Monoids are single object concrete categories. As we often encounter subsets of
@@ -56,7 +59,7 @@
     (clojure.lang.AFn/applyToHelper this args)))
 
 ; Tagging monoids as semigroupoids
-(derive Monoid :locus.elementary.function.core.protocols/monoid)
+(derive Monoid :locus.elementary.copresheaf.core.protocols/monoid)
 
 ; Convert semigroups to monoids
 (defmulti to-monoid type)
@@ -96,7 +99,7 @@
   [index period]
 
   (Monoid.
-    (seqable-interval 0 (+ index period))
+    (->Upto (+ index period))
     (fn [[a b]]
       (cond
         (zero? a) b
@@ -121,7 +124,7 @@
   #{(.id sgrp)})
 
 ; Product operation for monoids
-(defmethod product :locus.elementary.function.core.protocols/monoid
+(defmethod product :locus.elementary.copresheaf.core.protocols/monoid
   [& monoids]
 
   (Monoid.
@@ -130,7 +133,7 @@
     (map identity-element monoids)))
 
 ; Subalgebra lattices of monoids
-(defmethod sub :locus.elementary.function.core.protocols/monoid
+(defmethod sub :locus.elementary.copresheaf.core.protocols/monoid
   [monoid]
 
   (Lattice.
@@ -147,7 +150,7 @@
     (.id m)))
 
 ; Congruence lattices of monoids
-(defmethod con :locus.elementary.function.core.protocols/monoid
+(defmethod con :locus.elementary.copresheaf.core.protocols/monoid
   [monoid]
 
   (con (->Semigroup (underlying-set monoid) (.op monoid))))
@@ -177,7 +180,7 @@
     (list 0 0)))
 
 ; Get the dual of a monoid
-(defmethod dual :locus.elementary.function.core.protocols/monoid
+(defmethod dual :locus.elementary.copresheaf.core.protocols/monoid
   [semigroup]
 
   (Monoid.

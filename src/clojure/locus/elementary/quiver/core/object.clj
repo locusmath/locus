@@ -1,14 +1,18 @@
 (ns locus.elementary.quiver.core.object
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.order.seq :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.sequence.core.object :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.incidence.system.setpart :refer :all]
-            [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.function.core.protocols :refer :all])
-  (:import [locus.elementary.function.core.object SetFunction]
-           [locus.elementary.relation.binary.sr SeqableRelation]))
+            [locus.base.partition.core.object :refer [projection]]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.partition.core.setpart :refer :all])
+  (:import [locus.base.function.core.object SetFunction]
+           [locus.elementary.relation.binary.sr SeqableRelation]
+           (clojure.lang IPersistentMap)))
 
 ; Objects in the topos Sets^{T^2_*}
 ; Let T_2^* be the totally ordered category with two objects and four morphisms.
@@ -32,7 +36,7 @@
     "This returns for a morphism f:A->B the ordered pair (A,B) called its transition."))
 
 ; An ad hoc hierarchy of quivers
-(derive ::quiver :locus.elementary.function.core.protocols/structured-quiver)
+(derive ::quiver :locus.elementary.copresheaf.core.protocols/structured-quiver)
 (derive ::thin-quiver ::quiver)
 
 ; A default implementation of the quiver protocol
@@ -40,6 +44,10 @@
   StructuredDiset
   (first-set [this] edges)
   (second-set [this] vertices)
+
+  ConcreteObject
+  (underlying-set [this]
+    (->CartesianCoproduct [edges vertices]))
 
   StructuredQuiver
   (underlying-quiver [this] this)
@@ -60,45 +68,53 @@
 
   ((target-fn quiv) elem))
 
-; Composability relations
-; The composability relation of a compositional quiver such as a semigroupoid
-; or a category appears as the domain of the composition function of the
-; compositional quiver. Therefore, its computation is one of the most basic
-; constructs of category theory.
-(defn composable-elements?
-  [quiver a b]
-
-  (= (target-element quiver b)
-     (source-element quiver a)))
-
-(defn bidirectionally-composable-elements?
-  [category a b]
-
-  (and
-    (= (source-element category a) (target-element category b))
-    (= (target-element category a) (source-element category b))))
-
-(defn composability-relation
+; Quiver source and target maps
+(defn quiver-source-map
   [quiver]
 
-  (let [morphisms (morphisms quiver)]
-    (->SeqableRelation
-      morphisms
-      (fn [[a b]]
-        (composable-elements? quiver a b))
-      {})))
+  (into
+    {}
+    (map
+      (fn [morphism]
+        [morphism (source-element quiver morphism)])
+      (morphisms quiver))))
 
-; Composition paths
-; A composition path is a generalize of a compositional pair to any number of elements
-(defn composition-path?
-  [quiver coll]
+(defn quiver-target-map
+  [quiver]
 
-  (or
-    (empty? coll)
-    (every?
-      (fn [i]
-        (composable-elements? quiver (nth coll i) (nth coll (inc i))))
-      (range (dec (count coll))))))
+  (into
+    {}
+    (map
+      (fn [morphism]
+        [morphism (target-element quiver morphism)])
+      (morphisms quiver))))
+
+; Make quiver from objects and a hom mapping
+(defn get-nth-component-map
+  [coll n]
+
+  (apply
+    merge
+    (for [key (keys coll)
+          :let [val (get coll key)]]
+      (into
+        {}
+        (map
+          (fn [i]
+            [i (nth key n)])
+          val)))))
+
+(defn make-quiver
+  [vertices hom]
+
+  (let [edges (apply union (vals hom))
+        source-map (get-nth-component-map hom 0)
+        target-map (get-nth-component-map hom 1)]
+    (->Quiver
+      edges
+      vertices
+      source-map
+      target-map)))
 
 ; Utilities for constructing quivers
 (defn create-quiver
@@ -184,7 +200,7 @@
 ; These are useful constructors for quivers
 (defmulti to-quiver type)
 
-(defmethod to-quiver SetFunction
+(defmethod to-quiver :locus.base.logic.structure.protocols/structured-function
   [func]
 
   (Quiver.
@@ -193,7 +209,7 @@
     first
     second))
 
-(defmethod to-quiver clojure.lang.PersistentArrayMap
+(defmethod to-quiver IPersistentMap
   [coll]
 
   (Quiver.
@@ -209,6 +225,79 @@
     (universal? rel) (relational-quiver rel)
     (multiset? rel) (multirelational-quiver rel)
     :else (underlying-quiver rel)))
+
+; Composability relations
+; The composability relation of a compositional quiver such as a semigroupoid
+; or a category appears as the domain of the composition function of the
+; compositional quiver. Therefore, its computation is one of the most basic
+; constructs of category theory.
+(defn composable-elements?
+  [quiver a b]
+
+  (= (target-element quiver b)
+     (source-element quiver a)))
+
+(defn bidirectionally-composable-elements?
+  [category a b]
+
+  (and
+    (= (source-element category a) (target-element category b))
+    (= (target-element category a) (source-element category b))))
+
+(defn composability-relation
+  [quiver]
+
+  (let [morphisms (morphisms quiver)]
+    (->SeqableRelation
+      morphisms
+      (fn [[a b]]
+        (composable-elements? quiver a b))
+      {})))
+
+(defn composability-quiver
+  [quiver]
+
+  (relational-quiver
+    (morphisms quiver)
+    (composability-relation quiver)))
+
+; Composition paths
+; A composition path is a generalize of a compositional pair to any number of elements
+(defn composition-path?
+  [quiver coll]
+
+  (or
+    (empty? coll)
+    (every?
+      (fn [i]
+        (composable-elements? quiver (nth coll i) (nth coll (inc i))))
+      (range (dec (count coll))))))
+
+; Check if elements of a quiver are instead parallel for use in constructing globular sets
+(defn parallel-elements?
+  [quiver a b]
+
+  (and
+    (= (source-element quiver a) (source-element quiver b))
+    (= (target-element quiver a) (target-element quiver b))))
+
+(defn parallelism-relation
+  [quiver]
+
+
+  (let [morphisms (morphisms quiver)]
+    (->SeqableRelation
+      morphisms
+      (fn [[a b]]
+        (parallel-elements? quiver a b))
+      {})))
+
+(defn parallelism-quiver
+  [quiver]
+
+  (relational-quiver
+    (morphisms quiver)
+    (parallelism-relation quiver)))
 
 ; Underlying relations
 (defmethod underlying-multirelation :default

@@ -1,9 +1,10 @@
 (ns locus.elementary.category.core.morphism
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.order.seq :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.sequence.core.object :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
             [locus.elementary.diamond.core.object :refer :all]
             [locus.elementary.difunction.core.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
@@ -14,12 +15,11 @@
             [locus.elementary.lattice.core.object :refer :all]
             [locus.elementary.lattice.core.morphism :refer :all]
             [locus.elementary.category.core.object :refer :all]
-            [locus.elementary.order.core.monotone-map :refer :all])
+            [locus.elementary.preorder.core.morphism :refer :all])
   (:import (locus.elementary.lattice.core.morphism LatticeMorphism)
-           (locus.elementary.function.core.object SetFunction)
-           (locus.elementary.category.core.object Category)
+           (locus.base.function.core.object SetFunction)
            (locus.elementary.semigroup.monoid.morphism MonoidMorphism)
-           (locus.elementary.order.core.monotone_map MonotoneMap)))
+           (locus.elementary.preorder.core.morphism MonotoneMap)))
 
 ; Let Cat be the category of categories. Then Cat has categories as its objects and
 ; functors as morphisms. In this file we describe our implementation of the morphisms
@@ -60,7 +60,7 @@
         morphism-function))))
 
 ; The position of functors within the type hierarchy
-(derive Functor :locus.elementary.function.core.protocols/functor)
+(derive Functor :locus.elementary.copresheaf.core.protocols/functor)
 
 ; Classes of functors
 (defn endofunctor?
@@ -99,16 +99,6 @@
     (thin-category? (target-object func))))
 
 ; Applications
-(defn object-apply
-  [functor obj]
-
-  ((second-function functor) obj))
-
-(defn morphism-apply
-  [functor morphism]
-
-  ((first-function functor) morphism))
-
 (defn source-objects
   [functor]
 
@@ -139,7 +129,7 @@
     (comp (.morphism-function f) (.morphism_function g))
     (comp (.object-function f) (.object-function g))))
 
-(defmethod identity-morphism :locus.elementary.function.core.protocols/category
+(defmethod identity-morphism :locus.elementary.copresheaf.core.protocols/category
   [category]
 
   (Functor. category category identity identity))

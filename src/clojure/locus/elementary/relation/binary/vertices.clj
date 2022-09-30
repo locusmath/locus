@@ -1,6 +1,7 @@
 (ns locus.elementary.relation.binary.vertices
   (:require [clojure.set]
-            [locus.elementary.logic.base.core :refer :all]
+            [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
             [locus.elementary.relation.binary.product :refer :all]))
 
 ; The purpose of this file is simply to provide all the

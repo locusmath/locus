@@ -1,8 +1,10 @@
 (ns locus.elementary.semigroup.monoid.arithmetic
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.base.natural :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.logic.numeric.natural :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
@@ -35,7 +37,7 @@
   [n]
 
   (Monoid.
-    (seqable-interval 0 n)
+    (->Upto n)
     (fn [[a b]] (max a b))
     0))
 
@@ -43,7 +45,7 @@
   [n]
 
   (Monoid.
-    (seqable-interval 0 n)
+    (->Upto n)
     (fn [[a b]] (min a b))
     (dec n)))
 
@@ -79,7 +81,7 @@
   [n]
 
   (Group.
-    (seqable-interval 0 n)
+    (->Upto n)
     (fn [[a b]]
       (mod (+ a b) n))
     0
@@ -92,7 +94,7 @@
   [n]
 
   (Monoid.
-    (seqable-interval 0 n)
+    (->Upto n)
     (fn [[a b]]
       (mod (* a b) n))
     1))

@@ -1,8 +1,9 @@
 (ns locus.elementary.relation.binary.mbr
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.order.seq :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.sequence.core.object :refer :all]
             [locus.elementary.relation.binary.br :refer :all])
-  (:import [locus.elementary.logic.base.core Multiset]))
+  (:import [locus.base.logic.core.set Multiset]))
 
 ; As we extended our ontology to include support for multisets, we also need to extend our ontology
 ; of binary relations to provide better support for binary multirelations. These binary multirelations

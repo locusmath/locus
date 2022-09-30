@@ -1,18 +1,21 @@
 (ns locus.elementary.action.global.object
-  (:require [locus.elementary.logic.base.core :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.base.partition.core.setpart :refer :all]
+            [locus.base.partition.core.object :refer [projection]]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.effects.global.transformation :refer :all]
+            [locus.base.effects.global.permutation :refer :all]
+            [locus.elementary.incidence.system.family :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.relation.binary.vertexset :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.incidence.system.family :refer :all]
-            [locus.elementary.incidence.system.setpart :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
-            [locus.elementary.function.core.object :refer :all]
             [locus.elementary.diset.core.object :refer :all]
             [locus.elementary.diamond.core.object :refer :all]
             [locus.elementary.lattice.core.object :refer :all]
-            [locus.elementary.action.effects.transformation :refer :all]
-            [locus.elementary.action.effects.permutation :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.core.morphism :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
@@ -22,8 +25,8 @@
             [locus.elementary.action.core.protocols :refer :all]
             [locus.elementary.semigroup.monoid.arithmetic :refer :all])
   (:import (locus.elementary.lattice.core.object Lattice)
-           (locus.elementary.action.effects.transformation Transformation)
-           (locus.elementary.action.effects.permutation Permutation)
+           (locus.base.effects.global.transformation Transformation)
+           (locus.base.effects.global.permutation Permutation)
            (locus.elementary.semigroup.monoid.object Monoid)
            (locus.elementary.group.core.object Group)))
 
@@ -42,7 +45,7 @@
   (action-domain [this elem] coll)
   (apply-action [this elem arg] (action elem arg)))
 
-(derive MSet :locus.elementary.function.core.protocols/mset)
+(derive MSet :locus.elementary.copresheaf.core.protocols/mset)
 
 (def ems1
   (->MSet
@@ -298,7 +301,7 @@
 
   (every?
     (fn [action]
-      (transformation-congruence?
+      (equal-congruence?
         (action-transformation ms action)
         partition))
     (actions ms)))
@@ -353,6 +356,18 @@
     (underlying-set permutation)
     (fn [n x]
       (iteratively-apply permutation n x))))
+
+; The topos of c2-sets is the topos Sets^{C_2} which is distinguished by the fact that
+; each of its elements are like max size two set partitions.
+(defn c2-set
+  [partition]
+
+  (let [perm (involution-permutation partition)]
+    (MSet.
+      (cyclic-group 2)
+      (underlying-set permutation)
+      (fn [n x]
+        (iteratively-apply perm n x)))))
 
 ; Actions on special structures
 (defn sets-action
@@ -596,7 +611,7 @@
 ; with which we can model a number of situations that emerge in abstract algebra.
 (defmulti mset? type)
 
-(defmethod mset? :locus.elementary.function.core.protocols/mset
+(defmethod mset? :locus.elementary.copresheaf.core.protocols/mset
   [x] true)
 
 (defmethod mset? :default

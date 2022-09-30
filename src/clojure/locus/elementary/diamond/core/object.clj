@@ -1,20 +1,24 @@
 (ns locus.elementary.diamond.core.object
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.order.seq :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.sequence.core.object :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.incidence.system.setpart :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
-            [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.function.core.util :refer :all]
-            [locus.elementary.function.inclusion.identity :refer :all]
+            [locus.base.partition.core.setpart :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.function.core.util :refer :all]
+            [locus.base.effects.global.identity :refer :all]
             [locus.elementary.incidence.core.object :refer :all]
-            [locus.elementary.cospan.core.object :refer :all])
-  (:import [locus.elementary.function.core.object SetFunction]
-           (locus.elementary.function.inclusion.identity IdentityFunction)
+            [locus.elementary.cospan.core.object :refer :all]
+            [locus.elementary.triangle.core.object :refer :all])
+  (:import (locus.base.effects.global.identity IdentityFunction)
+           (locus.base.function.core.object SetFunction)
+           (locus.elementary.cospan.core.object Cospan)
            (locus.elementary.incidence.core.object Span)
-           (locus.elementary.cospan.core.object Cospan)))
+           (locus.elementary.triangle.core.object TriangleCopresheaf)))
 
 ; Objects in the topos Sets^[1, {1,1} 1]
 ; A diamond is so called because when depicted its defining commutative diagram appears
@@ -43,11 +47,26 @@
   ConcreteHigherMorphism
   (underlying-morphism-of-functions [this] this)
 
+  ConcreteMorphism
+  (inputs [this] (underlying-set (source-object this)))
+  (outputs [this] (underlying-set (target-object this)))
+
+  ConcreteObject
+  (underlying-set [this] (->CartesianCoproduct [(inputs this) (outputs this)]))
+
   StructuredDifunction
   (first-function [this] input-function)
-  (second-function [this] output-function))
+  (second-function [this] output-function)
 
-(derive Diamond :locus.elementary.function.core.protocols/diamond)
+  clojure.lang.IFn
+  (invoke [this [i v]]
+    (cond
+      (= i 0) (list 0 (input-function v))
+      (= i 1) (list 1 (output-function v))))
+  (applyTo [this args]
+    (clojure.lang.AFn/applyToHelper this args)))
+
+(derive Diamond :locus.elementary.copresheaf.core.protocols/diamond)
 
 ; Validity test for diamonds
 (defn valid-diamond?
@@ -129,7 +148,7 @@
 (defn common-composite-set-function
   [morphism]
 
-  (compose (output-set-function morphism) (first-function morphism)))
+  (compose (output-set-function morphism) (source-object morphism)))
 
 ; The upper cospan and the lower span in the topos Sets^[1,2,1]
 ; relates it to te topoi Sets^[1,2] and Sets^[2,1]
@@ -147,7 +166,7 @@
     (first-function func)
     (source-object func)))
 
-; The cartias diamond of a cospan copresheaf
+; The cartesian diamond of a cospan copresheaf
 (defn cartesian-diamond
   [^Cospan cospan]
 
@@ -172,6 +191,82 @@
       successor2
       span2
       successor1)))
+
+; Get triagnles from diamonds
+(defn input-action-triangle
+  [^Diamond diamond]
+
+  (TriangleCopresheaf.
+    (target-object diamond)
+    (input-set-function diamond)))
+
+(defn output-action-triangle
+  [^Diamond diamond]
+
+  (TriangleCopresheaf.
+    (output-set-function diamond)
+    (source-object diamond)))
+
+(defn diamond-triangles
+  [^Diamond diamond]
+
+  (list
+    (input-action-triangle diamond)
+    (output-action-triangle diamond)))
+
+; Create diamond from triangles
+(defn combine-triangles
+  [^TriangleCopresheaf in, ^TriangleCopresheaf out]
+
+  (let [target-function (.-f in)
+        input-function (.-g in)
+        output-function (.-f out)
+        source-function (.-g out)]
+    (Diamond.
+      source-function
+      target-function
+      input-function
+      output-function)))
+
+(defn output-action-diamond
+  [func output-action]
+
+  (Diamond.
+    func
+    (compose output-action func)
+    (->IdentityFunction (inputs func))
+    output-action))
+
+(defn input-action-diamond
+  [func input-action]
+
+  (Diamond.
+    (compose func input-action)
+    func
+    input-action
+    (->IdentityFunction (outputs func))))
+
+(defn to-input-action-diamond
+  [^TriangleCopresheaf triangle]
+
+  (input-action-diamond (.f triangle) (.g triangle)))
+
+(defn to-output-action-diamond
+  [^TriangleCopresheaf triangle]
+
+  (output-action-diamond (.g triangle) (.f triangle)))
+
+; Reduce diamonds to simpler copresheaves if possible
+(defn reduce-diamond
+  [diamond]
+
+  (let [id1 (intrinsic-identity-function? (first-function diamond))
+        id2 (intrinsic-identity-function? (second-function diamond))]
+    (cond
+      (and id1 id2) (source-object diamond)
+      id1 (TriangleCopresheaf. (second-function diamond) (source-object diamond))
+      id2 (TriangleCopresheaf. (target-object diamond) (first-function diamond))
+      :else diamond)))
 
 ; There are subalgebra and congruence components of morphisms of functions
 ; which can also be expressed as diamonds
@@ -207,8 +302,8 @@
   [f new-in new-out]
 
   (Diamond.
-    f
     (subfunction f new-in new-out)
+    f
     (SetFunction. new-in (inputs f) identity)
     (SetFunction. new-out (outputs f) identity)))
 
@@ -230,25 +325,6 @@
       f
       (inclusion-function #{x} (inputs f))
       (inclusion-function #{out} (outputs f)))))
-
-; Input and output actions
-(defn output-action-diamond
-  [func output-action]
-
-  (Diamond.
-    func
-    (compose output-action func)
-    (->IdentityFunction (inputs func))
-    output-action))
-
-(defn input-action-diamond
-  [func input-action]
-
-  (Diamond.
-    (compose func input-action)
-    func
-    input-action
-    (->IdentityFunction (outputs func))))
 
 ; Products and coproducts in the topos of diamonds
 (defmethod product Diamond
@@ -511,8 +587,17 @@
     (diamond? b)
     (not= (output-set-function a) (output-set-function b))))
 
+; Visualisation of diamond copresheaves
+(defmethod visualize Diamond
+  [^Diamond diamond]
 
-
-
-
-
+  (let [[p v] (generate-copresheaf-data
+               {0 (source-input-set diamond)
+                1 (source-output-set diamond)
+                2 (target-input-set diamond)
+                3 (target-output-set diamond)}
+               #{(list 0 1 (source-object diamond))
+                 (list 2 3 (target-object diamond))
+                 (list 0 2 (first-function diamond))
+                 (list 1 3 (second-function diamond))})]
+    (visualize-clustered-digraph* "BT" p v)))

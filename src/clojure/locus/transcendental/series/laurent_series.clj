@@ -1,15 +1,16 @@
 (ns locus.transcendental.series.laurent-series
   (:refer-clojure :exclude [+ - * /])
-  (:require [locus.elementary.logic.base.core :refer :all :exclude [add]]
-            [locus.elementary.function.core.protocols :refer :all]
+  (:require [locus.base.logic.core.set :refer :all :exclude [add]]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.group.core.object :refer :all]
-            [locus.semiring.core.object :refer :all]
-            [locus.semiring.set.rset :refer :all]
-            [locus.ring.core.object :refer :all]
-            [locus.ring.core.arithmetic :refer :all]
-            [locus.ring.core.protocols :refer :all]))
+            [locus.additive.base.generic.arithmetic :refer :all]
+            [locus.additive.base.core.protocols :refer :all]
+            [locus.additive.ring.core.object :refer :all]
+            [locus.additive.semiring.core.object :refer :all]
+            [locus.module.vector.rset :refer :all]))
 
 ; We need to construct the formal laurent series ring R((X)) of a ring, because
 ; this produces the field of fractions of the power series ring of a field. A formal laurent

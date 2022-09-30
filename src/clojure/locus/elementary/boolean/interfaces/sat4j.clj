@@ -1,5 +1,6 @@
 (ns locus.elementary.boolean.interfaces.sat4j
-  (:require [locus.elementary.logic.base.core :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.boolean.formula.core :refer :all])
   (:import [org.sat4j.minisat SolverFactory]

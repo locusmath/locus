@@ -1,12 +1,13 @@
 (ns locus.elementary.incidence.signatures.nf
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.base.nms :refer :all]
-            [locus.elementary.logic.order.rp :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.logic.numeric.nms :refer :all]
+            [locus.base.sequence.numeric.rp :refer :all]
+            [locus.base.partition.core.setpart :refer :all]
             [locus.elementary.incidence.system.multiclan :refer :all]
             [locus.elementary.incidence.system.clan :refer :all]
             [locus.elementary.incidence.system.family :refer :all]
-            [locus.elementary.incidence.system.multifamily :refer :all]
-            [locus.elementary.incidence.system.setpart :refer :all]))
+            [locus.elementary.incidence.system.multifamily :refer :all]))
 
 ; Suppose that we have a set of multisets. Then each multiset in the multiset system is associated
 ; to an additive partition. This produces a multiset of additive partitions, and so this naturally

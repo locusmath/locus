@@ -1,18 +1,19 @@
 (ns locus.elementary.quiver.dependency.object
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.order.seq :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.sequence.core.object :refer :all]
+            [locus.base.partition.core.setpart :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.relation.binary.mbr :refer :all]
-            [locus.elementary.incidence.system.setpart :refer :all]
-            [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
+            [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.quiver.permutable.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all])
-  (:import [locus.elementary.function.core.object SetFunction]
-           [locus.elementary.relation.binary.sr SeqableRelation]
+  (:import [locus.base.function.core.object SetFunction]
            (locus.elementary.quiver.core.object Quiver)))
 
 ; The topos of dependency quivers consists of quivers equipped also with an identity function
@@ -55,7 +56,7 @@
   StructuredDependencyQuiver
   (underlying-dependency-quiver [this] this))
 
-(derive DependencyQuiver :locus.elementary.function.core.protocols/structured-dependency-quiver)
+(derive DependencyQuiver :locus.elementary.copresheaf.core.protocols/structured-dependency-quiver)
 
 (defmethod visualize DependencyQuiver
   [^DependencyQuiver quiv]

@@ -1,10 +1,11 @@
 (ns locus.elementary.relation.binary.br
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.order.seq :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.sequence.core.object :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.relation.binary.vertices :refer :all])
-  (:import [locus.elementary.logic.base.core Universal]
+  (:import [locus.base.logic.core.set Universal]
            [locus.elementary.relation.binary.sr SeqableRelation]
            [locus.elementary.relation.binary.product CompleteRelation BinaryCartesianProduct]))
 
@@ -112,7 +113,7 @@
         (rest remaining-elements)))))
 
 ; Images and pre images
-(defn image
+(defn relation-image
   [rel coll]
 
   (apply
@@ -1223,7 +1224,7 @@
    size-two-seq?
    (fn [rel]
      (union
-      rel
+      (set rel)
       (set (map reverse rel))))))
 
 (def dependency-relation?
@@ -2438,6 +2439,26 @@
         (= (count i) 2))
       (weak-connectivity rel))))
 
+(defn set-of-ordered-triples?
+  [rel]
+
+  (and
+    (set-of-lists? rel)
+    (every?
+      (fn [i]
+        (= (count i) 3))
+      (weak-connectivity rel))))
+
+(defn set-of-ordered-quadruples?
+  [rel]
+
+  (and
+    (set-of-lists? rel)
+    (every?
+      (fn [i]
+        (= (count i) 4))
+      (weak-connectivity rel))))
+
 (def strongly-unique-extrema-order?
   (intersection
    partial-order?
@@ -2831,6 +2852,22 @@
   (and
     (strict-order? rel)
     (weak-order? (cl reflexive? rel))))
+
+; A component size regular relation is a binary relation such that
+; each connected component in the relation is of the same size
+(defn weak-component-size-regular-relation?
+  [rel]
+
+  (and
+    (binary-relation? rel)
+    (equal-seq? (map count (weak-connectivity rel)))))
+
+(defn strong-component-size-regular-relation?
+  [rel]
+
+  (and
+    (binary-relation? rel)
+    (equal-seq? (map count (weak-connectivity rel)))))
 
 ; Additional classes of relations
 (def trichotomous?

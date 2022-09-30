@@ -1,8 +1,9 @@
 (ns locus.elementary.action.core.protocols
-  (:require [locus.elementary.logic.base.core :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]))
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]))
 
 ; Let C be a category and Arrows(C) its set of morphisms. Then we say that the
 ; morphisms of C act on Arrows(C) by its self induced actions either to the left or
@@ -102,8 +103,3 @@
           (contains? coll (apply-action ms action elem)))
         coll))
     (actions ms)))
-
-
-
-
-

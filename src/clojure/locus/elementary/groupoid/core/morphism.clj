@@ -1,8 +1,9 @@
 (ns locus.elementary.groupoid.core.morphism
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.order.seq :refer :all]
-            [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.sequence.core.object :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.diamond.core.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.quiver.core.morphism :refer :all]
@@ -12,7 +13,7 @@
             [locus.elementary.group.core.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.groupoid.core.object :refer :all])
-  (:import (locus.elementary.function.core.object SetFunction)
+  (:import (locus.base.function.core.object SetFunction)
            (locus.elementary.groupoid.core.object Groupoid)))
 
 ; Morphisms in the category of groupoids
@@ -54,7 +55,7 @@
         (outputs (target-object this))
         morphism-function))))
 
-(derive GroupoidFunctor :locus.elementary.function.core.protocols/groupoid-functor)
+(derive GroupoidFunctor :locus.elementary.copresheaf.core.protocols/groupoid-functor)
 
 ; Composition and identities in the category of groupoids
 (defmethod compose* GroupoidFunctor

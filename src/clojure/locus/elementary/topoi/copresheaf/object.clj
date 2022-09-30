@@ -1,19 +1,21 @@
 (ns locus.elementary.topoi.copresheaf.object
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.order.seq :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.sequence.core.object :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.function.core.util :refer :all]
+            [locus.base.effects.global.identity :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
-            [locus.elementary.function.core.util :refer :all]
-            [locus.elementary.function.inclusion.identity :refer :all]
             [locus.elementary.incidence.core.object :refer :all]
             [locus.elementary.difunction.core.object :refer :all]
-            [locus.elementary.dibijection.core.object :refer :all]
+            [locus.elementary.difunction.dibijection.object :refer :all]
             [locus.elementary.diset.core.object :refer :all]
             [locus.elementary.bijection.core.object :refer :all]
-            [locus.elementary.gem.core.object :refer :all]
+            [locus.elementary.bijection.core.morphism :refer :all]
             [locus.elementary.diamond.core.object :refer :all]
             [locus.elementary.topoi.system.setrel :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
@@ -21,41 +23,55 @@
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.elementary.quiver.permutable.object :refer :all]
             [locus.elementary.quiver.dependency.object :refer :all]
+            [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.category.core.morphism :refer :all]
             [locus.elementary.action.global.object :refer :all]
             [locus.elementary.lattice.core.object :refer :all]
-            [locus.elementary.topoi.nset.object :refer :all]
-            [locus.elementary.topoi.nset.morphism :refer :all]
-            [locus.elementary.topoi.nset.nbijection :refer :all]
+            [locus.elementary.dependency.chain.object :refer :all]
+            [locus.elementary.dependency.nset.object :refer :all]
+            [locus.elementary.dependency.nfunction.object :refer :all]
+            [locus.elementary.dependency.nfunction.nbijection :refer :all]
             [locus.elementary.category.core.generated-category :refer :all]
             [locus.elementary.cospan.core.object :refer :all]
-            [locus.elementary.topoi.triangle.object :refer :all])
-  (:import (locus.elementary.action.global.object MSet)
-           (locus.elementary.diset.core.object Diset)
-           (locus.elementary.function.core.object SetFunction)
-           (locus.elementary.quiver.core.object Quiver)
-           (locus.elementary.category.core.morphism Functor)
+            [locus.elementary.triangle.core.object :refer :all]
+            [locus.elementary.dependency.core.object :refer :all]
+            [locus.elementary.triangle.core.morphism :refer :all]
+            [locus.elementary.incidence.core.morphism :refer :all]
+            [locus.elementary.cospan.core.morphism :refer :all]
+            [locus.elementary.diamond.core.morphism :refer :all]
+            [locus.elementary.two-quiver.core.object :refer :all])
+  (:import (locus.elementary.category.core.morphism Functor)
            (locus.elementary.lattice.core.object Lattice)
-           (locus.elementary.topoi.nset.object NSet)
+           (locus.elementary.action.global.object MSet)
+           (locus.base.function.core.object SetFunction)
+           (locus.elementary.quiver.core.object Quiver)
+           (locus.elementary.dependency.nset.object NSet)
            (locus.elementary.diamond.core.object Diamond)
            (locus.elementary.quiver.permutable.object PermutableQuiver)
            (locus.elementary.quiver.unital.object UnitalQuiver)
            (locus.elementary.quiver.dependency.object DependencyQuiver)
-           (locus.elementary.topoi.nset.morphism NFunction)
+           (locus.elementary.dependency.nfunction.object NFunction)
            (locus.elementary.difunction.core.object Difunction)
-           (locus.elementary.gem.core.object Gem)
+           (locus.elementary.bijection.core.morphism Gem)
            (locus.elementary.incidence.core.object Span)
            (locus.elementary.cospan.core.object Cospan)
-           (locus.elementary.topoi.triangle.object TriangleCopresheaf)
-           (locus.elementary.topoi.nset.nbijection NBijection)
-           (locus.elementary.dibijection.core.object Dibijection)))
+           (locus.elementary.triangle.core.object TriangleCopresheaf)
+           (locus.elementary.dependency.nfunction.nbijection NBijection)
+           (locus.elementary.difunction.dibijection.object Dibijection)
+           (locus.elementary.dependency.chain.object ChainCopresheaf)
+           (locus.elementary.dependency.core.object Dependency)
+           (locus.elementary.two_quiver.core.object TwoQuiver)
+           (locus.elementary.triangle.core.morphism TriangleMorphism)
+           (locus.elementary.incidence.core.morphism MorphismOfSpans)
+           (locus.elementary.cospan.core.morphism MorphismOfCospans)
+           (locus.elementary.diamond.core.morphism Cube)))
 
 ; Copresheaves
-; A copresheaf is a set-valued functor and therefore an object of a topos Sets^(C). These are the primary
-; objects of study in Locus. Using presheaf theoretic foundations, we model sets as presheaves over a
-; single object and functions as presheaves over an ordered pair, and study different models of
-; related structures defined by presheaves using the methods of topos theory.
+; A copresheaf is a set-valued functor and therefore an object of a topos Sets^(C). These are the
+; primary  objects of study in Locus. Using presheaf theoretic foundations, we model sets as
+; presheaves over a  single object and functions as presheaves over an ordered pair, and study
+; different models of  related structures defined by presheaves using the methods of topos theory.
 (deftype Copresheaf [category object-function morphism-function]
   AbstractMorphism
   (source-object [this] category)
@@ -65,51 +81,11 @@
   (first-function [this] morphism-function)
   (second-function [this] object-function))
 
-(defmethod to-functor Copresheaf
-  [^Copresheaf func]
-
-  (Functor.
-    (source-object func)
-    (target-object func)
-    (.morphism_function func)
-    (.object_function func)))
-
-; These are inflated versions of the ordered pair category for use in presheaf theory
-(def one-two-category
-  (adjoin-generators
-    (thin-category
-      (set (map seq (total-preorder [#{0} #{1 2}]))))
-    '#{(0 1) (0 2) (1 2) (2 1)}))
-
-(def two-one-category
-  (adjoin-generators
-    (thin-category
-      (set (map seq (total-preorder [#{0 1} #{2}]))))
-    '#{(0 1) (1 0) (0 2) (1 2)}))
-
-(def two-two-category
-  (adjoin-generators
-    (thin-category
-      (set (map seq (total-preorder [#{0 1} #{2 3}]))))
-    '#{(0 1) (1 0) (2 3) (3 2) (0 2) (1 3)}))
-
-; K2 and E2 plus one element
-(def t2-plus-one-category
-  (thin-category
-    '#{(0 0) (1 1) (2 2) (1 2)}))
-
-(def k2-plus-one-category
-  (thin-category
-    '#{(0 0) (1 1) (2 2) (1 2) (2 1)}))
-
-; Basic thin categories
+; Index categories for the fundamental topoi of sets and functions
 (def trivial-category
   (simple-labeled-category
     #{"Set"}
     {"Identity" ["Set" "Set"]}))
-
-(def e2-category
-  (nth-discrete-category 2))
 
 (def t2-category
   (adjoin-generators
@@ -119,6 +95,10 @@
        "1ₒ" ["Output" "Output"]
        "f"  ["Input" "Output"]})
     #{"f"}))
+
+; Index categories for disets and bijections
+(def e2-category
+  (nth-discrete-category 2))
 
 (def k2-category
   (adjoin-generators
@@ -130,7 +110,7 @@
        "f⁻¹" ["Output" "Input"]})
     #{"f" "f⁻¹"}))
 
-; Incidence categories and their duals
+; Spans, cospans, and triangles
 (def incidence-category*
   (adjoin-generators
     (simple-labeled-category
@@ -153,7 +133,6 @@
        "g"  ["b" "c"]})
     #{"f" "g"}))
 
-; Triangle categories are presheaves over the ordered triple category
 (def triangle-category
   (adjoin-generators
     (simple-labeled-category
@@ -166,7 +145,7 @@
        "g ⚬ f" ["a" "c"]})
     '#{"f" "g"}))
 
-; The diamond category of morphisms of functions
+; Diamond and gem categories
 (def diamond-category
   (adjoin-generators
     (simple-labeled-category
@@ -182,16 +161,46 @@
        "c"  ["a" "d"]})
     '#{"f" "g" "i" "o"}))
 
+(def gem-category
+  (adjoin-generators
+    (thin-category
+      (set (map seq (total-preorder [#{0 1} #{2 3}]))))
+    '#{(0 1) (1 0) (2 3) (3 2) (0 2) (1 3)}))
+
 ; Non-thin categories
+; In particular, these are index categories for the various types of quivers that have emerged
+; as an important part of our ontology of copresheaves. We see that aside from the dependecny functors
+; and MSets, quivers tend to be among the most common objects of presheaf theory. They are widely
+; used and a number of other structures can be constructed from them.
 (def t2*
   (adjoin-generators
     (simple-labeled-category
       #{"edges" "vertices"}
       {"1ₑ"     ["edges" "edges"]
        "1ᵥ"     ["vertices" "vertices"]
-       "source" ["vertices" "edges"]
-       "target" ["vertices" "edges"]})
+       "source" ["edges" "vertices"]
+       "target" ["edges" "vertices"]})
     '#{"source" "target"}))
+
+; Different composition
+(def different-composition-diamond
+  (adjoin-composition
+    (create-unital-quiver
+      {"0" '(0 0)
+       "1" '(1 1)
+       "2" '(2 2)
+       "3" '(3 3)}
+      {'(0 1)   [0 1]
+       '(0 2)   [0 2]
+       '(1 3)   [1 3]
+       '(2 3)   [2 3]
+       '(0 1 3) [0 3]
+       '(0 2 3) [0 3]})
+    (fn [[[c d] [a b]]]
+      (cond
+        (= a b) (list c d)
+        (= c d) (list a b)
+        :else (list a b d)))))
 
 ; Index categories for special types of generalized quivers: there are several examples of
 ; these index categories for the different types of cases: permutable quivers, dependency
@@ -445,6 +454,240 @@
             (and (= a "idt") (= b "∘ reverse")) "∘ ids"))))
     '#{"source" "target" "∘" "identity" "reverse"}))
 
+; An ordinary quiver can be considered to be a special case of a binary quiver, while there are
+; many other forms of quivers beyond those, and each of them has their own index category.
+; These index categories consist of two objects and a collection of morphisms between
+; them that indicate the vertex value of an edge at each of its component indices.
+(defn nary-quiver-category
+  [n]
+
+  (simple-labeled-category
+    #{"edges" "vertices"}
+    (into
+      {}
+      (concat
+        (list
+          ["1ₑ" ["edges" "edges"]]
+          ["1ᵥ" ["vertices" "vertices"]])
+        (map
+          (fn [i]
+            [i ["edges" "vertices"]])
+          (range n))))))
+
+; We see that many forms of quivers have been introduced in to our ontology as part of our basic
+; understanding of topos theoretic presheaf theory. However, in our investigations it often
+; becomes necessary to consider various forms of two quivers. That is what we are dealing with
+; now. These two quiver copresheaves, such as two globular sets, are our basic presheaf theoretic
+; model for higher category theory.
+
+; Two quiver index categories
+(def two-quiver-index-category
+  (adjoin-composition
+    (create-unital-quiver
+      {"c2" "ic2"
+       "c1" "ic1"
+       "c0" "ic0"}
+      {"1s"  ["c1" "c0"]
+       "1t"  ["c1" "c0"]
+       "2s"  ["c2" "c1"]
+       "2t"  ["c2" "c1"]
+       "2ss" ["c2" "c0"]
+       "2st" ["c2" "c0"]
+       "2ts" ["c2" "c0"]
+       "2tt" ["c2" "c0"]})
+    (fn [[a b]]
+      (letfn [(identity-arrow? [x]
+                (contains? #{"ic0" "ic1" "ic2"} x))
+              (two-morphism-component-arrow? [x]
+                (contains? #{"2s" "2t"} x))]
+        (cond
+          (identity-arrow? a) b
+          (identity-arrow? b) a
+          (and (= a "1s") (= b "2s")) "2ss"
+          (and (= a "1t") (= b "2s")) "2st"
+          (and (= a "1s") (= b "2t")) "2ts"
+          (and (= a "1t") (= b "2t")) "2tt")))))
+
+; Path quiver index category
+(def path-quiver-index-category
+  (adjoin-composition
+    (create-unital-quiver
+      {"c2" "ic2"
+       "c1" "ic1"
+       "c0" "ic0"}
+      {"1s" ["c1" "c0"]
+       "1t" ["c1" "c0"]
+       "2s" ["c2" "c1"]
+       "2t" ["c2" "c1"]
+       "2m" ["c2" "c0"]
+       "2l" ["c2" "c0"]
+       "2f" ["c2" "c0"]})
+    (fn [[a b]]
+      (letfn [(identity-arrow? [x]
+                (contains? #{"ic0" "ic1" "ic2"} x))
+              (two-morphism-component-arrow? [x]
+                (contains? #{"2s" "2t"} x))]
+        (cond
+          (identity-arrow? a) b
+          (identity-arrow? b) a
+          (and (= a "1s") (= b "2s")) "2m"
+          (and (= a "1t") (= b "2s")) "2l"
+          (and (= a "1s") (= b "2t")) "2f"
+          (and (= a "1t") (= b "2t")) "2m")))))
+
+; Globular set theory
+(defn n-globular-set-index-category
+  [arg]
+
+  (let [n (inc arg)]
+    (->Category
+      (apply
+        union
+        (set
+          (map
+            (fn [i]
+              (apply
+                union
+                (set
+                  (map
+                    (fn [j]
+                      (if (= i j)
+                        #{(list i j 0)}
+                        #{(list i j 0) (list i j 1)}))
+                    (range (inc i))))))
+            (range n))))
+      (->Upto n)
+      first
+      second
+      (fn [[[a1 a2 a3] [b1 b2 b3]]]
+        (cond
+          (= a1 a2) (list b1 b2 b3)
+          (= b1 b2) (list a1 a2 a3)
+          :else (list b1 a2 a3)))
+      (fn [n]
+        (list n n 0)))))
+
+(def two-globular-set-index-category
+  (n-globular-set-index-category 2))
+
+; Enumerate all binary based pairs of n edges in an n quiver
+(defn enumerate-n-edges
+  [i j]
+
+  (let [n (- i j)]
+    (map
+      (fn [binary-sequence]
+        (list i j binary-sequence))
+      (apply cartesian-product (repeat n #{0 1})))))
+
+(defn enumerate-n-edges-starting-from-index
+  [i]
+
+  (apply
+    union
+    (map
+      (fn [j]
+        (set (enumerate-n-edges i j)))
+      (range (inc i)))))
+
+(defn enumerate-all-n-edges
+  [i]
+
+  (apply
+    union
+    (map
+      (fn [j]
+        (enumerate-n-edges-starting-from-index j))
+      (range (inc i)))))
+
+(defn n-quiver-index-category
+  [n]
+
+  (->Category
+    (enumerate-all-n-edges n)
+    (set (range (inc n)))
+    first
+    second
+    (fn [[a b]]
+      (list
+        (first b)
+        (second a)
+        (concat (nth a 2) (nth b 2))))
+    (fn [n]
+      (list n n '()))))
+
+; A general mechanism for getting the index categories of copresheaves
+; The index category is the source object of the copresheaf, which is always dependent upon the
+; data type of the copresheaf in question. The index category determines the topos that the
+; copresheaf belongs to and its properties.
+(defmulti index-category type)
+
+(defmethod index-category :locus.base.logic.core.set/universal
+  [coll] trivial-category)
+
+(defmethod index-category :locus.base.logic.structure.protocols/set-function
+  [coll] t2-category)
+
+(defmethod index-category :locus.elementary.copresheaf.core.protocols/diset
+  [coll] e2-category)
+
+(defmethod index-category :locus.elementary.copresheaf.core.protocols/bijection
+  [bijection] k2-category)
+
+(defmethod index-category Span
+  [span] incidence-category*)
+
+(defmethod index-category Cospan
+  [cospan] two-cospan-category)
+
+(defmethod index-category TriangleCopresheaf
+  [triangle] triangle-category)
+
+(defmethod index-category Quiver
+  [quiver] t2*)
+
+(defmethod index-category UnitalQuiver
+  [unital-quiver] unital-quiver-index-category)
+
+(defmethod index-category PermutableQuiver
+  [permutable-quiver] permutable-quiver-index-category)
+
+(defmethod index-category DependencyQuiver
+  [dependency-quiver] dependency-quiver-index-category)
+
+(defmethod index-category Diamond
+  [diamond] diamond-category)
+
+(defmethod index-category Gem
+  [gem] gem-category)
+
+(defmethod index-category MSet
+  [^MSet mset] (.-monoid mset))
+
+(defmethod index-category Dependency
+  [^Dependency dependency] (.-order dependency))
+
+(defmethod index-category NSet
+  [^NSet nset] (nth-discrete-category (nset-type nset)))
+
+(defmethod index-category NFunction
+  [^NFunction nfunction] (n-pair-category (count (.-funcs nfunction))))
+
+(defmethod index-category NBijection
+  [^NBijection nbijection] (unordered-n-pair-category (count (.-bijections nbijection))))
+
+(defmethod index-category Difunction
+  [^Difunction difunction] (n-pair-category 2))
+
+(defmethod index-category Dibijection
+  [^Dibijection dibijection] (unordered-n-pair-category 2))
+
+(defmethod index-category ChainCopresheaf
+  [^ChainCopresheaf chain] (nth-total-order-category (chain-type chain)))
+
+(defmethod index-category Copresheaf
+  [^Copresheaf copresheaf] (.-category copresheaf))
+
 ; General conversion routines for the most basic topos objects
 ; The various fundamental constructs of our ontology, which is rooted in
 ; topos theory can all be converted to copresheaves. This leads to an
@@ -454,16 +697,15 @@
 (defmethod to-copresheaf Copresheaf
   [func] func)
 
-(defmethod to-copresheaf :default
+(defmethod to-copresheaf :locus.base.logic.core.set/universal
   [coll]
 
-  (if (universal? coll)
-    (Copresheaf.
-      trivial-category
-      (fn [obj] coll)
-      (fn [morphism] (identity-function coll)))))
+  (Copresheaf.
+    trivial-category
+    (fn [obj] coll)
+    (fn [morphism] (identity-function coll))))
 
-(defmethod to-copresheaf Diset
+(defmethod to-copresheaf :locus.elementary.copresheaf.core.protocols/diset
   [pair]
 
   (Copresheaf.
@@ -477,7 +719,7 @@
         (= morphism 0) (identity-function (first-set pair))
         (= morphism 1) (identity-function (second-set pair))))))
 
-(defmethod to-copresheaf :locus.elementary.function.core.protocols/set-function
+(defmethod to-copresheaf :locus.base.logic.structure.protocols/set-function
   [func]
 
   (Copresheaf.
@@ -492,7 +734,7 @@
         (= morphism "1ₒ") (identity-function (second-set func))
         (= morphism "f") func))))
 
-(defmethod to-copresheaf :locus.elementary.function.core.protocols/bijection
+(defmethod to-copresheaf :locus.elementary.copresheaf.core.protocols/bijection
   [func]
 
   (Copresheaf.
@@ -573,18 +815,6 @@
           "g" g
           "g ⚬ f" (compose g f))))))
 
-; Reduce diamonds to simpler copresheaves if possible
-(defn reduce-diamond
-  [func]
-
-  (let [id1 (intrinsic-identity-function? (first-function func))
-        id2 (intrinsic-identity-function? (second-function func))]
-    (cond
-      (and id1 id2) (to-copresheaf (source-object func))
-      id1 (to-copresheaf (TriangleCopresheaf. (second-function func) (source-object func)))
-      id2 (to-copresheaf (TriangleCopresheaf. (target-object func) (first-function func)))
-      :else func)))
-
 ; Morphisms of functions
 (defmethod to-copresheaf Diamond
   [func]
@@ -618,7 +848,7 @@
         s2 (inputs (target-object func))
         s3 (outputs (target-object func))]
     (Copresheaf.
-      two-two-category
+      gem-category
       (fn [obj]
         (case obj
           0 s0
@@ -640,68 +870,58 @@
           (= arrow '(1 2)) (compose (underlying-function (inv (target-object func))) (second-function func))
           (= arrow '(1 3)) (second-function func))))))
 
-; NSet copresheaves
+; Convert copresheaves over preorders into more general copresheaves
+; Let P be a preorder, then Sets^P is a topos consisting of all copresheaves over the preorder
+; P. This is a fruitful means of exploring the properties of the preorder P. The resulting
+; copresheaves generalize functional dependencies of relations, so they are often called
+; dependency functors as a result. We can convert these dependency functors into more
+; general copresheaves using the following method.
+(defmethod to-copresheaf Dependency
+  [^Dependency dependency]
+
+  (->Copresheaf
+    (.-order dependency)
+    (.-object_function dependency)
+    (.-morphism_function dependency)))
+
+; Conversion routines for special classes of copresheaves with arbitrary size index categories
+; These conversion routines will simply fall back on the dependency functors in order to reuse
+; their implementation of the conversion routine.
 (defmethod to-copresheaf NSet
-  [^NSet nset]
+  [nset] (to-copresheaf (to-dependency nset)))
 
-  (let [coll (.colls nset)]
-    (Copresheaf.
-      (nth-discrete-category (count coll))
-      (fn [n]
-        (nth coll n))
-      (fn [n]
-        (identity-function (nth coll n))))))
-
-; Convert an nary function into a copresheaf
 (defmethod to-copresheaf NFunction
-  [^NFunction func]
-
-  (let [funcs (.-funcs func)
-        arity (count funcs)]
-    (letfn [(nth-set [obj]
-              (if (even? obj)
-                (inputs (nth funcs (/ obj 2)))
-                (outputs (nth funcs (/ (dec obj) 2)))))]
-      (Copresheaf.
-        (n-pair-category arity)
-        nth-set
-        (fn [[n m]]
-          (if (= n m)
-            (identity-function (nth-set n))
-            (nth funcs (int (/ n 2)))))))))
+  [nfunction] (to-copresheaf (to-dependency nfunction)))
 
 (defmethod to-copresheaf Difunction
-  [^Difunction difunc]
+  [difunction] (to-copresheaf (to-dependency difunction)))
 
-  (to-copresheaf (to-nfunction difunc)))
-
-; Convert collections of bijections to copresheaves
 (defmethod to-copresheaf NBijection
-  [^NBijection func]
-
-  (let [funcs (.-bijections func)
-        arity (count funcs)]
-    (letfn [(nth-set [obj]
-              (if (even? obj)
-                (inputs (nth funcs (/ obj 2)))
-                (outputs (nth funcs (/ (dec obj) 2)))))]
-      (Copresheaf.
-        (unordered-n-pair-category arity)
-        nth-set
-        (fn [[n m]]
-          (if (= n m)
-            (identity-function (nth-set n))
-            (if (< n m)
-              (underlying-function (nth funcs (/ n 2)))
-              (underlying-function (inv (nth funcs (/ m 2)))))))))))
+  [nbijection] (to-copresheaf (to-dependency nbijection)))
 
 (defmethod to-copresheaf Dibijection
-  [^Dibijection dibijection]
+  [dibijection] (to-copresheaf (to-dependency dibijection)))
 
-  (to-copresheaf (to-nbijection dibijection)))
+(defmethod to-copresheaf ChainCopresheaf
+  [chain] (to-copresheaf (to-dependency chain)))
+
+(defmethod to-copresheaf TriangleMorphism
+  [morphism] (to-copresheaf (to-dependency morphism)))
+
+(defmethod to-copresheaf MorphismOfSpans
+  [morphism] (to-copresheaf (to-dependency morphism)))
+
+(defmethod to-copresheaf MorphismOfCospans
+  [morphism] (to-copresheaf (to-dependency morphism)))
+
+(defmethod to-copresheaf MorphismOfSpans
+  [morphism] (to-copresheaf (to-dependency morphism)))
+
+(defmethod to-copresheaf Cube
+  [cube] (to-copresheaf (to-dependency cube)))
 
 ; Copresheaves over monoids
-(defmethod to-copresheaf :locus.elementary.function.core.protocols/mset
+(defmethod to-copresheaf :locus.elementary.copresheaf.core.protocols/mset
   [^MSet ms]
 
   (Copresheaf.
@@ -865,35 +1085,44 @@
         "reverse" (inverse-function category)
         "∘ reverse" (compose (inverse-function category) (underlying-function category))))))
 
-(defmethod to-copresheaf :locus.elementary.function.core.protocols/semigroupoid
+(defmethod to-copresheaf :locus.elementary.copresheaf.core.protocols/semigroupoid
   [semigroupoid] (compositional-quiver-copresheaf semigroupoid))
 
-(defmethod to-copresheaf :locus.elementary.function.core.protocols/category
+(defmethod to-copresheaf :locus.elementary.copresheaf.core.protocols/category
   [category] (compositional-unital-quiver-copresheaf category))
 
-(defmethod to-copresheaf :locus.elementary.function.core.protocols/groupoid
+(defmethod to-copresheaf :locus.elementary.copresheaf.core.protocols/groupoid
   [groupoid] (compositional-dependency-quiver-copresheaf groupoid))
+
+; Convert two quivers into two copresheafs using topos theory
+(defmethod to-copresheaf TwoQuiver
+  [two-quiver]
+
+  (->Copresheaf
+    two-quiver-index-category
+    (fn [obj]
+      (case obj
+        "c0" (objects two-quiver)
+        "c1" (morphisms two-quiver)
+        "c2" (two-morphisms two-quiver)))
+    (fn [arrow]
+      (case arrow
+        "ic0" (identity-function (objects two-quiver))
+        "ic1" (identity-function (morphisms two-quiver))
+        "ic2" (identity-function (two-morphisms two-quiver))
+        "1s" (source-function two-quiver)
+        "1t" (target-function two-quiver)
+        "2s" (s-function two-quiver)
+        "2t" (t-function two-quiver)
+        "2ss" (ss-function two-quiver)
+        "2st" (st-function two-quiver)
+        "2ts" (ts-function two-quiver)
+        "2tt" (tt-function two-quiver)))))
 
 ; An nary-quiver is a generalisation of quivers for dealing with
 ; higher order nary-relations. In particular, there are ternary quivers
 ; which are the set valued functors which correspond most readily
 ; to ternary relations.
-(defn nary-quiver-category
-  [n]
-
-  (simple-labeled-category
-    #{"edges" "vertices"}
-    (into
-      {}
-      (concat
-        (list
-          ["1ₑ" ["edges" "edges"]]
-          ["1ᵥ" ["vertices" "vertices"]])
-        (map
-          (fn [i]
-            [i ["edges" "vertices"]])
-          (range n))))))
-
 (defn nary-quiver
   ([rel]
    (nary-quiver
@@ -917,184 +1146,17 @@
                  (fn [edge]
                    (nth edge arrow))))))))
 
-; Copresheaves over finite total orders
-(defn chain-copresheaf
-  [& args]
+(defn ternary-quiver
+  ([edges]
+   (nary-quiver 3 (vertices edges) edges))
+  ([vertices edges]
+   (nary-quiver 3 vertices edges)))
 
-  (let [funcs (reverse args)
-        n (count funcs)
-        index-category (covering-generated-category (set (map seq (apply total-order (range (inc n))))))]
-    (letfn [(nth-set [i]
-              (if (zero? i)
-                (inputs (first funcs))
-                (outputs (nth funcs (dec i)))))]
-      (Copresheaf.
-        index-category
-        nth-set
-        (fn [[a b]]
-          (if (= a b)
-            (identity-function (nth-set a))
-            (apply
-              compose
-              (map
-                (fn [i]
-                  (nth funcs i))
-                (range a b)))))))))
-
-; Copresheaves over complete things groupoids
-(defn multijection
-  [& args]
-
-  (let [bijections (reverse args)
-        n (count bijections)
-        index-category (nth-complete-thin-groupoid (inc n))]
-    (letfn [(nth-set [i]
-              (if (zero? i)
-               (inputs (first bijections))
-               (outputs (nth bijections (dec i)))))
-            (nth-function [[i j]]
-              (cond
-                (= i j) (identity-function (nth-set i))
-                (< i j) (apply
-                          compose
-                          (map
-                            (fn [k]
-                              (underlying-function (nth bijections k)))
-                            (range i j)))
-                (< j i) (apply
-                          compose
-                          (map
-                            (fn [k]
-                              (underlying-function (inv (nth bijections k))))
-                            (reverse (range j i))))))])))
-
-(defn trijection
-  [a b]
-
-  (multijection a b))
-
-; Copresheaves over height two total preorders on three objects
-(defn lower-bijective-triangle
-  [func bijection]
-
-  (let [s0 (inputs bijection)
-        s1 (outputs bijection)
-        s2 (outputs func)]
-    (Copresheaf.
-     two-one-category
-     (fn [obj]
-       (case obj
-         0 s0
-         1 s1
-         2 s2))
-     (fn [arrow]
-       (cond
-         (= arrow '(0 0)) (identity-function s0)
-         (= arrow '(1 1)) (identity-function s1)
-         (= arrow '(2 2)) (identity-function s2)
-         (= arrow '(0 1)) (underlying-function bijection)
-         (= arrow '(1 0)) (underlying-function (inv bijection))
-         (= arrow '(0 2)) (compose func (underlying-function bijection))
-         (= arrow '(1 2)) func)))))
-
-(defn upper-bijective-triangle
-  [bijection func]
-
-  (let [s0 (inputs func)
-        s1 (outputs func)
-        s2 (outputs bijection)]
-    (Copresheaf.
-      one-two-category
-      (fn [obj]
-        (case obj
-          0 s0
-          1 s1
-          2 s2))
-      (fn [arrow]
-        (cond
-          (= arrow '(0 0)) (identity-function s0)
-          (= arrow '(1 1)) (identity-function s1)
-          (= arrow '(2 2)) (identity-function s2)
-          (= arrow '(1 2)) (underlying-function bijection)
-          (= arrow '(2 1)) (underlying-function (inv bijection))
-          (= arrow '(0 1)) func
-          (= arrow '(0 2)) (compose (underlying-function bijection) func))))))
-
-; Functions and bijections with adjoined sets
-(defn set-function-pair
-  [coll func]
-
-  (let [s0 coll
-        s1 (inputs func)
-        s2 (outputs func)]
-    (Copresheaf.
-      t2-plus-one-category
-      (fn [obj]
-        (case obj
-          0 s0
-          1 s1
-          2 s2))
-      (fn [arrow]
-        (cond
-          (= arrow '(0 0)) (identity-function s0)
-          (= arrow '(1 1)) (identity-function s1)
-          (= arrow '(2 2)) (identity-function s2)
-          (= arrow '(1 2)) func)))))
-
-(defn set-bijection-pair
-  [coll bijection]
-
-  (let [s0 coll
-        s1 (inputs bijection)
-        s2 (outputs bijection)]
-    (Copresheaf.
-      k2-plus-one-category
-      (fn [obj]
-        (case obj
-          0 s0
-          1 s1
-          2 s2))
-      (fn [arrow]
-        (cond
-          (= arrow '(0 0)) (identity-function s0)
-          (= arrow '(1 1)) (identity-function s1)
-          (= arrow '(2 2)) (identity-function s2)
-          (= arrow '(1 2)) (underlying-function bijection)
-          (= arrow '(2 1)) (underlying-function (inv bijection)))))))
-
-; Copresheaves for generalized incidence structures
-(defn nspan
-  [& funcs]
-
-  (let [n (count funcs)]
-    (letfn [(nth-set [i]
-              (if (zero? i)
-                (inputs (first funcs))
-                (outputs (nth funcs (dec i)))))]
-      (Copresheaf.
-       (n-span-category n)
-       nth-set
-       (fn [[i j]]
-         (if (= i j)
-           (identity-function (nth-set i))
-           (nth funcs (dec j))))))))
-
-; Copresheaves for generalized cospans
-(defn ncospan
-  [& funcs]
-
-  (let [n (count funcs)]
-    (letfn [(nth-set [i]
-              (if (zero? i)
-                (outputs (first funcs))
-                (inputs (nth funcs (dec i)))))]
-      (Copresheaf.
-        (n-cospan-category n)
-        nth-set
-        (fn [[i j]]
-          (if (= i j)
-            (identity-function (nth-set i))
-            (nth funcs (dec i))))))))
+(defn quaternary-quiver
+  ([edges]
+   (nary-quiver 4 (vertices edges) edges))
+  ([vertices edges]
+   (nary-quiver 4 vertices edges)))
 
 ; Generalizations of morphisms of functions described as presheaves
 (defn higher-diamond
@@ -1106,7 +1168,7 @@
               (cond
                 (= i 0) (triangle-source (first triangles))
                 (= i target-number) (triangle-target (first triangles))
-                :else (triangle-middle-set
+                :else (triangle-middle
                         (nth triangles (dec i)))))
             (get-function [[i j]]
               (cond
@@ -1117,6 +1179,44 @@
         (nth-higher-diamond-category n)
         nth-set
         get-function))))
+
+; The idea of a different composition diamond allows us to give a different
+; take on the basic idea of a diamond copresheaf, which is so fundamental
+; to our theory of the topos of functions
+(defn different-composition-diamond-copresheaf
+  [^TriangleCopresheaf first-triangle, ^TriangleCopresheaf second-triangle]
+
+  (letfn [(nth-set [obj]
+            (case obj
+              0 (triangle-source first-triangle)
+              1 (triangle-middle first-triangle)
+              2 (triangle-middle second-triangle)
+              3 (triangle-target first-triangle)))]
+    (Copresheaf.
+      different-composition-diamond
+      nth-set
+      (fn [arrow]
+        (cond
+          (= arrow '(0 0)) (identity-function (nth-set 0))
+          (= arrow '(1 1)) (identity-function (nth-set 1))
+          (= arrow '(2 2)) (identity-function (nth-set 2))
+          (= arrow '(3 3)) (identity-function (nth-set 3))
+          (= arrow '(0 1)) (prefunction first-triangle)
+          (= arrow '(0 2)) (prefunction second-triangle)
+          (= arrow '(1 3)) (postfunction first-triangle)
+          (= arrow '(2 3)) (postfunction second-triangle)
+          (= arrow '(0 1 3)) (compfunction first-triangle)
+          (= arrow '(0 2 3)) (compfunction second-triangle))))))
+
+; Convert copresheaves to functors
+(defmethod to-functor Copresheaf
+  [^Copresheaf func]
+
+  (Functor.
+    (source-object func)
+    (target-object func)
+    (.morphism_function func)
+    (.object_function func)))
 
 ; Change of category functors for topoi of copresheaves
 (defn change-of-category
@@ -1255,64 +1355,6 @@
         (fn [a b]
           (componentwise-apply intersection a b))))))
 
-; The singleton copresheaf naturally maps any object in a thin category
-; to its corresponding singleton set with the unique arrows between them
-(defn singleton-copresheaf
-  [preorder]
-
-  (Copresheaf.
-    preorder
-    (fn [obj]
-      #{obj})
-    (fn [arrow]
-      (pair-function
-        (source-element preorder arrow)
-        (target-element preorder arrow)))))
-
-; We need some way of dealing with functional dependencies
-; This is only rudimentary at this stage of support and so it
-; is due for a major refactoring involving the core system.
-; and our basic notion of querying.
-(defn induced-map
-  [rel source target]
-
-  (let [rval (apply
-               merge
-               (map
-                 (fn [i]
-                   {(restrict-list i source) (restrict-list i target)})
-                 rel))]
-    (if (nil? rval)
-      {}
-      rval)))
-
-(defn induced-fn
-  [rel source target]
-
-  (fn [source-elements]
-    (first
-      (for [i rel
-            :when (= (restrict-list i source) source-elements)]
-        (restrict-list i target)))))
-
-(defn induced-function
-  [rel source target]
-
-  (SetFunction.
-    (project-relation rel source)
-    (project-relation rel target)
-    (induced-fn rel source target)))
-
-(defn functional-dependencies-copresheaf
-  [rel dep]
-
-  (Copresheaf.
-    (thin-category dep)
-    (fn [nums]
-      (project-relation rel nums))
-    (fn [[source target]]
-      (induced-function rel source target))))
-
 ; Generalized mechanism for determining the appropriate data type for storing
 ; given copresheaf. Using this method, we can have an overall organization of our
 ; entire topos theoretic system.
@@ -1332,9 +1374,9 @@
             (and (= objects-count 2) (= morphisms-count 4)) "BIJECTION"
             (and (= objects-count 3) (= morphisms-count 3)) "TRISET"
             (and (= objects-count 3) (complete-thin-groupoid? index-category)) "TRIJECTION"
-            (and (= objects-count 4) (unordered-n-pair-category? index-category)) "DIBIJECTION"
+            (and (= objects-count 4) (two-regular-thin-groupoid? index-category)) "DIBIJECTION"
             (discrete-category? index-category) "NSET"
-            (unordered-n-pair-category? index-category) "NBIJECTION"
+            (two-regular-thin-groupoid? index-category) "NBIJECTION"
             :else "COPRESHEAF")
           (cond
             (and (= objects-count 2) (= morphisms-count 3)) "FUNCTION"
@@ -1346,6 +1388,11 @@
             (total-order-category? index-category) "CHAIN COPRESHEAF"
             (and (= objects-count 4) (n-pair-category? index-category)) "DIFUNCTION"
             (diamond-category? index-category) "DIAMOND"
+            (and (= objects-count 8) (n-diamond-category? index-category)) "DIDIAMOND"
+            (and (= objects-count 8) (n-gem-category? index-category)) "DIGEM"
+            (n-diamond-category? index-category) "NDIAMOND"
+            (higher-diamond-category? index-category) "HIGHER DIAMOND"
+            (n-gem-category? index-category) "NGEM"
             (gem-category? index-category) "GEM"
             (n-pair-category? index-category) "NFUNCTION"
             :else "COPRESHEAF"))
@@ -1365,8 +1412,6 @@
   [obj]
 
   (= (type obj) Copresheaf))
-
-
 
 
 

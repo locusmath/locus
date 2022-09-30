@@ -1,10 +1,11 @@
 (ns locus.grothendieck.topology.core.object
-  (:require [locus.elementary.logic.base.core :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.function.core.object :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.relation.binary.vertexset :refer :all]
             [locus.elementary.incidence.system.family :refer :all]
-            [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.lattice.core.object :refer :all]
             [locus.elementary.order.total.object :refer :all]
             [locus.elementary.order.total.open-set :refer :all]
@@ -25,7 +26,7 @@
   ConcreteObject
   (underlying-set [this] points))
 
-(derive TopologicalSpace :locus.elementary.function.core.protocols/structured-set)
+(derive TopologicalSpace :locus.base.logic.structure.protocols/structured-set)
 
 (defn topology?
   [space]

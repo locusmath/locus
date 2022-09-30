@@ -1,18 +1,19 @@
 (ns locus.elementary.quiver.unital.morphism
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.order.seq :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.sequence.core.object :refer :all]
+            [locus.base.partition.core.setpart :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.incidence.system.setpart :refer :all]
-            [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
             [locus.elementary.diamond.core.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.quiver.core.morphism :refer :all]
             [locus.elementary.quiver.unital.object :refer :all])
   (:import [locus.elementary.quiver.core.object Quiver]
-           [locus.elementary.function.core.object SetFunction]
+           [locus.base.function.core.object SetFunction]
            (locus.elementary.quiver.unital.object UnitalQuiver)))
 
 ; The topos of unital quivers is constructed as a presheaf category over the index category
@@ -52,7 +53,7 @@
   StructuredMorphismOfUnitalQuivers
   (underlying-morphism-of-unital-quivers [this] this))
 
-(derive MorphismOfUnitalQuivers :locus.elementary.function.core.protocols/morphism-of-structured-unital-quivers)
+(derive MorphismOfUnitalQuivers :locus.elementary.copresheaf.core.protocols/morphism-of-structured-unital-quivers)
 
 ; Get the morphisms of identity element functions of a morphism of unital quivers
 ; the order of the functions in the morphism is transposed because the identity

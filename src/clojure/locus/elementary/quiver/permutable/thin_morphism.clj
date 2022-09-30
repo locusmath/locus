@@ -1,18 +1,22 @@
 (ns locus.elementary.quiver.permutable.thin-morphism
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.order.seq :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.sequence.core.object :refer :all]
+            [locus.base.partition.core.setpart :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.relation.binary.vertexset :refer :all]
-            [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
+            [locus.elementary.diamond.core.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.quiver.core.morphism :refer :all]
             [locus.elementary.quiver.core.thin-object :refer :all]
             [locus.elementary.quiver.permutable.object :refer :all]
             [locus.elementary.quiver.permutable.thin-object :refer :all])
-  (:import (locus.elementary.function.core.object SetFunction)
+  (:import [locus.base.function.core.object SetFunction]
            (locus.elementary.quiver.permutable.thin_object ThinPermutableQuiver)))
 
 ; Morphisms in the category of thin permutable quivers, which is embedded in the topos
@@ -48,7 +52,7 @@
   (applyTo [this args]
     (clojure.lang.AFn/applyToHelper this args)))
 
-(derive MorphismOfThinPermutableQuivers :locus.elementary.function.core.protocols/morphism-of-structured-permutable-quivers)
+(derive MorphismOfThinPermutableQuivers :locus.elementary.copresheaf.core.protocols/morphism-of-structured-permutable-quivers)
 
 ; Composition and identities in the category of thin permutable quivers
 (defmethod compose* MorphismOfThinPermutableQuivers

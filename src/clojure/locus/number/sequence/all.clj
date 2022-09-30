@@ -1,12 +1,13 @@
 (ns locus.number.sequence.all
   (:refer-clojure :exclude [+ - * /])
-  (:require [locus.elementary.logic.base.core :refer :all :exclude [add]]
-            [locus.elementary.logic.base.natural :refer [factors]]
-            [locus.elementary.function.core.protocols :refer :all]
-            [locus.ring.core.protocols :refer :all]
-            [locus.ring.core.arithmetic :refer :all]
-            [locus.ring.core.object :refer :all]
-            [locus.semiring.core.object :refer :all]))
+  (:require [locus.base.logic.core.set :refer :all :exclude [add]]
+            [locus.base.logic.numeric.natural :refer [factors]]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.additive.base.generic.arithmetic :refer :all]
+            [locus.additive.base.core.protocols :refer :all]
+            [locus.additive.ring.core.object :refer :all]
+            [locus.additive.semiring.core.object :refer :all]))
 
 ; Here we define a special number sequence data type for dealing with rings
 ; of sequences over number fields.
@@ -331,7 +332,7 @@
 (def nth-factorial
   (NumberSequence.
     (fn [n]
-      (locus.elementary.logic.base.core/factorial n))))
+      (locus.base.logic.core.set/factorial n))))
 
 ; The sum of divisors function
 (def sum-of-divisors

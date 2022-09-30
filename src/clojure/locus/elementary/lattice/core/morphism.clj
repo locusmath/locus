@@ -1,9 +1,11 @@
 (ns locus.elementary.lattice.core.morphism
-  (:require [locus.elementary.logic.base.core :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
-            [locus.elementary.function.core.object :refer :all]
             [locus.elementary.diamond.core.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.quiver.core.morphism :refer :all]
@@ -67,7 +69,7 @@
     (clojure.lang.AFn/applyToHelper this args)))
 
 ; The hierarchy of lattice morphisms
-(derive LatticeMorphism :locus.elementary.function.core.protocols/functor)
+(derive LatticeMorphism :locus.elementary.copresheaf.core.protocols/functor)
 
 ; Composition and identities in the category of lattices
 (defmethod compose* LatticeMorphism

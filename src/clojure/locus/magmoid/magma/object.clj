@@ -1,18 +1,21 @@
 (ns locus.magmoid.magma.object
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.order.seq :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.sequence.core.object :refer :all]
+            [locus.base.partition.core.setpart :refer :all]
+            [locus.base.partition.core.object :refer [projection]]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.quiver.core.object :refer  :all]
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.incidence.system.setpart :refer :all]
-            [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
             [locus.elementary.lattice.core.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.group.core.object :refer :all])
-  (:import (locus.elementary.function.core.object SetFunction)))
+  (:import (locus.base.function.core.object SetFunction)))
 
 ; Let S be a set then a magma on S is simply a function of the form
 ; f : S^2 -> S. We consider magmas to be a special subcategory of the
@@ -41,7 +44,7 @@
   (invoke [this arg] (op arg))
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
-(derive Magma :locus.elementary.function.core.protocols/structured-set)
+(derive Magma :locus.base.logic.structure.protocols/structured-set)
 
 ; Display a magma
 (defmethod display-table Magma
@@ -50,7 +53,7 @@
 ; Convert certain objects into magmas
 (defmulti to-magma type)
 
-(defmethod to-magma :locus.elementary.function.core.protocols/semigroup
+(defmethod to-magma :locus.elementary.copresheaf.core.protocols/semigroup
   [semigroup]
 
   (Magma. (underlying-set semigroup) (fn [pair] (semigroup pair))))
@@ -66,7 +69,7 @@
 
   (let [n (count coll)]
     (Magma.
-      (seqable-interval 0 n)
+      (->RangeSet 0 n)
       (fn [[i j]]
         (nth (nth coll i) j)))))
 

@@ -1,10 +1,11 @@
 (ns locus.elementary.relation.binary.sr
   (:require [clojure.set]
-            [locus.elementary.logic.base.core :refer :all]
+            [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.partition.core.setpart :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.vertices :refer :all]
-            [locus.elementary.incidence.system.setpart :refer :all])
-  (:import [locus.elementary.logic.base.core Universal SeqableUniversal]
+            [locus.elementary.relation.binary.vertices :refer :all])
+  (:import [locus.base.logic.core.set Universal SeqableUniversal]
            [locus.elementary.relation.binary.product CompleteRelation BinaryCartesianProduct]))
 
 ; The purpose of this file is to provide support for the implementation of special paramaterized
@@ -16,7 +17,10 @@
 (deftype SeqableRelation [vertices pred attrs]
   clojure.lang.Seqable
   (seq [this]
-    (filter pred (cartesian-power vertices 2)))
+    (let [coll (filter pred (cartesian-power vertices 2))]
+      (if (empty? coll)
+        nil
+        coll)))
 
   clojure.lang.Counted
   (count [this]
@@ -30,6 +34,8 @@
   (applyTo [this args]
     (clojure.lang.AFn/applyToHelper this args)))
 
+(derive SeqableRelation :locus.base.logic.core.set/universal)
+
 (defmethod vertices SeqableRelation
   [rel]
 
@@ -40,14 +46,11 @@
 
   (count (vertices rel)))
 
-(defmethod seqable-universal? SeqableRelation
-  [rel] true)
-
 ; Seqable binary relation
 (defn seqable-binary-relation
   [source target pred]
 
-  (seqable-filter pred (seqable-cartesian-product source target)))
+  (seqable-filter pred (->BinaryCartesianProduct source target)))
 
 ; Fundamental constructs in the theory of relations
 (defn product-relation
@@ -302,6 +305,32 @@
                 (+ (apply + (map (fn [n] (* n n)) ordered-composition))
                    (ordinal-sum-cardinality ordered-composition)))})))
 
+; Create a weak preorder from an ordered sequence of set partitions
+(defn weak-preorder
+  [partitions]
+
+  (apply ordinal-sum (map equivalence-relation partitions)))
+
+; Partition statistics
+(defn partition-ordering-count
+  [n]
+
+  (apply
+    +
+    (map
+      (fn [k]
+        (* (bell-number k)
+           (stirling2 n k)))
+      (range 1 (inc n)))))
+
+(defn partition-covering-count
+  [n]
+
+  (/ (+ (bell-number n)
+        (- (* 3 (bell-number (inc n))))
+        (bell-number (+ n 2)))
+     2))
+
 ; We have special support for partition ordering and covering relations
 ; this is fortunately supportable thanks to our partition ordering
 ; and covering count functions.
@@ -350,7 +379,7 @@
 
   (filter
     tamari-bracketing-vector?
-    (seqable-cartesian-power (set (range n)) n)))
+    (cartesian-power (set (range n)) n)))
 
 (defn tamari-ordering-size
   [n]
@@ -459,5 +488,6 @@
                 (zero? n) 0
                 (= n 1) 1
                 :else (* n (dec n)))})))
+
 
 

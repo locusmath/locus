@@ -1,25 +1,27 @@
 (ns locus.elementary.action.partial.object
-  (:require [locus.elementary.logic.base.core :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.partition.core.setpart :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.effects.global.permutation :refer :all]
+            [locus.base.effects.global.transformation :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.incidence.system.setpart :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
-            [locus.elementary.function.core.object :refer :all]
             [locus.elementary.diset.core.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.lattice.core.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.core.morphism :refer :all]
-            [locus.elementary.action.effects.permutation :refer :all]
-            [locus.elementary.action.effects.transformation :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.group.core.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.action.core.protocols :refer :all]
-            [locus.elementary.function.image.partial-function :refer :all]
-            [locus.elementary.function.image.partial-transformation :refer :all]
-            [locus.elementary.function.image.partial-bijection :refer :all]
-            [locus.elementary.function.image.partial-permutation :refer :all]))
+            [locus.elementary.category.relation.partial-function :refer :all]
+            [locus.elementary.category.relation.partial-bijection :refer :all]
+            [locus.elementary.category.relation.partial-transformation :refer :all]
+            [locus.elementary.category.relation.partial-permutation :refer :all]))
 
 ; Let C be a category, and Arrows(C) its morphism set. Then the morphisms of C act on Arrows(C)
 ; by self induced actions. This produces a structure which we call a partial action system,
@@ -38,7 +40,7 @@
   (action-domain [this action]
     (relation-domain (underlying-relation (func action)))))
 
-(derive PartialActionSystem :locus.elementary.function.core.protocols/structured-set)
+(derive PartialActionSystem :locus.base.logic.structure.protocols/structured-set)
 
 ; Conversion of structures to partial action systems
 (defmulti to-partial-action-system type)

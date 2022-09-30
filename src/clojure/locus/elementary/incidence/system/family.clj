@@ -1,7 +1,7 @@
 (ns locus.elementary.incidence.system.family
   (:require [clojure.set]
-            [locus.elementary.logic.base.core :refer :all])
-  (:import [locus.elementary.logic.base.core Universal SeqableUniversal]))
+            [locus.base.logic.core.set :refer :all])
+  (:import [locus.base.logic.core.set Universal SeqableUniversal]))
 
 ; The basics of set theoretic ontology:
 ; A possible foundation of mathematics is in set theory. In this theory, everything

@@ -1,10 +1,10 @@
 (ns locus.matrix.combinatorics.incidence-matrix
-  (:require [locus.elementary.logic.base.core :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
             [locus.elementary.incidence.system.family :refer :all]
             [locus.elementary.incidence.system.multifamily :refer :all]
             [locus.elementary.incidence.system.clan :refer :all]
             [locus.elementary.incidence.system.multiclan :refer :all]
-            [locus.semiring.core.object :refer :all]
+            [locus.additive.semiring.core.object :refer :all]
             [locus.combinat.hypergraph.object :refer :all]
             [locus.combinat.incidence.incidence-structure :refer :all])
   (:import (locus.combinat.incidence.incidence_structure IncidenceStructure)

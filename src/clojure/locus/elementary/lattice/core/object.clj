@@ -1,14 +1,16 @@
 (ns locus.elementary.lattice.core.object
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.base.nms :refer :all]
-            [locus.elementary.logic.base.sig :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.logic.numeric.nms :refer :all]
+            [locus.base.logic.numeric.sig :refer :all]
+            [locus.base.partition.core.setpart :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.elementary.incidence.signatures.nf :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.incidence.system.setpart :refer :all]
-            [locus.elementary.incidence.signatures.nf :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
-            [locus.elementary.function.core.object :refer :all]
             [locus.elementary.diset.core.object :refer :all]
             [locus.elementary.bijection.core.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
@@ -16,15 +18,17 @@
             [locus.elementary.quiver.core.thin-object :refer :all]
             [locus.elementary.diamond.core.object :refer :all]
             [locus.elementary.difunction.core.object :refer :all]
-            [locus.elementary.gem.core.object :refer :all])
-  (:import (locus.elementary.relation.binary.sr SeqableRelation)
+            [locus.elementary.bijection.core.morphism :refer :all]
+            [locus.elementary.dependency.nset.object :refer :all])
+  (:import (locus.base.function.core.object SetFunction)
+           (locus.base.logic.core.set Multiset)
+           (locus.elementary.relation.binary.sr SeqableRelation)
            (locus.elementary.quiver.core.object Quiver)
            (locus.elementary.diset.core.object Diset)
-           (locus.elementary.function.core.object SetFunction)
            (locus.elementary.bijection.core.object Bijection)
-           (locus.elementary.logic.base.core Multiset)
            (locus.elementary.difunction.core.object Difunction)
-           (locus.elementary.gem.core.object Gem)))
+           (locus.elementary.bijection.core.morphism Gem)
+           (locus.elementary.dependency.nset.object NSet)))
 
 ; A lattice is a thin category C containing all binary products and coproducts.
 ; The coproducts are joins and the products are meets.
@@ -92,7 +96,8 @@
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
 ; Ontology of lattices as categories
-(derive Lattice :locus.elementary.function.core.protocols/lattice)
+(derive Lattice :locus.elementary.copresheaf.core.protocols/lattice)
+
 
 ; We need to be able to have some means of visualizing lattices
 (defmethod visualize Lattice
@@ -126,10 +131,10 @@
   (if-not (lattice-quiver? quiv)
     (throw (new IllegalArgumentException))
     (let [rel (underlying-relation quiv)]
-     (Lattice.
-       (objects quiv)
-       (join-operation rel)
-       (meet-operation rel)))))
+      (Lattice.
+        (objects quiv)
+        (join-operation rel)
+        (meet-operation rel)))))
 
 (defmethod to-lattice :default
   [rel]
@@ -210,7 +215,7 @@
                 colls)))
           (range l))))))
 
-(defmethod product :locus.elementary.function.core.protocols/lattice
+(defmethod product :locus.elementary.copresheaf.core.protocols/lattice
   [& args]
 
   (apply lattice-product args))
@@ -315,7 +320,7 @@
   [n]
 
   (Lattice.
-    (seqable-interval 0 (inc n))
+    (->Upto (inc n))
     max
     min))
 
@@ -394,7 +399,7 @@
     meet-set-pair-congruences))
 
 ; Subalgebras and congruences in the topos Sets^(->)
-(defmethod sub :locus.elementary.function.core.protocols/set-function
+(defmethod sub :locus.base.logic.structure.protocols/set-function
   [func]
 
   (Lattice.
@@ -402,7 +407,7 @@
     join-set-pairs
     meet-set-pairs))
 
-(defmethod con :locus.elementary.function.core.protocols/set-function
+(defmethod con :locus.base.logic.structure.protocols/set-function
   [func]
 
   (Lattice.
@@ -474,6 +479,23 @@
 
   (con (interrelational-component gem)))
 
+; Subobjects and congruences of nsets
+(defmethod sub NSet
+  [nset]
+
+  (->Lattice
+    (nset-subalgebras nset)
+    join-set-sequences
+    meet-set-sequences))
+
+(defmethod con NSet
+  [nset]
+
+  (->Lattice
+    (nset-congruences nset)
+    join-set-sequence-congruences
+    meet-set-sequence-congruences))
+
 ; Subalgebra lattices of lattices
 (defn enumerate-sublattices
   [lattice]
@@ -514,3 +536,4 @@
       (set (enumerate-set-subrelations rel))
       join-set-pairs
       meet-set-pairs)))
+

@@ -1,9 +1,12 @@
 (ns locus.grothendieck.topology.metric.pseudometric
-  (:require [locus.elementary.logic.base.core :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
-            [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.incidence.system.setpart :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.partition.core.setpart :refer :all]
+            [locus.base.partition.core.object :refer [projection]]
             [locus.grothendieck.topology.metric.object :refer :all]))
 
 ; Every function from a set to a metric space produces an induced pseudometric
@@ -14,7 +17,7 @@
   ConcreteObject
   (underlying-set [this] coll))
 
-(derive Pseudometric :locus.elementary.function.core.protocols/structured-set)
+(derive Pseudometric :locus.base.logic.structure.protocols/structured-set)
 
 ; The key property that distinguishes pseudometrics from metrics is that we can
 ; get them induced by any function from a set to a metric space.

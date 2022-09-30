@@ -1,13 +1,19 @@
 (ns locus.elementary.category.core.object
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.order.seq :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.sequence.core.object :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.relation.binary.vertices :refer :all]
-            [locus.elementary.incidence.system.setpart :refer :all]
-            [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
+            [locus.base.partition.core.setpart :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.elementary.category.relation.set-relation :refer :all]
+            [locus.elementary.order.core.object :refer :all]
+            [locus.elementary.preorder.core.object :refer :all]
+            [locus.elementary.preorder.setoid.object :refer :all]
             [locus.elementary.diset.core.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.quiver.core.thin-object :refer :all]
@@ -15,18 +21,13 @@
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.group.core.object :refer :all]
-            [locus.elementary.lattice.core.object :refer :all]
-            [locus.elementary.order.core.poset :refer :all]
-            [locus.elementary.order.core.preposet :refer :all]
-            [locus.elementary.order.setoid.object :refer :all]
-            [locus.elementary.function.image.set-relation :refer :all])
+            [locus.elementary.lattice.core.object :refer :all])
   (:import (locus.elementary.lattice.core.object Lattice)
            (locus.elementary.semigroup.monoid.object Monoid)
-           (locus.elementary.group.core.object Group)
-           (locus.elementary.order.core.preposet Preposet)
-           (locus.elementary.order.setoid.object Setoid)
            (locus.elementary.quiver.unital.object UnitalQuiver)
-           (locus.elementary.order.core.poset Poset)))
+           (locus.elementary.preorder.core.object Preposet)
+           (locus.elementary.preorder.setoid.object Setoid)
+           (locus.elementary.order.core.object Poset)))
 
 ; In topos theoretic foundations, we typically focus on copresheaves over categories.
 ; At first we can build up our copresheaves over a limited set of index categories,
@@ -74,7 +75,7 @@
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
 ; Categories are semigroupoids with identity
-(derive Category :locus.elementary.function.core.protocols/category)
+(derive Category :locus.elementary.copresheaf.core.protocols/category)
 
 ; Compose ordered pairs
 (defn compose-ordered-pairs
@@ -139,7 +140,7 @@
       (morphisms category))))
 
 ; Underlying relation
-(defmethod underlying-relation :locus.elementary.function.core.protocols/category
+(defmethod underlying-relation :locus.elementary.copresheaf.core.protocols/category
   [cat] (underlying-relation (underlying-quiver cat)))
 
 ; General conversion methods
@@ -149,7 +150,7 @@
   [cat] cat)
 
 ; Conversion of monoids
-(defmethod to-category :locus.elementary.function.core.protocols/monoid
+(defmethod to-category :locus.elementary.copresheaf.core.protocols/monoid
   [mon]
 
   (Category.
@@ -162,7 +163,7 @@
       (when (zero? x)
         (.id mon)))))
 
-(defmethod to-category :locus.elementary.function.core.protocols/group
+(defmethod to-category :locus.elementary.copresheaf.core.protocols/group
   [group]
 
   (to-category
@@ -243,7 +244,7 @@
     identity-function))
 
 ; We now need some way of getting the products and coproducts of categories
-(defmethod product :locus.elementary.function.core.protocols/category
+(defmethod product :locus.elementary.copresheaf.core.protocols/category
   [& categories]
 
   (Category.
@@ -270,7 +271,7 @@
           ((.id ^Category (nth categories i)) v))
         obj))))
 
-(defmethod coproduct :locus.elementary.function.core.protocols/category
+(defmethod coproduct :locus.elementary.copresheaf.core.protocols/category
   [& categories]
 
   (Category.
@@ -287,7 +288,7 @@
     (fn [[i v]]
       (list i ((.id ^Category (nth categories i)) v)))))
 
-(defmethod dual :locus.elementary.function.core.protocols/category
+(defmethod dual :locus.elementary.copresheaf.core.protocols/category
   [cat]
 
   (Category.
@@ -301,7 +302,7 @@
 ; The coproduct of monoids
 ; The coproduct of monoids can be computed by converting each of the individual
 ; monoids into categories and computing the coproduct from that.
-(defmethod coproduct :locus.elementary.function.core.protocols/monoid
+(defmethod coproduct :locus.elementary.copresheaf.core.protocols/monoid
   [& monoids]
 
   (apply coproduct (map to-category monoids)))
@@ -405,7 +406,7 @@
       (seqable-power-set (.morphisms category))
       (seqable-power-set (.objects category)))))
 
-(defmethod sub :locus.elementary.function.core.protocols/category
+(defmethod sub :locus.elementary.copresheaf.core.protocols/category
   [category]
 
   (Lattice.
@@ -448,8 +449,8 @@
   [n coll]
 
   (->Quiver
-    (seqable-interval 0 (count coll))
-    (seqable-interval 0 n)
+    (->RangeSet 0 (count coll))
+    (->RangeSet 0 n)
     (fn [i]
       (first (nth coll i)))
     (fn [j]
@@ -478,7 +479,7 @@
   [n]
 
   (thin-category
-    (seqable-interval 0 (* 2 n))
+    (->RangeSet 0 (* 2 n))
     (union
       (set
         (map
@@ -497,7 +498,7 @@
   [n]
 
   (thin-category
-    (seqable-interval 0 (* 2 n))
+    (->RangeSet 0 (* 2 n))
     (apply
       union
       (map
@@ -546,7 +547,7 @@
   [n]
 
   (thin-category
-    (seqable-interval 0 (inc n))
+    (->RangeSet 0 (inc n))
     (union
       (set
         (map
@@ -563,7 +564,7 @@
   [n]
 
   (thin-category
-    (seqable-interval 0 (inc n))
+    (->RangeSet 0 (inc n))
     (union
       (set
         (map
@@ -575,6 +576,16 @@
           (fn [i]
             (list 0 i))
           (range 1 (inc n)))))))
+
+; Index categories for chain copresheaves
+(defn nth-total-order-category
+  [n]
+
+  (let [coll (range (inc n))
+        rel (apply total-order coll)]
+    (thin-category
+      (set coll)
+      rel)))
 
 ; The construction of a free category from a quiver
 (defn free-category
@@ -597,271 +608,6 @@
       [start2 end1 (into path1 path2)])
     (fn [obj]
       [obj obj []])))
-
-; Ontology of categories
-; Test for special classes of categories using multimethods
-(defmethod groupoid? :locus.elementary.function.core.protocols/semigroupoid
-  [category]
-
-  (or
-    (isa? (type category) :locus.elementary.function.core.protocols/groupoid)
-    (and
-      (category? category)
-      (every?
-        (fn [morphism]
-          (isomorphism-element? category morphism))
-        (morphisms category)))))
-
-(defmethod thin-category? :locus.elementary.function.core.protocols/semigroupoid
-  [x]
-
-  (and
-    (category? x)
-    (thin-quiver? (underlying-quiver x))))
-
-(defmethod thin-groupoid? :locus.elementary.function.core.protocols/semigroupoid
-  [x]
-
-  (and
-    (category? x)
-    (symmetric-thin-quiver? (underlying-quiver x))))
-
-(defmethod lattice? :locus.elementary.function.core.protocols/semigroupoid
-  [x]
-
-  (and
-    (thin-category? x)
-    (lattice-relation? (underlying-relation x))))
-
-(defmethod monoid? :locus.elementary.function.core.protocols/category
-  [x]
-
-  (= (count (objects x)) 1))
-
-; A coproduct of monoids is a completely disconnected category
-(defn coproduct-of-monoids?
-  [category]
-
-  (and
-    (category? category)
-    (coreflexive? (underlying-relation category))))
-
-(defn coproduct-of-groups?
-  [category]
-
-  (and
-    (groupoid? category)
-    (coproduct-of-monoids? category)))
-
-; Special types of thin groupoids
-(defn complete-thin-groupoid?
-  [category]
-
-  (and
-    (category? category)
-    (complete-thin-quiver? (underlying-quiver category))))
-
-(defn discrete-category?
-  [category]
-
-  (and
-    (category? category)
-    (coreflexive-thin-quiver? (underlying-quiver category))))
-
-; A connected category has no more then one weakly connected component
-(defn connected-category?
-  [category]
-
-  (and
-    (category? category)
-    (<= (count (weak-connectivity (underlying-relation category))) 1)))
-
-; Skeletal categories
-(defn skeletal-category?
-  [category]
-
-  (and
-    (category? category)
-    (every?
-      (fn [morphism]
-        (or
-          (identity-element? category morphism)
-          (not (isomorphism-element? category morphism))))
-      (morphisms category))))
-
-(defn skeletal-thin-category?
-  [category]
-
-  (and
-    (category? category)
-    (posetal-quiver? (underlying-quiver category))))
-
-(defn total-order-category?
-  [category]
-
-  (and
-    (thin-category? category)
-    (total-order? (underlying-relation category))))
-
-(defn total-preorder-category?
-  [category]
-
-  (and
-    (thin-category? category)
-    (total-preorder? (underlying-relation category))))
-
-(defn endomorphically-trivial-category?
-  [category]
-
-  (and
-    (category? category)
-    (every?
-      (fn [a]
-        (= 1 (quiver-hom-cardinality category a a)))
-      (objects category))))
-
-; Span and cospan categories
-(defn n-span-category?
-  [category]
-
-  (and
-    (thin-category? category)
-    (height-two-lower-tree? (underlying-relation category))))
-
-(defn n-cospan-category?
-  [category]
-
-  (and
-    (thin-category? category)
-    (height-two-upper-tree? (underlying-relation category))))
-
-; Get if a given category is indeed an n-pair category
-(defn n-pair-category?
-  [category]
-
-  (and
-    (thin-category? category)
-    (set-of-ordered-pairs? (underlying-relation category))))
-
-(defn unordered-n-pair-category?
-  [category]
-
-  (and
-    (thin-category? category)
-    (two-regular-equivalence-relation? (underlying-relation category))))
-
-; Ontology of two object categories
-(defn two-object-category?
-  [category]
-
-  (and
-    (category? category)
-    (= (count (objects category)) 2)))
-
-(defn n-arrow-category?
-  [category]
-
-  (and
-    ; check that the argument structure is indeed a category
-    (category? category)
-
-    ; every n arrow category has at most two objects
-    (= (count (objects category)) 2)
-
-    ; check that it also has a total order underneath it
-    (or
-      (discrete-category? category)
-      (total-order? (underlying-relation category)))
-
-    ; check that all endomorphism monoids are trivial
-    (endomorphically-trivial-category? category)))
-
-(defn two-arrow-category?
-  [category]
-
-  (and
-    (n-arrow-category? category)
-    (= (count (morphisms category)) 4)))
-
-(defn three-arrow-category?
-  [category]
-
-  (and
-    (n-arrow-category? category)
-    (= (count (morphisms category)) 3)))
-
-(defn four-arrow-category?
-  [category]
-
-  (and
-    (n-arrow-category? category)
-    (= (count (morphisms category)) 4)))
-
-(defn permutable-quiver-index-category?
-  [category]
-
-  (and
-    (category? category)
-    (= (count (objects category)) 2)
-    (let [rel (underlying-relation category)]
-      (and
-        (total-order? rel)
-        (let [a (first (minimal-vertices rel))
-              b (first (maximal-vertices rel))]
-          (= 2 (quiver-hom-cardinality category a b))
-          (= 2 (quiver-hom-cardinality category a a))
-          (let [[source target] (seq (quiver-hom-class category a b))
-                edge-identity (identity-morphism-of category a)
-                transpose (first
-                            (disj
-                              (set
-                                (quiver-hom-class category a a))
-                              edge-identity))]
-            (and
-              (= (category (list transpose transpose)) edge-identity)
-              (= (category (list source transpose)) target)
-              (= (category (list target transpose)) source))))))))
-
-; Ontology of three
-(defn three-object-category?
-  [category]
-
-  (and
-    (category? category)
-    (= (count (objects category)) 3)))
-
-; Ontology of four object categories
-(defn four-object-category?
-  [category]
-
-  (and
-    (category? category)
-    (= (count (objects category)) 4)))
-
-(defn diamond-category?
-  [category]
-
-  (and
-    (four-object-category? category)
-    (thin-category? category)
-    (let [rel (underlying-relation category)]
-      (and
-        (weak-order? rel)
-        (= [1 2 1] (vec (map count (lower-first-ranking rel))))))))
-
-(defn gem-category?
-  [category]
-
-  (and
-    (four-object-category? category)
-    (thin-category? category)
-    (let [rel (underlying-relation category)]
-      (and
-        (total-preorder? rel)
-        (every?
-          (fn [i]
-            (= (count i) 2))
-          (strong-connectivity rel))))))
 
 ; The new theory of doubles of categories
 ; A double of a category C combines it in an ordered fashion with
@@ -898,10 +644,432 @@
     (fn [[i v]]
       (list i (identity-morphism-of category v)))))
 
+; Special classes of categories
+(defn connected-category?
+  [category]
 
+  (and
+    (category? category)
+    (<= (count (weak-connectivity (underlying-relation category))) 1)))
 
+(defn skeletal-category?
+  [category]
 
+  (and
+    (category? category)
+    (every?
+      (fn [morphism]
+        (or
+          (identity-element? category morphism)
+          (not (isomorphism-element? category morphism))))
+      (morphisms category))))
 
+(defn two-object-category?
+  [category]
 
+  (and
+    (category? category)
+    (= (count (objects category)) 2)))
 
+(defn three-object-category?
+  [category]
 
+  (and
+    (category? category)
+    (= (count (objects category)) 3)))
+
+(defn four-object-category?
+  [category]
+
+  (and
+    (category? category)
+    (= (count (objects category)) 4)))
+
+; Endotrivial categories
+(defn endotrivial-category?
+  [category]
+
+  (and
+    (category? category)
+    (every?
+      (fn [a]
+        (= 1 (quiver-hom-cardinality category a a)))
+      (objects category))))
+
+(defn connected-endotrivial-category?
+  [category]
+
+  (and
+    (endotrivial-category? category)
+    (<= (count (weak-connectivity (underlying-relation category))) 1)))
+
+; Ontology of thin categories
+(defmethod thin-category? :locus.elementary.copresheaf.core.protocols/semigroupoid
+  [x]
+
+  (and
+    (category? x)
+    (thin-quiver? (underlying-quiver x))))
+
+(defn connected-thin-category?
+  [category]
+
+  (and
+    (thin-category? category)
+    (<= (count (weak-connectivity (underlying-relation category))) 1)))
+
+; Ontology of thin groupoids
+(defmethod thin-groupoid? :locus.elementary.copresheaf.core.protocols/semigroupoid
+  [x]
+
+  (and
+    (category? x)
+    (symmetric-thin-quiver? (underlying-quiver x))))
+
+(defn complete-thin-groupoid?
+  [category]
+
+  (and
+    (category? category)
+    (complete-thin-quiver? (underlying-quiver category))))
+
+(defn discrete-category?
+  [category]
+
+  (and
+    (category? category)
+    (coreflexive-thin-quiver? (underlying-quiver category))))
+
+(defn regular-thin-groupoid?
+  [category]
+
+  (and
+    (thin-category? category)
+    (regular-equivalence-relation? (underlying-relation category))))
+
+(defn two-regular-thin-groupoid?
+  [category]
+
+  (and
+    (thin-category? category)
+    (two-regular-equivalence-relation? (underlying-relation category))))
+
+(defn three-regular-thin-groupoid?
+  [category]
+
+  (and
+    (thin-category? category)
+    (three-regular-equivalence-relation? (underlying-relation category))))
+
+(defn four-regular-thin-groupoid?
+  [category]
+
+  (and
+    (thin-category? category)
+    (four-regular-equivalence-relation? (underlying-relation category))))
+
+; Ontology of totally preordered categories without non-trivial endomorphisms
+(defn totally-preordered-endotrivial-category?
+  [category]
+
+  (and
+    (endotrivial-category? category)
+    (total-preorder? (underlying-relation category))))
+
+(defn totally-ordered-endotrivial-category?
+  [category]
+
+  (and
+    (endotrivial-category? category)
+    (total-order? (underlying-relation category))))
+
+(defn ordered-pair-endotrivial-category?
+  [category]
+
+  (and
+    (endotrivial-category? category)
+    (= (count (objects category)) 2)
+    (total-order? (underlying-relation category))))
+
+(defn ordered-triple-endotrivial-category?
+  [category]
+
+  (and
+    (endotrivial-category? category)
+    (= (count (objects category)) 3)
+    (total-order? (underlying-relation category))))
+
+(defn ordered-quadruple-endotrivial-category?
+  [category]
+
+  (and
+    (endotrivial-category? category)
+    (= (count (objects category)) 4)
+    (total-order? (underlying-relation category))))
+
+(defn n-arrow-category?
+  [category]
+
+  (and
+    ; check that the argument structure is indeed a category
+    (category? category)
+
+    ; every n arrow category has at most two objects
+    (= (count (objects category)) 2)
+
+    ; check that it also has a total order underneath it
+    (or
+      (discrete-category? category)
+      (total-order? (underlying-relation category)))
+
+    ; check that all endomorphism monoids are trivial
+    (endotrivial-category? category)))
+
+(defn one-arrow-category?
+  [category]
+
+  (and
+    (n-arrow-category? category)
+    (= (count (morphisms category)) 3)))
+
+(defn two-arrow-category?
+  [category]
+
+  (and
+    (n-arrow-category? category)
+    (= (count (morphisms category)) 4)))
+
+(defn three-arrow-category?
+  [category]
+
+  (and
+    (n-arrow-category? category)
+    (= (count (morphisms category)) 5)))
+
+(defn four-arrow-category?
+  [category]
+
+  (and
+    (n-arrow-category? category)
+    (= (count (morphisms category)) 6)))
+
+(defn total-order-category?
+  [category]
+
+  (and
+    (thin-category? category)
+    (total-order? (underlying-relation category))))
+
+(defn total-preorder-category?
+  [category]
+
+  (and
+    (thin-category? category)
+    (total-preorder? (underlying-relation category))))
+
+; Gem categories
+(defn gem-relation?
+  [rel]
+
+  (and
+    (total-preorder? rel)
+    (every?
+      (fn [i]
+        (= (count i) 2))
+      (strong-connectivity rel))))
+
+(defn gem-category?
+  [category]
+
+  (and
+    (= (count (objects category)) 4)
+    (thin-category? category)
+    (let [rel (underlying-relation category)]
+      (gem-relation? rel))))
+
+; Endotrivial categories constructed by coproducts
+(defn n-pair-category?
+  [category]
+
+  (and
+    (thin-category? category)
+    (set-of-ordered-pairs? (underlying-relation category))))
+
+(defn n-gem-category?
+  [category]
+
+  (and
+    (thin-category? category)
+    (let [rel (underlying-relation category)]
+      (every?
+        (fn [component]
+          (gem-relation? component))
+        (weakly-connected-components rel)))))
+
+; Additional classes of categories constructed by weak orders
+(defn n-span-category?
+  [category]
+
+  (and
+    (thin-category? category)
+    (height-two-lower-tree? (underlying-relation category))))
+
+(defn n-cospan-category?
+  [category]
+
+  (and
+    (thin-category? category)
+    (height-two-upper-tree? (underlying-relation category))))
+
+; Diamond categories
+(defn diamond-relation?
+  [rel]
+
+  (and
+    (weak-order? rel)
+    (= [1 2 1] (vec (map count (lower-first-ranking rel))))))
+
+(defn double-diamond-relation?
+  [rel]
+
+  (and
+    (weak-preorder? rel)
+    (let [components (strong-connectivity rel)]
+      (and
+        (every?
+          (fn [i]
+            (= (count i) 2))
+          components)
+        (let [component-selections (map first components)
+              selected-relation (subrelation rel component-selections)]
+          (diamond-relation? selected-relation))))))
+
+(defn double-diamond-category?
+  [category]
+
+  (and
+    (thin-category? category)
+    (= (count (objects category)) 8)
+    (double-diamond-relation? (underlying-relation category))))
+
+(defn diamond-category?
+  [category]
+
+  (and
+    (thin-category? category)
+    (= (count (objects category)) 4)
+    (diamond-relation? (underlying-relation category))))
+
+(defn higher-diamond-category?
+  [category]
+
+  (and
+    (thin-category? category)
+    (let [rel (underlying-relation category)]
+      (and
+        (weak-order? rel)
+        (let [ranking (lower-first-ranking rel)]
+          (and
+            (= (count ranking) 3)
+            (= (count (first ranking)) 1)
+            (= (count (last ranking)) 1)))))))
+
+(defn n-diamond-category?
+  [category]
+
+  (and
+    (thin-category? category)
+    (let [rel (underlying-relation category)]
+      (every?
+        (fn [component]
+          (diamond-relation? component))
+        (weakly-connected-components rel)))))
+
+; An attempt at describing cube categories
+(defn cube-category?
+  [category]
+
+  (and
+    (thin-category? category)
+    (= (count (objects category)) 8)
+    (boolean-algebra-relation? (underlying-relation category))))
+
+; Special types of endotrivial categories
+(defn skeletal-endotrivial-category?
+  [category]
+
+  (and
+    (endotrivial-category? category)
+    (antisymmetric? (underlying-relation category))))
+
+(defn skeletal-thin-category?
+  [category]
+
+  (and
+    (category? category)
+    (posetal-quiver? (underlying-quiver category))))
+
+(defmethod lattice? :locus.elementary.copresheaf.core.protocols/semigroupoid
+  [x]
+
+  (and
+    (thin-category? x)
+    (lattice-relation? (underlying-relation x))))
+
+; Endomorphism only categories
+(defmethod monoid? :locus.elementary.copresheaf.core.protocols/monoid
+  [x]
+
+  (= (count (objects x)) 1))
+
+(defn coproduct-of-monoids?
+  [category]
+
+  (and
+    (category? category)
+    (coreflexive? (underlying-relation category))))
+
+(defn coproduct-of-groups?
+  [category]
+
+  (and
+    (groupoid? category)
+    (coproduct-of-monoids? category)))
+
+; Special classes of categories
+(defmethod groupoid? :locus.elementary.copresheaf.core.protocols/semigroupoid
+  [category]
+
+  (or
+    (isa? (type category) :locus.elementary.copresheaf.core.protocols/groupoid)
+    (and
+      (category? category)
+      (every?
+        (fn [morphism]
+          (isomorphism-element? category morphism))
+        (morphisms category)))))
+
+(defn permutable-quiver-index-category?
+  [category]
+
+  (and
+    (category? category)
+    (= (count (objects category)) 2)
+    (let [rel (underlying-relation category)]
+      (and
+        (total-order? rel)
+        (let [a (first (minimal-vertices rel))
+              b (first (maximal-vertices rel))]
+          (= 2 (quiver-hom-cardinality category a b))
+          (= 2 (quiver-hom-cardinality category a a))
+          (let [[source target] (seq (quiver-hom-class category a b))
+                edge-identity (identity-morphism-of category a)
+                transpose (first
+                            (disj
+                              (set
+                                (quiver-hom-class category a a))
+                              edge-identity))]
+            (and
+              (= (category (list transpose transpose)) edge-identity)
+              (= (category (list source transpose)) target)
+              (= (category (list target transpose)) source))))))))

@@ -1,7 +1,8 @@
 (ns locus.grothendieck.topology.metric.morphism
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
-            [locus.elementary.function.core.object :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.grothendieck.topology.metric.object :refer :all])
   (:import (locus.grothendieck.topology.metric.object MetricSpace)))
 

@@ -1,28 +1,28 @@
 (ns locus.elementary.group.permutation.permutation-group
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.order.seq :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.sequence.core.object :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.effects.global.permutation :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
-            [locus.elementary.function.core.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.group.core.object :refer :all]
-            [locus.elementary.action.effects.permutation :refer :all]
             [locus.elementary.action.global.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.quiver.dependency.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.elementary.quiver.permutable.object :refer :all]
-            [locus.elementary.hom.functional.sethom :refer :all]
             [locus.elementary.group.core.morphism :refer :all]
-            [locus.elementary.lens.core.lens-type :refer :all]
-            [locus.elementary.group.core.aut :refer :all])
-  (:import (locus.elementary.action.effects.permutation Permutation)
-           (locus.elementary.function.core.object SetFunction)
-           (locus.elementary.group.core.morphism GroupMorphism)
-           (locus.elementary.lens.core.lens_type LensType)))
+            [locus.elementary.group.core.aut :refer :all]
+            [locus.elementary.category.hom.sethom :refer :all])
+  (:import (locus.base.effects.global.permutation Permutation)
+           (locus.base.function.core.object SetFunction)
+           (locus.elementary.group.core.morphism GroupMorphism)))
 
 ; Let G be a concrete category containing only one object for which each morphism is an isomorphism. Then
 ; each element of G is naturally represented by its set valued functor as a permutation, and it follows
@@ -74,7 +74,7 @@
   (morphism-to-function [this morphism] (SetFunction. coll coll (fn [x] (action morphism x)))))
 
 ; Permutation groups are both groups and concrete categories
-(derive PermutationGroup :locus.elementary.function.core.protocols/concrete-group)
+(derive PermutationGroup :locus.elementary.copresheaf.core.protocols/concrete-group)
 
 ; Parts of permutation groups
 (defmethod identity-elements PermutationGroup
@@ -243,9 +243,9 @@
   (->SeqableUniversal
     (fn [i]
       (and
-        (total-permutation? i)
+        (endofunction? i)
         (= (inputs i) coll)))
-    (map map->permutation (enumerate-permutation-maps (vec coll)))
+    (map to-permutation (enumerate-permutation-maps (vec coll)))
     {:count (factorial (count coll))}))
 
 (defn as-permutation-group
@@ -282,17 +282,12 @@
 (defn alternating-group
   [coll]
 
-  (filter-permutation-group even-total-permutation? (sym coll)))
+  (filter-permutation-group even-permutation? (sym coll)))
 
 (defn lens-permutation-group
   [active-partition stable-partition]
 
   (lens-group-restriction (sym (apply union active-partition)) active-partition stable-partition))
-
-(defmethod to-permutation-group LensType
-  [^LensType lens]
-
-  (lens-permutation-group (.active lens) (.stable lens)))
 
 (defn orbit-symmetric-permutation-group
   [partition]

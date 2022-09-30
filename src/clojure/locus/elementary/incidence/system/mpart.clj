@@ -1,14 +1,14 @@
 (ns locus.elementary.incidence.system.mpart
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.base.ap :refer :all]
-            [locus.elementary.logic.order.seq :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.numeric.ap :refer :all]
+            [locus.base.sequence.core.object :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.incidence.system.setpart :refer :all]
             [locus.elementary.incidence.system.family :refer :all]
             [locus.elementary.incidence.system.multifamily :refer :all]
             [locus.elementary.incidence.system.clan :refer :all])
-  (:import [locus.elementary.logic.base.core Universal Multiset]))
+  (:import [locus.base.logic.core.set Universal Multiset]))
 
 ; Enumeration of multiset partitions by properties intrinsic to themselves
 ; including their signatures as multisets. This includes all multiset 

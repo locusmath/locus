@@ -1,20 +1,21 @@
 (ns locus.elementary.action.local.object
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.base.lens.core.object :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.effects.local.transformation :refer :all]
+            [locus.base.effects.local.permutation :refer :all]
+            [locus.base.effects.global.transformation :refer :all]
+            [locus.base.effects.global.permutation :refer :all]
             [locus.elementary.lattice.core.object :refer :all]
-            [locus.elementary.lens.core.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.core.morphism :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
-            [locus.elementary.action.effects.permutation :refer :all]
-            [locus.elementary.action.effects.transformation :refer :all]
-            [locus.elementary.action.effects.local-permutation :refer :all]
-            [locus.elementary.action.effects.local-transformation :refer :all]
             [locus.elementary.action.global.object :refer :all]
             [locus.elementary.action.core.protocols :refer :all])
-  (:import (locus.elementary.action.effects.local_permutation LocalPermutation)
-           (locus.elementary.action.effects.local_transformation LocalTransformation)))
+  (:import (locus.base.effects.local.permutation LocalPermutation)
+           (locus.base.effects.local.transformation LocalTransformation)))
 
 ; A lens type can be defined by a pair of congruences in a topos of monoid actions.
 ; On the other hand, a lens itself is defined by a pair consisting of a getter
@@ -38,7 +39,7 @@
       (fn [prop]
         (apply-action mset action prop)))))
 
-(derive LocalMSet :locus.elementary.function.core.protocols/mset)
+(derive LocalMSet :locus.elementary.copresheaf.core.protocols/mset)
 
 ; Special methods for local monoid actions
 (defmethod globalize LocalMSet

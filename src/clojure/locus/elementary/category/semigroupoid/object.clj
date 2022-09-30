@@ -1,11 +1,13 @@
 (ns locus.elementary.category.semigroupoid.object
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.order.seq :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.sequence.core.object :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.partition.core.setpart :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.incidence.system.setpart :refer :all]
-            [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.lattice.core.object :refer :all]
@@ -43,7 +45,7 @@
 
 ; Semigroupoid identification and testing which semigroupoids
 ; are actually valid categories
-(derive Semigroupoid :locus.elementary.function.core.protocols/semigroupoid)
+(derive Semigroupoid :locus.elementary.copresheaf.core.protocols/semigroupoid)
 
 ; Special tests for categories as semigroupoids
 (defn identity-morphism-element?
@@ -158,7 +160,7 @@
 
   (thin-semigroupoid
     (->SeqableRelation
-      (seqable-interval 0 n)
+      (->Upto n)
       (fn [[a b]]
         (< a b))
       {})))
@@ -175,7 +177,7 @@
     f))
 
 ; Coproduct of semigroupoids
-(defmethod coproduct :locus.elementary.function.core.protocols/semigroupoid
+(defmethod coproduct :locus.elementary.copresheaf.core.protocols/semigroupoid
   [& semigroupoids]
 
   (Semigroupoid.
@@ -192,7 +194,7 @@
         (let [c (nth semigroupoids i)]
           (list i (c (list v w))))))))
 
-(defmethod product :locus.elementary.function.core.protocols/semigroupoid
+(defmethod product :locus.elementary.copresheaf.core.protocols/semigroupoid
   [& semigroupoids]
 
   (Semigroupoid.
@@ -217,12 +219,12 @@
         semigroupoids))))
 
 ; The coproducts of semigroups
-(defmethod coproduct :locus.elementary.function.core.protocols/semigroup
+(defmethod coproduct :locus.elementary.copresheaf.core.protocols/semigroup
   [& semigroups]
 
   (apply coproduct (map to-semigroupoid semigroups)))
 
-(defmethod dual :locus.elementary.function.core.protocols/semigroupoid
+(defmethod dual :locus.elementary.copresheaf.core.protocols/semigroupoid
   [semigroupoid]
 
   (Semigroupoid.

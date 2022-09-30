@@ -1,10 +1,11 @@
 (ns locus.elementary.semigroup.numerical.numerical-monoid
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.base.ap :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.numeric.ap :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
             [locus.elementary.lattice.core.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
@@ -49,7 +50,7 @@
   (invoke [this [a b]] (+ a b))
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
-(derive NumericalMonoid :locus.elementary.function.core.protocols/monoid)
+(derive NumericalMonoid :locus.elementary.copresheaf.core.protocols/monoid)
 
 ; Restore the morphic generating set of the numerical monoid
 (defmethod morphic-gens NumericalMonoid

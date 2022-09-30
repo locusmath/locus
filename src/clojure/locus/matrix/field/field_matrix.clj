@@ -1,12 +1,14 @@
 (ns locus.matrix.field.field-matrix
   (:refer-clojure :exclude [+ * - /])
-  (:require [locus.elementary.logic.base.core :refer :all :exclude [add]]
+  (:require [locus.base.logic.core.set :refer :all :exclude [add]]
             [locus.elementary.group.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
-            [locus.semiring.core.object :refer :all]
-            [locus.ring.core.object :refer :all]
-            [locus.ring.core.protocols :refer :all]
-            [locus.ring.core.arithmetic :refer :all])
+            [locus.additive.base.core.protocols :refer :all]
+            [locus.additive.base.generic.arithmetic :refer :all]
+            [locus.additive.ring.core.object :refer :all]
+            [locus.additive.semiring.core.object :refer :all]
+            [locus.additive.semifield.core.object :refer :all]
+            [locus.additive.field.core.object :refer :all])
   (:import [org.apache.commons.math3.linear FieldLUDecomposition LUDecomposition FieldMatrix RealMatrix Array2DRowRealMatrix Array2DRowFieldMatrix Array2DRowFieldMatrix FieldLUDecomposition MatrixUtils]
            [org.apache.commons.math3.complex Complex]
            (locus.elementary.group.core.object Group)

@@ -1,14 +1,15 @@
 (ns locus.elementary.semigroup.monoid.morphism
-  (:require [locus.elementary.logic.base.core :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
             [locus.elementary.difunction.core.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.core.morphism :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all])
-  (:import [locus.elementary.function.core.object SetFunction]
+  (:import [locus.base.function.core.object SetFunction]
            [locus.elementary.diamond.core.object Diamond]
            (locus.elementary.semigroup.monoid.object Monoid)))
 
@@ -51,7 +52,7 @@
         (function-product sf sf)
         sf))))
 
-(derive MonoidMorphism :locus.elementary.function.core.protocols/monoid-homomorphism)
+(derive MonoidMorphism :locus.elementary.copresheaf.core.protocols/monoid-homomorphism)
 
 (defn monoid-homomorphism?
   [func]

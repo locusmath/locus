@@ -1,19 +1,21 @@
 (ns locus.semigroup-algebra.core.object
   (:refer-clojure :exclude [+ * - /])
-  (:require [locus.elementary.logic.base.core :refer :all :exclude [add]]
+  (:require [locus.base.logic.core.set :refer :all :exclude [add]]
+            [locus.base.logic.limit.product :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.group.core.object :refer :all]
             [locus.elementary.semigroup.free.free-semigroup :refer :all]
-            [locus.elementary.hom.functional.sethom :refer :all]
-            [locus.ring.core.object :refer :all]
-            [locus.ring.core.protocols :refer :all]
-            [locus.ring.core.arithmetic :refer :all]
-            [locus.semiring.set.rset :refer :all]
-            [locus.semiring.core.object :refer :all])
+            [locus.elementary.category.hom.sethom :refer :all]
+            [locus.additive.ring.core.object :refer :all]
+            [locus.additive.base.core.protocols :refer :all]
+            [locus.additive.base.generic.arithmetic :refer :all]
+            [locus.additive.semiring.core.object :refer :all]
+            [locus.module.vector.rset :refer :all])
   (:import (locus.elementary.semigroup.monoid.object Monoid)
            (locus.elementary.semigroup.core.object Semigroup)
            (locus.elementary.group.core.object Group))

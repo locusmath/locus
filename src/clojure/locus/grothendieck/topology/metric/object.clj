@@ -1,8 +1,10 @@
 (ns locus.grothendieck.topology.metric.object
-  (:require [locus.elementary.logic.base.core :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
-            [locus.elementary.function.core.object :refer :all]))
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.base.function.core.object :refer :all]))
 
 ; Objects in the category of metric spaces and short maps
 ; Every metric space is associated with a topological space, called its metric
@@ -12,7 +14,7 @@
   ConcreteObject
   (underlying-set [this] coll))
 
-(derive MetricSpace :locus.elementary.function.core.protocols/structured-set)
+(derive MetricSpace :locus.base.logic.structure.protocols/structured-set)
 
 (defn distance
   [metric a b]

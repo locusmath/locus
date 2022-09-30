@@ -1,15 +1,16 @@
 (ns locus.grothendieck.sheaf.core.object
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.function.core.object :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.elementary.category.hom.sethom :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
-            [locus.elementary.hom.functional.sethom :refer :all]
             [locus.elementary.topoi.copresheaf.object :refer :all]
             [locus.grothendieck.topology.core.object :refer :all]
             [locus.grothendieck.topology.core.morphism :refer :all]
             [locus.grothendieck.site.core.object :refer :all])
-  (:import (locus.elementary.function.core.object SetFunction)))
+  (:import (locus.base.function.core.object SetFunction)))
 
 ; Let C be a Grothendeick site on a category. Then Sh(X) is its Grothendeick
 ; topos of sheaves on a site. The objects of this topos are implemented in the

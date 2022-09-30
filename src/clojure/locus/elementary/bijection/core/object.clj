@@ -1,14 +1,18 @@
 (ns locus.elementary.bijection.core.object
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.logic.order.seq :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.incidence.system.setpart :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
-            [locus.elementary.function.core.object :refer :all])
-  (:import [locus.elementary.logic.base.core SeqableUniversal]
-           [locus.elementary.function.core.object SetFunction]))
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
+            [locus.base.sequence.core.object :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.base.function.core.object :refer :all]
+            [locus.base.invertible.function.object :refer :all]
+            [locus.base.partition.core.setpart :refer :all]
+            [locus.base.partition.core.object :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.elementary.relation.binary.product :refer :all])
+  (:import [locus.base.logic.core.set SeqableUniversal]
+           [locus.base.function.core.object SetFunction]
+           (locus.base.invertible.function.object InvertibleFunction)
+           (clojure.lang IPersistentMap)))
 
 ; Let K_2 be the thin category consisting of two objects and four morphisms. Then K_2 has
 ; an identity arrow for each of its two objects and one arrow going from each object
@@ -31,22 +35,43 @@
   (inputs [this] in)
   (outputs [this] out)
 
+  ConcreteObject
+  (underlying-set [this]
+    (->CartesianCoproduct
+      [(inputs this) (outputs this)]))
+
   Invertible
   (inv [this]
     (Bijection. out in backward forward))
-  
+
   clojure.lang.IFn
   (invoke [this obj]
     (forward obj))
   (applyTo [this args]
     (clojure.lang.AFn/applyToHelper this args)))
 
-(derive Bijection :locus.elementary.function.core.protocols/bijection)
+(derive Bijection :locus.elementary.copresheaf.core.protocols/bijection)
 
-; Visualizer
-(defmethod visualize Bijection
-  [a]
-  (visualize (underlying-relation a)))
+; Convert bijections to invertible functions
+(defmethod to-invertible-function Bijection
+  [^Bijection func]
+
+  (->InvertibleFunction (.-in func) (.-out func) (.-forward func) (.-backward func)))
+
+; Convert relations to bijections
+(defn relation-to-bijection
+  [rel]
+
+  (let [in (relation-domain rel)
+        out (relation-codomain rel)
+        reverse-rel (set (map reverse rel))
+        func (into {} (map vec rel))
+        inverse-func (into {} (map vec reverse-rel))]
+    (->Bijection
+      in
+      out
+      func
+      inverse-func)))
 
 ; Conversion routines to turn things into bijections
 (defmulti to-bijection type)
@@ -54,7 +79,12 @@
 (defmethod to-bijection Bijection
   [bijection] bijection)
 
-(defmethod to-bijection :locus.elementary.function.core.protocols/set-function
+(defmethod to-bijection InvertibleFunction
+  [^InvertibleFunction func]
+
+  (Bijection. (.-in func) (.-out func) (.-forward func) (.-backward func)))
+
+(defmethod to-bijection :locus.base.logic.structure.protocols/set-function
   [func]
 
   (if (not (invertible? func))
@@ -67,38 +97,43 @@
       (fn [x]
         (first (fiber func x))))))
 
-; Relational bijections
-(defn relation-to-bijection
-  [rel]
-
-  (when (single-valued-binary-relation? rel)
-    (Bijection.
-      (relation-domain rel)
-      (relation-codomain rel)
-      (fn [x]
-        (call rel x))
-      (fn [y]
-        (call (transpose rel) y)))))
-
-(defmethod to-bijection :default
+(defmethod to-bijection IPersistentMap
   [coll]
 
-  (if (not (reversible-binary-relation? coll))
+  (if (not (distinct-seq? (vals coll)))
     (throw (new IllegalArgumentException))
-    (relation-to-bijection coll)))
+    (Bijection.
+      (set (keys coll))
+      (set (vals coll))
+      coll
+      (apply
+        array-map
+        (apply concat (map reverse (seq coll)))))))
 
-; The bijection builder method
-(defn mapbn
+
+(defmethod to-bijection :locus.base.logic.core.set/universal
   [coll]
 
-  (when (distinct-seq? (vals coll))
-    (Bijection.
-     (set (keys coll))
-     (set (vals coll))
-     coll
-     (apply
-      array-map
-      (apply concat (map reverse (seq coll)))))))
+  (relation-to-bijection coll))
+
+; Composition and identities in the groupoid of bijections
+(defmethod compose* Bijection
+  [f g]
+
+  (Bijection.
+    (inputs g)
+    (outputs f)
+    (comp (.forward f) (.forward g))
+    (comp (.backward f) (.backward g))))
+
+(defn identity-bijection
+  [coll]
+
+  (->Bijection
+    coll
+    coll
+    identity
+    identity))
 
 ; Create a bijection from a simple pair
 (defn pair-bijection
@@ -113,57 +148,37 @@
 ; We can also get the bijection cardinality
 (defn bijection-cardinality
   [func]
-  
+
   (count (inputs func)))
-
-; Composition
-(defn compose-bijections
-  ([f] f)
-  ([f g]
-   (Bijection.
-    (inputs g)
-    (outputs f)
-    (comp (.forward f) (.forward g))
-    (comp (.backward g) (.backward f))))
-  ([f g & more] (reduce compose-functions (compose-functions f g) more)))
-
-(defmethod compose* Bijection
-  [a b] (compose-bijections a b))
-
-; Identity
-(defn identity-bijection
-  [coll]
-
-  (Bijection. coll coll identity identity))
 
 ; We can now define a product bijection
 (defn bijection-product
   [& bijections]
 
   (Bijection.
-   (apply cartesian-product (map inputs bijections))
-   (apply cartesian-product (map outputs bijections))
-   (fn [coll]
-     (map-indexed
-      (fn [i v]
-        ((nth bijections i) v))
-      coll))
-   (fn [coll]
-     (map-indexed
-      (fn [i v]
-        ((.backward (nth bijections i)) v))
-      coll))))
+    (apply cartesian-product (map inputs bijections))
+    (apply cartesian-product (map outputs bijections))
+    (fn [coll]
+      (map-indexed
+        (fn [i v]
+          ((nth bijections i) v))
+        coll))
+    (fn [coll]
+      (map-indexed
+        (fn [i v]
+          ((.backward (nth bijections i)) v))
+        coll))))
 
 (defn bijection-coproduct
   [& bijections]
 
   (Bijection.
-   (apply cartesian-coproduct (map inputs bijections))
-   (apply cartesian-coproduct (map outputs bijections))
-   (fn [[i v]]
-     (list i ((nth bijections i) v)))
-   (fn [[i v]]
-     (list i ((.backward (nth bijections i)) v)))))
+    (apply cartesian-coproduct (map inputs bijections))
+    (apply cartesian-coproduct (map outputs bijections))
+    (fn [[i v]]
+      (list i ((nth bijections i) v)))
+    (fn [[i v]]
+      (list i ((.backward (nth bijections i)) v)))))
 
 (defmethod product Bijection
   [& args]
@@ -192,10 +207,10 @@
   [bijection new-in new-out]
 
   (Bijection.
-   new-in
-   new-out
-   (.forward bijection)
-   (.backward bijection)))
+    new-in
+    new-out
+    (.forward bijection)
+    (.backward bijection)))
 
 (defn restrict-bijection
   [bijection new-in]
@@ -222,18 +237,18 @@
   [bijection]
 
   (map
-   (fn [input-set]
-     (list input-set (set-image bijection input-set)))
-   (seqable-power-set (inputs bijection))))
+    (fn [input-set]
+      (list input-set (set-image bijection input-set)))
+    (seqable-power-set (inputs bijection))))
 
 (defn all-subbijections
   [bijection]
 
   (SeqableUniversal.
-   (fn [[a b]]
-     (bijection-subobject? bijection a b))
-   (enumerate-subbijections bijection)
-   {:count (number-of-subbijections bijection)}))
+    (fn [[a b]]
+      (bijection-subobject? bijection a b))
+    (enumerate-subbijections bijection)
+    {:count (number-of-subbijections bijection)}))
 
 (defn subbijections
   [bijection]
@@ -251,9 +266,9 @@
   [bijection]
 
   (map
-   (fn [partition]
-     (list partition (partition-image bijection partition)))
-   (set-partitions (inputs bijection))))
+    (fn [partition]
+      (list partition (partition-image bijection partition)))
+    (set-partitions (inputs bijection))))
 
 (defn all-bijection-congruences
   [bijection]
@@ -268,14 +283,14 @@
   [bijection in-partition out-partition]
 
   (Bijection.
-   in-partition
-   out-partition
-   (fn [in-part]
-     (projection out-partition
-                 (bijection (first in-part))))
-   (fn [out-part]
-     (projection in-partition
-                 ((.backward bijection) (first out-part))))))
+    in-partition
+    out-partition
+    (fn [in-part]
+      (projection out-partition
+                  (bijection (first in-part))))
+    (fn [out-part]
+      (projection in-partition
+                  ((.backward bijection) (first out-part))))))
 
 (defn quotient-bijections
   [bijection]
@@ -358,30 +373,31 @@
   [a b]
 
   (and
-   (bijection? a)
-   (bijection? b)
-   (not= a b)))
+    (bijection? a)
+    (bijection? b)
+    (not= a b)))
 
 (defn !=bijection-inputs
   [a b]
 
   (and
-   (bijection? a)
-   (bijection? b)
-   (not= (inputs a) (inputs b))))
+    (bijection? a)
+    (bijection? b)
+    (not= (inputs a) (inputs b))))
 
 (defn !=bijection-outputs
   [a b]
 
   (and
-   (bijection? a)
-   (bijection? b)
-   (not= (outputs a) (outputs b))))
+    (bijection? a)
+    (bijection? b)
+    (not= (outputs a) (outputs b))))
 
 (defn !=bijection-cardinality
   [a b]
 
   (and
-   (bijection? a)
-   (bijection? b)
-   (not= (bijection-cardinality a) (bijection-cardinality b))))
+    (bijection? a)
+    (bijection? b)
+    (not= (bijection-cardinality a) (bijection-cardinality b))))
+

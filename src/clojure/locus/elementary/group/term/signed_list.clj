@@ -1,6 +1,6 @@
 (ns locus.elementary.group.term.signed-list
-  (:require [locus.elementary.logic.base.core :refer :all]
-            [locus.elementary.function.core.protocols :refer :all]
+  (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.group.term.signed-multiset :refer :all]))
 
 ; Let G be a free group over a set of generators S, then we say that the elements of G
@@ -29,7 +29,7 @@
   (inv [this]
     (SignedList. (reverse elems) (map not (reverse inverses)))))
 
-(defmethod print-method SignedList [v ^java.io.Writer w]
+(defmethod print-method SignedList [^SignedList v, ^java.io.Writer w]
   (.write w (.toString v)))
 
 ; Conversion methods
