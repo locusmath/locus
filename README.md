@@ -23,7 +23,7 @@ The same technique used in the copresheaf viewer can be used to view globular se
 ## Mathematical features
 Locus is based upon the idea of organizing mathematical theories using presheaf theory. Presheaves can be reasoned about using topos theory.
 
-* basic support for presheaves over preorders: including the functional dependencies of relations, sets, functions, disets, bijections, difunctions, dibijections, nsets, nfunctions, nbijections, triangles, spans, cospans diamonds, gems, chains, ditriangles, cubes, trijections, multijections, and so on.
+* basic support for presheaves over preorders: including the functional dependencies of relations, sets, functions, disets, bijections, difunctions, dibijections, nsets, nfunctions, nbijections, triangles, spans, cospans, diamonds, gems, chains, ditriangles, cubes, trijections, multijections, and so on.
 * fundamental support for presheaves over monoids: MSets, GSets, and related structures.
 * support for a broad variety of presheaves over general categories: quivers, permutable quivers, unital quivers, dependency quivers, ternary quivers, higher arity quivers, functional quivers, compositional quivers, two quivers, n-quivers, path quivers, globular sets, simplicial sets, and presheaves over arbitrary categories.
 * support sheaves over sites

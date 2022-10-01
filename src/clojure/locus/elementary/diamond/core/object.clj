@@ -103,15 +103,15 @@
 
   (inputs (source-object diamond)))
 
+(defn source-output-set
+  [diamond]
+
+  (outputs (source-object diamond)))
+
 (defn target-input-set
   [diamond]
 
   (inputs (target-object diamond)))
-
-(defn source-output-set
-  [diamond]
-
-  (outputs (target-object diamond)))
 
 (defn target-output-set
   [diamond]
