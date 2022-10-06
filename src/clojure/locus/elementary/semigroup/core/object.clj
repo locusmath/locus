@@ -651,8 +651,6 @@
               indices)))
         indices))))
 
-(defmulti display-table type)
-
 (defmethod display-table :locus.elementary.copresheaf.core.protocols/semigroupoid
   [semigroup]
 

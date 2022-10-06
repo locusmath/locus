@@ -1,10 +1,10 @@
-(defproject locus "1.2.0-SNAPSHOT"
+(defproject locus "1.2.3-SNAPSHOT"
   :description "A computer algebra system based upon topos theory."
   :license {:name "Apache License"
             :url "https://www.apache.org/licenses/LICENSE-2.0"}
 
   :dependencies [; language libraries
-                 [org.clojure/clojure "1.10.0"]
+                 [org.clojure/clojure "1.11.1"]
 
                  ; apache commons libraries
                  [org.apache.commons/commons-math3 "3.6.1"]
@@ -22,7 +22,7 @@
                  [dorothy "0.0.7"]
                  [org.scilab.forge/jlatexmath "1.0.7"]]
 
-  :main locus.elementary.dependency.core.object
+  :main locus.elementary.ternary-quiver.at.quiver
 
   :source-paths ["src/clojure"]
   :java-source-paths ["src/java"]

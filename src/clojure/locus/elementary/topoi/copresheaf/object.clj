@@ -40,7 +40,8 @@
             [locus.elementary.incidence.core.morphism :refer :all]
             [locus.elementary.cospan.core.morphism :refer :all]
             [locus.elementary.diamond.core.morphism :refer :all]
-            [locus.elementary.two-quiver.core.object :refer :all])
+            [locus.elementary.two-quiver.core.object :refer :all]
+            [locus.elementary.ternary-quiver.core.object :refer :all])
   (:import (locus.elementary.category.core.morphism Functor)
            (locus.elementary.lattice.core.object Lattice)
            (locus.elementary.action.global.object MSet)
@@ -1157,6 +1158,25 @@
    (nary-quiver 4 (vertices edges) edges))
   ([vertices edges]
    (nary-quiver 4 vertices edges)))
+
+; Convert ternary quivers into copresheaves
+(defmethod to-copresheaf :locus.elementary.copresheaf.core.protocols/ternary-quiver
+  [ternary-quiver]
+
+  (->Copresheaf
+    (nary-quiver-category 3)
+    (fn [obj]
+      (case obj
+        "edges" (morphisms ternary-quiver)
+        "vertices" (objects ternary-quiver)))
+    (fn [arrow]
+      (cond
+        (= arrow "1ₑ") (identity-function (morphisms ternary-quiver))
+        (= arrow "1ᵥ") (identity-function (objects ternary-quiver))
+        :else (case arrow
+                0 (first-component-function ternary-quiver)
+                1 (second-component-function ternary-quiver)
+                2 (third-component-function ternary-quiver))))))
 
 ; Generalizations of morphisms of functions described as presheaves
 (defn higher-diamond

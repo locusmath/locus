@@ -2087,6 +2087,16 @@
       (fn [coll]
         (union lower-coll coll)))))
 
+; Visualize directed graphs as if they are unlabeled
+(defn unlabel*
+  [rel]
+
+  (let [coll (vec (apply union (map set rel)))]
+    (map
+      (fn [[a b]]
+        (list (.indexOf coll a) (.indexOf coll b)))
+      rel)))
+
 ; Visualization
 (defn visualize-graphviz-file*
   [isdirected randkir clusters edges islabeled labels]

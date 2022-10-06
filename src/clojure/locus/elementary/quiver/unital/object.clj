@@ -168,7 +168,12 @@
         (identity-map e)))))
 
 ; Convert a reflexive relation into a unital quiver
-(defn to-unital-quiver
+(defmulti to-unital-quiver type)
+
+(defmethod to-unital-quiver UnitalQuiver
+  [^UnitalQuiver quiver] quiver)
+
+(defmethod to-unital-quiver :default
   [rel]
 
   (->UnitalQuiver
@@ -179,6 +184,18 @@
     (fn [i]
       (list i i))))
 
+; Create unital quivers by sets of morphisms and objects
+(defn as-unital-quiver
+  [morphisms objects]
+
+  (->UnitalQuiver
+    morphisms
+    objects
+    source-object
+    target-object
+    identity-morphism))
+
+; Singular unital quivers
 (defn singular-unital-quiver
   [coll obj id]
 

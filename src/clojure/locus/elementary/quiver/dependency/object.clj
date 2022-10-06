@@ -97,7 +97,12 @@
     inv))
 
 ; Convert a dependency relation in to a dependency quiver
-(defn to-dependency-quiver
+(defmulti to-dependency-quiver type)
+
+(defmethod to-dependency-quiver DependencyQuiver
+  [^DependencyQuiver quiver] quiver)
+
+(defmethod to-dependency-quiver :default
   [rel]
 
   (->DependencyQuiver
@@ -108,6 +113,18 @@
     (fn [i]
       (list i i))
     reverse))
+
+; Create dependency quivers by sets of morphisms and objects
+(defn as-dependency-quiver
+  [morphisms objects]
+
+  (->DependencyQuiver
+    morphisms
+    objects
+    source-object
+    target-object
+    identity-morphism
+    inv))
 
 ; Duals of dependency quivers
 (defmethod dual DependencyQuiver

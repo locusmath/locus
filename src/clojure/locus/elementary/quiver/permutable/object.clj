@@ -141,6 +141,17 @@
 
   (symmetric-relation->permutable-quiver coll))
 
+; Create permutable quivers by elements
+(defn as-permutable-quiver
+  [morphisms objects]
+
+  (->PermutableQuiver
+    morphisms
+    objects
+    source-object
+    target-object
+    inv))
+
 ; Duals of permutable quivers
 (defmethod dual PermutableQuiver
   [^PermutableQuiver quiv]

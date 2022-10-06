@@ -25,6 +25,10 @@
 (derive ::bijection ::structured-bijection)
 
 ; Ontology of structured quivers
+(derive ::ternary-quiver ::structured-diset)
+(derive ::thin-ternary-quiver ::ternary-quiver)
+(derive ::at-quiver ::thin-ternary-quiver)
+
 (derive ::structured-quiver ::structured-diset)
 (derive ::structured-unital-quiver ::structured-quiver)
 (derive ::structured-permutable-quiver ::structured-quiver)
@@ -366,3 +370,7 @@
           (conj current-in a)
           (conj current-out b)
           (rest current-rel))))))
+
+; Display tables of semigroups, magmas, partial magmas, groups, categories, semicategories,
+; groupoids, magmoids, or any other table like algebraic structure.
+(defmulti display-table type)

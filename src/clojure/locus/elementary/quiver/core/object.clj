@@ -14,7 +14,7 @@
            [locus.elementary.relation.binary.sr SeqableRelation]
            (clojure.lang IPersistentMap)))
 
-; Objects in the topos Sets^{T^2_*}
+; Objects in the topos Sets^{T_2^*}
 ; Let T_2^* be the totally ordered category with two objects and four morphisms.
 ; Then this category is the index category of a topos: the topos of quivers
 ; Sets^(T_2^*). In this file, we implement the routines for dealing
@@ -23,7 +23,7 @@
 ; A quiver should implement diset and the structured quiver protocol
 (defprotocol StructuredQuiver
   "Let Quiv be the category of quivers. Then we can define a category C over Quiv by a forgetful functor,
-  f : C->Quiv. This protocol defines methods for handling objects such categories with reference to their
+  f : C->Quiv. This protocol defines methods for handling objects in such categories with reference to their
   forgetful functors to the topos of quivers."
 
   (underlying-quiver [this]
@@ -88,6 +88,23 @@
       (fn [morphism]
         [morphism (target-element quiver morphism)])
       (morphisms quiver))))
+
+; Source and target functions
+(defn source-function
+  [q]
+
+  (SetFunction.
+    (morphisms q)
+    (objects q)
+    (source-fn q)))
+
+(defn target-function
+  [q]
+
+  (SetFunction.
+    (morphisms q)
+    (objects q)
+    (target-fn q)))
 
 ; Make quiver from objects and a hom mapping
 (defn get-nth-component-map
@@ -226,6 +243,201 @@
     (multiset? rel) (multirelational-quiver rel)
     :else (underlying-quiver rel)))
 
+; As quiver function
+(defn as-quiver
+  [morphisms objects]
+
+  (->Quiver
+    morphisms
+    objects
+    source-object
+    target-object))
+
+; Underlying relations
+(defmethod underlying-multirelation :default
+  [quiv]
+
+  (multiset
+    (map
+      (fn [e]
+        (transition quiv e))
+      (morphisms quiv))))
+
+(defmethod underlying-relation Quiver
+  [quiv]
+
+  (set (underlying-multirelation quiv)))
+
+; The underlying embedded relation of a quiver is an inclusion function
+(defn underlying-embedded-relation
+  [quiv]
+
+  (inclusion-function
+    (set (underlying-relation quiv))
+    (complete-relation (morphisms quiv))))
+
+; Visualisation
+(defmethod visualize Quiver
+  [quiv] (visualize (underlying-multirelation quiv)))
+
+; Products and coproducts in the topos of quivers
+(defn quiver-product
+  [& quivers]
+
+  (Quiver.
+    (apply cartesian-product (map morphisms quivers))
+    (apply cartesian-product (map objects quivers))
+    (fn [coll]
+      (map-indexed
+        (fn [i v]
+          (source-element (nth quivers i) v))
+        coll))
+    (fn [coll]
+      (map-indexed
+        (fn [i v]
+          (target-element (nth quivers i) v))
+        coll))))
+
+(defn quiver-coproduct
+  [& quivers]
+
+  (Quiver.
+    (apply cartesian-coproduct (map morphisms quivers))
+    (apply cartesian-coproduct (map objects quivers))
+    (fn [[i v]]
+      (list i (source-element (nth quivers i) v)))
+    (fn [[i v]]
+      (list i (target-element (nth quivers i) v)))))
+
+(defmethod product Quiver
+  [& args]
+
+  (apply quiver-product args))
+
+(defmethod coproduct Quiver
+  [& args]
+
+  (apply quiver-coproduct args))
+
+; Transposition of quivers
+(defmethod dual Quiver
+  [^Quiver quiv]
+
+  (Quiver.
+    (morphisms quiv)
+    (objects quiv)
+    (target-fn quiv)
+    (source-fn quiv)))
+
+; Quiver utility functions
+(defn quiver-order
+  [quiv]
+
+  (count (objects quiv)))
+
+(defn quiver-size
+  [quiv]
+
+  (count (morphisms quiv)))
+
+; Objects theory
+(defn predecessor-objects
+  [quiv object]
+
+  (set
+    (for [i (morphisms quiv)
+          :when (= (target-element quiv i) object)
+          :let [source (source-element quiv i)]]
+      source)))
+
+(defn proper-predecessor-objects
+  [quiv a]
+
+  (disj (set (predecessor-objects quiv a)) a))
+
+(defn quiver-vertex-in-degree
+  [quiv a]
+
+  (count (predecessor-objects quiv a)))
+
+(defn quiver-vertex-proper-in-degree
+  [quiv a]
+
+  (count (proper-predecessor-objects quiv a)))
+
+(defn successor-objects
+  [quiv object]
+
+  (set
+    (for [i (morphisms quiv)
+          :when (= (source-element quiv i) object)
+          :let [target (target-element quiv i)]]
+      target)))
+
+(defn proper-successor-objects
+  [quiv a]
+
+  (disj (set (successor-objects quiv a)) a))
+
+(defn quiver-vertex-out-degree
+  [quiv a]
+
+  (count (successor-objects quiv a)))
+
+(defn quiver-vertex-proper-out-degree
+  [quiv a]
+
+  (count (proper-successor-objects quiv a)))
+
+; Get all objects not appearing as the source of an edge
+(defn missing-sources
+  [quiver]
+
+  (difference
+    (set (objects quiver))
+    (set
+      (map
+        (fn [i]
+          (source-element quiver i))
+        (morphisms quiver)))))
+
+(defn missing-targets
+  [quiver]
+
+  (difference
+    (set (objects quiver))
+    (set
+      (map
+        (fn [i]
+          (target-element quiver i))
+        (morphisms quiver)))))
+
+(defn missing-objects
+  [quiver]
+
+  (intersection
+    (missing-sources quiver)
+    (missing-targets quiver)))
+
+; Morphisms theory
+(defn quiver-loops
+  [quiver]
+
+  (set
+    (filter
+      (fn [i]
+        (equal-seq? (transition quiver i)))
+      (first-set quiver))))
+
+(defn quiver-nonloops
+  [quiver]
+
+  (set
+    (filter
+      (fn [i]
+        (distinct-seq? (transition quiver i)))
+      (first-set quiver))))
+
 ; Composability relations
 ; The composability relation of a compositional quiver such as a semigroupoid
 ; or a category appears as the domain of the composition function of the
@@ -273,6 +485,86 @@
         (composable-elements? quiver (nth coll i) (nth coll (inc i))))
       (range (dec (count coll))))))
 
+; Source equality relations
+(defn source-equal-elements?
+  [quiver a b]
+
+  (= (source-element quiver a)
+     (source-element quiver b)))
+
+(defn source-equivalence-relation
+  [quiver]
+
+  (let [morphisms (morphisms quiver)]
+    (->SeqableRelation
+      morphisms
+      (fn [[a b]]
+        (source-equal-elements? quiver a b))
+      {})))
+
+(defn source-equivalence-quiver
+  [quiver]
+
+  (relational-quiver
+    (morphisms quiver)
+    (source-equivalence-quiver quiver)))
+
+; Get the equivalence classes of the source equality relation
+; These are all morphisms that start at a given object of a quiver
+(defn under-morphisms
+  [quiv a]
+
+  (set
+    (filter
+      (fn [morphism]
+        (= (source-element quiv morphism) a))
+      (morphisms quiv))))
+
+(defn quiver-edge-out-degree
+  [quiv a]
+
+  (count (under-morphisms quiv a)))
+
+; Target equality relations
+(defn target-equal-elements?
+  [quiver a b]
+
+  (= (target-element quiver a)
+     (target-element quiver b)))
+
+(defn target-equivalence-relation
+  [quiver]
+
+  (let [morphisms (morphisms quiver)]
+    (->SeqableRelation
+      morphisms
+      (fn [[a b]]
+        (target-equal-elements? quiver a b))
+      {})))
+
+(defn target-equivalence-quiver
+  [quiver]
+
+  (relational-quiver
+    (morphisms quiver)
+    (target-equivalence-relation quiver)))
+
+; Get equivalence classes of the target equal relation
+; These are all morphisms that target a given object in a quiver
+(defn over-morphisms
+  [quiv a]
+
+  (set
+    (filter
+      (fn [morphism]
+        (= (target-element quiv morphism) a))
+      (morphisms quiv))))
+
+(defn quiver-edge-in-degree
+  [quiv a]
+
+  (count (over-morphisms quiv a)))
+
 ; Check if elements of a quiver are instead parallel for use in constructing globular sets
 (defn parallel-elements?
   [quiver a b]
@@ -283,7 +575,6 @@
 
 (defn parallelism-relation
   [quiver]
-
 
   (let [morphisms (morphisms quiver)]
     (->SeqableRelation
@@ -299,86 +590,8 @@
     (morphisms quiver)
     (parallelism-relation quiver)))
 
-; Underlying relations
-(defmethod underlying-multirelation :default
-  [quiv]
-
-  (multiset
-    (map
-      (fn [e]
-        (transition quiv e))
-      (morphisms quiv))))
-
-(defmethod underlying-relation Quiver
-  [quiv]
-
-  (set (underlying-multirelation quiv)))
-
-; Quiver utility functions
-(defn quiver-order
-  [quiv]
-
-  (count (objects quiv)))
-
-(defn quiver-size
-  [quiv]
-
-  (count (morphisms quiv)))
-
-; Visualisation
-(defmethod visualize Quiver
-  [quiv] (visualize (underlying-multirelation quiv)))
-
-; Transposition of quivers
-(defmethod dual Quiver
-  [^Quiver quiv]
-
-  (Quiver.
-    (morphisms quiv)
-    (objects quiv)
-    (target-fn quiv)
-    (source-fn quiv)))
-
-; Products and coproducts in the topos of quivers
-(defn quiver-product
-  [& quivers]
-
-  (Quiver.
-    (apply cartesian-product (map morphisms quivers))
-    (apply cartesian-product (map objects quivers))
-    (fn [coll]
-      (map-indexed
-        (fn [i v]
-          (source-element (nth quivers i) v))
-        coll))
-    (fn [coll]
-      (map-indexed
-        (fn [i v]
-          (target-element (nth quivers i) v))
-        coll))))
-
-(defn quiver-coproduct
-  [& quivers]
-
-  (Quiver.
-    (apply cartesian-coproduct (map morphisms quivers))
-    (apply cartesian-coproduct (map objects quivers))
-    (fn [[i v]]
-      (list i (source-element (nth quivers i) v)))
-    (fn [[i v]]
-      (list i (target-element (nth quivers i) v)))))
-
-(defmethod product Quiver
-  [& args]
-
-  (apply quiver-product args))
-
-(defmethod coproduct Quiver
-  [& args]
-
-  (apply quiver-coproduct args))
-
-; Hom classes of quivers
+; Equivalence classes of the parallelism relation
+; These are precisely the hom classes of the quiver.
 (defn quiver-hom-class
   [quiv a b]
 
@@ -400,111 +613,43 @@
 
   (count (quiver-hom-class quiv a b)))
 
-; Get all over morphisms of a structured quiver object
-; These are all morphisms that target a given object in a quiver
-(defn over-morphisms
-  [quiv a]
+; Images and inverse images in the topos Sets^{T_2^*}
+; Quivers are in a unique position to have generalized versions of the images of functions,
+; as they are simply parallel collections of functions. So these same function operations
+; are generalized to quivers, and the topos theoretic process by which we generalized from
+; set images to partition images can also be applied to quivers as well. Then with these new
+; operations, we can generate subobject and congruence lattices for quivers as well.
+(defn quiver-set-image
+  [quiver coll]
+
+  (union
+    (set-image (source-function quiver) coll)
+    (set-image (target-function quiver) coll)))
+
+(defn quiver-set-inverse-image
+  [quiver coll]
 
   (set
     (filter
-      (fn [morphism]
-        (= (target-element quiv morphism) a))
-      (morphisms quiv))))
+      (fn [e]
+        (and
+          (contains? coll (source-element quiver e))
+          (contains? coll (target-element quiver e))))
+      (morphisms quiver))))
 
-(defn quiver-edge-in-degree
-  [quiv a]
+(defn quiver-partition-image
+  [quiver partition]
 
-  (count (over-morphisms quiv a)))
+  (join-set-partitions
+    (partition-image (source-function quiver) partition)
+    (partition-image (target-function quiver) partition)))
 
-; Get all under morphisms of a structured quiver object
-; These are all morphisms that start at a given object of a quiver
-(defn under-morphisms
-  [quiv a]
+(defn quiver-partition-inverse-image
+  [quiver partition]
 
-  (set
-    (filter
-      (fn [morphism]
-        (= (source-element quiv morphism) a))
-      (morphisms quiv))))
-
-(defn quiver-edge-out-degree
-  [quiv a]
-
-  (count (under-morphisms quiv a)))
-
-; Get the predecessor and successor objects by the over and under morphisms
-(defn predecessor-objects
-  [quiv a]
-
-  (let [morphisms (over-morphisms quiv a)]
-    (map
-      (fn [morphism]
-        (source-element quiv morphism))
-      morphisms)))
-
-(defn proper-predecessor-objects
-  [quiv a]
-
-  (disj (set (predecessor-objects quiv a)) a))
-
-(defn quiver-vertex-in-degree
-  [quiv a]
-
-  (count (predecessor-objects quiv a)))
-
-(defn quiver-vertex-proper-in-degree
-  [quiv a]
-
-  (count (proper-predecessor-objects quiv a)))
-
-(defn successor-objects
-  [quiv a]
-
-  (let [morphisms (under-morphisms quiv a)]
-    (map
-      (fn [morphism]
-        (target-element quiv morphism))
-      morphisms)))
-
-(defn proper-successor-objects
-  [quiv a]
-
-  (disj (set (successor-objects quiv a)) a))
-
-(defn quiver-vertex-out-degree
-  [quiv a]
-
-  (count (successor-objects quiv a)))
-
-(defn quiver-vertex-proper-out-degree
-  [quiv a]
-
-  (count (proper-successor-objects quiv a)))
-
-; The underlying embedded relation of a quiver is an inclusion function
-(defn underlying-embedded-relation
-  [quiv]
-
-  (inclusion-function
-    (set (underlying-multirelation quiv))
-    (complete-relation (morphisms quiv))))
-
-; Source and target functions
-(defn source-function
-  [q]
-
-  (SetFunction.
-    (morphisms q)
-    (objects q)
-    (source-fn q)))
-
-(defn target-function
-  [q]
-
-  (SetFunction.
-    (morphisms q)
-    (objects q)
-    (target-fn q)))
+  (meet-set-partitions
+    (partition-inverse-image (source-function quiver) partition)
+    (partition-inverse-image (target-function quiver) partition)))
 
 ; Subobjects and quotients of quivers
 (defn subquiver
@@ -527,23 +672,20 @@
     (fn [part]
       (projection edge-partition (target-element q (first part))))))
 
-; Full subquivers preserve all morphisms on objects
+; Wide and full subquivers
+; A full subquiver is defined by taking a subset of the vertices of the quiver, and then having
+; the result be the largest possible subquiver determined by the set inverse image. A wide
+; subquiver is defined by taking a subset of the edges of the quiver and then using
+; restriction on them.
 (defn full-subquiver
   [quiver new-vertices]
 
   (Quiver.
-    (set
-      (filter
-        (fn [e]
-          (and
-            (contains? new-vertices (source-element quiver e))
-            (contains? new-vertices (target-element quiver e))))
-        (.edges quiver)))
+    (quiver-set-inverse-image quiver new-vertices)
     new-vertices
     (source-fn quiver)
     (target-fn quiver)))
 
-; Wide subquivers preserve all objects
 (defn wide-subquiver
   [quiver new-edges]
 
@@ -553,35 +695,46 @@
     (source-fn quiver)
     (target-fn quiver)))
 
-; We need some ability to deal with issues of subquivers
+; Subobjects in the topos of quivers
 (defn subquiver?
-  [q new-in new-out]
+  [quiver new-in new-out]
 
   (superset?
     (list
-      (union
-        (set-image (source-function q) new-in)
-        (set-image (target-function q) new-in))
+      (quiver-set-image quiver new-in)
       new-out)))
 
 (defn subquiver-closure
   [quiv new-in new-out]
 
-  (list new-in
-        (union
-          new-out
-          (set-image (source-function quiv) new-in)
-          (set-image (target-function quiv) new-in))))
+  (list
+    new-in
+    (union new-out (quiver-set-image quiv new-in))))
+
+; Enumeration theory of subalgebras of quivers
+(defn possible-subquivers-by-in-set
+  [quiv in-set]
+
+  (let [minimal-out-set (quiver-set-image quiv in-set)
+        possible-out-additions (set
+                                 (difference
+                                   (objects quiv)
+                                   minimal-out-set))]
+    (map
+      (fn [out-additions]
+        (list in-set (union minimal-out-set out-additions)))
+      (power-set possible-out-additions))))
 
 (defn subquivers
-  [quiv]
+  [quiver]
 
   (set
-    (filter
-      (fn [[a b]]
-        (subquiver? quiv a b))
-      (cartesian-product (power-set (morphisms quiv)) (power-set (objects quiv))))))
+    (mapcat
+      (fn [in-set]
+        (possible-subquivers-by-in-set quiver in-set))
+      (power-set (morphisms quiver)))))
 
+; Relations related to the class of subquivers
 (defn subquivers-relation
   [quiv]
 
@@ -639,30 +792,64 @@
 
   (set-superpartition?
     (list
-      (join-set-partitions
-        (partition-image (source-function quiv) in-partition)
-        (partition-image (target-function quiv) in-partition))
+      (quiver-partition-image quiv in-partition)
       out-partition)))
 
 (defn quiver-congruence-closure
   [quiv new-in new-out]
 
-  (list new-in
-        (join-set-partitions
-          new-out
-          (partition-image (source-function quiv) new-in)
-          (partition-image (target-function quiv) new-out))))
+  (list
+    new-in
+    (join-set-partitions
+      new-out
+      (quiver-partition-image quiv new-in))))
+
+; Methods for computing congruence lattices of quivers
+(defn possible-quiver-congruences-by-in-partition
+  [quiver in-partition]
+
+  (let [current-image-partition (quiver-partition-image quiver in-partition)]
+    (map
+      (fn [out-partition]
+        (list in-partition out-partition))
+      (set-partition-coarsifications current-image-partition))))
 
 (defn quiver-congruences
-  [quiv]
+  [quiver]
 
   (set
-    (filter
-      (fn [[a b]]
-        (quiver-congruence? quiv a b))
-      (cartesian-product
-        (set-partitions (morphisms quiv))
-        (set-partitions (objects quiv))))))
+    (mapcat
+      (fn [in-partition]
+        (possible-quiver-congruences-by-in-partition quiver in-partition))
+      (enumerate-set-partitions (morphisms quiver)))))
+
+; Relations related to the class of all quiver congruences
+(defn quiver-covering-congruences
+  [quiver in-partition out-partition]
+
+  (union
+    (set
+      (map
+        (fn [new-out-partition]
+          (list in-partition new-out-partition))
+        (direct-set-partition-coarsifications out-partition)))
+    (set
+      (for [i (direct-set-partition-coarsifications in-partition)
+            :when (set-superpartition?
+                    (list (quiver-partition-image quiver i) out-partition))]
+        (list i out-partition)))))
+
+(defn quiver-congruences-covering
+  [quiver]
+
+  (set
+    (mapcat
+      (fn [[in-partition out-partition]]
+        (map
+          (fn [[new-in-partition new-out-partition]]
+            (list [in-partition out-partition] [new-in-partition new-out-partition]))
+          (quiver-covering-congruences quiver in-partition out-partition)))
+      (quiver-congruences quiver))))
 
 (defn quiver-congruences-relation
   [quiv]
@@ -685,25 +872,6 @@
   [quiver]
 
   (strong-connectivity (underlying-relation quiver)))
-
-; Get the loops and non-loops of a quiver
-(defn quiver-loops
-  [quiver]
-
-  (set
-    (filter
-     (fn [i]
-       (equal-seq? (transition quiver i)))
-     (first-set quiver))))
-
-(defn quiver-nonloops
-  [quiver]
-
-  (set
-    (filter
-     (fn [i]
-       (distinct-seq? (transition quiver i)))
-     (first-set quiver))))
 
 ; Equalizers and coequalizers in the topos of quivers
 (defn quiver-equalizer
@@ -752,35 +920,42 @@
     quiver
     (quiver-nonloops quiver)))
 
-; Get all objects not appearing as the source of an edge
-(defn missing-sources
+; The thin congruence naturally associated with any quiver
+(defn thin-congruence
   [quiver]
 
-  (difference
-    (set (objects quiver))
+  (list
+    (pn
+      (partial parallel-elements? quiver)
+      (morphisms quiver))
     (set
       (map
         (fn [i]
-          (source-element quiver i))
-        (morphisms quiver)))))
+          #{i})
+        (objects quiver)))))
 
-(defn missing-targets
+(defn thin-congruence-by-object-partition
+  [quiver object-partition]
+
+  (let [func (partition->projection object-partition)
+        morphism-partition (pn
+                             (fn [a b]
+                               (let [[a1 a2] (transition quiver a)
+                                     [b1 b2] (transition quiver b)]
+                                 (and
+                                   (= (func a1) (func b1))
+                                   (= (func a2) (func b2)))))
+                             (morphisms quiver))]
+    (list morphism-partition object-partition)))
+
+(defn thin-congruences
   [quiver]
 
-  (difference
-    (set (objects quiver))
-    (set
-      (map
-        (fn [i]
-          (target-element quiver i))
-        (morphisms quiver)))))
-
-(defn missing-objects
-  [quiver]
-
-  (intersection
-    (missing-sources quiver)
-    (missing-targets quiver)))
+  (set
+    (map
+      (fn [object-partition]
+        (thin-congruence-by-object-partition quiver object-partition))
+      (enumerate-set-partitions (objects quiver)))))
 
 ; Ontology of quivers
 (defmulti quiver? type)
@@ -791,6 +966,71 @@
 (defmethod quiver? :default
   [quiv] false)
 
+; Source and target surjective quivers
+(defn together-total-quiver?
+  [quiv]
+
+  (= (objects quiv)
+     (apply union (map set (underlying-relation quiv)))))
+
+(defn left-total-quiver?
+  [quiv]
+
+  (= (objects quiv)
+     (set (map first (underlying-multirelation quiv)))))
+
+(defn right-total-quiver?
+  [quiv]
+
+  (= (objects quiv)
+     (set (map second (underlying-multirelation quiv)))))
+
+(def bitotal-quiver?
+  (intersection
+    left-total-quiver?
+    right-total-quiver?))
+
+; Source injective quivers are like functions
+(defn source-injective-quiver?
+  [quiver]
+
+  (and
+    (quiver? quiver)
+    (let [edges (seq (morphisms quiver))]
+      (distinct-seq?
+        (map
+          (fn [i]
+            (source-element quiver i))
+          edges)))))
+
+(defn target-injective-quiver?
+  [quiver]
+
+  (and
+    (quiver? quiver)
+    (let [edges (seq (morphisms quiver))]
+      (distinct-seq?
+        (map
+          (fn [i]
+            (target-element quiver i))
+          edges)))))
+
+(defn thin-quiver?
+  [quiv]
+
+  (and
+    (quiver? quiv)
+    (universal? (underlying-multirelation quiv))))
+
+; Together total thin quivers are also called relational quivers
+(defn relational-quiver?
+  [quiv]
+
+  (and
+    (together-total-quiver? quiv)
+    (thin-quiver? quiv)))
+
+; Special classes of quivers by their types of elements
 (defn coreflexive-quiver?
   [quiv]
 
@@ -805,32 +1045,7 @@
     (quiver? quiv)
     (empty? (quiver-loops quiv))))
 
-; Totality conditions
-(defn left-total-quiver?
-  [quiv]
-
-  (= (.vertices quiv)
-     (set (map first (underlying-multirelation quiv)))))
-
-(defn right-total-quiver?
-  [quiv]
-
-  (= (.vertices quiv)
-     (set (map second (underlying-multirelation quiv)))))
-
-(def total-quiver?
-  (intersection
-    left-total-quiver?
-    right-total-quiver?))
-
-; Ontology of thin quivers
-(defn thin-quiver?
-  [quiv]
-
-  (and
-    (quiver? quiv)
-    (universal? (underlying-multirelation quiv))))
-
+; Further classes of thin quivers
 (defn coreflexive-thin-quiver?
   [quiv]
 
