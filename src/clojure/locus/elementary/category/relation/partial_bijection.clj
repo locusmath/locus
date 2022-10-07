@@ -1,6 +1,8 @@
 (ns locus.elementary.category.relation.partial-bijection
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
+            [locus.base.sequence.core.object :refer :all]
+            [locus.base.invertible.function.object :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
@@ -12,7 +14,8 @@
             [locus.elementary.category.relation.partial-function :refer :all])
   (:import (locus.base.function.core.object SetFunction)
            (locus.elementary.bijection.core.object Bijection)
-           (clojure.lang PersistentArrayMap)))
+           (clojure.lang PersistentArrayMap IPersistentMap)
+           (locus.base.invertible.function.object InvertibleFunction)))
 
 ; The category of sets and partial bijections is a subcategory of the category
 ; of partial functions, which itself can be itself be considered to be a subcategory
@@ -105,8 +108,50 @@
     (fn [x] x)
     (fn [x] x)))
 
+; Relational partial bijections
+(defn relational-partial-bijection
+  ([rel] (relational-partial-bijection (vertices rel) rel))
+  ([coll rel]
+   (let [reverse-rel (transpose rel)]
+     (PartialBijection.
+       (relation-domain rel)
+       (relation-codomain rel)
+       (relation-domain rel)
+       (relation-codomain rel)
+       (fn [i]
+         (call rel i))
+       (fn [i]
+         (call reverse-rel i))))))
+
 ; Convert objects to partial bijections
 (defmulti to-partial-bijection type)
+
+(defmethod to-partial-bijection PartialBijection
+  [^PartialBijection partial-bijection] partial-bijection)
+
+(defmethod to-partial-bijection :locus.base.logic.core.set/universal
+  [coll] (relational-partial-bijection coll))
+
+(defmethod to-partial-bijection IPersistentMap
+  [coll]
+
+  (if (not (distinct-seq? (seq (vals coll))))
+    (throw (new IllegalArgumentException))
+    (let [in (set (keys coll))
+          out (set (vals coll))
+          reverse-coll (into {} (map (comp vec reverse) coll))]
+      (->PartialBijection in out in out coll reverse-coll))))
+
+(defmethod to-partial-bijection InvertibleFunction
+  [^InvertibleFunction func]
+
+  (PartialBijection.
+    (inputs func)
+    (outputs func)
+    (inputs func)
+    (outputs func)
+    (.-forward func)
+    (.-backward func)))
 
 (defmethod to-partial-bijection Bijection
   [^Bijection func]

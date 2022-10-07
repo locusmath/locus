@@ -10,7 +10,7 @@
             [locus.base.function.image.image-function :refer :all])
   (:import (locus.base.function.core.object SetFunction)
            (locus.elementary.bijection.core.object Bijection)
-           (clojure.lang PersistentArrayMap)))
+           (clojure.lang PersistentArrayMap IPersistentMap)))
 
 ; Partial functions form a concrete category PF of sets and partial functions
 ; between them. The category of partial functions can be considered to be
@@ -123,6 +123,9 @@
 
   (visualize (underlying-relation func)))
 
+(defmethod underlying-multirelation ::partial-function
+  [func] (underlying-relation func))
+
 ; Every partial function can be defined by a triple
 (defn partial-function-triple
   [func]
@@ -168,11 +171,32 @@
     target
     (fn [x] x)))
 
+; Relational partial functions
+(defn relational-partial-function
+  ([rel] (relational-partial-function (vertices rel) rel))
+  ([coll rel]
+   (->PartialFunction
+     (relation-domain rel)
+     (relation-domain rel)
+     (relation-codomain rel)
+     (fn [x]
+       (call rel x)))))
+
 ; Conversion routines
 (defmulti to-partial-function type)
 
 (defmethod to-partial-function PartialFunction
   [func] func)
+
+(defmethod to-partial-function IPersistentMap
+  [coll]
+
+  (let [in (set (keys coll))
+        out (set (vals coll))]
+    (PartialFunction. in in out coll)))
+
+(defmethod to-partial-function :locus.base.logic.core.set/universal
+  [coll] (relational-partial-function coll))
 
 (defmethod to-partial-function :locus.base.logic.structure.protocols/set-function
   [func]

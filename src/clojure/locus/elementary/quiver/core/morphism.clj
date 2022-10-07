@@ -79,6 +79,23 @@
     (identity-function (first-set quiv))
     (identity-function (second-set quiv))))
 
+; The component functions of a morphism of quivers
+(defn morphism-component-function
+  [morphism]
+
+  (->SetFunction
+    (morphisms (source-object morphism))
+    (morphisms (target-object morphism))
+    (first-function morphism)))
+
+(defn object-component-function
+  [morphism]
+
+  (->SetFunction
+    (objects (source-object morphism))
+    (objects (target-object morphism))
+    (second-function morphism)))
+
 ; We can get for any quiver morphism a function morphism for its source and target
 ; components. In general, topoi of set valued functors can be reduced by any
 ; given subcategory of their index category.
@@ -157,6 +174,25 @@
     #{0 1}
     (fn [v]
       (if (contains? new-vertices v) 1 0)))))
+
+; Products and coproducts in the topos of morphisms of quivers
+(defmethod product MorphismOfQuivers
+  [& args]
+
+  (->MorphismOfQuivers
+    (apply product (map source-object args))
+    (apply product (map target-object args))
+    (apply product (map morphism-component-function args))
+    (apply product (map object-component-function args))))
+
+(defmethod coproduct MorphismOfQuivers
+  [& args]
+
+  (->MorphismOfQuivers
+    (apply coproduct (map source-object args))
+    (apply coproduct (map target-object args))
+    (apply coproduct (map morphism-component-function args))
+    (apply coproduct (map object-component-function args))))
 
 ; Classification of morphisms of quivers
 (defn morphism-of-quivers?

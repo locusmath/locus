@@ -17,7 +17,11 @@
 ; Incidence structures
 ; An incidence structure is a triple consisting of points, lines, and flags. They are interpreted
 ; topos theoretically in terms of the topos of span presheaves over the category [1,2]. In our
-; implementation flags have a point first order (fn [[point line]] ...)
+; implementation flags have a point first order (fn [[point line]] ...). The category of
+; incidence structures is associated to a faithful functor to the topos Sets^2, and by the
+; same token it is associated to a faithful functor to Sets and so it can be treated
+; as a special type of concrete category. The elements of incidence structures are then either
+; points or lines of the incidence structure.
 (deftype IncidenceStructure [points lines flags]
   StructuredDiset
   (first-set [this] points)

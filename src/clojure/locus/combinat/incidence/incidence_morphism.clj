@@ -14,7 +14,10 @@
            (locus.combinat.hypergraph.morphism HypergraphMorphism)
            (locus.combinat.incidence.incidence_structure IncidenceStructure)))
 
-;  Morphisms in the category of incidence structures
+; Morphisms in the category of incidence structures
+; The category of incidence structures is associated to a faithful functor to the topos Sets^2,
+; so a morphism of incidence structures can be treated as a special case of a morphism
+; in Sets^2 with extra structure.
 (deftype IncidenceMorphism [source target f g]
   AbstractMorphism
   (source-object [this] source)

@@ -1,5 +1,6 @@
 (ns locus.elementary.quiver.unital.morphism
   (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
             [locus.base.sequence.core.object :refer :all]
             [locus.base.partition.core.setpart :refer :all]
             [locus.base.function.core.object :refer :all]
@@ -103,6 +104,25 @@
     quiv
     (identity-function (first-set quiv))
     (identity-function (second-set quiv))))
+
+; Products and coproducts in the topos of morphisms of unital quivers
+(defmethod product MorphismOfUnitalQuivers
+  [& args]
+
+  (->MorphismOfUnitalQuivers
+    (apply product (map source-object args))
+    (apply product (map target-object args))
+    (apply product (map first-function args))
+    (apply product (map second-function args))))
+
+(defmethod coproduct MorphismOfUnitalQuivers
+  [& args]
+
+  (->MorphismOfUnitalQuivers
+    (apply coproduct (map source-object args))
+    (apply coproduct (map target-object args))
+    (apply coproduct (map first-function args))
+    (apply coproduct (map second-function args))))
 
 ; Ontology of morphisms in the topos of unital quivers
 (defn morphism-of-unital-quivers?

@@ -39,20 +39,8 @@
 
   (let [source-functor (.-source_functor morphism)
         target-functor (.-target_functor morphism)
-        func (.-func morphism)
-        index-category (source-object source-functor)]
-    (Copresheaf.
-      (double-category index-category)
-      (fn [[i v]]
-        (case i
-          0 (object-apply source-functor v)
-          1 (object-apply target-functor v)))
-      (fn [[i v]]
-        (case i
-          0 (morphism-apply source-functor v)
-          1 (morphism-apply target-functor v)
-          2 (let [src (source-element index-category v)]
-              (compose (morphism-apply target-functor v) (func src))))))))
+        func (.-func morphism)]
+    (create-copresheaf-by-morphism source-functor target-functor func)))
 
 ; Composition and identities in the topos of copresheaves
 (defmethod identity-morphism Copresheaf
@@ -80,5 +68,3 @@
     (to-functor (source-object morphism))
     (to-functor (target-object morphism))
     (.func morphism)))
-
-

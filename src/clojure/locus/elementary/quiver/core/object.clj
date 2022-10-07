@@ -662,15 +662,15 @@
     (target-fn q)))
 
 (defn quotient-quiver
-  [q edge-partition vertex-partition]
+  [q in-partition out-partition]
 
   (Quiver.
-    edge-partition
-    vertex-partition
+    in-partition
+    out-partition
     (fn [part]
-      (projection edge-partition (source-element q (first part))))
+      (projection out-partition (source-element q (first part))))
     (fn [part]
-      (projection edge-partition (target-element q (first part))))))
+      (projection out-partition (target-element q (first part))))))
 
 ; Wide and full subquivers
 ; A full subquiver is defined by taking a subset of the vertices of the quiver, and then having

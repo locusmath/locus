@@ -17,12 +17,14 @@
             [locus.elementary.bijection.core.object :refer :all]
             [locus.elementary.bijection.core.morphism :refer :all]
             [locus.elementary.diamond.core.object :refer :all]
-            [locus.elementary.topoi.system.setrel :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
-            [locus.elementary.quiver.core.morphism :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.elementary.quiver.permutable.object :refer :all]
             [locus.elementary.quiver.dependency.object :refer :all]
+            [locus.elementary.quiver.core.morphism :refer :all]
+            [locus.elementary.quiver.unital.morphism :refer :all]
+            [locus.elementary.quiver.permutable.morphism :refer :all]
+            [locus.elementary.quiver.dependency.morphism :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.category.core.morphism :refer :all]
@@ -66,7 +68,12 @@
            (locus.elementary.triangle.core.morphism TriangleMorphism)
            (locus.elementary.incidence.core.morphism MorphismOfSpans)
            (locus.elementary.cospan.core.morphism MorphismOfCospans)
-           (locus.elementary.diamond.core.morphism Cube)))
+           (locus.elementary.diamond.core.morphism Cube)
+           (locus.elementary.ternary_quiver.core.object TernaryQuiver)
+           (locus.elementary.quiver.core.morphism MorphismOfQuivers)
+           (locus.elementary.quiver.unital.morphism MorphismOfUnitalQuivers)
+           (locus.elementary.quiver.permutable.morphism MorphismOfPermutableQuivers)
+           (locus.elementary.quiver.dependency.morphism MorphismOfDependencyQuivers)))
 
 ; Copresheaves
 ; A copresheaf is a set-valued functor and therefore an object of a topos Sets^(C). These are the
@@ -322,7 +329,42 @@
             (and (= a "idt") (= b "reverse")) "ids"))))
     '#{"source" "target" "identity" "reverse"}))
 
-; Create a quiver
+; New theory of index categories for topoi of copresheaves
+; These are defined by combining a ternary quiver with a binary quiver, so that
+; the ternary compositional quiver has as its objects the morphisms of the other
+; binary quiver. These are an alternative presheaf theoretic model for elementary categories.
+(def algebraic-quiver-index-category
+  (adjoin-composition
+    (create-unital-quiver
+     {"paths"    "1ₚ"
+      "edges"    "1ₑ"
+      "vertices" "1ᵥ"}
+     {"source"   ["edges" "vertices"]
+      "target"   ["edges" "vertices"]
+      "first"    ["paths" "edges"]
+      "second"   ["paths" "edges"]
+      "∘"        ["paths" "edges"]
+      "middle"   ["paths" "vertices"]
+      "∘ source" ["paths" "vertices"]
+      "∘ target" ["paths" "vertices"]})
+    (fn [[a b]]
+      (letfn [(identity-arrow? [x]
+                (or (= x "1ₚ") (= x "1ₑ") (= x "1ᵥ")))]
+        (cond
+          (identity-arrow? a) b
+          (identity-arrow? b) a
+          (and (= a "source") (= b "∘")) "∘ source"
+          (and (= a "target") (= b "∘")) "∘ target"
+          (and (= a "source") (= b "first")) "middle"
+          (and (= a "source") (= b "second"))  "∘ source"
+          (and (= a "target") (= b "first")) "∘ target"
+          (and (= a "target") (= b "second")) "middle")))))
+
+; Composition quivers
+; On the other hand, compositional quivers like these are simply defined by adjoining a
+; special operation to an ordinary quiver that goes from some set to that quiver. They
+; therefore don't necessarily contain all the necessary information to recover a
+; composition operation, but they do tell us a lot of what we need to know in topos theory.
 (def compositional-quiver-index-category
   (adjoin-generators
     (adjoin-composition
@@ -345,7 +387,6 @@
             (and (= a "target") (= b "∘")) "∘ target"))))
     '#{"source" "target" "∘"}))
 
-; This is a step towards defining compositional quivers
 (def compositional-unital-quiver-index-category
   (adjoin-generators
     (adjoin-composition
@@ -402,7 +443,6 @@
             (and (= a "idt") (= b "∘ idt")) "∘ idt"))))
     '#{"source" "target" "∘" "identity"}))
 
-; Compositional dependency quivers
 (def compositional-dependency-quiver-index-category
   (adjoin-generators
     (adjoin-composition
@@ -689,6 +729,29 @@
 (defmethod index-category Copresheaf
   [^Copresheaf copresheaf] (.-category copresheaf))
 
+(defmethod index-category TernaryQuiver
+  [ternary-quiver] (n-quiver-index-category 3))
+
+; Every morphism in a topos of copresheaves corresponds to a copresheaf
+(defn create-copresheaf-by-morphism
+  [source target func]
+
+  (let [index-category (index-category source)
+        double-index-category (double-category index-category)]
+    (Copresheaf.
+      double-index-category
+      (fn [[i v]]
+        (case i
+          0 (object-apply source v)
+          1 (object-apply target v)))
+      (fn [[i v]]
+        (case i
+          0 (morphism-apply source v)
+          1 (morphism-apply target v)
+          2 (compose
+              (morphism-apply target v)
+              (func (source-element index-category v))))))))
+
 ; General conversion routines for the most basic topos objects
 ; The various fundamental constructs of our ontology, which is rooted in
 ; topos theory can all be converted to copresheaves. This leads to an
@@ -751,126 +814,6 @@
         (= morphism "f") (underlying-function func)
         (= morphism "f⁻¹") (underlying-function (inv func))))))
 
-; Incidence structures as copresheaves
-(defmethod to-copresheaf Span
-  [span]
-
-  (->Copresheaf
-    incidence-category*
-    (fn [obj]
-      (cond
-        (= obj "flags") (span-flags span)
-        (= obj "lines") (span-edges span)
-        (= obj "points") (span-vertices span)))
-    (fn [arrow]
-      (cond
-        (= arrow "line") (edge-function span)
-        (= arrow "point") (vertex-function span)
-        (= arrow "1_points") (identity-function (span-vertices span))
-        (= arrow "1_lines") (identity-function (span-edges span))
-        (= arrow "1_flags") (identity-function (span-flags span))))))
-
-; Convert cospans to copresheaves
-(defmethod to-copresheaf Cospan
-  [^Cospan cospan]
-
-  (let [first-source (first-cospan-source cospan)
-        second-source (second-cospan-source cospan)
-        target (cospan-target cospan)
-        f (first-cospan-function cospan)
-        g (second-cospan-function cospan)]
-    (->Copresheaf
-      two-cospan-category
-      (fn [obj]
-        (case obj
-          "a" first-source
-          "b" second-source
-          "c" target))
-      (fn [arrow]
-        (case arrow
-          "1a" (identity-function first-source)
-          "1b" (identity-function second-source)
-          "1c" (identity-function target)
-          "f" f
-          "g" g)))))
-
-; Convert triangles to copresheaves
-(defmethod to-copresheaf TriangleCopresheaf
-  [^TriangleCopresheaf triangle]
-
-  (let [f (prefunction triangle)
-        g (postfunction triangle)]
-    (Copresheaf.
-      triangle-category
-      (fn [obj]
-        (case obj
-          "a" (inputs f)
-          "b" (inputs g)
-          "c" (outputs g)))
-      (fn [arrow]
-        (case arrow
-          "1a" (identity-function (inputs f))
-          "1b" (identity-function (inputs g))
-          "1c" (identity-function (outputs g))
-          "f" f
-          "g" g
-          "g ⚬ f" (compose g f))))))
-
-; Morphisms of functions
-(defmethod to-copresheaf Diamond
-  [func]
-
-  (Copresheaf.
-    diamond-category
-    (fn [obj]
-      (case obj
-        "a" (inputs (source-object func))
-        "b" (outputs (source-object func))
-        "c" (inputs (target-object func))
-        "d" (outputs (target-object func))))
-    (fn [arrow]
-      (case arrow
-        "1a" (identity-function (inputs (source-object func)))
-        "1b" (identity-function (outputs (source-object func)))
-        "1c" (identity-function (inputs (target-object func)))
-        "1d" (identity-function (outputs (target-object func)))
-        "f" (source-object func)
-        "g" (target-object func)
-        "i" (input-set-function func)
-        "o" (output-set-function func)
-        "c" (compose (output-set-function func) (source-object func))))))
-
-; Morphisms of bijections
-(defmethod to-copresheaf Gem
-  [func]
-
-  (let [s0 (inputs (source-object func))
-        s1 (outputs (source-object func))
-        s2 (inputs (target-object func))
-        s3 (outputs (target-object func))]
-    (Copresheaf.
-      gem-category
-      (fn [obj]
-        (case obj
-          0 s0
-          1 s1
-          2 s2
-          3 s3))
-      (fn [arrow]
-        (cond
-          (= arrow '(0 0)) (identity-function s0)
-          (= arrow '(1 1)) (identity-function s1)
-          (= arrow '(0 1)) (underlying-function (source-object func))
-          (= arrow '(1 0)) (underlying-function (inv (source-object func)))
-          (= arrow '(2 2)) (identity-function s2)
-          (= arrow '(3 3)) (identity-function s3)
-          (= arrow '(2 3)) (underlying-function (target-object func))
-          (= arrow '(3 2)) (underlying-function (inv (target-object func)))
-          (= arrow '(0 2)) (first-function func)
-          (= arrow '(0 3)) (compose (underlying-function (target-object func)) (first-function func))
-          (= arrow '(1 2)) (compose (underlying-function (inv (target-object func))) (second-function func))
-          (= arrow '(1 3)) (second-function func))))))
-
 ; Convert copresheaves over preorders into more general copresheaves
 ; Let P be a preorder, then Sets^P is a topos consisting of all copresheaves over the preorder
 ; P. This is a fruitful means of exploring the properties of the preorder P. The resulting
@@ -921,6 +864,21 @@
 (defmethod to-copresheaf Cube
   [cube] (to-copresheaf (to-dependency cube)))
 
+(defmethod to-copresheaf Diamond
+  [diamond] (to-copresheaf (to-dependency diamond)))
+
+(defmethod to-copresheaf Gem
+  [gem] (to-copresheaf (to-dependency gem)))
+
+(defmethod to-copresheaf TriangleCopresheaf
+  [triangle] (to-copresheaf (to-dependency triangle)))
+
+(defmethod to-copresheaf Span
+  [span] (to-copresheaf (to-dependency span)))
+
+(defmethod to-copresheaf Cospan
+  [cospan] (to-copresheaf (to-dependency cospan)))
+
 ; Copresheaves over monoids
 (defmethod to-copresheaf :locus.elementary.copresheaf.core.protocols/mset
   [^MSet ms]
@@ -949,7 +907,6 @@
         "source" (source-function quiv)
         "target" (target-function quiv)))))
 
-; Special classes of quivers
 (defmethod to-copresheaf PermutableQuiver
   [quiv]
 
@@ -1005,6 +962,30 @@
         "ids" (source-identity-function quiv)
         "idt" (target-identity-function quiv)
         "reverse" (inverse-function quiv)))))
+
+; Conversion of morphisms of quivers into copresheaves
+(defn create-copresheaf-by-morphism-of-quivers
+  [morphism]
+
+  (->Copresheaf
+    (to-copresheaf (source-object morphism))
+    (to-copresheaf (target-object morphism))
+    (fn [obj]
+      (case obj
+        "edges" (morphism-component-function morphism)
+        "vertices" (object-component-function morphism)))))
+
+(defmethod to-copresheaf MorphismOfQuivers
+  [morphism] (create-copresheaf-by-morphism-of-quivers morphism))
+
+(defmethod to-copresheaf MorphismOfUnitalQuivers
+  [morphism] (create-copresheaf-by-morphism-of-quivers morphism))
+
+(defmethod to-copresheaf MorphismOfPermutableQuivers
+  [morphism] (create-copresheaf-by-morphism-of-quivers morphism))
+
+(defmethod to-copresheaf MorphismOfDependencyQuivers
+  [morphism] (create-copresheaf-by-morphism-of-quivers morphism))
 
 ; Compositional quivers
 (defn compositional-quiver-copresheaf
@@ -1432,6 +1413,7 @@
   [obj]
 
   (= (type obj) Copresheaf))
+
 
 
 

@@ -10,7 +10,7 @@
             [locus.base.function.image.image-function :refer :all])
   (:import (locus.base.function.core.object SetFunction)
            (locus.elementary.bijection.core.object Bijection)
-           (clojure.lang PersistentArrayMap)
+           (clojure.lang IPersistentMap)
            (locus.base.function.image.image_function ImageFunction)))
 
 ; Set relations:
@@ -287,7 +287,7 @@
 (defmethod to-set-relation Bijection
   [func] (to-set-relation (underlying-function func)))
 
-(defmethod to-set-relation PersistentArrayMap
+(defmethod to-set-relation IPersistentMap
   [func]
 
   (SetRelation.
@@ -296,7 +296,7 @@
     (fn [i]
       #{(func i)})))
 
-(defmethod to-set-relation :default
+(defmethod to-set-relation :locus.base.logic.core.set/universal
   [rel]
 
   (SetRelation.

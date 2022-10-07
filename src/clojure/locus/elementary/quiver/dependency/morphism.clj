@@ -81,6 +81,25 @@
     (identity-function (first-set quiv))
     (identity-function (second-set quiv))))
 
+; Products and coproducts in the topos of morphisms of quivers
+(defmethod product MorphismOfDependencyQuivers
+  [& args]
+
+  (->MorphismOfDependencyQuivers
+    (apply product (map source-object args))
+    (apply product (map target-object args))
+    (apply product (map first-function args))
+    (apply product (map second-function args))))
+
+(defmethod coproduct MorphismOfDependencyQuivers
+  [& args]
+
+  (->MorphismOfDependencyQuivers
+    (apply coproduct (map source-object args))
+    (apply coproduct (map target-object args))
+    (apply coproduct (map first-function args))
+    (apply coproduct (map second-function args))))
+
 ; Morphisms in the topos of dependency quivers
 (defn morphism-of-dependency-quivers?
   [morphism]

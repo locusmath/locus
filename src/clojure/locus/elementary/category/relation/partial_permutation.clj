@@ -2,6 +2,7 @@
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.sequence.core.object :refer :all]
+            [locus.base.effects.local.permutation :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
@@ -14,7 +15,9 @@
             [locus.elementary.category.relation.partial-function :refer :all]
             [locus.elementary.category.relation.partial-bijection :refer :all]
             [locus.elementary.category.relation.partial-transformation :refer :all])
-  (:import (locus.elementary.category.relation.partial_transformation PartialTransformation)))
+  (:import (locus.elementary.category.relation.partial_transformation PartialTransformation)
+           (clojure.lang IPersistentMap)
+           (locus.elementary.category.relation.partial_bijection PartialBijection)))
 
 ; Partial permutations:
 ; One to one partial transformations are called partial permutations, or sometimes charts.
@@ -91,11 +94,62 @@
       (comp (.forward a) (.forward b))
       (comp (.backward a) (.backward b)))))
 
+; Relational partial permutations
+(defn relational-partial-permutation
+  ([rel] (relational-partial-permutation (vertices rel) rel))
+  ([coll rel]
+   (let [reverse-rel (transpose rel)]
+     (PartialPermutation.
+      (relation-domain rel)
+      (relation-codomain rel)
+      coll
+      (fn [i]
+        (call rel i))
+      (fn [i]
+        (call reverse-rel i))))))
+
 ; Conversion routines
 (defmulti to-partial-permutation type)
 
 (defmethod to-partial-permutation PartialPermutation
   [func] func)
+
+(defmethod to-partial-permutation :locus.base.logic.core.set/universal
+  [coll] (relational-partial-transformation coll))
+
+(defmethod to-partial-permutation IPersistentMap
+  [coll]
+
+  (if (not (distinct-seq? (seq (vals coll))))
+    (throw (new IllegalArgumentException))
+    (let [in (set (keys coll))
+          out (set (vals coll))
+          all-values (union in out)]
+      (->PartialPermutation
+        in
+        out
+        all-values
+        coll
+        (into {} (map (comp vec reverse) coll))))))
+
+(defmethod to-partial-permutation :locus.base.logic.structure.protocols/permutation
+  [permutation]
+
+  (let [coll (outputs permutation)]
+    (->PartialPermutation coll coll coll permutation (inv permutation))))
+
+(defmethod to-partial-permutation PartialBijection
+  [^PartialBijection func]
+
+  (->PartialPermutation
+    (defined-domain func)
+    (partial-function-image func)
+    (union (source-object func) (target-object func))
+    (.-forward func)
+    (.-backward func)))
+
+(defmethod to-partial-permutation :locus.elementary.copresheaf.core.protocols/bijection
+  [bijection] (to-partial-permutation (to-partial-bijection bijection)))
 
 ; Atomic charts are the simplest means of generating preorders by an action
 ; Semigroups of atomic charts are all equivalent to preorders. They can be formed,
@@ -416,4 +470,3 @@
         (fn [i]
           (set (enumerate-chart-relations i i)))
         partition))))
-
