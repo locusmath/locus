@@ -47,6 +47,22 @@
         (seq? (func i)))
       (inputs func))))
 
+; Special types of sequence valued functions
+(defn injective-sequence-valued-function?
+  [func]
+
+  (and
+    (injective? func)
+    (sequence-valued-function? func)))
+
+(defn constant-sequence-valued-function?
+  [func]
+
+  (and
+    (constant-function? func)
+    (sequence-valued-function? func)))
+
+; Sequence valued functions by their output cardinality types
 (defn nary-sequence-valued-function?
   [func]
 

@@ -92,20 +92,24 @@
 (defmethod set-valued-function? SetValuedFunction
   [func] true)
 
+(defmethod set-valued-function? :default
+  [func]
+
+  (every?
+    (fn [i]
+      (universal? (func i)))
+    (inputs func)))
+
 ; Injective and constant types of set valued functions
-(defn injective-set-valued-function?
-  [func]
+(def injective-set-valued-function?
+  (intersection
+    injective?
+    set-valued-function?))
 
-  (and
-    (injective? func)
-    (set-valued-function? func)))
-
-(defn constant-set-valued-function?
-  [func]
-
-  (and
-    (constant-function? func)
-    (set-valued-function? func)))
+(def constant-set-valued-function?
+  (intersection
+    constant-function?
+    set-valued-function?))
 
 ; Reflexivity conditions
 (defn reflexive-set-valued-function?
@@ -134,47 +138,72 @@
 
   (and
     (set-valued-function? func)
-    (every?
-      (fn [i]
-        (empty? (func i)))
-      (inputs func))))
+    (every? (comp empty? func) (inputs func))))
+
+(defn rank-one-set-valued-function?
+  [func]
+
+  (and
+    (set-valued-function? func)
+    (every? (comp unique-universal? func) (inputs func))))
+
+(defn rank-two-set-valued-function?
+  [func]
+
+  (and
+    (set-valued-function? func)
+    (every? (comp max-size-two-universal? func) (inputs func))))
+
+(defn rank-three-set-valued-function?
+  [func]
+
+  (and
+    (set-valued-function? func)
+    (every? (comp max-size-three-universal? func) (inputs func))))
+
+(defn rank-four-set-valued-function?
+  [func]
+
+  (and
+    (set-valued-function? func)
+    (every? (comp max-size-four-universal? func) (inputs func))))
+
+; Special classes of set valued functions by their cardinalities
+(defn uniform-set-valued-function?
+  [func]
+
+  (and
+    (set-valued-function? func)
+    (equal-seq?
+      (map
+        (fn [i]
+          (count (func i)))
+        (inputs func)))))
 
 (defn unary-set-valued-function?
   [func]
 
   (and
     (set-valued-function? func)
-    (every?
-      (fn [x]
-        (singular-universal? (func x)))
-      (inputs func))))
+    (every? (comp singular-universal? func) (inputs func))))
 
 (defn binary-set-valued-function?
   [func]
 
   (and
     (set-valued-function? func)
-    (every?
-      (fn [x]
-        (size-two-universal? (func x)))
-      (inputs func))))
+    (every? (comp size-two-universal? func) (inputs func))))
 
 (defn ternary-set-valued-function?
   [func]
 
   (and
     (set-valued-function? func)
-    (every?
-      (fn [x]
-        (size-three-universal? (func x)))
-      (inputs func))))
+    (every? (comp size-three-universal? func) (inputs func))))
 
 (defn quaternary-set-valued-function?
   [func]
 
   (and
     (set-valued-function? func)
-    (every?
-      (fn [x]
-        (size-four-universal? (func x)))
-      (inputs func))))
+    (every? (comp size-four-universal? func) (inputs func))))

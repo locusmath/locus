@@ -5,7 +5,7 @@
             [locus.base.partition.core.object :refer :all]
             [locus.base.partition.core.setpart :refer :all])
   (:import [locus.base.logic.core.set SeqableUniversal]
-           (clojure.lang IPersistentMap)
+           (clojure.lang IPersistentMap IPersistentVector)
            (locus.base.logic.limit.product CartesianCoproduct)
            (locus.base.partition.core.object CoproductPartition)))
 
@@ -114,23 +114,6 @@
 
   (SetFunction. (inputs func) (outputs func) func))
 
-; Generalized conversions
-(defmulti to-function type)
-
-(defmethod to-function :locus.base.logic.structure.protocols/set-function
-  [func] func)
-
-(defmethod to-function :default
-  [func] (underlying-function func))
-
-(defmethod to-function IPersistentMap
-  [func]
-
-  (SetFunction.
-    (set (keys func))
-    (set (vals func))
-    func))
-
 ; This is an interface between maps and functions
 (defn mapfn
   [coll]
@@ -148,16 +131,6 @@
       coll
       (map func coll))))
 
-; Convert between relations and functions
-(defmethod underlying-relation :default
-  [func]
-
-  (set
-    (map
-      (fn [i]
-        (list i (func i)))
-      (inputs func))))
-
 (defn relation-to-function
   [coll]
 
@@ -172,17 +145,42 @@
                 :when (= a x)]
             b))))))
 
-; Convert relations into function
-(defn underlying-transition
-  [morphism]
+(defn vector-to-function
+  [vec]
 
-  (list (source-object morphism) (target-object morphism)))
+  (->SetFunction
+    (->Upto (count vec))
+    (set vec)
+    (fn [i]
+      (nth vec i))))
 
-; This is a helpful tool for understanding functions
-(defn function-triple
-  [f]
+; Generalized conversions
+(defmulti to-function type)
 
-  (list (inputs f) (outputs f) (fnmap f)))
+(defmethod to-function :locus.base.logic.structure.protocols/set-function
+  [func] func)
+
+(defmethod to-function IPersistentMap
+  [func] (mapfn func))
+
+(defmethod to-function IPersistentVector
+  [coll] (vector-to-function coll))
+
+(defmethod to-function :locus.base.logic.core.set/universal
+  [rel] (relation-to-function rel))
+
+(defmethod to-function :default
+  [func] (underlying-function func))
+
+; Underlying relations of functions and related structures
+(defmethod underlying-relation :locus.base.logic.structure.protocols/structured-function
+  [func]
+
+  (set
+    (map
+      (fn [i]
+        (list i (func i)))
+      (inputs func))))
 
 ; Composition and identities in the topos Sets of sets and functions
 ; This is the most familiar composition operation in mathematics.
@@ -203,69 +201,8 @@
 
   (SetFunction. a a identity))
 
-(defmethod identity-morphism :default
+(defmethod identity-morphism :locus.base.logic.core.set/universal
   [coll] (identity-function coll))
-
-; Projection functions and inclusion functions
-(defn inclusion-function
-  [a b]
-
-  (SetFunction. a b identity))
-
-(defmulti projection-function type)
-
-(defmethod projection-function :locus.base.partition.core.object/set-partition
-  [partition]
-
-  (SetFunction.
-    (underlying-set partition)
-    (equivalence-classes partition)
-    (fn [i]
-      (equivalence-class-of partition i))))
-
-(defmethod projection-function :default
-  [partition]
-
-  (SetFunction.
-    (apply union partition)
-    partition
-    (partial projection partition)))
-
-; Iterative application is an alternative to using repeated composition
-(defn iteratively-apply
-  [f n arg]
-
-  (loop [i n
-         cval arg]
-    (if (<= i 0)
-      cval
-      (recur
-        (dec i)
-        (f cval)))))
-
-; The generalized kernel of a function
-(defn kernel
-  [func]
-
-  (->FunctionalPartition (inputs func) func))
-
-; The image and the kernel are fundamental invariants of a function
-(defn function-image
-  [func]
-
-  (set (map func (inputs func))))
-
-(defn function-kernel
-  [func]
-
-  (pn
-    (fn [a b] (= (func a) (func b)))
-    (inputs func)))
-
-(defn kernel-image-factorisation
-  [func]
-
-  (list (function-kernel func) (function-image func)))
 
 ; The images and inverse images of functions are one of the basic
 ; computations we can perform with them
@@ -375,6 +312,30 @@
     (fn [partition]
       (partition-inverse-image func partition))))
 
+; The generalized kernel of a function
+(defn kernel
+  [func]
+
+  (->FunctionalPartition (inputs func) func))
+
+; The image and the kernel are fundamental invariants of a function
+(defn function-image
+  [func]
+
+  (set (map func (inputs func))))
+
+(defn function-kernel
+  [func]
+
+  (pn
+    (fn [a b] (= (func a) (func b)))
+    (inputs func)))
+
+(defn kernel-image-factorisation
+  [func]
+
+  (list (function-kernel func) (function-image func)))
+
 ; Get the selection of a function by the fiber cardinalities
 (defn fiber
   [func elem]
@@ -411,6 +372,54 @@
   [func x]
 
   (fiber func (func x)))
+
+; Functions can be treated as special types of ordered triples
+(defn underlying-transition
+  [morphism]
+
+  (list (source-object morphism) (target-object morphism)))
+
+(defn function-triple
+  [f]
+
+  (list (inputs f) (outputs f) (fnmap f)))
+
+; Projection functions and inclusion functions
+(defn inclusion-function
+  [a b]
+
+  (SetFunction. a b identity))
+
+(defmulti projection-function type)
+
+(defmethod projection-function :locus.base.partition.core.object/set-partition
+  [partition]
+
+  (SetFunction.
+    (underlying-set partition)
+    (equivalence-classes partition)
+    (fn [i]
+      (equivalence-class-of partition i))))
+
+(defmethod projection-function :default
+  [partition]
+
+  (SetFunction.
+    (apply union partition)
+    partition
+    (partial projection partition)))
+
+; Iterative application is an alternative to using repeated composition
+(defn iteratively-apply
+  [f n arg]
+
+  (loop [i n
+         cval arg]
+    (if (<= i 0)
+      cval
+      (recur
+        (dec i)
+        (f cval)))))
 
 ; Numeric properties of functions
 (defn function-signature
@@ -468,11 +477,11 @@
   (when (= (inputs a) (inputs b))
     (let [common-inputs (inputs a)]
       (partitionize-family
-       (set
-         (map
-           (fn [x]
-             (set (list (a x) (b x))))
-           common-inputs))))))
+        (set
+          (map
+            (fn [x]
+              (set (list (a x) (b x))))
+            common-inputs))))))
 
 (defn coequalizer-function
   [a b]
@@ -486,9 +495,9 @@
 
   (set
     (filter
-     (fn [[x y]]
-       (= (f x) (g y)))
-     (cartesian-product (inputs f) (inputs g)))))
+      (fn [[x y]]
+        (= (f x) (g y)))
+      (cartesian-product (inputs f) (inputs g)))))
 
 (defn fiber-product-projections
   [f g]
@@ -571,19 +580,6 @@
     (fn [[func x]]
       (func x))))
 
-; Adjoin inputs and outputs to a mapping
-(defmulti adjoin-inputs (fn [a b] (type a)))
-
-(defmulti adjoin-outputs (fn [a b] (type a)))
-
-(defmethod adjoin-outputs :locus.base.logic.structure.protocols/set-function
-  [func coll]
-
-  (SetFunction.
-    (inputs func)
-    (union (outputs func) coll)
-    func))
-
 ; Product and coproduct of functions
 (defn function-product
   [& functions]
@@ -616,6 +612,46 @@
 
   (apply function-coproduct args))
 
+; The subobject classifier in the topos of sets
+(defn subset-character
+  [a b]
+
+  (SetFunction.
+    b
+    #{false true}
+    (fn [i]
+      (contains? a i))))
+
+; Adjoin inputs and outputs to a mapping
+(defmulti adjoin-inputs (fn [a b] (type a)))
+
+(defmulti adjoin-outputs (fn [a b] (type a)))
+
+(defmethod adjoin-outputs :locus.base.logic.structure.protocols/set-function
+  [func coll]
+
+  (SetFunction.
+    (inputs func)
+    (union (outputs func) coll)
+    func))
+
+; Special restriction methods for functions
+(defn restrict-function
+  [func coll]
+
+  (SetFunction.
+    coll
+    (outputs func)
+    func))
+
+(defn restrict-function-image
+  [func coll]
+
+  (SetFunction.
+    (inputs func)
+    coll
+    func))
+
 ; Testing for subalgebras
 (defn subfunction?
   [func new-in new-out]
@@ -642,14 +678,14 @@
   (and
     (every? (fn [i] (and (seqable? i) (= (count i) 2))) coll)
     (let [first-elements (set
-                          (for [[i v] coll
-                                :when (= i 0)]
-                            v))
-         second-elements (set
                            (for [[i v] coll
-                                 :when (= i 1)]
-                             v))]
-     (subfunction? func first-elements second-elements))))
+                                 :when (= i 0)]
+                             v))
+          second-elements (set
+                            (for [[i v] coll
+                                  :when (= i 1)]
+                              v))]
+      (subfunction? func first-elements second-elements))))
 
 ; Getting subobjects of functions
 (defn subfunction
@@ -679,27 +715,6 @@
                                 :when (= i 1)]
                             v))]
     (subfunction func first-elements second-elements)))
-
-; Special restriction methods for functions
-(defn restrict-function
-  [func coll]
-
-  (SetFunction. coll (outputs func) func))
-
-(defn restrict-function-image
-  [func coll]
-
-  (SetFunction. (inputs func) coll func))
-
-; The induced inclusions of subfunctions
-; This takes a given subfunction describes as a pair of subsets of the
-; underlying transition and produces an inclusion over the inverse image.
-(defn subfunction-to-inclusion
-  [func new-in new-out]
-
-  (inclusion-function
-    new-in
-    (set-inverse-image func new-out)))
 
 ; This is an attempt to deal with the enumeration of subalgebras
 (defn number-of-subalgebras
@@ -817,6 +832,16 @@
           (covering-subalgebras func in-set out-set)))
       (all-subalgebras func))))
 
+; The induced inclusions of subfunctions
+; This takes a given subfunction describes as a pair of subsets of the
+; underlying transition and produces an inclusion over the inverse image.
+(defn subfunction-to-inclusion
+  [func new-in new-out]
+
+  (inclusion-function
+    new-in
+    (set-inverse-image func new-out)))
+
 ; Testing for io-relations
 (defn io-relation?
   [func in-partition out-partition]
@@ -921,39 +946,115 @@
           (covering-congruences func in-partition out-partition)))
       (all-congruences func))))
 
-; A function can be turned into a surjective, injective, or bijective
-; function by certain subquotients in the topos of functions.
-(defn injective-quotient
+; Surjective components of the subalgebra lattice
+; Set images are simply a way of getting surjective subobjects.
+(defn surjective-subalgebra
+  [func]
+
+  (list (inputs func) (function-image func)))
+
+(defn surjective-subalgebra-by
+  [func coll]
+
+  (list coll (set-image func coll)))
+
+(defn surjective-subfunction
   [func]
 
   (restrict-function-image func (function-image func)))
 
-(defn surjective-subobject
+(defn surjective-subfunction-by
+  [func coll]
+
+  (subfunction
+    func
+    coll
+    (set-image func coll)))
+
+; Injective components of the congruence lattice
+; Partition inverse images are simply a way of getting injective quotients.
+(defn injective-congruence
+  [func]
+
+  (list
+    (function-kernel func)
+    (set
+      (map
+        (fn [i]
+          #{i})
+        (outputs func)))))
+
+(defn injective-congruence-by
+  [func out-partition]
+
+  (list
+    (partition-inverse-image func out-partition)
+    out-partition))
+
+(defn injective-quotient
   [func]
 
   (SetFunction.
     (function-kernel func)
-    (set (map (fn [i] #{i}) (outputs func)))
+    (outputs func)
     (fn [part]
-      #{(func (first part))})))
+      (func (first part)))))
 
+(defn injective-quotient-by
+  [func out-partition]
+
+  (quotient-function
+    func
+    (partition-inverse-image func out-partition)
+    out-partition))
+
+; Bijective subquotients
 (defn bijective-subquotient
   [func]
 
-  (surjective-subobject
-    (surjective-subobject func)))
+  (injective-quotient
+    (surjective-subfunction func)))
 
-; The subobject classifier in the topos of sets
-(defn subset-character
-  [a b]
+; Full subobjects
+(defn full-subfunction
+  [func output-set]
 
-  (SetFunction.
-    b
-    #{false true}
-    (fn [i]
-      (contains? a i))))
+  (subfunction
+    func
+    (set-inverse-image func output-set)
+    output-set))
 
-; A partial ordering on functions related to the subobject ordering
+; Full quotients
+(defn full-quotient-function
+  [func in-partition]
+
+  (quotient-function
+    func
+    in-partition
+    (partition-image func in-partition)))
+
+; The empty component of a function
+(defn empty-subfunction
+  [func]
+
+  (inclusion-function #{} (outputs func)))
+
+; Every function is associated to a constant quotient function
+(defn constant-quotient-function
+  [func]
+
+  (quotient-function
+    func
+    (set
+      (map
+        (fn [i]
+          #{i})
+        (inputs func)))
+    #{(outputs func)}))
+
+; Ontology of relations
+; Functions may be related to one another by a number of different relations including
+; equality and ordering.
 (defn included-function?
   [a b]
 

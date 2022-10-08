@@ -22,7 +22,7 @@
                  [dorothy "0.0.7"]
                  [org.scilab.forge/jlatexmath "1.0.7"]]
 
-  :main locus.elementary.category.relation.partial-bijection
+  :main locus.base.function.core.object
 
   :source-paths ["src/clojure"]
   :java-source-paths ["src/java"]

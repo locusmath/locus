@@ -97,6 +97,9 @@
 ; The underlying multirelation is a natural generalisation of underlying relations
 (defmulti underlying-multirelation type)
 
+(defmethod underlying-multirelation :default
+  [structure] (underlying-relation structure))
+
 ; Multimethods for dealing with composition and identities in categories
 (defmulti identity-morphism type)
 

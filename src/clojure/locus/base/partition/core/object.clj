@@ -275,3 +275,20 @@
           (let [partition (nth partitions i)]
             (equal? partition (nth a i) (nth b i))))
         (range (count partitions))))))
+
+; Test if the second partition is more equal than the first
+(defn more-equal?
+  [partition1 partition2]
+
+  (every?
+    (fn [[a b]]
+      (equal? partition2 a b))
+    (underlying-relation partition1)))
+
+(defn less-equal?
+  [partition1 partition2]
+
+  (every?
+    (fn [[a b]]
+      (equal? partition1 a b))
+    (underlying-relation partition2)))
