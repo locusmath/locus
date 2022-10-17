@@ -651,15 +651,6 @@
               indices)))
         indices))))
 
-(defmethod display-table :locus.elementary.copresheaf.core.protocols/semigroupoid
-  [semigroup]
-
-  (let [table (if (semigroup? semigroup)
-                (multiplication-table semigroup)
-                (multiplication-table (composition-semigroup semigroup)))]
-    (doseq [i table]
-      (prn i))))
-
 ; Constructors for common classes of semigroups
 (defn null-semigroup
   [n]

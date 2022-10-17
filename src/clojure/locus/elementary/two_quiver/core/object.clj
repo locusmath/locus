@@ -9,6 +9,7 @@
             [locus.base.logic.structure.protocols :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.partition.core.setpart :refer :all]
+            [locus.base.partition.core.object :refer [projection]]
             [locus.elementary.quiver.core.object :refer :all])
   (:import (locus.elementary.quiver.core.object Quiver)))
 
@@ -30,8 +31,8 @@
 
 (deftype TwoQuiver [two-morphisms morphisms objects two-source two-target source target]
   StructuredDiset
-  (first-set [this] objects)
-  (second-set [this] morphisms)
+  (first-set [this] morphisms)
+  (second-set [this] objects)
 
   ConcreteObject
   (underlying-set [this]
@@ -60,18 +61,6 @@
   [quiver]
 
   (visualize (underlying-quiver quiver)))
-
-; Underlying relations and multirelations
-(defmethod underlying-relation TwoQuiver
-  [quiver]
-
-  (underlying-relation (underlying-quiver quiver)))
-
-; The special case of underlying multirelations of two quivers
-(defmethod underlying-multirelation TwoQuiver
-  [quiver]
-
-  (underlying-multirelation (underlying-quiver quiver)))
 
 ; Component functions for 2-morphisms in 2-quivers
 (defn two-morphism-s
@@ -159,7 +148,49 @@
     (fn [two-morphism]
       (two-morphism-tt quiver two-morphism))))
 
+; All 2-morphisms between a pair of 1-morphisms
+(defn two-hom
+  [quiver a b]
+
+  (set
+    (filter
+      (fn [two-morphism]
+        (and
+          (= (two-morphism-s quiver two-morphism) a)
+          (= (two-morphism-t quiver two-morphism) b)))
+      (two-morphisms quiver))))
+
+; Underlying relations and multirelations
+(defmethod underlying-relation TwoQuiver
+  [quiver]
+
+  (underlying-relation (underlying-quiver quiver)))
+
+; The special case of underlying multirelations of two quivers
+(defmethod underlying-multirelation TwoQuiver
+  [quiver]
+
+  (underlying-multirelation (underlying-quiver quiver)))
+
+; The underlying multirelation of the morphic quiver
+(defn underlying-two-multirelation
+  [quiver]
+
+  (multiset
+    (map
+      (fn [two-morphism]
+        (list
+          (two-morphism-s quiver two-morphism)
+          (two-morphism-t quiver two-morphism)))
+      (two-morphisms quiver))))
+
+(defn underlying-two-relation
+  [quiver]
+
+  (set (underlying-two-multirelation quiver)))
+
 ; The morphic quiver of a two quiver copresheaf
+; This contains one morphisms as its objects and two morphisms as its morphisms.
 (defn morphic-quiver
   [quiver]
 
@@ -170,6 +201,7 @@
     (two-target-fn quiver)))
 
 ; Combine two quivers in order to create a 2-quiver copresheaf
+; This is similar to how two functions can be combined to create a triangle copreshaef
 (defn combine-quivers
   [morphic-quiver object-quiver]
 
@@ -181,6 +213,36 @@
     (target-fn morphic-quiver)
     (source-fn object-quiver)
     (target-fn object-quiver)))
+
+; Two quivers created from special types of quivers naturally associated with 1-quivers based upon
+; various relations, including relations of composability, parallelism, source, and target equality.
+(defn composability-two-quiver
+  [quiver]
+
+  (combine-quivers
+    (composability-quiver quiver)
+    quiver))
+
+(defn parallelism-two-quiver
+  [quiver]
+
+  (combine-quivers
+    (parallelism-quiver quiver)
+    quiver))
+
+(defn source-equivalence-two-quiver
+  [quiver]
+
+  (combine-quivers
+    (source-equivalence-quiver quiver)
+    quiver))
+
+(defn target-equivalence-two-quiver
+  [quiver]
+
+  (combine-quivers
+    (target-equivalence-quiver quiver)
+    quiver))
 
 ; Create a two quiver with a single object, but any number of morphisms or two morphisms. These type
 ; of structures include monoidal categories and a number of other constructions like ordered
@@ -218,23 +280,6 @@
       first
       second)))
 
-; Create a composability two-quiver from a quiver
-(defn composability-two-quiver
-  [quiver]
-
-  (combine-quivers
-    (composability-quiver quiver)
-    quiver))
-
-; Create a parallelism two quiver from a quiver. This is like a two globular set within the
-; ontology of two quivers.
-(defn parallelism-two-quiver
-  [quiver]
-
-  (combine-quivers
-    (parallelism-quiver quiver)
-    quiver))
-
 ;  Convert structures into two quivers
 (defmulti to-two-quiver type)
 
@@ -244,8 +289,11 @@
 (defmethod to-two-quiver Quiver
   [quiver] (two-morphism-free-quiver quiver))
 
+(defmethod to-two-quiver :locus.base.logic.core.set/universal
+  [rel] (two-morphism-free-quiver (relational-quiver rel)))
+
 ; Products and coproducts in the topos of two-quivers
-(defn two-quiver-product
+(defmethod product TwoQuiver
   [& quivers]
 
   (->TwoQuiver
@@ -257,7 +305,7 @@
     (apply product (map source-function quivers))
     (apply product (map target-function quivers))))
 
-(defn two-quiver-coproduct
+(defmethod coproduct TwoQuiver
   [& quivers]
 
   (->TwoQuiver
@@ -269,18 +317,8 @@
     (apply coproduct (map source-function quivers))
     (apply coproduct (map target-function quivers))))
 
-(defmethod product TwoQuiver
-  [& quivers]
-
-  (apply two-quiver-product quivers))
-
-(defmethod coproduct TwoQuiver
-  [& quivers]
-
-  (apply two-quiver-coproduct quivers))
-
-; The ontology of sub two quivers
-(defn sub-two-quiver?
+; Subobjects in the topos of 2-quivers
+(defn two-subquiver?
   [quiver new-two-morphisms new-morphisms new-objects]
 
   (and
@@ -297,16 +335,6 @@
           (set-image (s-function quiver) new-two-morphisms))
         new-morphisms))))
 
-(defn two-quiver-congruence?
-  [quiver two-congruence one-congruence zero-congruence]
-
-  (and
-    (io-relation? (source-function quiver) one-congruence zero-congruence)
-    (io-relation? (target-function quiver) one-congruence zero-congruence)
-    (io-relation? (s-function quiver) two-congruence one-congruence)
-    (io-relation? (t-function quiver) two-congruence one-congruence)))
-
-; Restrict the two morphisms of a two quiver
 (defn restrict-two-morphisms
   [two-quiver new-two-morphisms]
 
@@ -319,6 +347,89 @@
     (source-fn two-quiver)
     (target-fn two-quiver)))
 
+(defn two-subquiver
+  [quiver new-two-morphisms new-morphisms new-objects]
+
+  (->TwoQuiver
+    new-two-morphisms
+    new-morphisms
+    new-objects
+    (two-source-fn quiver)
+    (two-target-fn quiver)
+    (source-fn quiver)
+    (target-fn quiver)))
+
+; Congruences of objects in the topos of 2-quivers
+(defn two-quiver-congruence?
+  [quiver two-congruence one-congruence zero-congruence]
+
+  (and
+    (io-relation? (source-function quiver) one-congruence zero-congruence)
+    (io-relation? (target-function quiver) one-congruence zero-congruence)
+    (io-relation? (s-function quiver) two-congruence one-congruence)
+    (io-relation? (t-function quiver) two-congruence one-congruence)))
+
+(defn two-quiver-quotient
+  [quiver two-congruence one-congruence zero-congruence]
+
+  (->TwoQuiver
+    two-congruence
+    one-congruence
+    zero-congruence
+    (fn [part]
+      (projection one-congruence (two-morphism-s quiver (first part))))
+    (fn [part]
+      (projection one-congruence (two-morphism-t quiver (first part))))
+    (fn [part]
+      (projection zero-congruence (source-element quiver (first part))))
+    (fn [part]
+      (projection zero-congruence (target-element quiver (first part))))))
+
+; Over quivers
+(defn target-equal-two-morphism-components?
+  [two-quiver two-morphism]
+
+  (target-equal-elements?
+    two-quiver
+    (two-morphism-s two-quiver two-morphism)
+    (two-morphism-t two-quiver two-morphism)))
+
+(defn over-two-morphisms
+  [two-quiver]
+
+  (set
+    (filter
+      (partial target-equal-two-morphism-components? two-quiver)
+      (two-morphisms two-quiver))))
+
+(defn over-component
+  [two-quiver]
+
+  (restrict-two-morphisms two-quiver (over-two-morphisms two-quiver)))
+
+; Under quivers
+(defn source-equal-two-morphism-components?
+  [two-quiver two-morphism]
+
+  (source-equal-elements?
+    two-quiver
+    (two-morphism-s two-quiver two-morphism)
+    (two-morphism-t two-quiver two-morphism)))
+
+(defn under-two-morphisms
+  [two-quiver]
+
+  (set
+    (filter
+      (partial source-equal-two-morphism-components? two-quiver)
+      (two-morphisms two-quiver))))
+
+(defn under-component
+  [two-quiver]
+
+  (restrict-two-morphisms two-quiver (under-two-morphisms two-quiver)))
+
+; Globular subobjects of two quivers
 (defn globular-two-morphism?
   [two-quiver two-morphism]
 
@@ -331,8 +442,7 @@
 
   (set
     (filter
-      (fn [two-morphism]
-        (globular-two-morphism? two-quiver two-morphism))
+      (partial globular-two-morphism? two-quiver)
       (two-morphisms two-quiver))))
 
 (defn globular-component
@@ -346,6 +456,26 @@
 
   (= (type two-quiver) TwoQuiver))
 
+(defn over-two-quiver?
+  [two-quiver]
+
+  (and
+    (two-quiver? two-quiver)
+    (every?
+      (fn [morphism]
+        (target-equal-two-morphism-components? two-quiver morphism))
+      (two-morphisms two-quiver))))
+
+(defn under-two-quiver?
+  [two-quiver]
+
+  (and
+    (two-quiver? two-quiver)
+    (every?
+      (fn [morphism]
+        (source-equal-two-morphism-components? two-quiver morphism))
+      (two-morphisms two-quiver))))
+
 (defn globular-two-quiver?
   [two-quiver]
 
@@ -356,3 +486,24 @@
         (globular-two-morphism? two-quiver morphism))
       (two-morphisms two-quiver))))
 
+(defn one-thin-two-quiver?
+  [two-quiver]
+
+  (and
+    (two-quiver? two-quiver)
+    (universal? (underlying-multirelation two-quiver))))
+
+(defn two-thin-two-quiver?
+  [two-quiver]
+
+  (and
+    (two-quiver? two-quiver)
+    (universal? (underlying-two-multirelation two-quiver))))
+
+(defn dually-thin-two-quiver?
+  [two-quiver]
+
+  (and
+    (two-quiver? two-quiver)
+    (universal? (underlying-multirelation two-quiver))
+    (universal? (underlying-two-multirelation two-quiver))))

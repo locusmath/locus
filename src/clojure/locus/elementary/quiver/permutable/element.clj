@@ -55,3 +55,13 @@
   [morphism]
 
   (= (type morphism) PermutableQuiverMorphism))
+
+(defn permutable-quiver-involution-morphism?
+  [morphism]
+
+  (and
+    (permutable-quiver-morphism? morphism)
+    (let [quiv (parent morphism)
+          i (member morphism)]
+      (= (invert-morphism quiv i) i))))
+

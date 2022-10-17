@@ -6,6 +6,8 @@
             [locus.elementary.diamond.core.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.group.core.object :refer :all]
+            [locus.elementary.quiver.core.object :refer :all]
+            [locus.elementary.quiver.unital.object :refer :all]
             [locus.elementary.lattice.core.object :refer :all]
             [locus.elementary.category.element.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
@@ -31,65 +33,66 @@
   [category]
 
   (Category.
-    (->Universal
-      (partial morphism-of-morphisms-of-category? category))
-    (morphisms category)
-    source-object
-    target-object
+    (->UnitalQuiver
+      (partial morphism-of-morphisms-of-category? category)
+      (morphisms category)
+      source-object
+      target-object
+      identity-morphism-of-morphisms)
     (fn [[a b]]
-      (compose a b))
-    identity-morphism-of-morphisms))
+      (compose a b))))
 
 (defn input-action-category
   [category]
 
   (Category.
-    (->Universal
-      (partial input-action-of-category? category))
-    (morphisms category)
-    source-object
-    target-object
+    (->UnitalQuiver
+      (partial input-action-of-category? category)
+      (morphisms category)
+      source-object
+      target-object
+      identity-input-action)
     (fn [[a b]]
-      (compose a b))
-    identity-input-action))
+      (compose a b))))
 
 (defn output-action-category
   [category]
 
   (Category.
-    (->Universal
-      (partial output-action-of-category? category))
-    (morphisms category)
-    source-object
-    target-object
+    (->UnitalQuiver
+      (partial output-action-of-category? category)
+      (morphisms category)
+      source-object
+      target-object
+      identity-output-action)
     (fn [[a b]]
-      (compose a b))
-    identity-output-action))
+      (compose a b))))
 
-; Constructions of comma categories
+; Construction of comma categories
 (defn over-category
   [category x]
 
   (Category.
-    (->Universal
-      (partial morphism-of-over-category? category x))
-    (over-morphisms category x)
-    source-object
-    target-object
+    (->UnitalQuiver
+      (partial morphism-of-over-category? category x)
+      (over-morphisms category x)
+      source-object
+      target-object
+      identity-input-action)
     (fn [[a b]]
-      (compose a b))
-    identity-input-action))
+      (compose a b))))
 
 (defn under-category
   [category x]
 
   (Category.
-    (->Universal
-      (partial morphism-of-under-category? category x))
-    (under-morphisms category x)
-    source-object
-    target-object
+    (->UnitalQuiver
+      (partial morphism-of-under-category? category x)
+      (under-morphisms category x)
+      source-object
+      target-object
+      identity-output-action)
     (fn [[a b]]
-      (compose a b))
-    identity-output-action))
+      (compose a b))))
+
 

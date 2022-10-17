@@ -130,7 +130,10 @@
 ; A functional partition on a set S is the partition of S that has as equivalence classes
 ; the kernel of a function operating on S.
 (defprotocol StructuredFunctionalPartition
-  (classifying-function [this]))
+  "This protocol defines partitions of sets that are induced by the kernels of functions."
+
+  (classifying-function [this]
+    "Return the function that defines this partition."))
 
 (deftype FunctionalPartition [coll func]
   ConcreteObject

@@ -9,6 +9,12 @@
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]))
 
+; Additive structures can be established on categories by enriching them over the category CMon
+; of commutative monoids or the category Ab of commutative groups. The former produces the
+; category of semiringoids and the later produces the category of ringoids. Both of them
+; can be understood in the context of horizontal categorification. The former is the horizontal
+; categorification of a semiring, and the later is the horizontal categorification of a ring.
+
 ; Ontology of rings and semirings
 (derive ::semiring :locus.base.logic.structure.protocols/structured-set)
 (derive ::ring ::semiring)

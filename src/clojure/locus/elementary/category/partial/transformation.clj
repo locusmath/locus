@@ -1,4 +1,4 @@
-(ns locus.elementary.category.relation.partial-transformation
+(ns locus.elementary.category.partial.transformation
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.effects.global.transformation :refer :all]
@@ -13,7 +13,7 @@
             [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.relation.binary.vertices :refer :all]
             [locus.elementary.relation.binary.vertexset :refer :all]
-            [locus.elementary.category.relation.partial-function :refer :all])
+            [locus.elementary.category.partial.function :refer :all])
   (:import (clojure.lang IPersistentMap)
            (locus.base.effects.global.transformation Transformation)))
 
@@ -41,7 +41,7 @@
   (applyTo [this args]
     (clojure.lang.AFn/applyToHelper this args)))
 
-(derive PartialTransformation :locus.elementary.category.relation.partial-function/partial-transformation)
+(derive PartialTransformation :locus.elementary.category.partial.function/partial-transformation)
 
 ; Defined domains of partial transformations
 (defmethod defined-domain PartialTransformation
@@ -139,7 +139,7 @@
 
   (->PartialTransformation (inputs transformation) (inputs transformation) transformation))
 
-(defmethod to-partial-transformation :locus.elementary.category.relation.partial-function/partial-function
+(defmethod to-partial-transformation :locus.elementary.category.partial.function/partial-function
   [func]
 
   (let [all-values (union (source-object func) (target-object func))]

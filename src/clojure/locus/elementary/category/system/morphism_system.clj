@@ -10,7 +10,8 @@
             [locus.elementary.group.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
-            [locus.elementary.category.element.object :refer :all]))
+            [locus.elementary.category.element.object :refer :all])
+  (:import (locus.elementary.semigroup.core.object Semigroup)))
 
 ; Let C be a category, and Arrows(C) its set of morphisms. Then the power set P(Arrows(C)) consists of
 ; the set of all morphism systems of C. Morphism systems are used throughout category theory,

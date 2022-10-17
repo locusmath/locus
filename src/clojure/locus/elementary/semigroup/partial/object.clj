@@ -15,10 +15,10 @@
             [locus.elementary.action.partial.object :refer :all]
             [locus.elementary.action.core.protocols :refer :all]
             [locus.elementary.category.relation.set-relation :refer :all]
-            [locus.elementary.category.relation.partial-function :refer :all]
-            [locus.elementary.category.relation.partial-bijection :refer :all]
-            [locus.elementary.category.relation.partial-transformation :refer :all]
-            [locus.elementary.category.relation.partial-permutation :refer :all]))
+            [locus.elementary.category.partial.function :refer :all]
+            [locus.elementary.category.partial.bijection :refer :all]
+            [locus.elementary.category.partial.transformation :refer :all]
+            [locus.elementary.category.partial.permutation :refer :all]))
 
 ; Partial transformation semigroups
 (deftype PartialTransformationSemigroup [semigroup coll func]

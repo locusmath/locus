@@ -1,4 +1,4 @@
-(ns locus.elementary.two-globular.core.object
+(ns locus.elementary.two-quiver.globular.object
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.sequence.core.object :refer :all]
@@ -22,8 +22,8 @@
 ; that generalise quivers to other goemetric shapes for higher categories.
 (deftype TwoGlobularSet [two-morphisms morphisms objects two-source two-target source target]
   StructuredDiset
-  (first-set [this] objects)
-  (second-set [this] morphisms)
+  (first-set [this] morphisms)
+  (second-set [this] objects)
 
   ConcreteObject
   (underlying-set [this]
@@ -57,17 +57,6 @@
 ; The distinguishing property of two globular sets is that they have hom quivers for each of their
 ; hom classes Hom(a,b) which are used as models of two categories and bicategories in higher
 ; category theory and related fields.
-(defn two-hom
-  [quiver a b]
-
-  (set
-    (filter
-      (fn [two-morphism]
-        (and
-          (= (two-morphism-s quiver two-morphism) a)
-          (= (two-morphism-t quiver two-morphism) b)))
-      (two-morphisms quiver))))
-
 (defn hom-quiver
   [quiver a b]
 

@@ -17,11 +17,13 @@
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.elementary.quiver.permutable.object :refer :all]
             [locus.elementary.quiver.dependency.object :refer :all]
+            [locus.elementary.quiver.dependency.thin-object :refer :all]
             [locus.elementary.bijection.core.object :refer :all])
   (:import (locus.elementary.group.core.object Group)
            (locus.elementary.category.core.object Category)
            (locus.elementary.preorder.setoid.object Setoid)
-           (locus.elementary.quiver.dependency.object DependencyQuiver)))
+           (locus.elementary.quiver.dependency.object DependencyQuiver)
+           (locus.elementary.quiver.dependency.thin_object ThinDependencyQuiver)))
 
 ; A category C has isomorphisms for every object. A groupoid is a category C for which each
 ; morphism is an isomorphism, meaning that if f: A -> B is a morphism there always exists
@@ -30,46 +32,48 @@
 ; object. Groupoids are therefore categories with additional structure. We also provide
 ; conversion routines for groups and setoids to convert them to groupoids.
 
-(deftype Groupoid [morphisms objects source target func id inv]
-  ; Every groupoid is a structured quiver
+(deftype Groupoid [quiver op]
   StructuredDiset
-  (first-set [this] morphisms)
-  (second-set [this] objects)
+  (first-set [this] (first-set quiver))
+  (second-set [this] (second-set quiver))
 
   StructuredQuiver
-  (underlying-quiver [this] (->Quiver morphisms objects source target))
-  (source-fn [this] source)
-  (target-fn [this] target)
-  (transition [this e] (list (source e) (target e)))
-
-  StructuredPermutableQuiver
-  (invert-morphism [this morphism] (inv morphism))
-  (underlying-permutable-quiver [this]
-    (->PermutableQuiver morphisms objects source target inv))
+  (underlying-quiver [this] (underlying-quiver quiver))
+  (source-fn [this] (source-fn quiver))
+  (target-fn [this] (target-fn quiver))
+  (transition [this e] (transition quiver e))
 
   StructuredUnitalQuiver
-  (identity-morphism-of [this obj] (id obj))
-  (underlying-unital-quiver [this] (->UnitalQuiver morphisms objects source target id))
+  (identity-morphism-of [this obj] (identity-morphism-of quiver obj))
+  (underlying-unital-quiver [this] (underlying-unital-quiver quiver))
 
-  StructuredDependencyQuiver
-  (underlying-dependency-quiver [this]
-    (->DependencyQuiver morphisms objects source target id inv))
-
-  ; Groupoids are also structured functions
   ConcreteMorphism
   (inputs [this] (composability-relation this))
-  (outputs [this] morphisms)
+  (outputs [this] (morphisms quiver))
+
+  StructuredPermutableQuiver
+  (underlying-permutable-quiver [this] (underlying-permutable-quiver quiver))
+  (invert-morphism [this x] (invert-morphism quiver x))
+
+  StructuredDependencyQuiver
+  (underlying-dependency-quiver [this] quiver)
 
   clojure.lang.IFn
-  (invoke [this arg] (func arg))
+  (invoke [this arg] (op arg))
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
 ; The position of groupoids within the type hierarchy
 (derive Groupoid :locus.elementary.copresheaf.core.protocols/groupoid)
 
-; Underlying relations
+; Underlying relations and related notions
 (defmethod underlying-relation Groupoid
-  [cat] (underlying-relation (underlying-quiver cat)))
+  [^Groupoid obj] (underlying-relation (.-quiver obj)))
+
+(defmethod underlying-multirelation Groupoid
+  [^Groupoid obj] (underlying-multirelation (.-quiver obj)))
+
+(defmethod visualize Groupoid
+  [^Groupoid obj] (visualize (.-quiver obj)))
 
 ; Underlying setoids
 (defn underlying-setoid
@@ -85,9 +89,18 @@
     (morphisms groupoid)
     (morphisms groupoid)
     (fn [elem]
-      ((.inv groupoid) elem))))
+      (invert-morphism groupoid elem))))
 
-; We now need some way of performing general conversions involving groupoids
+; A mechanism for creating thin groupoids
+(defn thin-groupoid
+  ([rel]
+   (thin-groupoid (vertices rel) rel))
+  ([vertices rel]
+   (Groupoid.
+     (ThinDependencyQuiver. vertices rel)
+     compose-ordered-pairs)))
+
+; Conversion routines for groupoids
 (defmulti to-groupoid type)
 
 (defmethod to-groupoid Groupoid
@@ -97,140 +110,147 @@
   [group]
 
   (Groupoid.
-    (underlying-set group)
-    #{0}
-    (constantly 0)
-    (constantly 0)
-    group
-    (fn [x]
-      (when (zero? x)
-        (.id group)))
-    (.inv group)))
+    (underlying-dependency-quiver group)
+    group))
 
 (defmethod to-groupoid Setoid
   [setoid]
 
   (let [vertices (underlying-set setoid)
         edges (underlying-relation setoid)]
-    (Groupoid.
-      edges
-      vertices
-      first
-      second
-      (letfn [(compose-ordered-pairs [[[a b] [c d]]]
-                (list c b))]
-        compose-ordered-pairs)
-      (fn [x]
-        (list x x))
-      reverse)))
+    (thin-groupoid vertices edges)))
 
-; The groupoid of sets
+(defmethod to-groupoid :locus.base.logic.core.set/universal
+  [rel]
+
+  (thin-groupoid rel))
+
+; The underlying groupoid of the topos of sets
 (def groupoid-of-sets
   (Groupoid.
-    bijection?
-    universal?
-    inputs
-    outputs
-    (fn [[a b]] (compose a b))
-    identity-bijection
-    inv))
+    (->DependencyQuiver
+     bijection?
+     universal?
+     inputs
+     outputs
+     identity-bijection
+     inv)
+    (fn [[a b]]
+      (compose a b))))
 
-; Adjoin composition operations to quivers
+; Adjoin composition to dependency quivers
 (defmethod adjoin-composition DependencyQuiver
   [quiv f]
 
-  (->Groupoid
-    (morphisms quiv)
-    (objects quiv)
-    (source-fn quiv)
-    (target-fn quiv)
-    f
-    (.id quiv)
-    (.inv quiv)))
+  (->Groupoid quiv f))
 
-; Products of groupoids
-(defmethod product :locus.elementary.copresheaf.core.protocols/groupoid
+; Products and coproducts in the category of groupoids
+(defmethod product Groupoid
   [& groupoids]
 
-  (Groupoid.
-    (apply cartesian-product (map first-set groupoids))
-    (apply cartesian-product (map second-set groupoids))
-    (fn [morphisms]
-      (map-indexed
-        (fn [i v]
-          ((source-fn (nth groupoids i)) v))
-        morphisms))
-    (fn [morphisms]
-      (map-indexed
-        (fn [i v]
-          ((target-fn (nth groupoids i)) v))
-        morphisms))
+  (->Groupoid
+    (apply product (map underlying-dependency-quiver groupoids))
     (fn [[morphisms1 morphisms2]]
       (map-indexed
         (fn [i c]
           (c (list (nth morphisms1 i) (nth morphisms2 i))))
-        groupoids))
-    (fn [obj]
-      (map-indexed
-        (fn [i v]
-          ((.id ^Groupoid (nth groupoids i)) v))
-        obj))
-    (fn [obj]
-      (map-indexed
-        (fn [i v]
-          ((.inv ^Groupoid (nth groupoids i)) v))
-        obj))))
+        groupoids))))
 
-(defmethod coproduct :locus.elementary.copresheaf.core.protocols/groupoid
+(defmethod coproduct Groupoid
   [& groupoids]
 
-  (Groupoid.
-    (apply cartesian-coproduct (map first-set groupoids))
-    (apply cartesian-coproduct (map second-set groupoids))
-    (fn [[i v]]
-      (list i ((source-fn (nth groupoids i)) v)))
-    (fn [[i v]]
-      (list i ((target-fn (nth groupoids i)) v)))
+  (->Groupoid
+    (apply coproduct (map underlying-dependency-quiver groupoids))
     (fn [[[i v] [j w]]]
       (when (= i j)
         (let [c (nth groupoids i)]
-          (list i (c (list v w))))))
-    (fn [[i v]]
-      (list i ((.id ^Groupoid (nth groupoids i)) v)))
-    (fn [[i v]]
-      (list i ((.inv ^Groupoid (nth groupoids i)) v)))))
+          (list i (c (list v w))))))))
 
-(defmethod dual :locus.elementary.copresheaf.core.protocols/groupoid
-  [groupoid]
-
-  (Groupoid.
-    (first-set groupoid)
-    (second-set groupoid)
-    (.target groupoid)
-    (.source groupoid)
-    (comp groupoid reverse)
-    (.id groupoid)
-    (.inv groupoid)))
-
-; Coproducts of groups
 (defmethod coproduct :locus.elementary.copresheaf.core.protocols/group
   [& groups]
 
   (apply coproduct (map to-groupoid groups)))
 
-; Get the underlying groupoid of a category
+; Opposite categories of groupoids
+(defmethod dual :locus.elementary.copresheaf.core.protocols/groupoid
+  [groupoid]
+
+  (->Groupoid
+    (dual (underlying-dependency-quiver groupoid))
+    (comp groupoid reverse)))
+
+; Get underlying groupoids of categories
 (defmulti underlying-groupoid type)
 
 (defmethod underlying-groupoid :locus.elementary.copresheaf.core.protocols/category
-  [^Category category]
+  [category]
 
-  (Groupoid.
-    (isomorphism-elements category)
-    (objects category)
-    (.source category)
-    (.target category)
-    (.func category)
-    (.id category)
-    (fn [morphism]
-      (first (inverse-elements category morphism)))))
+  (->Groupoid
+    (->DependencyQuiver
+      (isomorphism-elements category)
+      (objects category)
+      (source-fn category)
+      (target-fn category)
+      (fn [obj]
+        (identity-morphism-of category obj))
+      (fn [morphism]
+        (first (inverse-elements category morphism))))
+    category))
 
+; Subobjects in the category of groupoids
+(defn restrict-groupoid
+  [groupoid new-morphisms new-objects]
+
+  (->Groupoid
+    (dependency-subquiver (underlying-dependency-quiver groupoid) new-morphisms new-objects)
+    (fn [[a b]]
+      (groupoid (list a b)))))
+
+(defn full-subgroupoid
+  [groupoid new-objects]
+
+  (->Groupoid
+    (full-dependency-subquiver (underlying-dependency-quiver groupoid) new-objects)
+    (fn [[a b]]
+      (groupoid (list a b)))))
+
+(defn wide-subgroupoid
+  [groupoid new-morphisms]
+
+  (->Groupoid
+    (wide-dependency-subquiver (underlying-dependency-quiver groupoid) new-morphisms)
+    (fn [[a b]]
+      (groupoid (list a b)))))
+
+(defn subgroupoid?
+  [groupoid new-morphisms new-objects]
+
+  (and
+    (dependency-subquiver? (underlying-dependency-quiver groupoid) new-morphisms new-objects)
+    (compositionally-closed-set? groupoid new-morphisms)))
+
+(defn enumerate-subgroupoids
+  [groupoid]
+
+  (set
+    (filter
+      (fn [[a b]]
+        (compositionally-closed-set? groupoid a))
+      (dependency-subquivers (underlying-dependency-quiver groupoid)))))
+
+; Congruences in the category of groupoids
+(defn groupoid-congruence?
+  [groupoid in-partition out-partition]
+
+  (and
+    (dependency-quiver-congruence? (underlying-dependency-quiver groupoid) in-partition out-partition)
+    (compositional-congruence? groupoid in-partition)))
+
+(defn enumerate-groupoid-congruences
+  [groupoid]
+
+  (set
+    (filter
+      (fn [[in-partition out-partition]]
+        (compositional-congruence? groupoid in-partition))
+      (dependency-quiver-congruences (underlying-dependency-quiver groupoid)))))

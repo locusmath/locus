@@ -68,3 +68,9 @@
     (to-functor (source-object morphism))
     (to-functor (target-object morphism))
     (.func morphism)))
+
+; Ontology of morphisms of copresheaves
+(defn morphism-of-copresheaves?
+  [morphism]
+
+  (= (type morphism) MorphismOfCopresheaves))

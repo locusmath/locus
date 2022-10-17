@@ -43,7 +43,7 @@
 
   ConcreteMorphism
   (inputs [this] (composability-relation this))
-  (outputs [this])
+  (outputs [this] (first-set this))
 
   clojure.lang.IFn
   (invoke [this [[a b] [c d]]] (list c b))

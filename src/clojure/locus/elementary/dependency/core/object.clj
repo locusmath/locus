@@ -107,6 +107,10 @@
 (def two-one-preorder
   (relational-preposet (total-preorder [#{0 1} #{2}])))
 
+(def two-two-order
+  (relational-poset (weak-order [#{0 1} #{2 3}])))
+
+; Non connected preorders
 (def t2-plus-one-order
   (relational-poset '#{(0 0) (1 1) (2 2) (1 2)}))
 
@@ -604,6 +608,39 @@
         [1 1] (identity-function b)
         [2 2] (identity-function c)))))
 
+; Crown copresheaves as descriptors of relations of sets
+(defn crown
+  [vertices relation-of-sets]
+
+  (let [first-member-flags (seqable-binary-relation
+                             relation-of-sets
+                             vertices
+                             (fn [[set-pair first-elem]]
+                               (contains? (first set-pair) first-elem)))
+        second-member-flags (seqable-binary-relation
+                              relation-of-sets
+                              vertices
+                              (fn [[set-pair second-elem]]
+                                (contains? (second set-pair) second-elem)))]
+    (->Dependency
+     two-two-order
+     (fn [obj]
+       (case obj
+         0 first-member-flags
+         1 second-member-flags
+         2 relation-of-sets
+         3 vertices))
+     (fn [[i j]]
+       (case [[i j]]
+         [0 0] (identity-function first-member-flags)
+         [1 1] (identity-function second-member-flags)
+         [2 2] (identity-function relation-of-sets)
+         [3 3] (identity-function vertices)
+         [0 2] (->SetFunction first-member-flags relation-of-sets first)
+         [0 3] (->SetFunction first-member-flags vertices second)
+         [1 2] (->SetFunction second-member-flags relation-of-sets first)
+         [1 3] (->SetFunction second-member-flags vertices second))))))
+
 ; Copresheaves for generalized incidence structures
 (defn nspan
   [& funcs]
@@ -777,4 +814,3 @@
                 (object-indexed-family dependency)
                 (generating-concrete-morphism-triples dependency))]
     (visualize-clustered-digraph* "BT" p v)))
-

@@ -9,38 +9,39 @@
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
+            [locus.elementary.quiver.core.thin-object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.lattice.core.object :refer :all]
             [locus.elementary.category.core.object :refer :all])
   (:import (locus.elementary.semigroup.core.object Semigroup)
            (locus.elementary.category.core.object Category)
-           (locus.elementary.lattice.core.object Lattice)))
+           (locus.elementary.lattice.core.object Lattice)
+           (locus.elementary.quiver.core.thin_object ThinQuiver)))
 
-; A semigroupoid is an object of the topos Quiv x Sets^(->) consisting of the data
-; a quiver and a composition function on it. Thusly, there are two copresheaf
-; valued functors on the category of semigroupoids that define it. We work with
-; semigroupoids in order to define a generalisation of categories that includes
-; semigroups. We need semigroups in turn, for example when considering semilattices
-; of thin categories that don't have identities.
-(deftype Semigroupoid [morphisms objects source target func]
-  ; Semigroupoids are structured quivers
+; A semigroupoid is a presheaf in the topos of compositional quivers. Its underlying quiver
+; does not need to be a quiver with identity. It shares membership in this topos with
+; magmoids and other related compositional structures. A semigroupoid has both a combinatorial
+; structure consisting of a quiver and an algebraic structure consisting of a composition
+; function. Semigroupoids are useful to us as generalisations of semigroups, which are
+; necessary for example in the study of certain thin categories which form semilattices
+; that don't have identity.
+(deftype Semigroupoid [quiver op]
   StructuredDiset
-  (first-set [this] morphisms)
-  (second-set [this] objects)
+  (first-set [this] (first-set quiver))
+  (second-set [this] (second-set quiver))
 
   StructuredQuiver
-  (underlying-quiver [this] (->Quiver morphisms objects source target))
-  (source-fn [this] source)
-  (target-fn [this] target)
-  (transition [this e] (list (source e) (target e)))
+  (underlying-quiver [this] quiver)
+  (source-fn [this] (source-fn quiver))
+  (target-fn [this] (target-fn quiver))
+  (transition [this e] (transition quiver e))
 
-  ; Semigroupoids are structured functions
   ConcreteMorphism
   (inputs [this] (composability-relation this))
-  (outputs [this] morphisms)
+  (outputs [this] (morphisms quiver))
 
   clojure.lang.IFn
-  (invoke [this arg] (func arg))
+  (invoke [this arg] (op arg))
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
 ; Semigroupoid identification and testing which semigroupoids
@@ -100,17 +101,24 @@
                 current-endomorphisms)))))
       objects)))
 
-; Special classes of semigroupoids
-(defn thin-semigroupoid?
-  [semigroupoid]
-
-  (and
-    (semigroupoid? semigroupoid)
-    (thin-quiver? (underlying-quiver semigroupoid))))
-
 ; Underlying relations
 (defmethod underlying-relation Semigroupoid
   [semigroupoid] (underlying-relation (underlying-quiver semigroupoid)))
+
+(defmethod underlying-multirelation Semigroup
+  [semigroupoid] (underlying-multirelation (underlying-quiver semigroupoid)))
+
+(defmethod visualize Semigroupoid
+  [semigroupoid] (visualize (underlying-quiver semigroupoid)))
+
+; Thin semigroupoids
+(defn thin-semigroupoid
+  ([rel]
+   (thin-semigroupoid (vertices rel) rel))
+  ([vertices edges]
+   (->Semigroupoid
+     (ThinQuiver. vertices edges)
+     compose-ordered-pairs)))
 
 ; To semigroupoid
 (defmulti to-semigroupoid type)
@@ -118,41 +126,29 @@
 (defmethod to-semigroupoid Semigroupoid
   [obj] obj)
 
+(defmethod to-semigroupoid Category
+  [^Category category]
+
+  (->Semigroupoid
+    (.-quiver category)
+    (.-op category)))
+
 (defmethod to-semigroupoid Semigroup
   [semigroup]
 
-  (Semigroupoid.
-    (underlying-set semigroup)
-    #{0}
-    (constantly 0)
-    (constantly 0)
-    (.op semigroup)))
-
-(defmethod to-semigroupoid Category
-  [category]
-
-  (Semigroupoid.
-    (morphisms category)
-    (objects category)
-    (source-fn category)
-    (target-fn category)
-    (.func category)))
-
-; Thin semigroupoids
-(defn thin-semigroupoid
-  ([rel] (thin-semigroupoid (vertices rel) rel))
-  ([vertices edges]
-   (Semigroupoid.
-     edges
-     vertices
-     first
-     second
-     compose-ordered-pairs)))
+  (->Semigroupoid
+    (underlying-quiver semigroup)
+    (.-op semigroup)))
 
 (defmethod to-semigroupoid Lattice
   [lattice]
 
-  (thin-semigroupoid (second-set lattice) (first-set lattice)))
+  (thin-semigroupoid (objects lattice) (morphisms lattice)))
+
+(defmethod to-semigroupoid :locus.base.logic.core.set/universal
+  [rel]
+
+  (thin-semigroupoid rel))
 
 ; Strict total order semigroupoid
 (defn strict-total-order-semigroupoid
@@ -169,26 +165,14 @@
 (defmethod adjoin-composition :locus.elementary.quiver.core.object/quiver
   [quiv f]
 
-  (->Semigroupoid
-    (morphisms quiv)
-    (objects quiv)
-    (source-fn quiv)
-    (target-fn quiv)
-    f))
+  (->Semigroupoid quiv f))
 
-; Coproduct of semigroupoids
+; Products and coproducts in the category of semigroupoids
 (defmethod coproduct :locus.elementary.copresheaf.core.protocols/semigroupoid
   [& semigroupoids]
 
-  (Semigroupoid.
-    (apply cartesian-coproduct (map first-set semigroupoids))
-    (apply cartesian-coproduct (map second-set semigroupoids))
-    (fn [[i v]]
-      (let [current-semigroupoid (nth semigroupoids i)]
-        (list i ((source-fn current-semigroupoid) v))))
-    (fn [[i v]]
-      (let [current-semigroupoid (nth semigroupoids i)]
-        (list i ((target-fn current-semigroupoid) v))))
+  (->Semigroupoid
+    (apply coproduct (map underlying-quiver semigroupoids))
     (fn [[[i v] [j w]]]
       (when (= i j)
         (let [c (nth semigroupoids i)]
@@ -197,41 +181,85 @@
 (defmethod product :locus.elementary.copresheaf.core.protocols/semigroupoid
   [& semigroupoids]
 
-  (Semigroupoid.
-    (apply cartesian-product (map first-set semigroupoids))
-    (apply cartesian-product (map second-set semigroupoids))
-    (fn [morphisms]
-      (map-indexed
-        (fn [i v]
-          (let [current-semigroupoid (nth semigroupoids i)]
-            ((source-fn current-semigroupoid) v)))
-        morphisms))
-    (fn [morphisms]
-      (map-indexed
-        (fn [i v]
-          (let [current-semigroupoid (nth semigroupoids i)]
-            ((target-fn current-semigroupoid) v)))
-        morphisms))
+  (->Semigroupoid
+    (apply product (map underlying-quiver semigroupoids))
     (fn [[morphisms1 morphisms2]]
       (map-indexed
         (fn [i c]
           (c (list (nth morphisms1 i) (nth morphisms2 i))))
         semigroupoids))))
 
-; The coproducts of semigroups
 (defmethod coproduct :locus.elementary.copresheaf.core.protocols/semigroup
   [& semigroups]
 
   (apply coproduct (map to-semigroupoid semigroups)))
 
+; Duals of semigroupoids
 (defmethod dual :locus.elementary.copresheaf.core.protocols/semigroupoid
   [semigroupoid]
 
-  (Semigroupoid.
-    (first-set semigroupoid)
-    (second-set semigroupoid)
-    (.target semigroupoid)
-    (.source semigroupoid)
-    (comp semigroupoid reverse)))
+  (->Semigroupoid (dual (underlying-quiver semigroupoid)) (comp semigroupoid reverse)))
 
+; Subobjects of semigroupoids in the topos of composition quivers
+(defn restrict-semigroupoid
+  [semigroupoid new-morphisms new-objects]
 
+  (->Semigroupoid
+    (subquiver semigroupoid new-morphisms new-objects)
+    (fn [[a b]]
+      (semigroupoid (list a b)))))
+
+(defn wide-subsemigroupoid
+  [semigroupoid new-morphisms]
+
+  (->Semigroupoid
+    (wide-subquiver semigroupoid new-morphisms)
+    (fn [[a b]]
+      (semigroupoid (list a b)))))
+
+(defn full-subsemigroupoid
+  [semigroupoid new-objects]
+
+  (->Semigroupoid
+    (full-subquiver semigroupoid new-objects)
+    (fn [[a b]]
+      (semigroupoid (list a b)))))
+
+; Ontology of subsemigroupoids
+(defn subsemigroupoid?
+  [semigroupoid new-morphisms new-objects]
+
+  (and
+    (subquiver? (underlying-quiver semigroupoid) new-morphisms new-objects)
+    (compositionally-closed-set? semigroupoid new-morphisms)))
+
+(defn enumerate-subsemigroupoids
+  [semigroupoid]
+
+  (filter
+    (fn [[new-morphisms new-objects]]
+      (compositionally-closed-set? semigroupoid new-morphisms))
+    (subquivers (underlying-quiver semigroupoid))))
+
+; Congruences of semigroupoids in the topos of composition quivers
+(defn semigroupoid-congruence?
+  [semigroupoid morphism-partition object-partition]
+
+  (and
+    (quiver-congruence? (underlying-quiver semigroupoid) morphism-partition object-partition)
+    (compositional-congruence? semigroupoid morphism-partition)))
+
+(defn semigroupoid-congruences
+  [semigroupoid]
+
+  (set
+    (filter
+      (fn [[morphism-partition object-partition]]
+        (compositional-congruence? semigroupoid morphism-partition))
+      (quiver-congruences (underlying-quiver semigroupoid)))))
+
+; Special classes of semigroupoids
+(defmethod thin-semigroupoid? :locus.elementary.copresheaf.core.protocols/semigroupoid
+  [semigroupoid]
+
+  (thin-quiver? (underlying-quiver semigroupoid)))

@@ -307,6 +307,60 @@
               v)))
         sorted-partition))))
 
+(defn fibers-mapping
+  [coll]
+
+  (let [out (set (vals coll))
+        fiber-map (zipmap out (repeat (count out) #{}))]
+    (loop [remaining-keys (seq (keys coll))
+           current-rval fiber-map]
+      (if (empty? remaining-keys)
+        current-rval
+        (let [k (first remaining-keys)
+              v (get coll k)]
+          (recur
+            (rest remaining-keys)
+            (assoc current-rval v (conj (get current-rval v) k))))))))
+
+(defn partitions-interval
+  [lower-partition upper-partition]
+
+  (let [projection (partition->projection lower-partition)
+        inverse-projection (fibers-mapping projection)
+        numeric-upper-partition (set
+                                  (map
+                                    (fn [part]
+                                      (set (map projection part)))
+                                    upper-partition))]
+    (set
+      (map
+        (fn [partition]
+          (set
+            (map
+              (fn [part]
+                (apply union (map inverse-projection part)))
+              partition)))
+        (set-partition-refinements numeric-upper-partition)))))
+
+; Partition a set by a function
+(defn partition-set-by-function
+  [func coll]
+
+  (pn
+    (fn [a b]
+      (= (func a) (func b)))
+    coll))
+
+(defn extend-partition-to-relation
+  [partition rel]
+
+  (partition-set-by-function
+    (fn [[a b]]
+      (list
+        (projection partition a)
+        (projection partition b)))
+    rel))
+
 ; The family of all partitions of a set
 (deftype BellSet [coll]
   clojure.lang.Seqable

@@ -126,8 +126,8 @@
   (Functor.
     (source-object g)
     (target-object f)
-    (comp (.morphism-function f) (.morphism_function g))
-    (comp (.object-function f) (.object-function g))))
+    (comp (.morphism_function f) (.morphism_function g))
+    (comp (.object_function f) (.object_function g))))
 
 (defmethod identity-morphism :locus.elementary.copresheaf.core.protocols/category
   [category]

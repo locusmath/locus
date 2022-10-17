@@ -110,7 +110,6 @@
         array-map
         (apply concat (map reverse (seq coll)))))))
 
-
 (defmethod to-bijection :locus.base.logic.core.set/universal
   [coll]
 

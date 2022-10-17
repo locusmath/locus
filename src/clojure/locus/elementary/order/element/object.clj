@@ -37,3 +37,22 @@
   [elem]
 
   (= (type elem) OrderElement))
+
+(defn minimal-order-element?
+  [elem]
+
+  (and
+    (order-element? elem)
+    (empty? (proper-predecessor-objects (underlying-quiver (parent elem)) (unwrap elem)))))
+
+(defn maximal-order-element?
+  [elem]
+
+  (and
+    (order-element? elem)
+    (empty? (proper-successor-objects (underlying-quiver (parent elem)) (unwrap elem)))))
+
+(def isolated-order-element?
+  (intersection
+    minimal-order-element?
+    maximal-order-element?))

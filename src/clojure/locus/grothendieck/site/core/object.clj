@@ -7,6 +7,7 @@
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
+            [locus.elementary.quiver.unital.object :refer :all]
             [locus.elementary.lattice.core.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
             [locus.grothendieck.topology.core.object :refer :all])
@@ -42,15 +43,16 @@
 (derive Site :locus.elementary.copresheaf.core.protocols/structured-category)
 
 (defmethod to-category Site
-  [site]
+  [^Site site]
 
   (->Category
-    (morphisms site)
-    (objects site)
-    (source-fn site)
-    (target-fn site)
-    (.func site)
-    (.id site)))
+    (->UnitalQuiver
+      (morphisms site)
+      (objects site)
+      (source-fn site)
+      (target-fn site)
+      (.id site))
+    (.func site)))
 
 ; A site is generally speaking a generalisation of a topological space, which
 ; is useful for applications in sheaf theory. So one of the most important things

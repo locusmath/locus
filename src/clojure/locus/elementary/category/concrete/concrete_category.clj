@@ -2,6 +2,7 @@
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.sequence.core.object :refer :all]
             [locus.base.function.core.object :refer :all]
+            [locus.base.function.image.image-function :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.base.partition.core.setpart :refer :all]
@@ -23,44 +24,45 @@
 ; underlying copresheaf of sets and functions. It is an important part of
 ; the topos theory of copresheaves, because it is another way of handling
 ; the data of a copresheaf associated to a category.
-(deftype ConcreteCategory [morphisms objects source target func id object-function morphism-function]
-  ; Categories are structured quivers
+
+(deftype ConcreteCategory [quiver op object-function morphism-function]
   StructuredDiset
-  (first-set [this] morphisms)
-  (second-set [this] objects)
+  (first-set [this] (first-set quiver))
+  (second-set [this] (second-set quiver))
 
   StructuredQuiver
-  (underlying-quiver [this] (->Quiver morphisms objects source target))
-  (source-fn [this] source)
-  (target-fn [this] target)
-  (transition [this e] (list (source e) (target e)))
+  (underlying-quiver [this] (underlying-quiver quiver))
+  (source-fn [this] (source-fn quiver))
+  (target-fn [this] (target-fn quiver))
+  (transition [this e] (transition quiver e))
 
   StructuredUnitalQuiver
-  (identity-morphism-of [this obj] (id obj))
-  (underlying-unital-quiver [this] (->UnitalQuiver morphisms objects source target id))
+  (identity-morphism-of [this obj] (identity-morphism-of quiver obj))
+  (underlying-unital-quiver [this] quiver)
 
-  ; Categories are structured functions
   ConcreteMorphism
   (inputs [this] (composability-relation this))
-  (outputs [this] morphisms)
+  (outputs [this] (morphisms quiver))
 
   clojure.lang.IFn
-  (invoke [this arg] (func arg))
-  (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
+  (invoke [this arg] (op arg))
+  (applyTo [this args] (clojure.lang.AFn/applyToHelper this args))
+
+  ConcreteCategoricalStructure
+  (object-to-set [this object]
+    (object-function object))
+  (morphism-to-function [this morphism]
+    (morphism-function morphism)))
 
 (derive ConcreteCategory :locus.elementary.copresheaf.core.protocols/concrete-category)
 
-; Extend a category to make it into a concrete category
+; Extend a category with a faithful functor to the topos of sets
 (defn extend-category
   [category object-function morphism-function]
 
-  (ConcreteCategory.
-    (morphisms category)
-    (objects category)
-    (source-fn category)
-    (target-fn category)
-    (.func category)
-    (.id category)
+  (->ConcreteCategory
+    (underlying-unital-quiver category)
+    category
     object-function
     morphism-function))
 
@@ -94,39 +96,57 @@
   [^ConcreteCategory category, new-morphisms, new-objects]
 
   (ConcreteCategory.
-    new-morphisms
-    new-objects
-    (.source category)
-    (.target category)
-    (.func category)
-    (.id category)
+    (unital-subquiver (underlying-unital-quiver category) new-morphisms new-objects)
+    (.-op category)
+    (.-object_function category)
+    (.-morphism_function category)))
+
+(defn wide-concrete-subcategory
+  [^ConcreteCategory category, new-morphisms]
+
+  (ConcreteCategory.
+    (wide-unital-subquiver (underlying-unital-quiver category) new-morphisms)
+    (.-op category)
+    (.-object_function category)
+    (.-morphism_function category)))
+
+(defn full-concrete-subcategory
+  [^ConcreteCategory category, new-objects]
+
+  (ConcreteCategory.
+    (full-unital-subquiver (underlying-unital-quiver category) new-objects)
+    (.-op category)
     (.-object_function category)
     (.-morphism_function category)))
 
 ; The category of set relations is a concrete category
 (def rel
   (ConcreteCategory.
-    set-relation?
-    universal?
-    source-object
-    target-object
-    (fn [[a b]] (compose a b))
-    identity-relation
+    (->UnitalQuiver
+      set-relation?
+      universal?
+      source-object
+      target-object
+      identity-relation)
+    (fn [[a b]]
+      (compose a b))
     (fn [obj]
       (->PowerSet obj))
-    (fn [morphism]
-      (to-function morphism))))
+    (fn [arrow]
+      (to-function arrow))))
 
-; This is where we will add the dual to the topos of sets
+; By the same token we can consider the dual category of the topos of sets to be concrete
 (def sets-opposite
   (ConcreteCategory.
-    inverse-functional-set-relation?
-    universal?
-    source-object
-    target-object
-    (fn [[a b]] (compose a b))
-    identity-relation
+    (->UnitalQuiver
+      inverse-functional-set-relation?
+      universal?
+      source-object
+      target-object
+      identity-relation)
+    (fn [[a b]]
+      (compose a b))
     (fn [obj]
       (->PowerSet obj))
-    (fn [morphism]
-      (to-function morphism))))
+    (fn [arrow]
+      (to-function arrow))))

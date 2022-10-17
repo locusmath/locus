@@ -1,4 +1,4 @@
-(ns locus.elementary.category.relation.partial-function
+(ns locus.elementary.category.partial.function
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
@@ -6,11 +6,13 @@
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.base.function.core.object :refer :all]
+            [locus.base.function.inclusion.object :refer :all]
             [locus.elementary.bijection.core.object :refer :all]
             [locus.base.function.image.image-function :refer :all])
   (:import (locus.base.function.core.object SetFunction)
            (locus.elementary.bijection.core.object Bijection)
-           (clojure.lang PersistentArrayMap IPersistentMap)))
+           (clojure.lang PersistentArrayMap IPersistentMap)
+           (locus.base.function.inclusion.object InclusionFunction)))
 
 ; Partial functions form a concrete category PF of sets and partial functions
 ; between them. The category of partial functions can be considered to be
@@ -18,6 +20,12 @@
 ; with a fixed point element adjoined represented the empty set. This way,
 ; elements can map to the empty set to indicate that they are not defined there.
 ; The subcategory of image functions is a yet larger category.
+
+; A second categorical perspective on partial functions arises from consideration
+; of the topos of spans. In this context, a partial function can be defined
+; by a pair of functions with a common origin set, one of which is an
+; inclusion and the other of which is the underlying total function. This second
+; perspective can be used to implement products and coproducts of partial functions.
 (deftype PartialFunction [domain source target func]
   AbstractMorphism
   (source-object [this] source)
@@ -54,6 +62,28 @@
 
   (inputs func))
 
+; The two component functions of a partial function are the total component function
+; and the inclusion function from the partial domain to the actual domain.
+(defmulti total-component type)
+
+(defmethod total-component ::partial-function
+  [func]
+
+  (SetFunction.
+    (defined-domain func)
+    (target-object func)
+    (fn [i]
+      (func i))))
+
+(defmulti defined-domain-inclusion type)
+
+(defmethod defined-domain-inclusion ::partial-function
+  [func]
+
+  (InclusionFunction.
+    (defined-domain func)
+    (source-object func)))
+
 ; Images generalised for partial functions
 (defmulti partial-function-image type)
 
@@ -65,48 +95,6 @@
       (fn [i]
         (func i))
       (defined-domain func))))
-
-; Adjoin undefined inputs to a partial function
-(defmethod adjoin-inputs ::partial-function
-  [func coll]
-
-  (PartialFunction.
-    (defined-domain func)
-    (union coll (source-object func))
-    (target-object func)
-    func))
-
-(defmethod adjoin-outputs ::partial-function
-  [func coll]
-
-  (PartialFunction.
-    (defined-domain func)
-    (source-object func)
-    (union coll (target-object func))
-    func))
-
-; Category of partial functions
-(defn partial-identity-function
-  [coll]
-
-  (PartialFunction. coll coll coll (fn [i] i)))
-
-(defmethod compose* ::partial-function
-  [a b]
-
-  (let [new-defined-domain (set
-                             (filter
-                               (fn [i]
-                                 (let [next-val (b i)]
-                                   (boolean
-                                     ((defined-domain a) next-val))))
-                               (defined-domain b)))]
-    (PartialFunction.
-      new-defined-domain
-      (source-object b)
-      (target-object a)
-      (fn [x]
-        (a (b x))))))
 
 ; Underlying relations for all partial functions
 (defmethod underlying-relation ::partial-function
@@ -131,6 +119,48 @@
   [func]
 
   (list (source-object func) (target-object func) (underlying-relation func)))
+
+; Category of partial functions
+(defn partial-identity-function
+  [coll]
+
+  (PartialFunction. coll coll coll (fn [i] i)))
+
+(defmethod compose* ::partial-function
+  [a b]
+
+  (let [new-defined-domain (set
+                             (filter
+                               (fn [i]
+                                 (let [next-val (b i)]
+                                   (boolean
+                                     ((defined-domain a) next-val))))
+                               (defined-domain b)))]
+    (PartialFunction.
+      new-defined-domain
+      (source-object b)
+      (target-object a)
+      (fn [x]
+        (a (b x))))))
+
+; Adjoin undefined inputs to a partial function
+(defmethod adjoin-inputs ::partial-function
+  [func coll]
+
+  (PartialFunction.
+    (defined-domain func)
+    (union coll (source-object func))
+    (target-object func)
+    func))
+
+(defmethod adjoin-outputs ::partial-function
+  [func coll]
+
+  (PartialFunction.
+    (defined-domain func)
+    (source-object func)
+    (union coll (target-object func))
+    func))
 
 ; Dual concepts of missing inputs and outputs exist for partial functions
 (defn missing-inputs
@@ -213,17 +243,29 @@
 
   (to-partial-function (underlying-function func)))
 
-; Partial function -> total function
-(defmulti total-component type)
+; Products and coproducts in the category of partial functions
+(defmethod coproduct PartialFunction
+  [& partial-functions]
 
-(defmethod total-component ::partial-function
-  [func]
+  (->PartialFunction
+    (apply coproduct (map defined-domain partial-functions))
+    (apply coproduct (map source-object partial-functions))
+    (apply coproduct (map target-object partial-functions))
+    (fn [[i v]]
+      (list i ((nth partial-functions i) v)))))
 
-  (SetFunction.
-    (defined-domain func)
-    (outputs func)
-    (fn [i]
-      (func i))))
+(defmethod product PartialFunction
+  [& partial-functions]
+
+  (->PartialFunction
+    (apply product (map defined-domain partial-functions))
+    (apply product (map source-object partial-functions))
+    (apply product (map target-object partial-functions))
+    (fn [coll]
+      (map-indexed
+        (fn [i v]
+          ((nth partial-functions i) v))
+        coll))))
 
 ; Ontology of partial functions
 (defn partial-function?

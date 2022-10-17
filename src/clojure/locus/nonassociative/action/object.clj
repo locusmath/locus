@@ -1,4 +1,4 @@
-(ns locus.elementary.action.partial.object
+(ns locus.nonassociative.action.object
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.partition.core.setpart :refer :all]
@@ -18,13 +18,13 @@
             [locus.elementary.group.core.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.action.core.protocols :refer :all]
-            [locus.elementary.category.relation.partial-function :refer :all]
-            [locus.elementary.category.relation.partial-bijection :refer :all]
-            [locus.elementary.category.relation.partial-transformation :refer :all]
-            [locus.elementary.category.relation.partial-permutation :refer :all]))
+            [locus.elementary.category.partial.function :refer :all]
+            [locus.elementary.category.partial.bijection :refer :all]
+            [locus.elementary.category.partial.transformation :refer :all]
+            [locus.elementary.category.partial.permutation :refer :all]))
 
 ; Let C be a category, and Arrows(C) its morphism set. Then the morphisms of C act on Arrows(C)
-; by self induced actions. This produces a structure which we call a partial action system,
+; by self-induced actions. This produces a structure which we call a partial action system,
 ; which has a lot in common with monoid actions. These partial action systems can also
 ; be produced by semigroups of partial permutations and transformations.
 

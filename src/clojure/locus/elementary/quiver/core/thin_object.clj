@@ -52,6 +52,9 @@
 (defmethod underlying-relation ThinQuiver
   [quiv] (morphisms quiv))
 
+(defmethod underlying-multirelation ThinQuiver
+  [quiv] (morphisms quiv))
+
 (defmethod visualize ThinQuiver
   [quiv] (visualize (underlying-relation quiv)))
 
@@ -70,3 +73,6 @@
     (apply cartesian-coproduct (map objects quivers))
     (apply sum-relation (map morphisms quivers))))
 
+; Transposition of thin quivers
+(defmethod dual ThinQuiver
+  [^ThinQuiver quiv] (->ThinQuiver (.-vertices quiv) (transpose (.-edges quiv))))

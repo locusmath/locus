@@ -120,10 +120,16 @@
 
 ; Protocols for dealing with elements of structured sets
 (defprotocol Element
-  (parent [this]))
+  "This is a protocol for describing the elements of structured set."
+
+  (parent [this]
+    "The structured set that contains a given element."))
 
 (defprotocol IdentifiableInstance
-  (unwrap [this]))
+  "This protocol describes a mechanism for deconstructing elements of structures."
+
+  (unwrap [this]
+    "Deconstruct an element of a given structure."))
 
 (defmulti wrap (fn [a b] (type a)))
 

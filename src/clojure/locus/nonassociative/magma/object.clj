@@ -1,4 +1,4 @@
-(ns locus.magmoid.magma.object
+(ns locus.nonassociative.magma.object
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.sequence.core.object :refer :all]
@@ -44,11 +44,7 @@
   (invoke [this arg] (op arg))
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
-(derive Magma :locus.base.logic.structure.protocols/structured-set)
-
-; Display a magma
-(defmethod display-table Magma
-  [magma] (doseq [i (multiplication-table magma)] (prn i)))
+(derive Magma :locus.elementary.copresheaf.core.protocols/magma)
 
 ; Convert certain objects into magmas
 (defmulti to-magma type)
@@ -110,19 +106,16 @@
       (contains? coll (magma pair)))
     (cartesian-power coll 2)))
 
-(defmethod sub Magma
+(defn enumerate-submagmas
   [magma]
 
-  (->Lattice
-    (set
-      (filter
-       (fn [coll]
-         (submagma? magma coll))
-       (power-set (underlying-set magma))))
-    union
-    intersection))
+  (set
+    (filter
+      (fn [coll]
+        (submagma? magma coll))
+      (power-set (underlying-set magma)))))
 
-(defn restrict-magma
+(defn submagma
   [magma coll]
 
   (Magma. coll (.op magma)))
@@ -139,17 +132,14 @@
           (cartesian-product coll1 coll2))))
     (cartesian-power partition 2)))
 
-(defmethod con Magma
+(defn enumerate-magma-congruences
   [magma]
 
-  (->Lattice
-    (set
-      (filter
-        (fn [partition]
-          (magma-congruence? magma partition))
-        (set-partitions (set (underlying-set magma)))))
-    join-set-partitions
-    meet-set-partitions))
+  (set
+    (filter
+      (fn [partition]
+        (magma-congruence? magma partition))
+      (set-partitions (set (underlying-set magma))))))
 
 (defn quotient-magma
   [magma partition]
@@ -175,6 +165,30 @@
         (= (magma pair) (magma (reverse pair))))
       (inputs magma))))
 
+(defn anticommutative-magma?
+  [magma]
+
+  (and
+    (magma? magma)
+    (every?
+      (fn [pair]
+        (or
+          (let [[a b] pair]
+            (= a b))
+          (not= (magma pair) (magma (reverse pair)))))
+      (inputs magma))))
+
+(defn unipotent-magma?
+  [magma]
+
+  (and
+    (magma? magma)
+    (equal-seq?
+      (map
+        (fn [morphism]
+          (magma (list morphism morphism)))
+        (morphisms magma)))))
+
 (defn idempotent-magma?
   [magma]
 
@@ -185,3 +199,7 @@
         (= (magma (list i i)) i))
       (underlying-set magma))))
 
+(def idempotent-commutative-magma?
+  (intersection
+    commutative-magma?
+    idempotent-magma?))

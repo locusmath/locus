@@ -6,7 +6,9 @@
             [locus.elementary.category.core.morphism :refer :all]
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.category.comma.morphism :refer :all]
-            [locus.elementary.lattice.core.object :refer :all])
+            [locus.elementary.lattice.core.object :refer :all]
+            [locus.elementary.quiver.core.object :refer :all]
+            [locus.elementary.quiver.unital.object :refer :all])
   (:import (locus.elementary.category.core.morphism Functor)))
 
 ; Let F,G be parallel functors C -> D. Then a natural transformation between them is a
@@ -85,14 +87,41 @@
   [source-category target-category]
 
   (->Category
-    (fn [morphism]
-      (and
-        (natural-transformation? morphism)
-        (in-category-hom-class? (source-object morphism) source-category target-category)
-        (in-category-hom-class? (target-object morphism) source-category target-category)))
-    (fn [functor]
-      (in-category-hom-class? functor source-category target-category))
-    source-object
-    target-object
-    (fn [[a b]] (compose a b))
-    identity-morphism))
+    (->UnitalQuiver
+      (fn [morphism]
+        (and
+          (natural-transformation? morphism)
+          (in-category-hom-class? (source-object morphism) source-category target-category)
+          (in-category-hom-class? (target-object morphism) source-category target-category)))
+      (fn [functor]
+        (in-category-hom-class? functor source-category target-category))
+      source-object
+      target-object
+      identity-morphism)
+    (fn [[a b]]
+      (compose a b))))
+
+; Natural transformations are functors over a product category
+(defmethod to-functor NaturalTransformation
+  [^NaturalTransformation transformation]
+
+  (let [source-functor (source-object transformation)
+        target-functor (target-object transformation)
+        index-category (source-object source-functor)
+        target-category (target-object source-functor)
+        double-index-category (double-category index-category)]
+    (->Functor
+      double-index-category
+      target-category
+      (fn [[i v]]
+        (case i
+          0 (object-apply source-functor v)
+          1 (object-apply target-functor v)))
+      (fn [[i v]]
+        (case i
+          0 (morphism-apply source-functor v)
+          1 (morphism-apply target-functor v)
+          2 (target-category
+              (list
+                (morphism-apply target-functor v)
+                (transformation (source-element index-category v)))))))))

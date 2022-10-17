@@ -40,7 +40,7 @@
 (derive ::thin-quiver ::quiver)
 
 ; A default implementation of the quiver protocol
-(defrecord Quiver [edges vertices source-function target-function]
+(deftype Quiver [edges vertices source-function target-function]
   StructuredDiset
   (first-set [this] edges)
   (second-set [this] vertices)
@@ -106,7 +106,7 @@
     (objects q)
     (target-fn q)))
 
-; Make quiver from objects and a hom mapping
+; Generalized mechanisms for creating quivers
 (defn get-nth-component-map
   [coll n]
 
@@ -133,7 +133,6 @@
       source-map
       target-map)))
 
-; Utilities for constructing quivers
 (defn create-quiver
   ([edge-map]
    (let [vertices (apply
@@ -150,6 +149,7 @@
      (fn [edge]
        (second (get edge-map edge))))))
 
+; Utilities for creating special types of quivers
 (defn singular-quiver
   [coll obj]
 
@@ -235,13 +235,17 @@
     first
     second))
 
+(defmethod to-quiver :locus.base.logic.core.set/universal
+  [rel]
+
+  (relational-quiver rel))
+
 (defmethod to-quiver :default
   [rel]
 
-  (cond
-    (universal? rel) (relational-quiver rel)
-    (multiset? rel) (multirelational-quiver rel)
-    :else (underlying-quiver rel)))
+  (if (multiset? rel)
+    (multirelational-quiver rel)
+    (underlying-quiver rel)))
 
 ; As quiver function
 (defn as-quiver
@@ -329,7 +333,39 @@
     (target-fn quiv)
     (source-fn quiv)))
 
-; Quiver utility functions
+; Equalizers and coequalizers in the topos of quivers
+(defn quiver-equalizer
+  [quiver]
+
+  (set
+    (filter
+      (fn [i]
+        (= (source-element quiver i)
+           (target-element quiver i)))
+      (morphisms quiver))))
+
+(defn quiver-coequalizer
+  [quiver]
+
+  (coequalizer
+    (source-function quiver)
+    (target-function quiver)))
+
+(defn quiver-equalizer-function
+  [quiver]
+
+  (equalizer-function
+    (source-function quiver)
+    (target-function quiver)))
+
+(defn quiver-coequalizer-function
+  [quiver]
+
+  (coequalizer-function
+    (source-function quiver)
+    (target-function quiver)))
+
+; Numbers of objects and morphisms in a quiver
 (defn quiver-order
   [quiv]
 
@@ -437,6 +473,17 @@
       (fn [i]
         (distinct-seq? (transition quiver i)))
       (first-set quiver))))
+
+; Objects connectivity
+(defn quiver-weak-connectivity
+  [quiver]
+
+  (weak-connectivity (underlying-relation quiver)))
+
+(defn quiver-strong-connectivity
+  [quiver]
+
+  (strong-connectivity (underlying-relation quiver)))
 
 ; Composability relations
 ; The composability relation of a compositional quiver such as a semigroupoid
@@ -651,7 +698,7 @@
     (partition-inverse-image (source-function quiver) partition)
     (partition-inverse-image (target-function quiver) partition)))
 
-; Subobjects and quotients of quivers
+; Subobjects of quivers
 (defn subquiver
   [q new-edges new-vertices]
 
@@ -660,17 +707,6 @@
     new-vertices
     (source-fn q)
     (target-fn q)))
-
-(defn quotient-quiver
-  [q in-partition out-partition]
-
-  (Quiver.
-    in-partition
-    out-partition
-    (fn [part]
-      (projection out-partition (source-element q (first part))))
-    (fn [part]
-      (projection out-partition (target-element q (first part))))))
 
 ; Wide and full subquivers
 ; A full subquiver is defined by taking a subset of the vertices of the quiver, and then having
@@ -747,16 +783,16 @@
     {}))
 
 (defn quiver-covering-additions
-  [quiv new-edges new-vertices]
+  [quiv in-set out-set]
 
   [(set
      (filter
        (fn [edge]
          (and
-           (contains? new-vertices (source-element quiv edge))
-           (contains? new-vertices (target-element quiv edge))))
-       (difference (.edges quiv) new-edges)))
-   (difference (.vertices quiv) new-vertices)])
+           (contains? out-set (source-element quiv edge))
+           (contains? out-set (target-element quiv edge))))
+       (difference (.edges quiv) in-set)))
+   (difference (.vertices quiv) out-set)])
 
 (defn covering-subquivers
   [func in-set out-set]
@@ -785,6 +821,18 @@
             (list [in-set out-set] [new-in-set new-out-set]))
           (covering-subquivers quiv in-set out-set)))
       (subquivers quiv))))
+
+; Quotient quivers
+(defn quotient-quiver
+  [q in-partition out-partition]
+
+  (Quiver.
+    in-partition
+    out-partition
+    (fn [part]
+      (projection out-partition (source-element q (first part))))
+    (fn [part]
+      (projection out-partition (target-element q (first part))))))
 
 ; Quiver congruences
 (defn quiver-congruence?
@@ -862,63 +910,37 @@
         (set-superpartition? (list b d))))
     {}))
 
-; Quiver connectivity
-(defn quiver-weak-connectivity
+; Get a together total congruence by removing all missing members
+(defn together-total-subalgebra
   [quiver]
 
-  (weak-connectivity (underlying-relation quiver)))
+  (list
+    (morphisms quiver)
+    (difference (objects quiver) (missing-objects quiver))))
 
-(defn quiver-strong-connectivity
-  [quiver]
+(defn together-total-subalgebra-by
+  [quiver input-set]
 
-  (strong-connectivity (underlying-relation quiver)))
+  (list
+    input-set
+    (quiver-set-image quiver input-set)))
 
-; Equalizers and coequalizers in the topos of quivers
-(defn quiver-equalizer
+(defn together-total-subalgebras
   [quiver]
 
   (set
-    (filter
-      (fn [i]
-        (= (source-element quiver i)
-           (target-element quiver i)))
-      (morphisms quiver))))
+    (map
+      (fn [morphism-set]
+        (together-total-subalgebra-by morphism-set))
+      (power-set (morphisms quiver)))))
 
-(defn quiver-coequalizer
+(defn together-total-subquiver
   [quiver]
 
-  (coequalizer
-    (source-function quiver)
-    (target-function quiver)))
-
-(defn quiver-equalizer-function
-  [quiver]
-
-  (equalizer-function
-    (source-function quiver)
-    (target-function quiver)))
-
-(defn quiver-coequalizer-function
-  [quiver]
-
-  (coequalizer-function
-    (source-function quiver)
-    (target-function quiver)))
-
-; Reflexive and irreflexive components form wide subquivers
-(defn reflexive-subquiver
-  [quiver]
-
-  (wide-subquiver
+  (subquiver
     quiver
-    (quiver-loops quiver)))
-
-(defn irreflexive-subquiver
-  [quiver]
-
-  (wide-subquiver
-    quiver
-    (quiver-nonloops quiver)))
+    (morphisms quiver)
+    (difference (objects quiver) (missing-objects quiver))))
 
 ; The thin congruence naturally associated with any quiver
 (defn thin-congruence
@@ -957,6 +979,32 @@
         (thin-congruence-by-object-partition quiver object-partition))
       (enumerate-set-partitions (objects quiver)))))
 
+(defn thin-quotient
+  [quiver]
+
+  (relational-quiver (underlying-relation quiver)))
+
+; Reflexive and irreflexive components form wide subquivers
+(defn coreflexive-subquiver
+  [quiver]
+
+  (wide-subquiver
+    quiver
+    (quiver-loops quiver)))
+
+(defn irreflexive-subquiver
+  [quiver]
+
+  (wide-subquiver
+    quiver
+    (quiver-nonloops quiver)))
+
+; Full quotients of quivers
+(defn full-quotient-quiver
+  [quiver in-partition]
+
+  (quotient-quiver quiver in-partition (quiver-partition-image quiver in-partition)))
+
 ; Ontology of quivers
 (defmulti quiver? type)
 
@@ -965,6 +1013,28 @@
 
 (defmethod quiver? :default
   [quiv] false)
+
+; Classification of quivers by number of objects
+(defn two-object-quiver?
+  [quiv]
+
+  (and
+    (quiver? quiv)
+    (= (count (objects quiv)) 2)))
+
+(defn three-object-quiver?
+  [quiv]
+
+  (and
+    (quiver? quiv)
+    (= (count (objects quiv)) 3)))
+
+(defn four-object-quiver?
+  [quiv]
+
+  (and
+    (quiver? quiv)
+    (= (count (objects quiv)) 4)))
 
 ; Source and target surjective quivers
 (defn together-total-quiver?
@@ -1030,6 +1100,85 @@
     (together-total-quiver? quiv)
     (thin-quiver? quiv)))
 
+(defn left-total-thin-quiver?
+  [quiv]
+
+  (and
+    (thin-quiver? quiv)
+    (left-total-quiver? quiv)))
+
+(defn right-total-thin-quiver?
+  [quiv]
+
+  (and
+    (thin-quiver? quiv)
+    (right-total-thin-quiver? quiv)))
+
+(defn bitotal-thin-quiver?
+  [quiv]
+
+  (and
+    (thin-quiver? quiv)
+    (bitotal-quiver? quiv)))
+
+; Endotrivial quivers are quivers that are thin over all equal hom objects, so that in the hom
+; class Hom(A,A) for each object A there is no more than one object.
+(defn endotrivial-quiver?
+  [quiv]
+
+  (and
+    (quiver? quiv)
+    (every?
+      (fn [obj]
+        (<= (quiver-hom-cardinality quiv obj obj) 1))
+      (objects quiv))))
+
+; Double arrow free quivers are quivers that are thin over all distinct hom objects, so that in
+; them hom class Hom(A,B) for A not equal to b there is no more than one object.
+(defn double-arrow-free-quiver?
+  [quiv]
+
+  (and
+    (quiver? quiv)
+    (let [coll (multiplicities-map (underlying-multirelation quiv))]
+      (every?
+        (fn [pair]
+          (let [[a b] pair]
+            (or
+              (= a b)
+              (<= (get coll pair) 1))))
+        (keys coll)))))
+
+; A compositionally thin endotrivial quiver is one for which we can say that for each pair
+; of non-endomorphisms f:A -> B and g: B -> C there is no more than one element in the hom
+; class A -> C. In such a case, these quivers can be uniquely converted in to categories.
+(defn compositionally-thin-endotrivial-quiver?
+  [quiv]
+
+  (and
+    (quiver? quiv)
+    (every?
+      (fn [[edge1 edge2]]
+        (or
+          (= (source-element quiv edge1) (target-element quiv edge1))
+          (= (source-element quiv edge2) (target-element quiv edge2))
+          (let [new-class (quiver-hom-class quiv (source-element quiv edge2) (target-element quiv edge1))]
+            (<= (count new-class) 1))))
+      (composability-relation quiv))))
+
+; Every irreflexive quiver is endotrivial
+(defn irreflexive-quiver?
+  [quiv]
+
+  (and
+    (quiver? quiv)
+    (empty? (quiver-loops quiv))))
+
+(def irreflexive-thin-quiver?
+  (intersection
+    irreflexive-quiver?
+    thin-quiver?))
+
 ; Special classes of quivers by their types of elements
 (defn coreflexive-quiver?
   [quiv]
@@ -1038,14 +1187,6 @@
     (quiver? quiv)
     (empty? (quiver-nonloops quiv))))
 
-(defn irreflexive-quiver?
-  [quiv]
-
-  (and
-    (quiver? quiv)
-    (empty? (quiver-loops quiv))))
-
-; Further classes of thin quivers
 (defn coreflexive-thin-quiver?
   [quiv]
 
@@ -1053,6 +1194,7 @@
     (thin-quiver? quiv)
     (coreflexive? (underlying-relation quiv))))
 
+; Further classes of thin quivers
 (defn symmetric-thin-quiver?
   [quiv]
 
@@ -1066,11 +1208,6 @@
   (and
     (thin-quiver? quiv)
     (reflexive? (underlying-relation quiv))))
-
-(def irreflexive-thin-quiver?
-  (intersection
-    irreflexive-quiver?
-    thin-quiver?))
 
 (defn symmetric-reflexive-quiver?
   [quiv]
@@ -1139,7 +1276,7 @@
     (quiver? quiv)
     (antisymmetric? (underlying-relation quiv))))
 
-(defn antisymmetric-quiver?
+(defn asymmetric-quiver?
   [quiv]
 
   (and

@@ -329,43 +329,34 @@
             (and (= a "idt") (= b "reverse")) "ids"))))
     '#{"source" "target" "identity" "reverse"}))
 
-; New theory of index categories for topoi of copresheaves
-; These are defined by combining a ternary quiver with a binary quiver, so that
-; the ternary compositional quiver has as its objects the morphisms of the other
-; binary quiver. These are an alternative presheaf theoretic model for elementary categories.
-(def algebraic-quiver-index-category
-  (adjoin-composition
-    (create-unital-quiver
-     {"paths"    "1ₚ"
-      "edges"    "1ₑ"
-      "vertices" "1ᵥ"}
-     {"source"   ["edges" "vertices"]
-      "target"   ["edges" "vertices"]
-      "first"    ["paths" "edges"]
-      "second"   ["paths" "edges"]
-      "∘"        ["paths" "edges"]
-      "middle"   ["paths" "vertices"]
-      "∘ source" ["paths" "vertices"]
-      "∘ target" ["paths" "vertices"]})
-    (fn [[a b]]
-      (letfn [(identity-arrow? [x]
-                (or (= x "1ₚ") (= x "1ₑ") (= x "1ᵥ")))]
-        (cond
-          (identity-arrow? a) b
-          (identity-arrow? b) a
-          (and (= a "source") (= b "∘")) "∘ source"
-          (and (= a "target") (= b "∘")) "∘ target"
-          (and (= a "source") (= b "first")) "middle"
-          (and (= a "source") (= b "second"))  "∘ source"
-          (and (= a "target") (= b "first")) "∘ target"
-          (and (= a "target") (= b "second")) "middle")))))
+; An ordinary quiver can be considered to be a special case of a binary quiver, while there are
+; many other forms of quivers beyond those, and each of them has their own index category.
+; These index categories consist of two objects and a collection of morphisms between
+; them that indicate the vertex value of an edge at each of its component indices.
+(defn nary-quiver-category
+  [n]
 
-; Composition quivers
-; On the other hand, compositional quivers like these are simply defined by adjoining a
-; special operation to an ordinary quiver that goes from some set to that quiver. They
-; therefore don't necessarily contain all the necessary information to recover a
-; composition operation, but they do tell us a lot of what we need to know in topos theory.
-(def compositional-quiver-index-category
+  (simple-labeled-category
+    #{"edges" "vertices"}
+    (into
+      {}
+      (concat
+        (list
+          ["1ₑ" ["edges" "edges"]]
+          ["1ᵥ" ["vertices" "vertices"]])
+        (map
+          (fn [i]
+            [i ["edges" "vertices"]])
+          (range n))))))
+
+(def t3*
+  (nary-quiver-category 3))
+
+; Functional quivers:
+; We can define functional quivers by adjoining a function to a quiver that targets its edge set.
+; The function could be of any sort, and so this is one of the first steps beyond elementary
+; quivers in presheaf theory.
+(def functional-quiver-index-category
   (adjoin-generators
     (adjoin-composition
       (create-unital-quiver
@@ -387,7 +378,7 @@
             (and (= a "target") (= b "∘")) "∘ target"))))
     '#{"source" "target" "∘"}))
 
-(def compositional-unital-quiver-index-category
+(def functional-unital-quiver-index-category
   (adjoin-generators
     (adjoin-composition
       (create-unital-quiver
@@ -412,7 +403,7 @@
                   (contains? #{"1ₚ" "1ₑ" "1ᵥ"} x))
                 (unital-quiver-arrow? [x]
                   (contains? #{"1ₑ" "1ᵥ" "source" "target" "identity" "idt" "ids"} x))
-                (compositional-quiver-arrow? [x]
+                (functional-quiver-arrow? [x]
                   (contains? #{"1ₑ" "1ᵥ" "source" "target" "∘" "∘ source" "∘ target"} x))]
           (cond
             (identity-arrow? a) b
@@ -421,8 +412,8 @@
               (unital-quiver-arrow? a)
               (unital-quiver-arrow? b)) (unital-quiver-index-category (list a b))
             (and
-              (compositional-quiver-arrow? a)
-              (compositional-quiver-arrow? b)) (compositional-quiver-index-category (list a b))
+              (functional-quiver-arrow? a)
+              (functional-quiver-arrow? b)) (functional-quiver-index-category (list a b))
             (and
               (= a "idt") (= b "∘")) "∘ idt"
             (and
@@ -443,7 +434,7 @@
             (and (= a "idt") (= b "∘ idt")) "∘ idt"))))
     '#{"source" "target" "∘" "identity"}))
 
-(def compositional-dependency-quiver-index-category
+(def functional-dependency-quiver-index-category
   (adjoin-generators
     (adjoin-composition
       (create-unital-quiver
@@ -471,7 +462,7 @@
                   (contains? #{"1ₚ" "1ₑ" "1ᵥ"} x))
                 (dependency-quiver-arrow? [x]
                   (contains? #{"1ₑ" "1ᵥ" "source" "target" "identity" "idt" "ids" "reverse"} x))
-                (compositional-unital-quiver-arrow? [x]
+                (functional-unital-quiver-arrow? [x]
                   (contains? #{"1ₚ" "1ₑ" "1ᵥ" "source" "target" "identity" "idt" "ids"
                                "∘" "∘ source" "∘ target" "∘ ids" "∘ idt"} x))]
           (cond
@@ -481,8 +472,8 @@
               (dependency-quiver-arrow? a)
               (dependency-quiver-arrow? b)) (dependency-quiver-index-category (list a b))
             (and
-              (compositional-unital-quiver-arrow? a)
-              (compositional-unital-quiver-arrow? b)) (compositional-unital-quiver-index-category (list a b))
+              (functional-unital-quiver-arrow? a)
+              (functional-unital-quiver-arrow? b)) (functional-unital-quiver-index-category (list a b))
 
             (and (= a "reverse") (= b "∘")) "∘ reverse"
             (and (= a "reverse") (= b "∘ ids")) "∘ ids"
@@ -495,25 +486,168 @@
             (and (= a "idt") (= b "∘ reverse")) "∘ ids"))))
     '#{"source" "target" "∘" "identity" "reverse"}))
 
-; An ordinary quiver can be considered to be a special case of a binary quiver, while there are
-; many other forms of quivers beyond those, and each of them has their own index category.
-; These index categories consist of two objects and a collection of morphisms between
-; them that indicate the vertex value of an edge at each of its component indices.
-(defn nary-quiver-category
-  [n]
+; Compositional quivers:
+; These are defined by combining a ternary quiver with a binary quiver, so that
+; the ternary compositional quiver has as its objects the morphisms of the other
+; binary quiver. These are an alternative presheaf theoretic model for elementary categories.
+(def compositional-quiver-index-category
+  (adjoin-generators
+    (adjoin-composition
+     (create-unital-quiver
+       {"paths"    "1ₚ"
+        "edges"    "1ₑ"
+        "vertices" "1ᵥ"}
+       {"source"   ["edges" "vertices"]
+        "target"   ["edges" "vertices"]
+        "first"    ["paths" "edges"]
+        "second"   ["paths" "edges"]
+        "∘"        ["paths" "edges"]
+        "cm"   ["paths" "vertices"]
+        "cs" ["paths" "vertices"]
+        "ct" ["paths" "vertices"]})
+     (fn [[a b]]
+       (letfn [(identity-arrow? [x]
+                 (or (= x "1ₚ") (= x "1ₑ") (= x "1ᵥ")))]
+         (cond
+           (identity-arrow? a) b
+           (identity-arrow? b) a
+           (and (= a "source") (= b "∘")) "cs"
+           (and (= a "target") (= b "∘")) "ct"
+           (and (= a "source") (= b "first")) "cm"
+           (and (= a "source") (= b "second")) "cs"
+           (and (= a "target") (= b "first")) "ct"
+           (and (= a "target") (= b "second")) "cm"))))
+    #{"source" "target" "first" "second" "∘"}))
 
-  (simple-labeled-category
-    #{"edges" "vertices"}
-    (into
-      {}
-      (concat
-        (list
-          ["1ₑ" ["edges" "edges"]]
-          ["1ᵥ" ["vertices" "vertices"]])
-        (map
-          (fn [i]
-            [i ["edges" "vertices"]])
-          (range n))))))
+(def compositional-unital-quiver-index-category
+  (adjoin-generators
+    (adjoin-composition
+     (create-unital-quiver
+       {"paths"    "1ₚ"
+        "edges"    "1ₑ"
+        "vertices" "1ᵥ"}
+       {"source"   ["edges" "vertices"]
+        "target"   ["edges" "vertices"]
+        "first"    ["paths" "edges"]
+        "second"   ["paths" "edges"]
+        "∘"        ["paths" "edges"]
+        "cm"       ["paths" "vertices"]
+        "cs"       ["paths" "vertices"]
+        "ct"       ["paths" "vertices"]
+
+        "identity" ["vertices" "edges"]
+        "idt"      ["edges" "edges"]
+        "ids"      ["edges" "edges"]
+
+        "idcm"     ["paths" "edges"]
+        "idcs"     ["paths" "edges"]
+        "idct"     ["paths" "edges"]})
+     (fn [[a b]]
+       (letfn [(identity-arrow? [x]
+                 (contains? #{"1ₚ" "1ₑ" "1ᵥ"} x))
+               (unital-quiver-arrow? [x]
+                 (contains? #{"1ₑ" "1ᵥ" "source" "target" "identity" "idt" "ids"} x))
+               (compositional-quiver-arrow? [x]
+                 (contains? #{"source" "target" "first" "second" "∘" "cm" "cs" "ct"} x))
+               (morphic-identity-arrow? [x]
+                 (contains? #{"ids" "idt"} x))
+               (path-identity-arrow? [x]
+                 (contains? #{"idcm" "idcs" "idct"} x))]
+         (cond
+           (identity-arrow? a) b
+           (identity-arrow? b) a
+           (and
+             (compositional-quiver-arrow? a)
+             (compositional-quiver-arrow? b)) (compositional-quiver-index-category (list a b))
+           (and
+             (unital-quiver-arrow? a)
+             (unital-quiver-arrow? b)) (unital-quiver-index-category (list a b))
+           (and (= a "ids") (= b "first"))
+           (and (= a "idt") (= b "first"))
+
+           (and (= a "ids") (= b "∘")) "idcs"
+           (and (= a "idt") (= b "∘")) "idct"
+           (and (= a "ids") (= b "first")) "idcm"
+           (and (= a "ids") (= b "second")) "idcs"
+           (and (= a "idt") (= b "first")) "idct"
+           (and (= a "idt") (= b "second")) "idcm"
+           (and (= a "identity") (= b "cm")) "idcm"
+           (and (= a "identity") (= b "cs")) "idcs"
+           (and (= a "identity") (= b "ct")) "idct"
+           (and (or (= a "source") (= a "target")) (= b "idcs")) "cs"
+           (and (or (= a "source") (= a "target")) (= b "idct")) "ct"
+           (and (or (= a "source") (= a "target")) (= b "idcm")) "cm"
+           (and (morphic-identity-arrow? a) (path-identity-arrow? b)) b))))
+    #{"source" "target" "first" "second" "∘" "identity"}))
+
+(def compositional-dependency-quiver-index-category
+  (adjoin-generators
+    (adjoin-composition
+     (create-unital-quiver
+       {"paths"    "1ₚ"
+        "edges"    "1ₑ"
+        "vertices" "1ᵥ"}
+       {"source"         ["edges" "vertices"]
+        "target"         ["edges" "vertices"]
+        "first"          ["paths" "edges"]
+        "second"         ["paths" "edges"]
+        "∘"              ["paths" "edges"]
+        "cm"             ["paths" "vertices"]
+        "cs"             ["paths" "vertices"]
+        "ct"             ["paths" "vertices"]
+
+        "identity"       ["vertices" "edges"]
+        "idt"            ["edges" "edges"]
+        "ids"            ["edges" "edges"]
+
+        "idcm"           ["paths" "edges"]
+        "idcs"           ["paths" "edges"]
+        "idct"           ["paths" "edges"]
+
+        "reverse"        ["edges" "edges"]
+        "∘ reverse"      ["paths" "edges"]
+        "first reverse"  ["paths" "edges"]
+        "second reverse" ["paths" "edges"]})
+     (fn [[a b]]
+       (letfn [(identity-arrow? [x]
+                 (contains? #{"1ₚ" "1ₑ" "1ᵥ"} x))
+               (dependency-quiver-arrow? [x]
+                 (contains? #{"1ₑ" "1ᵥ" "source" "target" "identity" "idt" "ids" "reverse"} x))
+               (compositional-unital-quiver-arrow? [x]
+                 (contains?
+                   #{"ct" "idct" "idcs" "second" "∘" "ids" "1ᵥ" "identity"
+                     "idcm" "1ₑ" "source" "1ₚ" "target" "cs" "idt" "cm" "first"}
+                   x))]
+         (cond
+           (identity-arrow? a) b
+           (identity-arrow? b) a
+           (and (dependency-quiver-arrow? a)
+                (dependency-quiver-arrow? b)) (dependency-quiver-index-category (list a b))
+           (and (compositional-unital-quiver-arrow? a)
+                (compositional-unital-quiver-arrow? b)) (compositional-unital-quiver-index-category
+                                                          (list a b))
+           (and (= a "source") (= b "∘ reverse")) "ct"
+           (and (= a "target") (= b "∘ reverse")) "cs"
+           (and (= a "source") (= b "first reverse")) "ct"
+           (and (= a "target") (= b "first reverse")) "cm"
+           (and (= a "source") (= b "second reverse")) "cm"
+           (and (= a "target") (= b "second reverse")) "cs"
+           (and (= a "ids") (= b "∘ reverse")) "idct"
+           (and (= a "idt") (= b "∘ reverse")) "idcs"
+           (and (= a "ids") (= b "first reverse")) "idct"
+           (and (= a "idt") (= b "first reverse")) "idcm"
+           (and (= a "ids") (= b "second reverse")) "idcm"
+           (and (= a "ids") (= b "second reverse")) "idcs"
+           (and (= a "reverse") (= b "first")) "first reverse"
+           (and (= a "reverse") (= b "second")) "second reverse"
+           (and (= a "reverse") (= b "∘")) "∘ reverse"
+           (and (= a "reverse") (= b "idcm")) "idcm"
+           (and (= a "reverse") (= b "idcs")) "idcs"
+           (and (= a "reverse") (= b "idct")) "idct"
+           (and (= a "reverse") (= b "first reverse")) "first"
+           (and (= a "reverse") (= b "second reverse")) "second"
+           (and (= a "reverse") (= b "∘ reverse")) "∘"))))
+    #{"source" "target" "first" "second" "∘" "identity" "reverse"}))
 
 ; We see that many forms of quivers have been introduced in to our ontology as part of our basic
 ; understanding of topos theoretic presheaf theory. However, in our investigations it often
@@ -538,9 +672,7 @@
        "2tt" ["c2" "c0"]})
     (fn [[a b]]
       (letfn [(identity-arrow? [x]
-                (contains? #{"ic0" "ic1" "ic2"} x))
-              (two-morphism-component-arrow? [x]
-                (contains? #{"2s" "2t"} x))]
+                (contains? #{"ic0" "ic1" "ic2"} x))]
         (cond
           (identity-arrow? a) b
           (identity-arrow? b) a
@@ -565,9 +697,7 @@
        "2f" ["c2" "c0"]})
     (fn [[a b]]
       (letfn [(identity-arrow? [x]
-                (contains? #{"ic0" "ic1" "ic2"} x))
-              (two-morphism-component-arrow? [x]
-                (contains? #{"2s" "2t"} x))]
+                (contains? #{"ic0" "ic1" "ic2"} x))]
         (cond
           (identity-arrow? a) b
           (identity-arrow? b) a
@@ -582,31 +712,32 @@
 
   (let [n (inc arg)]
     (->Category
-      (apply
-        union
-        (set
-          (map
-            (fn [i]
-              (apply
-                union
-                (set
-                  (map
-                    (fn [j]
-                      (if (= i j)
-                        #{(list i j 0)}
-                        #{(list i j 0) (list i j 1)}))
-                    (range (inc i))))))
-            (range n))))
-      (->Upto n)
-      first
-      second
+      (->UnitalQuiver
+        (apply
+          union
+          (set
+            (map
+              (fn [i]
+                (apply
+                  union
+                  (set
+                    (map
+                      (fn [j]
+                        (if (= i j)
+                          #{(list i j 0)}
+                          #{(list i j 0) (list i j 1)}))
+                      (range (inc i))))))
+              (range n))))
+        (->Upto n)
+        first
+        second
+        (fn [n]
+          (list n n 0)))
       (fn [[[a1 a2 a3] [b1 b2 b3]]]
         (cond
           (= a1 a2) (list b1 b2 b3)
           (= b1 b2) (list a1 a2 a3)
-          :else (list b1 a2 a3)))
-      (fn [n]
-        (list n n 0)))))
+          :else (list b1 a2 a3))))))
 
 (def two-globular-set-index-category
   (n-globular-set-index-category 2))
@@ -645,17 +776,18 @@
   [n]
 
   (->Category
-    (enumerate-all-n-edges n)
-    (set (range (inc n)))
-    first
-    second
+    (->UnitalQuiver
+      (enumerate-all-n-edges n)
+      (set (range (inc n)))
+      first
+      second
+      (fn [n]
+        (list n n '())))
     (fn [[a b]]
       (list
         (first b)
         (second a)
-        (concat (nth a 2) (nth b 2))))
-    (fn [n]
-      (list n n '()))))
+        (concat (nth a 2) (nth b 2))))))
 
 ; A general mechanism for getting the index categories of copresheaves
 ; The index category is the source object of the copresheaf, which is always dependent upon the
@@ -732,6 +864,18 @@
 (defmethod index-category TernaryQuiver
   [ternary-quiver] (n-quiver-index-category 3))
 
+(defmethod index-category TwoQuiver
+  [two-quiver] two-quiver-index-category)
+
+(defmethod index-category :locus.elementary.copresheaf.core.protocols/partial-magmoid
+  [obj] compositional-quiver-index-category)
+
+(defmethod index-category :locus.elementary.copresheaf.core.protocols/unital-magmoid
+  [obj] compositional-unital-quiver-index-category)
+
+(defmethod index-category :locus.elementary.copresheaf.core.protocols/groupoid
+  [groupoid] compositional-dependency-quiver-index-category)
+
 ; Every morphism in a topos of copresheaves corresponds to a copresheaf
 (defn create-copresheaf-by-morphism
   [source target func]
@@ -769,20 +913,6 @@
     (fn [obj] coll)
     (fn [morphism] (identity-function coll))))
 
-(defmethod to-copresheaf :locus.elementary.copresheaf.core.protocols/diset
-  [pair]
-
-  (Copresheaf.
-    e2-category
-    (fn [obj]
-      (case obj
-        0 (first-set pair)
-        1 (second-set pair)))
-    (fn [morphism]
-      (cond
-        (= morphism 0) (identity-function (first-set pair))
-        (= morphism 1) (identity-function (second-set pair))))))
-
 (defmethod to-copresheaf :locus.base.logic.structure.protocols/set-function
   [func]
 
@@ -797,22 +927,6 @@
         (= morphism "1ᵢ") (identity-function (first-set func))
         (= morphism "1ₒ") (identity-function (second-set func))
         (= morphism "f") func))))
-
-(defmethod to-copresheaf :locus.elementary.copresheaf.core.protocols/bijection
-  [func]
-
-  (Copresheaf.
-    k2-category
-    (fn [obj]
-      (case obj
-        "Input" (first-set func)
-        "Output" (second-set func)))
-    (fn [morphism]
-      (cond
-        (= morphism "1ᵢ") (identity-function (first-set func))
-        (= morphism "1ₒ") (identity-function (second-set func))
-        (= morphism "f") (underlying-function func)
-        (= morphism "f⁻¹") (underlying-function (inv func))))))
 
 ; Convert copresheaves over preorders into more general copresheaves
 ; Let P be a preorder, then Sets^P is a topos consisting of all copresheaves over the preorder
@@ -831,6 +945,12 @@
 ; Conversion routines for special classes of copresheaves with arbitrary size index categories
 ; These conversion routines will simply fall back on the dependency functors in order to reuse
 ; their implementation of the conversion routine.
+(defmethod to-copresheaf Diset
+  [diset] (to-copresheaf (to-dependency diset)))
+
+(defmethod to-copresheaf Bijection
+  [bijection] (to-copresheaf (to-dependency bijection)))
+
 (defmethod to-copresheaf NSet
   [nset] (to-copresheaf (to-dependency nset)))
 
@@ -987,8 +1107,25 @@
 (defmethod to-copresheaf MorphismOfDependencyQuivers
   [morphism] (create-copresheaf-by-morphism-of-quivers morphism))
 
-; Compositional quivers
-(defn compositional-quiver-copresheaf
+; First and second projection functions on composability of a quiver
+(defn composability-first-function
+  [quiver]
+
+  (->SetFunction
+    (composability-relation quiver)
+    (morphisms quiver)
+    first))
+
+(defn composability-second-function
+  [quiver]
+
+  (->SetFunction
+    (composability-relation quiver)
+    (morphisms quiver)
+    second))
+
+; This is where we implement the presheaf theory of categories
+(defn make-compositional-quiver
   [category]
 
   (Copresheaf.
@@ -1005,15 +1142,14 @@
         "1ᵥ" (identity-function (objects category))
         "source" (source-function category)
         "target" (target-function category)
+        "first" (composability-first-function category)
+        "second" (composability-second-function category)
         "∘" (underlying-function category)
-        "∘ source" (compose
-                     (source-function category)
-                     (underlying-function category))
-        "∘ target" (compose
-                     (target-function category)
-                     (underlying-function category))))))
+        "cm" (compose (source-function category) (composability-first-function category))
+        "cs" (compose (source-function category) (composability-second-function category))
+        "ct" (compose (target-function category) (composability-first-function category))))))
 
-(defn compositional-unital-quiver-copresheaf
+(defn make-compositional-unital-quiver
   [category]
 
   (Copresheaf.
@@ -1030,16 +1166,23 @@
         "1ᵥ" (identity-function (objects category))
         "source" (source-function category)
         "target" (target-function category)
+        "first" (composability-first-function category)
+        "second" (composability-second-function category)
         "∘" (underlying-function category)
-        "∘ source" (compose (source-function category) (underlying-function category))
-        "∘ target" (compose (target-function category) (underlying-function category))
+        "cm" (compose (source-function category) (composability-first-function category))
+        "cs" (compose (source-function category) (composability-second-function category))
+        "ct" (compose (target-function category) (composability-first-function category))
         "identity" (identity-element-function category)
         "idt" (source-identity-function category)
         "ids" (target-identity-function category)
-        "∘ idt" (compose (target-identity-function category) (underlying-function category))
-        "∘ ids" (compose (source-identity-function category) (underlying-function category))))))
+        "idct" (compose (target-identity-function category) (underlying-function category))
+        "idcs" (compose (source-identity-function category) (underlying-function category))
+        "idcm" (identity-function
+                 (compose
+                   (source-function category)
+                   (composability-first-function category)))))))
 
-(defn compositional-dependency-quiver-copresheaf
+(defn make-compositional-dependency-quiver
   [category]
 
   (Copresheaf.
@@ -1056,25 +1199,34 @@
         "1ᵥ" (identity-function (objects category))
         "source" (source-function category)
         "target" (target-function category)
+        "first" (composability-first-function category)
+        "second" (composability-second-function category)
         "∘" (underlying-function category)
-        "∘ source" (compose (source-function category) (underlying-function category))
-        "∘ target" (compose (target-function category) (underlying-function category))
+        "cm" (compose (source-function category) (composability-first-function category))
+        "cs" (compose (source-function category) (composability-second-function category))
+        "ct" (compose (target-function category) (composability-first-function category))
         "identity" (identity-element-function category)
         "idt" (source-identity-function category)
         "ids" (target-identity-function category)
-        "∘ idt" (compose (target-identity-function category) (underlying-function category))
-        "∘ ids" (compose (source-identity-function category) (underlying-function category))
+        "idct" (compose (target-identity-function category) (underlying-function category))
+        "idcs" (compose (source-identity-function category) (underlying-function category))
+        "idcm" (identity-function
+                 (compose
+                   (source-function category)
+                   (composability-first-function category)))
         "reverse" (inverse-function category)
-        "∘ reverse" (compose (inverse-function category) (underlying-function category))))))
+        "∘ reverse" (compose (inverse-function category) (underlying-function category))
+        "first reverse" (compose (inverse-function category) (composability-first-function category))
+        "second reverse" (compose (inverse-function category) (composability-second-function category))))))
 
 (defmethod to-copresheaf :locus.elementary.copresheaf.core.protocols/semigroupoid
-  [semigroupoid] (compositional-quiver-copresheaf semigroupoid))
+  [semigroupoid] (make-compositional-quiver semigroupoid))
 
 (defmethod to-copresheaf :locus.elementary.copresheaf.core.protocols/category
-  [category] (compositional-unital-quiver-copresheaf category))
+  [category] (make-compositional-unital-quiver category))
 
 (defmethod to-copresheaf :locus.elementary.copresheaf.core.protocols/groupoid
-  [groupoid] (compositional-dependency-quiver-copresheaf groupoid))
+  [groupoid] (make-compositional-dependency-quiver groupoid))
 
 ; Convert two quivers into two copresheafs using topos theory
 (defmethod to-copresheaf TwoQuiver
@@ -1413,7 +1565,3 @@
   [obj]
 
   (= (type obj) Copresheaf))
-
-
-
-

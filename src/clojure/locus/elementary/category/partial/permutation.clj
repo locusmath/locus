@@ -1,4 +1,4 @@
-(ns locus.elementary.category.relation.partial-permutation
+(ns locus.elementary.category.partial.permutation
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.sequence.core.object :refer :all]
@@ -12,12 +12,12 @@
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.function.image.image-function :refer :all]
-            [locus.elementary.category.relation.partial-function :refer :all]
-            [locus.elementary.category.relation.partial-bijection :refer :all]
-            [locus.elementary.category.relation.partial-transformation :refer :all])
-  (:import (locus.elementary.category.relation.partial_transformation PartialTransformation)
+            [locus.elementary.category.partial.function :refer :all]
+            [locus.elementary.category.partial.bijection :refer :all]
+            [locus.elementary.category.partial.transformation :refer :all])
+  (:import (locus.elementary.category.partial.transformation PartialTransformation)
            (clojure.lang IPersistentMap)
-           (locus.elementary.category.relation.partial_bijection PartialBijection)))
+           (locus.elementary.category.partial.bijection PartialBijection)))
 
 ; Partial permutations:
 ; One to one partial transformations are called partial permutations, or sometimes charts.
@@ -48,7 +48,7 @@
   (applyTo [this args]
     (clojure.lang.AFn/applyToHelper this args)))
 
-(derive PartialPermutation :locus.elementary.category.relation.partial-function/partial-permutation)
+(derive PartialPermutation :locus.elementary.category.partial.function/partial-permutation)
 
 ; Defined domains and codomains
 (defmethod defined-domain PartialPermutation
@@ -72,7 +72,7 @@
     (fn [x] x)
     (fn [x] x)))
 
-(defmethod compose* :locus.elementary.category.relation.partial-function/partial-permutation
+(defmethod compose* :locus.elementary.category.partial.function/partial-permutation
   [a b]
 
   (let [new-domain (set
@@ -151,6 +151,37 @@
 (defmethod to-partial-permutation :locus.elementary.copresheaf.core.protocols/bijection
   [bijection] (to-partial-permutation (to-partial-bijection bijection)))
 
+; Products and coproducts of partial permutations
+(defmethod coproduct :locus.elementary.category.partial.function/partial-permutation
+  [& permutations]
+
+  (PartialPermutation.
+    (apply coproduct (map defined-domain permutations))
+    (apply coproduct (map partial-function-image permutations))
+    (apply coproduct (map target-object permutations))
+    (fn [[i v]]
+      (list i ((nth permutations i) v)))
+    (fn [[i v]]
+      (list i ((inv (nth permutations i)) v)))))
+
+(defmethod product :locus.elementary.category.partial.function/partial-permutation
+  [& permutations]
+
+  (PartialPermutation.
+    (apply product (map defined-domain permutations))
+    (apply product (map partial-function-image permutations))
+    (apply product (map target-object permutations))
+    (fn [coll]
+      (map-indexed
+        (fn [i v]
+          ((nth permutations i) v))
+        coll))
+    (fn [coll]
+      (map-indexed
+        (fn [i v]
+          ((inv (nth permutations i)) v))
+        coll))))
+
 ; Atomic charts are the simplest means of generating preorders by an action
 ; Semigroups of atomic charts are all equivalent to preorders. They can be formed,
 ; for example from the object preorders of categories.
@@ -179,7 +210,7 @@
   (applyTo [this args]
     (clojure.lang.AFn/applyToHelper this args)))
 
-(derive AtomicChart :locus.elementary.category.relation.partial-function/atomic-chart)
+(derive AtomicChart :locus.elementary.category.partial.function/atomic-chart)
 
 (defmethod print-method AtomicChart [^AtomicChart v, ^java.io.Writer w]
   (.write w (.toString v)))

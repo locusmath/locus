@@ -19,7 +19,6 @@
             [locus.elementary.group.core.object :refer :all]
             [locus.elementary.lattice.core.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
-            [locus.elementary.category.relation.set-relation :refer :all]
             [locus.elementary.order.core.object :refer :all]
             [locus.elementary.preorder.core.object :refer :all]
             [locus.elementary.preorder.setoid.object :refer :all]))
@@ -28,29 +27,27 @@
 ; This is useful because it allows us to specify the data of a category, without having
 ; to worry about how to handle all of its morphisms, because we can concern ourselves
 ; simply with the generating set. In particular, this is useful when defining presheaves.
-(deftype GeneratedCategory [morphisms objects source target func id gens]
-  ; Generated categories are structured quivers
+(deftype GeneratedCategory [quiver op gens]
   StructuredDiset
-  (first-set [this] morphisms)
-  (second-set [this] objects)
+  (first-set [this] (first-set quiver))
+  (second-set [this] (second-set quiver))
 
   StructuredQuiver
-  (underlying-quiver [this] (->Quiver morphisms objects source target))
-  (source-fn [this] source)
-  (target-fn [this] target)
-  (transition [this e] (list (source e) (target e)))
+  (underlying-quiver [this] (underlying-quiver quiver))
+  (source-fn [this] (source-fn quiver))
+  (target-fn [this] (target-fn quiver))
+  (transition [this e] (transition quiver e))
 
   StructuredUnitalQuiver
-  (identity-morphism-of [this obj] (id obj))
-  (underlying-unital-quiver [this] (->UnitalQuiver morphisms objects source target id))
+  (identity-morphism-of [this obj] (identity-morphism-of quiver obj))
+  (underlying-unital-quiver [this] quiver)
 
-  ; Generated categories are structured functions
   ConcreteMorphism
   (inputs [this] (composability-relation this))
-  (outputs [this] morphisms)
+  (outputs [this] (morphisms quiver))
 
   clojure.lang.IFn
-  (invoke [this arg] (func arg))
+  (invoke [this arg] (op arg))
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
 ; Generated categories are part of the ontology of categories
@@ -63,19 +60,14 @@
 
   (.gens category))
 
-; Add on a morphic generating set to an existing category
+; Adjoin generators to a category
 (defn adjoin-generators
   [category gens]
 
   (->GeneratedCategory
-    (morphisms category)
-    (objects category)
-    (source-fn category)
-    (target-fn category)
+    (underlying-unital-quiver category)
     (fn [[a b]]
       (category (list a b)))
-    (fn [a]
-      (identity-morphism-of category a))
     gens))
 
 ; Let P be a finite poset then the covering relation of P provides for a valid
@@ -84,17 +76,9 @@
   ([edges]
    (covering-generated-category (vertices edges) edges))
   ([vertices edges]
-
    (->GeneratedCategory
-     edges
-     vertices
-     first
-     second
+     (relational-unital-quiver vertices edges)
      compose-ordered-pairs
-     (fn [x] (list x x))
      (covering-relation edges))))
-
-
-
 
 

@@ -12,7 +12,8 @@
             [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.quiver.core.thin-object :refer :all]
-            [locus.elementary.quiver.permutable.object :refer :all]))
+            [locus.elementary.quiver.permutable.object :refer :all]
+            [locus.elementary.quiver.core.thin-object :refer :all]))
 
 ; Let C be the category consisting of the double arrow category, with an
 ; additional morphism on the edge objects for reversal that swaps the values
@@ -37,7 +38,7 @@
   (second-set [this] vertices)
 
   StructuredQuiver
-  (underlying-quiver [this] this)
+  (underlying-quiver [this] (->ThinQuiver vertices edges))
   (source-fn [this] first)
   (target-fn [this] second)
   (transition [this e] e)
@@ -76,6 +77,11 @@
 
   (.edges quiv))
 
+(defmethod underlying-multirelation ThinPermutableQuiver
+  [^ThinPermutableQuiver quiv]
+
+  (.edges quiv))
+
 (defmethod visualize ThinPermutableQuiver
   [^ThinPermutableQuiver quiv]
 
@@ -95,3 +101,7 @@
   (ThinPermutableQuiver.
     (apply cartesian-product (map objects quivers))
     (apply product-relation (map morphisms quivers))))
+
+; Duals in the category of thin permutable quivers
+(defmethod dual ThinPermutableQuiver
+  [^ThinPermutableQuiver quiver] quiver)

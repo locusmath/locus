@@ -66,3 +66,18 @@
   (inclusion-function
     (difference (outputs func) (inputs func))
     (outputs func)))
+
+; Products and coproducts of inclusion functions
+(defmethod product :locus.base.logic.structure.protocols/inclusion-function
+  [& functions]
+
+  (InclusionFunction.
+    (apply product (map inputs functions))
+    (apply product (map outputs functions))))
+
+(defmethod coproduct :locus.base.logic.structure.protocols/inclusion-function
+  [& functions]
+
+  (InclusionFunction.
+    (apply coproduct (map inputs functions))
+    (apply coproduct (map outputs functions))))

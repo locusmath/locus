@@ -16,9 +16,14 @@
            (locus.elementary.semigroup.core.object Semigroup)
            (locus.additive.semiring.core.object Semiring)))
 
-; Rings are the most useful objects of arithmetic because of their relationship
-; to ideals. The unique role of rings requires that we offer special support
-; for them in our computer algebra system.
+; Rings are ringoids with a single object
+; They are among the most useful objects of arithmetic because of their special relationship
+; to ideals. Every single ring is associated with a lattice of ideals, and every ideal
+; is associated with a unique ring quotient. This necessitates that rings should receive
+; special support in any computer algebra system, so that computations with rings
+; can be enabled. As structured groups, rings satisfy Langrange's theorem so that all
+; subrings including ideals are of a cardinality that divides the cardinality of the ring.
+; This is another heuristic we can use for rings that is not applicable to semirings.
 (deftype Ring [elems add mul]
   ConcreteObject
   (underlying-set [this] elems))

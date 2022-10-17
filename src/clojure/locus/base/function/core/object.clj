@@ -53,7 +53,7 @@
 ; Grothendeick's original papers: such as the theory of toposes of sheaves over a site.
 ; These other topoi should also be fundamental objects of our research. A good reference on
 ; some other aspects of the topos of functions Sets^(->) such as its subobject classifier
-; is Robert Golbatt's Topoi the categorical analysis of logic.
+; is Robert Goldblatt's Topoi the categorical analysis of logic.
 
 (deftype SetFunction [in out func]
   AbstractMorphism

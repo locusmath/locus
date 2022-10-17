@@ -10,78 +10,142 @@
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.category.relation.set-relation :refer :all]
             [locus.elementary.order.core.object :refer :all]
             [locus.elementary.preorder.core.object :refer :all]
             [locus.elementary.preorder.setoid.object :refer :all]
             [locus.elementary.diset.core.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.quiver.core.thin-object :refer :all]
+            [locus.elementary.quiver.unital.thin-object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.group.core.object :refer :all]
             [locus.elementary.lattice.core.object :refer :all])
   (:import (locus.elementary.lattice.core.object Lattice)
-           (locus.elementary.semigroup.monoid.object Monoid)
            (locus.elementary.quiver.unital.object UnitalQuiver)
            (locus.elementary.preorder.core.object Preposet)
            (locus.elementary.preorder.setoid.object Setoid)
-           (locus.elementary.order.core.object Poset)))
+           (locus.elementary.order.core.object Poset)
+           (locus.elementary.group.core.object Group)))
 
-; In topos theoretic foundations, we typically focus on copresheaves over categories.
-; At first we can build up our copresheaves over a limited set of index categories,
-; such as preorders containing only a couple of elements, but eventually we need
-; to provide a general framework for handling arbitrary categories. Once we have that
-; framework then we can deal with arbitrary copresheaves.
+; A category is a presheaf in the topos of compositional quivers. It shares membership in this
+; topos with magmoids, semigroupoids, and other structures that have relaxed conditions. In
+; addition to being presheaves themselves, categories are known as the organizing principle
+; for presheaves and this makes them a distinctly important class of object.
 
-; Nonetheless, we can interpret a category by a number of copresheaves defined over it,
-; so that categories fit into our system of topos theoretic foundations. The first is
-; the topos of quivers. Every category is associated with an underlying quiver,
-; which leads to the functor f : Cat -> Quiv by which we can better interpret categories
-; by one of the foundational copresheaves.
+; Categories can be defined by reference to two different components: their combinatorial
+; structure and their algebraic structure. Their combinatorial structure can be defined
+; by a unital quiver. Their algebraic structure can be defined as a ternary quiver
+; and the properties if its composition operation can be studied with reference to the
+; fundamental topos Sets^(->).
 
-; Secondly, there are forgetful set-valued functors which filter through Quiv to
-; Sets^2 and from there to Sets. The functor to Sets^2 maps a category to a pair
-; consisting of its morphism set and its object set. The last aspect of the topos theoretic
-; foundation of categories is the functor to Sets^(->). The composition function of a
-; category leads to a functor f: Cats -> Sets^(->). Together the data of these copresheaves
-; make up a category, which itself can be understood in terms of copresheaves in
-; our system of topos theoretic foundations.
+; While categories are defined as one type of presheaf structure, higher generalisations
+; of categories are always defined over other types of presheaves. A two category, for example,
+; has the combinatorial structure of a two globular set, which is an object understood
+; by reference to the topos of two globular sets. Even higher categories are defined by other
+; topoi of presheaves. As is befitting the Locus project's namesake, we always view
+; everything from the lens of presheaf topos theory.
 
-(deftype Category [morphisms objects source target func id]
-  ; Categories are structured quivers
+(deftype Category [quiver op]
   StructuredDiset
-  (first-set [this] morphisms)
-  (second-set [this] objects)
+  (first-set [this] (first-set quiver))
+  (second-set [this] (second-set quiver))
 
   StructuredQuiver
-  (underlying-quiver [this] (->Quiver morphisms objects source target))
-  (source-fn [this] source)
-  (target-fn [this] target)
-  (transition [this e] (list (source e) (target e)))
+  (underlying-quiver [this] (underlying-quiver quiver))
+  (source-fn [this] (source-fn quiver))
+  (target-fn [this] (target-fn quiver))
+  (transition [this e] (transition quiver e))
 
   StructuredUnitalQuiver
-  (identity-morphism-of [this obj] (id obj))
-  (underlying-unital-quiver [this] (->UnitalQuiver morphisms objects source target id))
+  (identity-morphism-of [this obj] (identity-morphism-of quiver obj))
+  (underlying-unital-quiver [this] quiver)
 
-  ; Categories are structured functions
   ConcreteMorphism
   (inputs [this] (composability-relation this))
-  (outputs [this] morphisms)
+  (outputs [this] (morphisms quiver))
 
   clojure.lang.IFn
-  (invoke [this arg] (func arg))
+  (invoke [this arg] (op arg))
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
 ; Categories are semigroupoids with identity
 (derive Category :locus.elementary.copresheaf.core.protocols/category)
 
-; Compose ordered pairs
+; Underlying relation
+(defmethod underlying-multirelation :locus.elementary.copresheaf.core.protocols/category
+  [cat] (underlying-multirelation (underlying-unital-quiver cat)))
+
+(defmethod underlying-relation :locus.elementary.copresheaf.core.protocols/category
+  [cat] (underlying-relation (underlying-unital-quiver cat)))
+
+(defn underlying-preposet
+  [cat] (Preposet. (second-set cat) (underlying-relation cat)))
+
+(defmethod visualize :locus.elementary.copresheaf.core.protocols/category
+  [cat] (visualize (underlying-unital-quiver cat)))
+
+; Special support for thin categories
 (defn compose-ordered-pairs
   [[[a b] [c d]]]
 
   (list c b))
+
+(defn thin-category
+  ([rel]
+   (thin-category (vertices rel) rel))
+  ([vertices edges]
+   (->Category
+     (thin-unital-quiver vertices edges)
+     compose-ordered-pairs)))
+
+; Convert various mathematical objects to categories
+(defmulti to-category type)
+
+(defmethod to-category Category
+  [category] category)
+
+(defmethod to-category :locus.elementary.copresheaf.core.protocols/monoid
+  [monoid]
+
+  (->Category (underlying-unital-quiver monoid) monoid))
+
+(defmethod to-category :locus.elementary.copresheaf.core.protocols/semigroup
+  [semigroup]
+
+  (let [monoid (to-monoid (adjoin-identity semigroup))]
+    (->Category
+      (underlying-unital-quiver monoid)
+      monoid)))
+
+(defmethod to-category Group
+  [group]
+
+  (->Category (underlying-unital-quiver group) group))
+
+(defmethod to-category Setoid
+  [setoid]
+
+  (thin-category (underlying-set setoid) (underlying-relation setoid)))
+
+(defmethod to-category Poset
+  [poset]
+
+  (thin-category (underlying-set poset) (underlying-relation poset)))
+
+(defmethod to-category Preposet
+  [preposet]
+
+  (thin-category (underlying-set preposet) (underlying-relation preposet)))
+
+(defmethod to-category Lattice
+  [lattice]
+
+  (thin-category (second-set lattice) (first-set lattice)))
+
+(defmethod to-category :locus.base.logic.core.set/universal
+  [rel] (thin-category (set rel)))
 
 ; Get the quiver define over the generating set of morphisms of a category.
 ; In particular, this
@@ -94,16 +158,47 @@
     (source-fn category)
     (target-fn category)))
 
-; We need some way of testing for identity morphisms
-(defn identity-element?
-  [category identity]
+; Labeled thin categories allow us to better handle visualisation procedures:
+; Vertices is a set of objects
+; Edge map is a binary vector valued map
+(defn simple-labeled-category
+  [vertices edge-map]
 
-  (let [source (source-element category identity)
-        target (target-element category identity)]
-    (and
-      (= source target)
-      (= ((.id category) source) identity))))
+  (let [edge-set (set (keys edge-map))
+        flipped-map (into {} (map (fn [[k v]] [v k]) edge-map))]
+    (Category.
+      (UnitalQuiver.
+        edge-set
+        vertices
+        (comp first edge-map)
+        (comp second edge-map)
+        (fn [obj]
+          (flipped-map [obj obj])))
+      (fn [[a b]]
+        (let [[b1 b2] (edge-map a)
+              [a1 a2] (edge-map b)]
+          (flipped-map [a1 b2]))))))
 
+; Adjoin composition to unital quivers
+(defmethod adjoin-composition UnitalQuiver
+  [quiv f]
+
+  (Category. quiv f))
+
+; Construct a category from a quiver directly
+(defn extend-quiver
+  [quiv comp id]
+
+  (Category.
+    (->UnitalQuiver
+      (first-set quiv)
+      (second-set quiv)
+      (source-fn quiv)
+      (target-fn quiv)
+      id)
+    comp))
+
+; Inversions and isomorphism elements
 (defn inverse-elements?
   [category a b]
 
@@ -139,165 +234,39 @@
         (isomorphism-element? category i))
       (morphisms category))))
 
-; Underlying relation
-(defmethod underlying-relation :locus.elementary.copresheaf.core.protocols/category
-  [cat] (underlying-relation (underlying-quiver cat)))
-
-; General conversion methods
-(defmulti to-category type)
-
-(defmethod to-category Category
-  [cat] cat)
-
-; Conversion of monoids
-(defmethod to-category :locus.elementary.copresheaf.core.protocols/monoid
-  [mon]
-
-  (Category.
-    (morphisms mon)
-    (objects mon)
-    (source-fn mon)
-    (target-fn mon)
-    mon
-    (fn [x]
-      (when (zero? x)
-        (.id mon)))))
-
-(defmethod to-category :locus.elementary.copresheaf.core.protocols/group
-  [group]
-
-  (to-category
-    (Monoid.
-      (.elems group)
-      (.op group)
-      (.id group))))
-
-; Thin categories
-; These are constructed without the context of edge labelings so they might
-; not produce as nice of diagrams for the copresheaf viewer.
-(defn thin-category
-  ([rel] (thin-category (vertices rel) rel))
-  ([vertices edges]
-   (Category.
-     edges
-     vertices
-     first
-     second
-     compose-ordered-pairs
-     (fn [x] (list x x)))))
-
-; Labeled thin categories allow us to better handle visualisation procedures
-; Vertices is a set of objects
-; Edge map is a binary vector valued map
-(defn simple-labeled-category
-  [vertices edge-map]
-
-  (let [edge-set (set (keys edge-map))
-        flipped-map (into {} (map (fn [[k v]] [v k]) edge-map))]
-    (Category.
-      edge-set
-      vertices
-      (comp first edge-map)
-      (comp second edge-map)
-      (fn [[a b]]
-        (let [[b1 b2] (edge-map a)
-              [a1 a2] (edge-map b)]
-          (flipped-map [b1 a2])))
-      (fn [obj]
-        (flipped-map [obj obj])))))
-
-; Conversion of thin categories
-(defn underlying-preposet
-  [cat]
-
-  (Preposet. (second-set cat) (underlying-relation cat)))
-
-(defmethod to-category Setoid
-  [setoid]
-
-  (thin-category (underlying-set setoid) (underlying-relation setoid)))
-
-(defmethod to-category Poset
-  [poset]
-
-  (thin-category (underlying-set poset) (underlying-relation poset)))
-
-(defmethod to-category Preposet
-  [preposet]
-
-  (thin-category (underlying-set preposet) (underlying-relation preposet)))
-
-(defmethod to-category Lattice
-  [lattice]
-
-  (thin-category (second-set lattice) (first-set lattice)))
-
 ; The topos of sets
 (def sets
-  (Category.
-    set-function?
-    universal?
-    inputs
-    outputs
+  (->Category
+    (->UnitalQuiver
+      set-function?
+      universal?
+      inputs
+      outputs
+      identity-function)
     (fn [[a b]]
-      (compose a b))
-    identity-function))
+      (compose a b))))
 
-; We now need some way of getting the products and coproducts of categories
+; Products and coproducts in the category of categories
 (defmethod product :locus.elementary.copresheaf.core.protocols/category
   [& categories]
 
-  (Category.
-    (apply cartesian-product (map first-set categories))
-    (apply cartesian-product (map second-set categories))
-    (fn [morphisms]
-      (map-indexed
-        (fn [i v]
-          ((source-fn (nth categories i)) v))
-        morphisms))
-    (fn [morphisms]
-      (map-indexed
-        (fn [i v]
-          ((target-fn (nth categories i)) v))
-        morphisms))
+  (->Category
+    (apply product (map underlying-unital-quiver categories))
     (fn [[morphisms1 morphisms2]]
       (map-indexed
         (fn [i c]
           (c (list (nth morphisms1 i) (nth morphisms2 i))))
-        categories))
-    (fn [obj]
-      (map-indexed
-        (fn [i v]
-          ((.id ^Category (nth categories i)) v))
-        obj))))
+        categories))))
 
 (defmethod coproduct :locus.elementary.copresheaf.core.protocols/category
   [& categories]
 
-  (Category.
-    (apply cartesian-coproduct (map first-set categories))
-    (apply cartesian-coproduct (map second-set categories))
-    (fn [[i v]]
-      (list i ((source-fn (nth categories i)) v)))
-    (fn [[i v]]
-      (list i ((target-fn (nth categories i)) v)))
+  (->Category
+    (apply coproduct (map underlying-unital-quiver categories))
     (fn [[[i v] [j w]]]
       (when (= i j)
         (let [c (nth categories i)]
-          (list i (c (list v w))))))
-    (fn [[i v]]
-      (list i ((.id ^Category (nth categories i)) v)))))
-
-(defmethod dual :locus.elementary.copresheaf.core.protocols/category
-  [cat]
-
-  (Category.
-    (first-set cat)
-    (second-set cat)
-    (.target cat)
-    (.source cat)
-    (comp cat reverse)
-    (.id cat)))
+          (list i (c (list v w))))))))
 
 ; The coproduct of monoids
 ; The coproduct of monoids can be computed by converting each of the individual
@@ -307,60 +276,72 @@
 
   (apply coproduct (map to-category monoids)))
 
-; We need some way of dealing with subcategories
+(defmethod dual :locus.elementary.copresheaf.core.protocols/category
+  [cat]
+
+  (Category.
+    (dual (underlying-unital-quiver cat))
+    (comp cat reverse)))
+
+; We need some way of dealing with subobjects of categories
 (defn restrict-category
   [category new-morphisms new-objects]
 
-  (Category.
-    new-morphisms
-    new-objects
-    (.source category)
-    (.target category)
-    (.func category)
-    (.id category)))
-
-; We now need some way of getting wide and full subcategories
-(defn enumerate-full-subcategory-morphisms
-  [category new-objects]
-
-  (set
-    (filter
-      (fn [i]
-        (let [source ((.source category) i)
-              target ((.target category) i)]
-          (and
-            (contains? new-objects source)
-            (contains? new-objects target))))
-      (first-set category))))
+  (->Category
+    (unital-subquiver (underlying-unital-quiver category) new-morphisms new-objects)
+    (.-op category)))
 
 (defn wide-subcategory
   [category new-morphisms]
 
-  (restrict-category
-    category
-    new-morphisms
-    (second-set category)))
+  (->Category
+    (wide-unital-subquiver (underlying-unital-quiver category) new-morphisms)
+    (.-op category)))
 
 (defn full-subcategory
   [category new-objects]
 
-  (restrict-category
-    category
-    (enumerate-full-subcategory-morphisms category new-objects)
-    new-objects))
+  (->Category
+    (full-unital-subquiver (underlying-unital-quiver category) new-objects)
+    (.-op category)))
 
-; The morphism objects set has to be adapted to deal either with elements
-; of a morphism class or morphic elements of category.
+; Testing for subcategories
+(defn compositionally-closed-set?
+  [category coll]
+
+  (every?
+    (fn [[a b]]
+      (or
+        (not (composable-elements? category a b))
+        (contains? coll (category (list a b)))))
+    (cartesian-power coll 2)))
+
+(defn subcategory?
+  [category new-morphisms new-objects]
+
+  (let [quiv (underlying-unital-quiver category)]
+    (and
+      (unital-subquiver? quiv new-morphisms new-objects)
+      (compositionally-closed-set? category new-morphisms))))
+
+(defn enumerate-subcategories
+  [category]
+
+  (filter
+    (fn [[morphism-set object-set]]
+      (compositionally-closed-set? category morphism-set))
+    (unital-subquivers (underlying-unital-quiver category))))
+
+; Composition closure of subcategories
 (defn morphism-objects-set
   ([morphism]
    (set (list (source-object morphism) (target-object morphism))))
   ([category morphism]
    (set
      (list
-       ((.source category) morphism)
-       ((.target category) morphism)))))
+       (source-element category morphism)
+       (target-element category morphism)))))
 
-; Composition closure
 (defn composition-closure
   [category coll]
 
@@ -381,30 +362,10 @@
                             (partial morphism-objects-set category)
                             new-morphisms))
         all-objects (union new-objects induced-objects)
-        identities (set (map (.id category) all-objects))
+        identities (identity-morphisms-of category all-objects)
         composite-morphisms (composition-closure category new-morphisms)
         all-morphisms (union new-morphisms composite-morphisms identities)]
     [all-morphisms all-objects]))
-
-(defn subcategory?
-  [category new-morphisms new-objects]
-
-  (let [[all-morphisms all-objects] (subcategory-closure
-                                      category
-                                      [new-morphisms new-objects])]
-    (and
-      (= new-morphisms all-morphisms)
-      (= new-objects all-objects))))
-
-(defn enumerate-subcategories
-  [category]
-
-  (filter
-    (fn [[morphisms objects]]
-      (subcategory? category morphisms objects))
-    (seqable-cartesian-product
-      (seqable-power-set (.morphisms category))
-      (seqable-power-set (.objects category)))))
 
 (defmethod sub :locus.elementary.copresheaf.core.protocols/category
   [category]
@@ -420,29 +381,59 @@
       join-set-pairs)
     meet-set-pairs))
 
-; Adjoin composition to unital quivers
-(defmethod adjoin-composition UnitalQuiver
-  [quiv f]
+; Categorical congruences
+(defn compositional-congruence?
+  [category partition]
 
-  (Category.
-    (first-set quiv)
-    (second-set quiv)
-    (source-fn quiv)
-    (target-fn quiv)
-    f
-    (.id quiv)))
+  (let [current-map (partition->projection partition)
+        composability-partition (pn
+                                  (fn [[a b] [c d]]
+                                    (and
+                                      (= (current-map a) (current-map c))
+                                      (= (current-map b) (current-map d))))
+                                  (composability-relation category))]
+    (every?
+      (fn [equal-composites]
+        (equal-seq?
+          (map
+            (fn [pair]
+              (let [current-composite (category pair)]
+                (current-map current-composite)))
+            equal-composites)))
+      composability-partition)))
 
-; Construct a category from a quiver directly
-(defn extend-quiver
-  [quiv comp id]
+(defn compositional-congruences
+  [category]
 
-  (Category.
-    (first-set quiv)
-    (second-set quiv)
-    (source-fn quiv)
-    (target-fn quiv)
-    comp
-    id))
+  (filter
+    (fn [morphism-partition]
+      (compositional-congruence? category morphism-partition))
+    (enumerate-set-partitions (morphisms category))))
+
+(defn categorical-congruence?
+  [category morphism-partition object-partition]
+
+  (let [quiver (underlying-unital-quiver category)]
+    (and
+     (unital-quiver-congruence? quiver morphism-partition object-partition)
+     (compositional-congruence? category morphism-partition))))
+
+(defn categorical-congruences
+  [category]
+
+  (filter
+    (fn [[morphism-partition object-partition]]
+      (compositional-congruence? category morphism-partition))
+    (unital-quiver-congruences (underlying-unital-quiver category))))
+
+(defn categorical-congruences-relation
+  [category]
+
+  (set
+    (filter
+      (fn [[a b]]
+        (= a (meet-set-pair-congruences a b)))
+      (cartesian-power (set (categorical-congruences category)) 2))))
 
 ; We need a special piece of functionality for dealing with numeric quivers
 (defn numeric-quiver
@@ -619,30 +610,31 @@
   [category]
 
   (Category.
-    (coproduct
-      (morphisms category)
-      (morphisms category)
-      (morphisms category))
-    (coproduct
-      (objects category)
-      (objects category))
-    (fn [[i v]]
-      (case i
-        0 (list 0 (source-element category v))
-        1 (list 1 (source-element category v))
-        2 (list 0 (source-element category v))))
-    (fn [[i v]]
-      (case i
-        0 (list 0 (target-element category v))
-        1 (list 1 (target-element category v))
-        2 (list 1 (target-element category v))))
+    (UnitalQuiver.
+      (coproduct
+        (morphisms category)
+        (morphisms category)
+        (morphisms category))
+      (coproduct
+        (objects category)
+        (objects category))
+      (fn [[i v]]
+        (case i
+          0 (list 0 (source-element category v))
+          1 (list 1 (source-element category v))
+          2 (list 0 (source-element category v))))
+      (fn [[i v]]
+        (case i
+          0 (list 0 (target-element category v))
+          1 (list 1 (target-element category v))
+          2 (list 1 (target-element category v))))
+      (fn [[i v]]
+        (list i (identity-morphism-of category v))))
     (fn [[[i v] [j w]]]
       (cond
         (or (= i j 0) (= i j 1)) (list i (category (list v w)))
         (and (= i 2) (= j 0)) (list 2 (category (list v w)))
-        (and (= i 1) (= j 2)) (list 2 (category (list v w)))))
-    (fn [[i v]]
-      (list i (identity-morphism-of category v)))))
+        (and (= i 1) (= j 2)) (list 2 (category (list v w)))))))
 
 ; Special classes of categories
 (defn connected-category?
@@ -685,23 +677,23 @@
     (category? category)
     (= (count (objects category)) 4)))
 
-; Endotrivial categories
-(defn endotrivial-category?
+; Our ontology of categories is divided into the double-arrow free categories, for which given any
+; distinct A,B them Hom(A,B) has no more than one member and everything else. The double arrow free
+; categories include the most basic forms of categories: preorders and monoids. So they are the
+; simplest categories that we can start with.
+(defn double-arrow-free-category?
   [category]
 
   (and
     (category? category)
-    (every?
-      (fn [a]
-        (= 1 (quiver-hom-cardinality category a a)))
-      (objects category))))
-
-(defn connected-endotrivial-category?
-  [category]
-
-  (and
-    (endotrivial-category? category)
-    (<= (count (weak-connectivity (underlying-relation category))) 1)))
+    (let [coll (multiplicities-map (underlying-multirelation category))]
+      (every?
+        (fn [pair]
+          (let [[a b] pair]
+            (or
+              (= a b)
+              (<= (get coll pair) 1))))
+        coll))))
 
 ; Ontology of thin categories
 (defmethod thin-category? :locus.elementary.copresheaf.core.protocols/semigroupoid
@@ -768,91 +760,7 @@
     (thin-category? category)
     (four-regular-equivalence-relation? (underlying-relation category))))
 
-; Ontology of totally preordered categories without non-trivial endomorphisms
-(defn totally-preordered-endotrivial-category?
-  [category]
-
-  (and
-    (endotrivial-category? category)
-    (total-preorder? (underlying-relation category))))
-
-(defn totally-ordered-endotrivial-category?
-  [category]
-
-  (and
-    (endotrivial-category? category)
-    (total-order? (underlying-relation category))))
-
-(defn ordered-pair-endotrivial-category?
-  [category]
-
-  (and
-    (endotrivial-category? category)
-    (= (count (objects category)) 2)
-    (total-order? (underlying-relation category))))
-
-(defn ordered-triple-endotrivial-category?
-  [category]
-
-  (and
-    (endotrivial-category? category)
-    (= (count (objects category)) 3)
-    (total-order? (underlying-relation category))))
-
-(defn ordered-quadruple-endotrivial-category?
-  [category]
-
-  (and
-    (endotrivial-category? category)
-    (= (count (objects category)) 4)
-    (total-order? (underlying-relation category))))
-
-(defn n-arrow-category?
-  [category]
-
-  (and
-    ; check that the argument structure is indeed a category
-    (category? category)
-
-    ; every n arrow category has at most two objects
-    (= (count (objects category)) 2)
-
-    ; check that it also has a total order underneath it
-    (or
-      (discrete-category? category)
-      (total-order? (underlying-relation category)))
-
-    ; check that all endomorphism monoids are trivial
-    (endotrivial-category? category)))
-
-(defn one-arrow-category?
-  [category]
-
-  (and
-    (n-arrow-category? category)
-    (= (count (morphisms category)) 3)))
-
-(defn two-arrow-category?
-  [category]
-
-  (and
-    (n-arrow-category? category)
-    (= (count (morphisms category)) 4)))
-
-(defn three-arrow-category?
-  [category]
-
-  (and
-    (n-arrow-category? category)
-    (= (count (morphisms category)) 5)))
-
-(defn four-arrow-category?
-  [category]
-
-  (and
-    (n-arrow-category? category)
-    (= (count (morphisms category)) 6)))
-
+; Total preorders
 (defn total-order-category?
   [category]
 
@@ -974,6 +882,7 @@
             (= (count (first ranking)) 1)
             (= (count (last ranking)) 1)))))))
 
+; Collections of diamond copresheaves
 (defn n-diamond-category?
   [category]
 
@@ -985,7 +894,7 @@
           (diamond-relation? component))
         (weakly-connected-components rel)))))
 
-; An attempt at describing cube categories
+; Cubes are the product of the ordered pair with diamonds
 (defn cube-category?
   [category]
 
@@ -994,14 +903,7 @@
     (= (count (objects category)) 8)
     (boolean-algebra-relation? (underlying-relation category))))
 
-; Special types of endotrivial categories
-(defn skeletal-endotrivial-category?
-  [category]
-
-  (and
-    (endotrivial-category? category)
-    (antisymmetric? (underlying-relation category))))
-
+; A general theory of skeletal thin categories
 (defn skeletal-thin-category?
   [category]
 
@@ -1035,6 +937,117 @@
   (and
     (groupoid? category)
     (coproduct-of-monoids? category)))
+
+; Endotrivial categories
+(defn endotrivial-category?
+  [category]
+
+  (and
+    (category? category)
+    (every?
+      (fn [a]
+        (= 1 (quiver-hom-cardinality category a a)))
+      (objects category))))
+
+(defn connected-endotrivial-category?
+  [category]
+
+  (and
+    (endotrivial-category? category)
+    (<= (count (weak-connectivity (underlying-relation category))) 1)))
+
+; Ontology of totally preordered categories without non-trivial endomorphisms
+(defn totally-preordered-endotrivial-category?
+  [category]
+
+  (and
+    (endotrivial-category? category)
+    (total-preorder? (underlying-relation category))))
+
+(defn totally-ordered-endotrivial-category?
+  [category]
+
+  (and
+    (endotrivial-category? category)
+    (total-order? (underlying-relation category))))
+
+(defn ordered-pair-endotrivial-category?
+  [category]
+
+  (and
+    (endotrivial-category? category)
+    (= (count (objects category)) 2)
+    (total-order? (underlying-relation category))))
+
+(defn ordered-triple-endotrivial-category?
+  [category]
+
+  (and
+    (endotrivial-category? category)
+    (= (count (objects category)) 3)
+    (total-order? (underlying-relation category))))
+
+(defn ordered-quadruple-endotrivial-category?
+  [category]
+
+  (and
+    (endotrivial-category? category)
+    (= (count (objects category)) 4)
+    (total-order? (underlying-relation category))))
+
+(defn n-arrow-category?
+  [category]
+
+  (and
+    ; check that the argument structure is indeed a category
+    (category? category)
+
+    ; every n arrow category has at most two objects
+    (= (count (objects category)) 2)
+
+    ; check that it also has a total order underneath it
+    (or
+      (discrete-category? category)
+      (total-order? (underlying-relation category)))
+
+    ; check that all endomorphism monoids are trivial
+    (endotrivial-category? category)))
+
+(defn one-arrow-category?
+  [category]
+
+  (and
+    (n-arrow-category? category)
+    (= (count (morphisms category)) 3)))
+
+(defn two-arrow-category?
+  [category]
+
+  (and
+    (n-arrow-category? category)
+    (= (count (morphisms category)) 4)))
+
+(defn three-arrow-category?
+  [category]
+
+  (and
+    (n-arrow-category? category)
+    (= (count (morphisms category)) 5)))
+
+(defn four-arrow-category?
+  [category]
+
+  (and
+    (n-arrow-category? category)
+    (= (count (morphisms category)) 6)))
+
+; Skeletal endotrivial categories
+(defn skeletal-endotrivial-category?
+  [category]
+
+  (and
+    (endotrivial-category? category)
+    (antisymmetric? (underlying-relation category))))
 
 ; Special classes of categories
 (defmethod groupoid? :locus.elementary.copresheaf.core.protocols/semigroupoid

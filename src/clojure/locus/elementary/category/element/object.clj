@@ -10,7 +10,9 @@
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.lattice.core.object :refer :all]
             [locus.elementary.semigroup.monoid.end :refer :all]
-            [locus.elementary.group.core.aut :refer :all])
+            [locus.elementary.group.core.aut :refer :all]
+            [locus.elementary.quiver.core.object :refer :all]
+            [locus.elementary.quiver.unital.object :refer :all])
   (:import (locus.elementary.category.core.object Category)))
 
 ; Elements of categories
@@ -122,29 +124,29 @@
 (defn source-object-element
   [morphism]
 
-  ((.source (.category morphism)) morphism))
+  (source-element (parent morphism) morphism))
 
 (defn target-object-element
   [morphism]
 
-  ((.target (.category morphism)) morphism))
+  (target-element (parent morphism) morphism))
 
 ; Composition and identities in arbitrary categories
 (defmethod compose* CategoryMorphism
   [a b]
 
   (->CategoryMorphism
-    (.category a)
-    ((.func (.category a))
+    (parent a)
+    ((parent a)
      (list (.morphism a) (.morphism b)))))
 
 (defmethod identity-morphism CategoryObject
   [obj]
 
-  (let [c (.category obj)]
+  (let [c (parent obj)]
     (CategoryMorphism.
       c
-      ((.id ^Category c) (.object obj)))))
+      (identity-morphism-of c (.object obj)))))
 
 ; Enumeration of automorphisms and endomorphisms
 (defn composable-morphisms?
@@ -167,12 +169,12 @@
 (defn identity-morphism?
   [morphism]
 
-  (let [category (.category morphism)
+  (let [category (parent morphism)
         source (source-object morphism)
         target (target-object morphism)]
     (and
       (= source target)
-      (= (.morphism morphism) ((.id ^Category category) source)))))
+      (= (.morphism morphism) (identity-morphism-of category source)))))
 
 (defn inverses?
   [a b]
@@ -190,7 +192,7 @@
     (every?
       (fn [i]
         (not (inverses? morphism i)))
-      (category-morphisms (.category morphism)))))
+      (category-morphisms (parent morphism)))))
 
 (def automorphism?
   (intersection
@@ -208,7 +210,7 @@
         (= (source-object-element i)
            (target-object-element i)
            (.object ob)))
-      (category-morphisms (.category ob)))))
+      (category-morphisms (parent ob)))))
 
 (defn enumerate-automorphisms
   [ob]
@@ -221,7 +223,7 @@
           (= (source-object-element i)
              (target-object-element i)
              (.object ob))))
-      (category-morphisms (.category ob)))))
+      (category-morphisms (parent ob)))))
 
 (defmethod end CategoryObject
   [obj]

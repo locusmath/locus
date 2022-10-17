@@ -13,6 +13,8 @@
             [locus.elementary.category.core.natural-transformation :refer :all]
             [locus.elementary.category.relation.set-relation :refer :all]
             [locus.elementary.order.core.object :refer :all]
+            [locus.module.core.object :refer :all]
+            [locus.module.core.morphism :refer :all]
             [locus.semimodule.core.object :refer :all]
             [locus.semimodule.core.morphism :refer :all]))
 

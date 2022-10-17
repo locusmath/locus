@@ -5,7 +5,7 @@
             [locus.base.function.core.object :refer :all])
   (:import (locus.base.function.core.object SetFunction)))
 
-; Ontology of structured copresheaves
+; Ontology of structure copresheaves
 ; Every single object in our ontology can be considered in terms of some kind of underlying
 ; copresheaf: such as a set, diset, function, or difunction.
 
@@ -25,34 +25,76 @@
 (derive ::bijection ::structured-bijection)
 
 ; Ontology of structured quivers
-(derive ::ternary-quiver ::structured-diset)
-(derive ::thin-ternary-quiver ::ternary-quiver)
-(derive ::at-quiver ::thin-ternary-quiver)
-
 (derive ::structured-quiver ::structured-diset)
 (derive ::structured-unital-quiver ::structured-quiver)
 (derive ::structured-permutable-quiver ::structured-quiver)
 (derive ::structured-dependency-quiver ::structured-unital-quiver)
 (derive ::structured-dependency-quiver ::structured-permutable-quiver)
 
-(derive ::structured-semigroupoid ::structured-quiver)
+; Ontology of structured ternary quivers
+(derive ::ternary-quiver ::structured-diset)
+(derive ::thin-ternary-quiver ::ternary-quiver)
+(derive ::at-quiver ::thin-ternary-quiver)
+
+; Ontology of morphisms of disets
+(derive ::structured-difunction :locus.base.logic.structure.protocols/structured-function)
+(derive ::difunction ::structured-difunction)
+
+; Ontology of morphisms of functions
+(derive ::diamond ::structured-difunction)
+
+; Ontology of morphisms of bijections
+(derive ::gem ::structured-difunction)
+
+; Ontology of morphisms of quivers
+(derive ::morphism-of-structured-quivers ::structured-difunction)
+(derive ::morphism-of-structured-unital-quivers ::morphism-of-structured-quivers)
+(derive ::morphism-of-structured-permutable-quivers ::morphism-of-structured-quivers)
+(derive ::morphism-of-structured-dependency-quivers ::morphism-of-structured-unital-quivers)
+(derive ::morphism-of-structured-dependency-quivers ::morphism-of-structured-permutable-quivers)
+
+; Ontology of morphisms of ternary quivers
+(derive ::morphism-of-ternary-quivers ::structured-difunction)
+(derive ::morphism-of-at-quivers ::morphism-of-ternary-quivers)
+
+; Ontology of compositional quivers
+(derive ::structured-partial-magmoid ::structured-quiver)
+(derive ::structured-magmoid ::structured-partial-magmoid)
+(derive ::structured-semigroupoid ::structured-magmoid)
 (derive ::structured-category ::structured-semigroupoid)
 (derive ::structured-category ::structured-unital-quiver)
-(derive ::structured-groupoid ::structured-category)
-(derive ::structured-groupoid ::structured-dependency-quiver)
 
+(derive ::partial-magmoid ::structured-partial-magmoid)
+(derive ::magmoid ::structured-magmoid)
 (derive ::semigroupoid ::structured-semigroupoid)
 (derive ::category ::structured-category)
-(derive ::groupoid ::structured-groupoid)
+(derive ::groupoid ::structured-dependency-quiver)
+(derive ::unital-magmoid ::structured-unital-quiver)
+
+(derive ::magmoid ::partial-magmoid)
+(derive ::thin-partial-magmoid ::partial-magmoid)
+(derive ::thin-semigroupoid ::thin-partial-magmoid)
+(derive ::partial-magma ::partial-magmoid)
+(derive ::magma ::partial-magma)
+(derive ::partial-semigroup ::partial-magma)
+(derive ::semigroup ::partial-semigroup)
+
+(derive ::unital-magmoid ::magmoid)
+(derive ::semigroupoid ::magmoid)
 (derive ::category ::semigroupoid)
+(derive ::category ::unital-magmoid)
 (derive ::groupoid ::category)
 
+(derive ::magma ::magmoid)
+(derive ::unital-magma ::unital-magmoid)
+(derive ::unital-magma ::magma)
 (derive ::semigroup ::semigroupoid)
-(derive ::monoid ::semigroup)
+(derive ::semigroup ::magma)
 (derive ::monoid ::category)
+(derive ::monoid ::semigroup)
+(derive ::monoid ::unital-magma)
 (derive ::group ::groupoid)
 (derive ::group ::monoid)
-
 (derive ::group-with-zero ::monoid)
 
 (derive ::thin-semigroupoid ::semigroupoid)
@@ -60,10 +102,10 @@
 (derive ::thin-category ::category)
 (derive ::thin-groupoid ::groupoid)
 (derive ::thin-groupoid ::thin-category)
-
 (derive ::thin-skeletal-category ::thin-category)
 (derive ::lattice ::thin-skeletal-category)
 
+; Concrete compositional quivers
 (derive ::concrete-semigroupoid ::semigroupoid)
 (derive ::concrete-category ::category)
 (derive ::concrete-groupoid ::groupoid)
@@ -79,20 +121,15 @@
 (derive ::concrete-group ::concrete-monoid)
 (derive ::concrete-group ::concrete-groupoid)
 
-; Ontology of structured difunctions
-(derive ::structured-difunction :locus.base.logic.structure.protocols/structured-function)
-(derive ::difunction ::structured-difunction)
+; Ontology of morphisms of compositional quivers
+(derive ::partial-magmoid-homomorphism ::morphism-of-structured-quivers)
+(derive ::magmoid-homomorphism ::partial-magmoid-homomorphism)
+(derive ::partial-magma-homomorphism ::partial-magmoid-homomorphism)
+(derive ::magma-homomorphism ::partial-magma-homomorphism)
 
-(derive ::diamond ::structured-difunction)
-(derive ::gem ::structured-difunction)
+(derive ::semigroup-homomorphism ::magma-homomorphism)
+(derive ::semifunctor ::magmoid-homomorphism)
 
-(derive ::morphism-of-structured-quivers ::structured-difunction)
-(derive ::morphism-of-structured-unital-quivers ::morphism-of-structured-quivers)
-(derive ::morphism-of-structured-permutable-quivers ::morphism-of-structured-quivers)
-(derive ::morphism-of-structured-dependency-quivers ::morphism-of-structured-unital-quivers)
-(derive ::morphism-of-structured-dependency-quivers ::morphism-of-structured-permutable-quivers)
-
-(derive ::semifunctor ::morphism-of-structured-quivers)
 (derive ::functor ::semifunctor)
 (derive ::functor ::morphism-of-structured-unital-quivers)
 (derive ::groupoid-functor ::functor)
@@ -197,6 +234,21 @@
 (defn objects
   [quiv] (second-set quiv))
 
+; General mechanisms for copresheaves and other functors to be used in category theory
+; Whenever we define a functor it should generally be applicable to either objects and
+; morphisms and it should be constructed from a difunction which is a pair consisting
+; of a morphism function and an object function that can be applied to these respective
+; categorical elements.
+(defn object-apply
+  [functor obj]
+
+  ((second-function functor) obj))
+
+(defn morphism-apply
+  [functor morphism]
+
+  ((first-function functor) morphism))
+
 ; Let C be a category, then C is naturally associated with some generating set of morphisms
 ; upon which all the morphisms of C can be described. In particular, in order to define a copresheaf
 ; over C it is sufficient to define it first over its generating set. An example of in action is
@@ -220,6 +272,12 @@
 
 ; Adjoin composition to various types of quivers
 (defmulti adjoin-composition (fn [quiv f] (type quiv)))
+
+; The paths of a category include all elements of its composition domain
+(defmulti paths type)
+
+(defmethod paths :locus.elementary.copresheaf.core.protocols/partial-magmoid
+  [magmoid] (inputs magmoid))
 
 ; Structured disets
 (defmulti structured-diset? type)
@@ -252,31 +310,38 @@
 (defmethod structured-dependency-quiver? :default
   [x] (isa? (type x) ::structured-dependency-quiver))
 
-; Structured semigroupoids
-(defmulti lattice? type)
+; Ontology of compositional quivers
+(defmulti partial-magmoid? type)
 
-(defmethod lattice? :default
-  [x] (isa? (type x) ::lattice))
+(defmethod partial-magmoid? ::partial-magmoid
+  [obj] true)
 
-(defmulti thin-category? type)
+(defmethod partial-magmoid? :default
+  [obj] false)
 
-(defmethod thin-category? :default
-  [x] (isa? (type x) ::thin-category))
+(defmulti magmoid? type)
 
-(defmulti thin-groupoid? type)
+(defmethod magmoid? ::magmoid
+  [obj] true)
 
-(defmethod thin-groupoid? :default
-  [x] (isa? (type x) ::thin-groupoid))
+(defmethod magmoid? :default
+  [obj] false)
 
 (defmulti semigroupoid? type)
 
+(defmethod semigroupoid? ::semigroupoid
+  [obj] true)
+
 (defmethod semigroupoid? :default
-  [x] (isa? (type x) ::semigroupoid))
+  [obj] false)
 
 (defmulti category? type)
 
+(defmethod category? ::category
+  [x] true)
+
 (defmethod category? :default
-  [x] (isa? (type x) ::category))
+  [x] false)
 
 (defmulti groupoid? type)
 
@@ -288,6 +353,31 @@
 (defmethod concrete-category? :default
   [x] (isa? (type x) ::category))
 
+(defmulti thin-partial-magmoid? type)
+
+(defmethod thin-partial-magmoid? :default
+  [x] (isa? (type x) ::thin-partial-magmoid))
+
+(defmulti thin-semigroupoid? type)
+
+(defmethod thin-semigroupoid? :default
+  [x] (isa? (type x) ::thin-semigroupoid))
+
+(defmulti thin-category? type)
+
+(defmethod thin-category? :default
+  [x] (isa? (type x) ::thin-category))
+
+(defmulti thin-groupoid? type)
+
+(defmethod thin-groupoid? :default
+  [x] (isa? (type x) ::thin-groupoid))
+
+(defmulti lattice? type)
+
+(defmethod lattice? :default
+  [x] (isa? (type x) ::lattice))
+
 ; In addition to our basic ontology of categories and groupoids, we need to construct
 ; an additional ontology of functors, semifunctors, and groupoid homomorphisms. These
 ; are morphisms in the corresponding categories of structures.
@@ -295,6 +385,16 @@
 
 (defmethod structured-difunction? :default
   [x] (isa? (type x) ::structured-difunction))
+
+(defmulti partial-magmoid-homomorphism? type)
+
+(defmethod partial-magmoid-homomorphism? :default
+  [x] (isa? (type x) ::partial-magmoid-homomorphism))
+
+(defmulti magmoid-homomorphism? type)
+
+(defmethod magmoid-homomorphism? :default
+  [x] (isa? (type x) ::magmoid-homomorphism))
 
 (defmulti semifunctor? type)
 
@@ -316,8 +416,13 @@
 ; of the set F(X). The sections of a copresheaf are the elements of their underlying set, in our
 ; interpretation which takes copresheaves to be members of concrete topoi.
 (defprotocol SectionElement
-  (tag [this])
-  (member [this]))
+  "A protocol for defining sections of a copresheaf, which are elements x in F(o) for
+  some object o in the category C for a copreshef topos Sets^C."
+
+  (tag [this]
+    "The containing object of the category that produces this section.")
+  (member [this]
+    "The member of the set produced by the copresheaf over this object."))
 
 ; Generate copresheaf data that can be used for visualisation routines
 (defn generate-copresheaf-data
@@ -337,17 +442,6 @@
                   (list t (func input))))
               (inputs func))))
         morphism-triples))))
-
-; General mechanisms for copresheaves and other functors to be used in category theory
-(defn object-apply
-  [functor obj]
-
-  ((second-function functor) obj))
-
-(defn morphism-apply
-  [functor morphism]
-
-  ((first-function functor) morphism))
 
 ; Relational theory of dependency copresheaves
 (defn relation-transition-map
@@ -374,3 +468,45 @@
 ; Display tables of semigroups, magmas, partial magmas, groups, categories, semicategories,
 ; groupoids, magmoids, or any other table like algebraic structure.
 (defmulti display-table type)
+
+(defn ^{:private true} display-table-by-parts*
+  [potential-domain actual-domain vertices op]
+
+  (let [n (count vertices)
+        elems (vec (seq vertices))
+        coll (into
+               {}
+               (map
+                 (fn [[a b]]
+                   (let [i (.indexOf elems a)
+                         j (.indexOf elems b)
+                         k (.indexOf elems (op (list a b)))]
+                     [[i j] k]))
+                 actual-domain))
+        rel (set (keys coll))
+        indices (range n)
+        table (map
+                (fn [i]
+                  (map
+                    (fn [j]
+                      (if (contains? rel [i j])
+                        (str (get coll [i j]))
+                        (if (contains? potential-domain [(nth elems i) (nth elems j)])
+                          "■"
+                          "■")))
+                    indices))
+                indices)]
+    (doseq [i table]
+      (println (apply str (interpose " " i))))))
+
+(defmethod display-table :locus.base.logic.structure.protocols/set-function
+  [func]
+
+  (let [coll (set (inputs func))]
+    (display-table-by-parts* coll coll (set (outputs func)) func)))
+
+(defmethod display-table ::partial-magmoid
+  [magmoid]
+
+  (display-table (underlying-function magmoid)))
+
