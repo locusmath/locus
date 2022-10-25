@@ -41,7 +41,7 @@ Locus is based upon the idea of organizing mathematical theories using presheaf 
 * interfaces with apache commons math
 
 ## Geometric philosophy
-Topos theory can be used to study either the spatial locations in geometry or the memory locations used in computation. Topos theory is a unifying theory of geometry and computation.
+Topos theory can be used to study either the spatial locations in geometry or the memory locations used in computation.
 
 ## Documentation 
 A user manual is provided in the documentation folder. It describes our original research into the topos theoretic foundations of computation and their implementation.
