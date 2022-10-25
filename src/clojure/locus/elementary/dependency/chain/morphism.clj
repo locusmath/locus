@@ -10,7 +10,13 @@
   (:import (locus.base.function.core.object SetFunction)
            (locus.elementary.dependency.chain.object ChainCopresheaf)))
 
-; Let Sets^{T_n} be the topos of copresheaves over a total order T_n.
+; Let Sets^{T_n} be the topos of copresheaves over a total order T_n. Then a morphism in this
+; topos is called a morphism of chains. This file exists to support the implementation
+; of methods related to objects of this topos. In particular, morphisms in Sets^{T_n} are
+; themselves treated as types of presheaves in the topos Sets^{T_2 x T_n} so that they
+; have all attendant presheaf-theoretic properties and functionality associated with
+; them such as products, coproducts, subobjects, quotients, and so on.
+
 (deftype ChainMorphism [source-chain target-chain funcs]
   AbstractMorphism
   (source-object [this]
@@ -18,8 +24,8 @@
   (target-object [this]
     target-chain))
 
-; Get the component functions of the morphism of chain copresheaves as a natural transformation
-(defn nth-chain-morphism-component-function
+; Component functions of a morphism of chain copresheaves
+(defn chain-morphism-component-function
   [^ChainMorphism morphism, i]
 
   (->SetFunction
@@ -27,18 +33,36 @@
     (nth-set-from-source (target-object morphism) i)
     (nth (.-funcs morphism) i)))
 
+; Components of morphisms of chain copresheaves
+(defmethod get-set ChainMorphism
+  [morphism [i v]]
+
+  (case i
+    0 (get-set (source-object morphism) v)
+    1 (get-set (target-object morphism) v)))
+
+(defmethod get-function ChainMorphism
+  [morphism [[i v] [j w]]]
+
+  (case [i j]
+    [0 0] (get-function (source-object morphism) [v w])
+    [1 1] (get-function (target-object morphism) [v w])
+    [0 1] (compose
+            (get-function (target-object morphism) [v w])
+            (chain-morphism-component-function morphism v))))
+
 ; Composition and identities in the topos of chain copresheaves
 (defmethod compose* ChainMorphism
   [^ChainMorphism a, ^ChainMorphism b]
 
   (let [n (count (.-funcs a))]
     (ChainMorphism.
-     (source-object b)
-     (target-object a)
-     (map
-       (fn [i]
-         (compose (nth (.-funcs a) i) (nth (.-funcs b) i)))
-       (range n)))))
+      (source-object b)
+      (target-object a)
+      (map
+        (fn [i]
+          (compose (nth (.-funcs a) i) (nth (.-funcs b) i)))
+        (range n)))))
 
 (defmethod identity-morphism ChainCopresheaf
   [^ChainCopresheaf chain]
@@ -54,17 +78,17 @@
 
   (let [n (inc (count (composition-sequence (first args))))]
     (->ChainMorphism
-     (apply product (map source-object args))
-     (apply product (map target-object args))
-     (map
-       (fn [i]
-         (apply
-           product
-           (map
-             (fn [arg]
-               (nth-chain-morphism-component-function arg i))
-             args)))
-       (range n)))))
+      (apply product (map source-object args))
+      (apply product (map target-object args))
+      (map
+        (fn [i]
+          (apply
+            product
+            (map
+              (fn [arg]
+                (chain-morphism-component-function arg i))
+              args)))
+        (range n)))))
 
 (defmethod coproduct ChainMorphism
   [& args]
@@ -79,7 +103,7 @@
             coproduct
             (map
               (fn [arg]
-                (nth-chain-morphism-component-function arg i))
+                (chain-morphism-component-function arg i))
               args)))
         (range n)))))
 

@@ -52,6 +52,14 @@
     (order-element? elem)
     (empty? (proper-successor-objects (underlying-quiver (parent elem)) (unwrap elem)))))
 
+(defn enclosed-order-element?
+  [elem]
+
+  (and
+    (order-element? elem)
+    (not (minimal-order-element? elem))
+    (not (maximal-order-element? elem))))
+
 (def isolated-order-element?
   (intersection
     minimal-order-element?

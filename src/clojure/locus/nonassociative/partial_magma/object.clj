@@ -14,7 +14,8 @@
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.two-quiver.core.object :refer :all]
             [locus.elementary.two-quiver.path.object :refer :all])
-  (:import (locus.base.function.core.object SetFunction)))
+  (:import (locus.base.function.core.object SetFunction)
+           (clojure.lang IPersistentMap)))
 
 ; A partial magma is a copresheaf in the topos of ternary quivers. Its morphism set is the set
 ; of ordered pairs R, and its objects are the underlying set of the partial magma as a
@@ -55,6 +56,12 @@
 
   (singular-relational-path-quiver (morphisms magma) (paths magma) #{0}))
 
+; Create a domain quiver from a partial magma
+(defn domain-quiver
+  [^PartialMagma magma]
+
+  (relational-quiver (morphisms magma) (paths magma)))
+
 ; Get the composition operation of a category or other magmoid as a partial operation
 (defn composition-operation
   [magmoid]
@@ -69,6 +76,21 @@
   [magmoid a b]
 
   ((inputs magmoid) (list a b)))
+
+; Check for the existence of iterations in a partial magmoa
+(defn iteration-exists?
+  [magmoid a]
+
+  (composition-exists? magmoid a a))
+
+(defn iteration-existent-elements
+  [magmoid]
+
+  (set
+    (filter
+      (fn [morphism]
+        (iteration-exists? magmoid morphism))
+      (morphisms magmoid))))
 
 ; Create a partial operation describing the composition of ordered pairs
 (defn transition-partial-magma
@@ -93,6 +115,11 @@
     (inputs func)
     (.func func)))
 
+(defmethod to-partial-magma IPersistentMap
+  [coll]
+
+  (to-partial-magma (mapfn coll)))
+
 ; Products and coproducts in the category of partial magmas
 (defmethod product PartialMagma
   [& magmas]
@@ -106,6 +133,16 @@
           (magmoid (list (nth morphisms1 i) (nth morphisms2 i))))
         magmas))))
 
+; Coproducts of partial magmas as partial algebras instead of single object partial magmoids
+(defn sum-partial-magma
+  [& magmas]
+
+  (PartialMagma.
+    (apply coproduct (map morphisms magmas))
+    (apply sum-relation (map paths magmas))
+    (fn [[[i a] [j b]]]
+      (list i ((nth magmas i) (list a b))))))
+
 ; Duals of partial magmas
 (defmethod dual PartialMagma
   [magma]
@@ -116,14 +153,6 @@
     (comp magma reverse)))
 
 ; Subobjects of partial magmas
-(defn partial-submagma?
-  [magma new-domain coll]
-
-  (every?
-    (fn [[a b]]
-      (contains? coll (magma (list a b))))
-    new-domain))
-
 (defn partial-submagma
   [magma new-domain new-coll]
 
@@ -149,10 +178,28 @@
                         (inputs magma)))]
     (partial-submagma magma full-domain new-coll)))
 
+; Test for partial submagmas
+(defn partial-submagma?
+  [magma new-domain coll]
+
+  (every?
+    (fn [[a b]]
+      (contains? coll (magma (list a b))))
+    new-domain))
+
 (defn domain-full-partial-submagma?
   [magma new-morphisms]
 
   (compositionally-closed-set? magma new-morphisms))
+
+(defn domain-full-partial-submagmas
+  [magma]
+
+  (set
+    (filter
+      (fn [coll]
+        (domain-full-partial-submagma? magma coll))
+      (power-set (morphisms magma)))))
 
 ; Congruences in the topos of ternary quivers for partial magmas
 (defn partial-magma-congruence?
@@ -192,6 +239,21 @@
 
 (defmethod partial-magma? :default
   [obj] false)
+
+; A domain coreflexive partial magma is like a function
+(defn domain-coreflexive-partial-magma?
+  [obj]
+
+  (and
+    (partial-magma? obj)
+    (coreflexive? (inputs obj))))
+
+(defn domain-irreflexive-partial-magma?
+  [obj]
+
+  (and
+    (partial-magma? obj)
+    (irreflexive? (inputs obj))))
 
 ; Idempotentence in the context of partial magmas
 (defn idempotent-partial-magma?

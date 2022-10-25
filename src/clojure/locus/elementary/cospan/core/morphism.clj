@@ -14,7 +14,11 @@
 
 ; Morphisms in the topos of cospan copresheaves Sets^[2,1]
 ; Morphisms of cospans have three components: a first source function, a second source function,
-; and a target function. Together they make up the components of a natural transformation.
+; and a target function. Together they make up the components of a natural transformation. A
+; morphism of cospans can also be treated as a copresheaf in the topos Sets^{T_2 x [2,1]} so
+; it has all attendant presheaf theoretic properties associated with it such as subobjects,
+; quotients, products, and coproducts.
+
 (deftype MorphismOfCospans [source-cospan target-cospan afn bfn cfn]
   AbstractMorphism
   (source-object [this]
@@ -40,7 +44,7 @@
 
 (derive MorphismOfCospans :locus.base.logic.structure.protocols/structured-function)
 
-; Component functions
+; Component arrows
 (defn first-cospan-source-function
   [^MorphismOfCospans morphism]
 
@@ -64,6 +68,43 @@
     (cospan-target (source-object morphism))
     (cospan-target (target-object morphism))
     (.-cfn morphism)))
+
+(defn cospan-morphism-component-function
+  [cospan x]
+
+  (case x
+    0 (first-cospan-source-function cospan)
+    1 (second-cospan-source-function cospan)
+    2 (cospan-target-function cospan)))
+
+; Components of cospans
+(defmethod get-set MorphismOfCospans
+  [morphism [i v]]
+
+  (case i
+    0 (get-set (source-object morphism) v)
+    1 (get-set (target-object morphism) v)))
+
+(defmethod get-function MorphismOfCospans
+  [morphism [[i v] [j w]]]
+
+  (case [i j]
+    [0 0] (get-function (source-object morphism) [v w])
+    [1 1] (get-function (target-object morphism) [v w])
+    [0 1] (compose
+            (get-function (target-object morphism) [v w])
+            (cospan-morphism-component-function morphism v))))
+
+; Inclusions of cospan copresheaves
+(defn inclusion-of-cospans
+  [cospan new-first-source new-second-source new-target]
+
+  (MorphismOfCospans.
+    (subcospan cospan new-first-source new-second-source new-target)
+    cospan
+    (inclusion-function new-first-source (first-cospan-source cospan))
+    (inclusion-function new-second-source (second-cospan-source cospan))
+    (inclusion-function new-target (cospan-target cospan))))
 
 ; Composition and identities in the topos of cospan copresheaves
 (defmethod compose* MorphismOfCospans

@@ -153,20 +153,6 @@
             (list (inc i) i)})
         (range 0 (* 2 n) 2)))))
 
-(defn nth-span-order
-  [n]
-
-  (relational-poset
-    (weak-order
-      [#{0} (set (range 1 (inc n)))])))
-
-(defn nth-cospan-order
-  [n]
-
-  (relational-poset
-    (weak-order
-      [(set (range 1 (inc n))) #{0}])))
-
 (defn nth-higher-diamond-order
   [n]
 

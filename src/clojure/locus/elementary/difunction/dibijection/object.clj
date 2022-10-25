@@ -59,6 +59,29 @@
 
 (derive Dibijection :locus.elementary.copresheaf.core.protocols/structured-difunction)
 
+; Components of dibijections
+(defmethod get-set Dibijection
+  [dibijection [i v]]
+
+  (case [i v]
+    [0 0] (first-set (source-object dibijection))
+    [0 1] (second-set (source-object dibijection))
+    [1 0] (first-set (target-object dibijection))
+    [1 1] (second-set (target-object dibijection))))
+
+(defmethod get-function Dibijection
+  [dibijection [[i v] [j w]]]
+
+  (case [[i v] [j w]]
+    [[0 0] [0 0]] (identity-function (first-set (source-object dibijection)))
+    [[0 1] [0 1]] (identity-function (second-set (source-object dibijection)))
+    [[1 0] [1 0]] (identity-function (first-set (target-object dibijection)))
+    [[1 1] [1 1]] (identity-function (second-set (target-object dibijection)))
+    [[0 0] [1 0]] (first-function dibijection)
+    [[0 1] [1 1]] (second-function dibijection)
+    [[1 0] [0 0]] (underlying-function (inv (first-bijection dibijection)))
+    [[1 1] [0 1]] (underlying-function (inv (second-bijection dibijection)))))
+
 ; Convert a dibijection into a pair of invertible functions
 (defmethod to-difunction Dibijection
   [^Dibijection func]
@@ -150,6 +173,28 @@
 
   (apply dibijection-coproduct dibijections))
 
+; Subobjects in the topos of dibijections
+(defn subdibijection
+  [dibijection [a c] [b d]]
+
+  (Dibijection.
+    (subbijection (first-bijection dibijection) a b)
+    (subbijection (second-bijection dibijection) c d)))
+
+(defn restrict-first-bijection
+  [dibjection coll]
+
+  (Dibijection.
+    (restrict-bijection (first-bijection dibijection) coll)
+    (second-bijection dibijection)))
+
+(defn restrict-second-bijection
+  [dibijection coll]
+
+  (Dibijection.
+    (first-bijection dibijection)
+    (restrict-bijection (second-bijection dibijection) coll)))
+
 ; Subalgebras in the topos of dibijections
 (defn subdibijection?
   [dibijection [a c] [b d]]
@@ -158,12 +203,13 @@
     (bijection-subobject? (first-bijection dibijection) a b)
     (bijection-subobject? (second-bijection dibijection) c d)))
 
-(defn subdibijection
+; Quotients in the topos of dibijections
+(defn quotient-dibijection
   [dibijection [a c] [b d]]
 
   (Dibijection.
-    (subbijection (first-bijection dibijection) a b)
-    (subbijection (second-bijection dibijection) c d)))
+    (quotient-bijection (first-bijection dibijection) a b)
+    (quotient-bijection (second-bijection dibijection) c d)))
 
 ; Quotients in the topos of dibijections
 (defn dibijection-congruence?
@@ -173,18 +219,25 @@
     (bijection-congruence? (first-bijection dibijection) a b)
     (bijection-congruence? (second-bijection dibijection) c d)))
 
-(defn quotient-dibijection
-  [dibijection [a c] [b d]]
-
-  (Dibijection.
-    (quotient-bijection (first-bijection dibijection) a b)
-    (quotient-bijection (second-bijection dibijection) c d)))
-
 ; Ontology of dibijections
 (defn dibijection?
   [func]
 
   (= (type func) Dibijection))
+
+(defn first-identity-dibijection?
+  [func]
+
+  (and
+    (dibijection? func)
+    (identity-bijection? (first-bijection dibijection))))
+
+(defn second-identity-dibijection?
+  [func]
+
+  (and
+    (dibijection? func)
+    (identity-bijection? (second-bijection dibijection))))
 
 (defn identity-dibijection?
   [func]
@@ -193,3 +246,11 @@
     (dibijection? func)
     (identity-bijection? (first-bijection func))
     (identity-bijection? (second-bijection func))))
+
+(defn equal-dibijection?
+  [func]
+
+  (and
+    (dibijection? func)
+    (equal-bijections? (first-bijection func) (second-bijection func))))
+

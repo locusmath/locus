@@ -89,19 +89,15 @@
 (defn morphism-of-join-functions
   [morphism]
 
-  (let [sf (underlying-function morphism)]
-    (Diamond.
-     (join-function (source-object morphism))
-     (join-function (target-object morphism))
-     (function-product sf sf)
-     sf)))
+  (morphism-of-binary-operations
+    (join-function (source-object morphism))
+    (join-function (target-object morphism))
+    (underlying-function morphism)))
 
 (defn morphism-of-meet-functions
   [morphism]
 
-  (let [sf (underlying-function morphism)]
-    (Diamond.
-      (meet-function (source-object morphism))
-      (meet-function (target-object morphism))
-      (function-product sf sf)
-      sf)))
+  (morphism-of-binary-operations
+    (meet-function (source-object morphism))
+    (meet-function (target-object morphism))
+    (underlying-function morphism)))

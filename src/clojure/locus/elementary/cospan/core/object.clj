@@ -4,6 +4,7 @@
             [locus.base.sequence.core.object :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
+            [locus.base.partition.core.setpart :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
@@ -19,34 +20,6 @@
     (->CartesianCoproduct [a b c])))
 
 (derive Cospan :locus.base.logic.structure.protocols/structured-set)
-
-; Create a cospan copresheaf from a pair of functions
-(defn cospan
-  [f g]
-
-  (let [a (inputs f)
-        b (inputs g)
-        c (outputs f)]
-    (Cospan. a b c f g)))
-
-; Convert a relation into a cospan copresheaf
-(defn relation-to-cospan
-  [rel]
-
-  (cospan
-    (relation-transition-map rel 0 2)
-    (relation-transition-map rel 1 2)))
-
-; Generalized conversion routines
-(defmulti to-cospan type)
-
-(defmethod to-cospan Cospan
-  [^Cospan cospan] cospan)
-
-(defmethod to-cospan :locus.base.logic.core.set/universal
-  [rel]
-
-  (relation-to-cospan rel))
 
 ; Cospan component sets and functions
 (defn first-cospan-source
@@ -74,6 +47,53 @@
 
   (SetFunction. (.-b cospan) (.-c cospan) (.-g cospan)))
 
+; Get the elements of a cospan copresheaf
+(defmethod get-set Cospan
+  [^Cospan cospan, x]
+
+  (case x
+    0 (first-cospan-source cospan)
+    1 (second-cospan-source cospan)
+    2 (cospan-target cospan)))
+
+(defmethod get-function Cospan
+  [^Cospan cospan, [a b]]
+
+  (case [a b]
+    [0 0] (identity-function (first-cospan-source cospan))
+    [1 1] (identity-function (second-cospan-source cospan))
+    [2 2] (identity-function (cospan-target cospan))
+    [0 2] (first-cospan-function cospan)
+    [1 2] (second-cospan-function cospan)))
+
+; Create a cospan copresheaf from a pair of functions
+(defn cospan
+  [f g]
+
+  (let [a (inputs f)
+        b (inputs g)
+        c (union (outputs f) (outputs g))]
+    (Cospan. a b c f g)))
+
+; Convert a relation into a cospan copresheaf
+(defn relation-to-cospan
+  [rel]
+
+  (cospan
+    (relation-transition-map rel 0 2)
+    (relation-transition-map rel 1 2)))
+
+; Generalized conversion routines
+(defmulti to-cospan type)
+
+(defmethod to-cospan Cospan
+  [^Cospan cospan] cospan)
+
+(defmethod to-cospan :locus.base.logic.core.set/universal
+  [rel]
+
+  (relation-to-cospan rel))
+
 ; The underlying relations of cospan copresheaves
 (defmethod underlying-relation Cospan
   [^Cospan cospan]
@@ -86,8 +106,8 @@
         (fn [[a b]]
           (set
             (for [i (inputs f)
-                 :when (= (f i) b)]
-             (list i a b))))
+                  :when (= (f i) b)]
+              (list i a b))))
         (underlying-relation g)))))
 
 (defmethod underlying-multirelation Cospan
@@ -180,7 +200,7 @@
     (first-cospan-image cospan)
     (second-cospan-image cospan)))
 
-(defn image-diset
+(defn diset-image
   [cospan]
 
   (->Diset
@@ -258,7 +278,7 @@
 
   (apply coproduct cospans))
 
-; Subobjects in the topos of cospans
+; Subobjects of the topos of cospans
 (defn subcospan
   [cospan new-first-source new-second-source new-target]
 
@@ -289,25 +309,96 @@
     (first-cospan-function cospan)
     (second-cospan-function cospan)))
 
+; Ontology of subobjects in the topos of cospan copresheaves
 (defn subcospan?
   [cospan new-first-source new-second-source new-target]
 
   (let [fn1 (first-cospan-function cospan)
         fn2 (second-cospan-function cospan)]
     (and
-      (superset? (set-image fn1 new-first-source) new-target)
-      (superset? (set-image fn2 new-second-source) new-target))))
+      (superset? (list (set-image fn1 new-first-source) new-target))
+      (superset? (list (set-image fn2 new-second-source) new-target)))))
 
-; Quotients in the topos of cospan copresheaves
-(defn cospan-congruence?
-  [cospan first-source-partition second-source-partition target-partition]
+(defn subcospan-closure
+  [cospan new-first-source new-second-source new-target]
 
-  (let [fn1 (first-cospan-function cospan)
-        fn2 (second-cospan-function cospan)]
-    (and
-      (io-relation? fn1 first-source-partition target-partition)
-      (io-relation? fn2 second-source-partition target-partition))))
+  (list
+    new-first-source
+    new-second-source
+    (union
+      new-target
+      (set-image (first-cospan-function cospan) new-first-source)
+      (set-image (second-cospan-function cospan) new-second-source))))
 
+; Enumeration theory for cospan copresheaves
+(defn subcospans
+  [cospan]
+
+  (set
+    (mapcat
+      (fn [[first-source second-source]]
+        (let [minimal-target-set (union
+                                   (set-image (first-cospan-function cospan) first-source)
+                                   (set-image (second-cospan-function cospan) second-source))
+              possible-target-additions (difference
+                                          (cospan-target cospan)
+                                          minimal-target-set)]
+          (map
+            (fn [new-targets]
+              (list
+                first-source
+                second-source
+                (union new-targets minimal-target-set)))
+            (power-set possible-target-additions))))
+      (cartesian-product
+        (power-set (first-cospan-source cospan))
+        (power-set (second-cospan-source cospan))))))
+
+; Relations between subcopsans
+(defn covering-subcospans
+  [cospan first-source second-source target]
+
+  (let [f1 (first-cospan-function cospan)
+        f2 (second-cospan-function cospan)]
+    (set
+     (concat
+       (let [first-additions (set
+                               (filter
+                                 (fn [i]
+                                   (contains? target (f1 i)))
+                                 (difference (first-cospan-source cospan) first-source)))]
+         (map
+           (fn [first-addition]
+             (list (conj first-source first-addition) second-source target))
+           first-additions))
+       (let [second-additions (set
+                                (filter
+                                  (fn [i]
+                                    (contains? target (f2 i)))
+                                  (difference (second-cospan-source cospan) second-source)))]
+         (map
+           (fn [second-addition]
+             (list first-source (conj second-source second-addition) target))
+           second-additions))
+       (let [target-additions (difference (cospan-target cospan) target)]
+         (map
+           (fn [target-addition]
+             (list first-source second-source (conj target target-addition)))
+           target-additions))))))
+
+(defn subcospans-covering
+  [cospan]
+
+  (set
+    (mapcat
+      (fn [[a b c]]
+        (map
+          (fn [[x y z]]
+            (list (list a b c) (list x y z)))
+          (covering-subcospans cospan a b c)))
+      (subcospans cospan))))
+
+; Cospan quotients
 (defn quotient-cospan
   [cospan first-source-partition second-source-partition target-partition]
 
@@ -322,6 +413,74 @@
         fn2
         second-source-partition
         target-partition))))
+
+; Quotients in the topos of cospan copresheaves
+(defn cospan-congruence?
+  [cospan first-source-partition second-source-partition target-partition]
+
+  (let [fn1 (first-cospan-function cospan)
+        fn2 (second-cospan-function cospan)]
+    (and
+      (io-relation? fn1 first-source-partition target-partition)
+      (io-relation? fn2 second-source-partition target-partition))))
+
+(defn cospan-congruence-closure
+  [cospan first-source-partition second-source-partition target-partition]
+
+  (list
+    first-source-partition
+    second-source-partition
+    (join-set-partitions
+      target-partition
+      (partition-image (first-cospan-function cospan) first-source-partition)
+      (partition-image (second-cospan-function cospan) second-source-partition))))
+
+; Congruences in the topos of cospans
+(defn cospan-congruences
+  [cospan]
+
+  (set
+    (mapcat
+      (fn [[first-partition second-partition]]
+        (let [minimal-target-partition (join-set-partitions
+                                         (partition-image (first-cospan-function cospan) first-partition)
+                                         (partition-image (second-cospan-function cospan) second-partition))]
+          (map
+            (fn [new-target-partition]
+              (list first-partition second-partition new-target-partition))
+            (set-partition-coarsifications minimal-target-partition))))
+      (cartesian-product
+        (set-partitions (first-cospan-source cospan))
+        (set-partitions (second-cospan-source cospan))))))
+
+; Covering relation in the lattice of congruences of a cospan copresheaf
+(defn cospan-covering-congruences
+  [cospan first-source-partition second-source-partition target-partition]
+
+  (let [f1 (first-cospan-function cospan)
+        f2 (second-cospan-function cospan)]
+    (set
+      (concat
+        (for [i (direct-set-partition-coarsifications first-source-partition)
+              :when (set-superpartition? (list (partition-image f1 i) target-partition))]
+          (list i second-source-partition target-partition))
+        (for [i (direct-set-partition-coarsifications second-source-partition)
+              :when (set-superpartition? (list (partition-image f2 i) target-partition))]
+          (list first-source-partition i target-partition))
+        (for [i (direct-set-partition-coarsifications target-partition)]
+          (list first-source-partition second-source-partition i))))))
+
+(defn cospan-congruences-covering
+  [cospan]
+
+  (set
+    (mapcat
+      (fn [[p q r]]
+        (map
+          (fn [[new-p new-q new-r]]
+            (list [p q r] [new-p new-q new-r]))
+          (cospan-covering-congruences cospan p q r)))
+      (cospan-congruences cospan))))
 
 ; Ontology of cospan copresheaves
 (defn cospan?

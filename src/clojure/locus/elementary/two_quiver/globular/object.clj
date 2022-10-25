@@ -54,6 +54,29 @@
 
   (visualize (underlying-quiver globe)))
 
+; Components of two globular sets
+(defmethod get-set TwoGlobularSet
+  [two-quiver x]
+
+  (case x
+    0 (objects two-quiver)
+    1 (morphisms two-quiver)
+    2 (two-morphisms two-quiver)))
+
+(defmethod get-function TwoGlobularSet
+  [two-quiver coll]
+
+  (cond
+    (= coll '(0 0 0)) (identity-function (objects two-quiver))
+    (= coll '(1 0 0)) (source-function two-quiver)
+    (= coll '(1 0 1)) (target-function two-quiver)
+    (= coll '(1 1 0)) (identity-function (morphisms two-quiver))
+    (= coll '(2 2 0)) (identity-function (two-morphisms two-quiver))
+    (= coll '(2 1 0)) (s-function two-quiver)
+    (= coll '(2 1 1)) (t-function two-quiver)
+    (= coll '(2 0 0)) (ss-function two-quiver)
+    (= coll '(2 0 1)) (tt-function two-quiver)))
+
 ; The distinguishing property of two globular sets is that they have hom quivers for each of their
 ; hom classes Hom(a,b) which are used as models of two categories and bicategories in higher
 ; category theory and related fields.
@@ -94,12 +117,11 @@
       (source-fn quiver)
       (target-fn quiver))))
 
-(comment
-  (def exgs
-   (two-gs
-     #{0 1 2 3}
-     {(list 0 1) (to-quiver (mapfn {:x 1, :y 2}))
-      (list 1 2) (to-quiver (mapfn {:a 3, :b 4}))})))
+(def exgs
+  (two-gs
+    #{0 1 2 3}
+    {(list 0 1) (to-quiver (mapfn {:x 1, :y 2}))
+     (list 1 2) (to-quiver (mapfn {:a 3, :b 4}))}))
 
 ; Ontology of two globular sets
 (defn two-globular-set?

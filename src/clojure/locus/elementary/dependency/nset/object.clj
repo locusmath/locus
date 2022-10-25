@@ -27,11 +27,23 @@
 (defmethod print-method NSet [^NSet v ^java.io.Writer w]
   (.write w (.toString v)))
 
+; Components of nsets
 (defn nth-set
   [^NSet nset, n]
 
   (nth (.colls nset) n))
 
+(defmethod get-set NSet
+  [^NSet nset, n]
+
+  (nth-set nset n))
+
+(defmethod get-function NSet
+  [^NSet nset, [a b]]
+
+  (identity-function (nth-set nset a)))
+
+; Get the parent topos of a nset
 (defn nset-type
   [^NSet coll]
 
@@ -56,6 +68,16 @@
   [coll]
 
   (NSet. [coll]))
+
+; A discrete copresheaf whose sets are all singletons
+(defn singleton-nset
+  [& elems]
+
+  (->NSet
+    (map
+      (fn [i]
+        #{i})
+      elems)))
 
 ; Products and coproducts in the topos of copresheaves over a discrete category
 (defmethod product NSet
@@ -109,6 +131,7 @@
 
   (apply (partial map meet-set-partitions) args))
 
+; Subobjects and quotients of nsets
 (defn nset-subalgebras
   [nset]
 
@@ -143,3 +166,9 @@
         (empty? coll)
         (apply = coll)))))
 
+; Visualisation of nsets
+(defmethod visualize NSet
+  [nset]
+
+  (let [[p r] (generate-copresheaf-data (vector->map (vec (.colls nset))) #{})]
+    (visualize-clustered-digraph* "BT" p r)))

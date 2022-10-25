@@ -148,6 +148,31 @@
     (fn [two-morphism]
       (two-morphism-tt quiver two-morphism))))
 
+; Components of two quivers
+(defmethod get-set TwoQuiver
+  [two-quiver x]
+
+  (case x
+    0 (objects two-quiver)
+    1 (morphisms two-quiver)
+    2 (two-morphisms two-quiver)))
+
+(defmethod get-function TwoQuiver
+  [two-quiver coll]
+
+  (cond
+    (= coll '(0 0 ())) (identity-function (objects two-quiver))
+    (= coll '(1 0 (0))) (source-function two-quiver)
+    (= coll '(1 0 (1))) (target-function two-quiver)
+    (= coll '(1 1 ())) (identity-function (morphisms two-quiver))
+    (= coll '(2 2 ())) (identity-function (two-morphisms two-quiver))
+    (= coll '(2 1 (0))) (s-function two-quiver)
+    (= coll '(2 1 (1))) (t-function two-quiver)
+    (= coll '(2 0 (0 0))) (ss-function two-quiver)
+    (= coll '(2 0 (0 1))) (st-function two-quiver)
+    (= coll '(2 0 (1 0))) (ts-function two-quiver)
+    (= coll '(2 0 (1 1))) (tt-function two-quiver)))
+
 ; All 2-morphisms between a pair of 1-morphisms
 (defn two-hom
   [quiver a b]

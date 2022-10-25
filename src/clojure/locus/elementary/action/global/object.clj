@@ -47,31 +47,27 @@
 
 (derive MSet :locus.elementary.copresheaf.core.protocols/mset)
 
-(def ems1
-  (->MSet
-    (semigroup-by-table
-      [[0 1]
-       [1 0]])
-    #{0 1}
-    (fn [action x]
-      (if (zero? action)
-        x
-        (if (zero? x) 1 0)))))
+; The action functions of a monoid action
+(defn action-function
+  [ms action]
 
-(def ems2
-  (->MSet
-    (->Monoid
-      #{0 1}
-      {[0 0] 0
-       [0 1] 1
-       [1 0] 1
-       [1 1] 1}
-      0)
-    #{0 1}
-    (fn [action x]
-      (if (zero? action)
-        x
-        (if (zero? x) 1 1)))))
+  (->SetFunction
+    (underlying-set ms)
+    (underlying-set ms)
+    (fn [x]
+      (apply-action ms action x))))
+
+; Component sets and functions for monoid actions
+(defmethod get-set :locus.elementary.copresheaf.core.protocols/mset
+  [mset x]
+
+  (case x
+    0 (underlying-set mset)))
+
+(defmethod get-function :locus.elementary.copresheaf.core.protocols/mset
+  [mset m]
+
+  (action-function mset m))
 
 ; Change the monoid of an mset by using a monoid homomorphism
 (defn change-of-monoid
@@ -113,15 +109,6 @@
       (fn [x]
         (apply-action gs inverse-action x)))))
 
-(defn action-function
-  [ms action]
-
-  (->SetFunction
-    (underlying-set ms)
-    (underlying-set ms)
-    (fn [x]
-      (apply-action ms action x))))
-
 ; This is the equivalent of hom classes in action theory
 (defmethod action-representatives MSet
   [ms a b]
@@ -141,11 +128,11 @@
       union
       (map
         (fn [action]
-         (set
-           (map
-             (fn [c]
-               (list c (apply-action ms action c)))
-             coll)))
+          (set
+            (map
+              (fn [c]
+                (list c (apply-action ms action c)))
+              coll)))
         (actions ms)))))
 
 ; Action equality
@@ -227,7 +214,7 @@
 
 ; We can convert a monoid action into a homomorphism from the
 ; original monoid to the full transformation monoid of a set.
-(defn action-homomorphism
+(defmethod action-homomorphism MSet
   [ms]
 
   (->MonoidMorphism
@@ -311,9 +298,9 @@
 
   (set
     (filter
-     (fn [partition]
-       (mset-congruence? ms partition))
-     (set-partitions (underlying-set ms)))))
+      (fn [partition]
+        (mset-congruence? ms partition))
+      (set-partitions (underlying-set ms)))))
 
 (defmethod con MSet
   [ms]
@@ -419,9 +406,9 @@
           (fn [part]
             (set
               (map
-               (fn [i]
-                 (apply-action mset action i))
-               part)))
+                (fn [i]
+                  (apply-action mset action i))
+                part)))
           partition)))))
 
 ; Permutation related actions
@@ -521,10 +508,10 @@
 
   (let [monoid (restrict-monoid parent-monoid coll)]
     (MSet.
-     (product monoid (dual monoid))
-     (underlying-set monoid)
-     (fn [[left-action right-action] arg]
-       (monoid (list left-action (monoid (list arg right-action))))))))
+      (product monoid (dual monoid))
+      (underlying-set monoid)
+      (fn [[left-action right-action] arg]
+        (monoid (list left-action (monoid (list arg right-action))))))))
 
 (def left-subaction-preorder
   (comp action-preorder left-subaction))
@@ -705,5 +692,3 @@
   (intersection
     semiregular-gset?
     transitive-gset?))
-
-

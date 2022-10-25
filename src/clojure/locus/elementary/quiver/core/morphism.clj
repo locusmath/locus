@@ -60,6 +60,33 @@
 
 (derive MorphismOfQuivers :locus.elementary.copresheaf.core.protocols/morphism-of-structured-quivers)
 
+; Component functions
+(defn morphism-of-quivers-component-function
+  [morphism x]
+
+  (case x
+    0 (first-function morphism)
+    1 (second-function morphism)))
+
+; Get sets and functions for morphisms of quivers
+(defmethod get-set MorphismOfQuivers
+  [morphism [i v]]
+
+  (case i
+    0 (get-set (source-object morphism) v)
+    1 (get-set (target-object morphism) v)))
+
+(defmethod get-function MorphismOfQuivers
+  [morphism [[i j] v]]
+
+  (let [source-data* [0 1 0 0]]
+    (case [i j]
+     [0 0] (get-function (source-object morphism) v)
+     [1 1] (get-function (target-object morphism) v)
+     [0 1] (compose
+             (get-function (target-object morphism) v)
+             (morphism-of-quivers-component-function morphism (get source-data* v))))))
+
 ; Composition and identities in the topos of quivers
 (defmethod compose* MorphismOfQuivers
   [a b]
@@ -95,6 +122,25 @@
     (objects (source-object morphism))
     (objects (target-object morphism))
     (second-function morphism)))
+
+; Morphisms of special types of quivers
+(defn morphism-of-singular-quivers
+  [func a b]
+
+  (->MorphismOfQuivers
+    (singular-quiver (inputs func) a)
+    (singular-quiver (outputs func) b)
+    func
+    (->SetFunction #{a} #{b} (constantly b))))
+
+(defn morphism-of-empty-quivers
+  [func]
+
+  (->MorphismOfQuivers
+    (empty-quiver (inputs func))
+    (empty-quiver (outputs func))
+    (->SetFunction #{} #{} identity)
+    func))
 
 ; We can get for any quiver morphism a function morphism for its source and target
 ; components. In general, topoi of set valued functors can be reduced by any

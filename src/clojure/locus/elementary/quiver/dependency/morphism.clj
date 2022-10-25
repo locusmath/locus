@@ -62,6 +62,25 @@
 
 (derive MorphismOfDependencyQuivers :locus.elementary.copresheaf.core.protocols/morphism-of-structured-dependency-quivers)
 
+; Components of morphisms of permutable quivers
+(defmethod get-set MorphismOfDependencyQuivers
+  [morphism [i v]]
+
+  (case i
+    0 (get-set (source-object morphism) v)
+    1 (get-set (target-object morphism) v)))
+
+(defmethod get-function MorphismOfDependencyQuivers
+  [morphism [[i j] v]]
+
+  (let [source-data* [0 1 0 0 1 0 0 0]]
+    (case [i j]
+      [0 0] (get-function (source-object morphism) v)
+      [1 1] (get-function (target-object morphism) v)
+      [0 1] (compose
+              (get-function (target-object morphism) v)
+              (morphism-of-quivers-component-function morphism (get source-data* v))))))
+
 ; Composition and morphisms in the topos of dependency quivers
 (defmethod compose* MorphismOfDependencyQuivers
   [a b]

@@ -72,7 +72,7 @@
   (= (type func) NaturalTransformation))
 
 (defn in-category-hom-class?
-  [functor source-category target-category ]
+  [functor source-category target-category]
 
   (and
     (functor? functor)
@@ -109,7 +109,7 @@
         target-functor (target-object transformation)
         index-category (source-object source-functor)
         target-category (target-object source-functor)
-        double-index-category (double-category index-category)]
+        double-index-category (category-product (thin-category '#{(0 0) (0 1) (1 1)}) index-category)]
     (->Functor
       double-index-category
       target-category
@@ -117,11 +117,11 @@
         (case i
           0 (object-apply source-functor v)
           1 (object-apply target-functor v)))
-      (fn [[i v]]
-        (case i
-          0 (morphism-apply source-functor v)
-          1 (morphism-apply target-functor v)
-          2 (target-category
-              (list
-                (morphism-apply target-functor v)
-                (transformation (source-element index-category v)))))))))
+      (fn [[[i j] v]]
+        (case [i j]
+          [0 0] (morphism-apply source-functor v)
+          [1 1] (morphism-apply target-functor v)
+          [0 1] (target-category
+                  (list
+                    (morphism-apply target-functor v)
+                    (transformation (source-element index-category v)))))))))

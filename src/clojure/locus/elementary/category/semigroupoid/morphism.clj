@@ -40,20 +40,10 @@
 
   ConcreteHigherMorphism
   (underlying-morphism-of-functions [this]
-    (->Diamond
+    (morphism-of-partial-binary-operations
       (underlying-function (source-object this))
       (underlying-function (target-object this))
-      (SetFunction.
-        (inputs (source-object this))
-        (inputs (target-object this))
-        (fn [[morphism1 morphism2]]
-          (list
-            (morphism-function morphism1)
-            (morphism-function morphism2))))
-      (SetFunction.
-        (outputs (source-object this))
-        (outputs (target-object this))
-        morphism-function))))
+      morphism-function)))
 
 ; The position of semifunctors in the type hierarchy
 (derive Semifunctor :locus.elementary.copresheaf.core.protocols/semifunctor)
@@ -65,8 +55,8 @@
   (Semifunctor.
     (source-object g)
     (target-object f)
-    (comp (.morphism-function f) (.morphism-function g))
-    (comp (.object-function f) (.object-function g))))
+    (comp (first-function f) (first-function g))
+    (comp (first-function f) (first-function g))))
 
 (defmethod identity-morphism Semigroupoid
   [category]

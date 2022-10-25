@@ -71,6 +71,27 @@
     (fn [edge]
       (invert-morphism quiv edge))))
 
+; The components of a dependency quiver
+(defmethod get-set ::dependency-quiver
+  [quiver x]
+
+  (case x
+    0 (morphisms quiver)
+    1 (objects quiver)))
+
+(defmethod get-function ::dependency-quiver
+  [quiver x]
+
+  (case x
+    0 (identity-function (morphisms quiver))
+    1 (identity-function (objects quiver))
+    2 (source-function quiver)
+    3 (target-function quiver)
+    4 (identity-element-function quiver)
+    5 (source-identity-function quiver)
+    6 (target-identity-function quiver)
+    7 (inverse-function quiver)))
+
 ; Adjoin dependencies on to an ordinary quiver in order to get a dependency quiver
 (defn adjoin-dependencies
   [quiv id inv]

@@ -13,7 +13,8 @@
 ; This topos is the topos of copresheaves over the discrete category
 ; with two objects and two identity morphisms. The subobjects, quotients,
 ; products, and quotients of Disets are defined by doubling up their
-; their counterparts in Sets.
+; counterparts in Sets.
+
 (deftype Diset [a b]
   StructuredDiset
   (first-set [this] a)
@@ -31,6 +32,21 @@
 
 (defmethod print-method Diset [^Diset v ^java.io.Writer w]
   (.write w (.toString v)))
+
+; Accessors for the elements of disets
+(defmethod get-set :locus.elementary.copresheaf.core.protocols/diset
+  [diset n]
+
+  (case n
+    0 (first-set diset)
+    1 (second-set diset)))
+
+(defmethod get-function :locus.elementary.copresheaf.core.protocols/diset
+  [diset [a b]]
+
+  (case [a b]
+    [0 0] (identity-function (first-set diset))
+    [1 1] (identity-function (second-set diset))))
 
 ; The underlying relations of disets
 (defmethod underlying-relation Diset
@@ -276,9 +292,9 @@
            (intersection
              seq?
              (fn [[a b]]
-              (and
-                (superset? (list (first-set a) (first-set b)))
-                (superset? (list (second-set a) (second-set b)))))))
+               (and
+                 (superset? (list (first-set a) (first-set b)))
+                 (superset? (list (second-set a) (second-set b)))))))
     :join join-disets
     :meet meet-disets
     :arities #{2}))
@@ -525,7 +541,5 @@
 
   (let [[p r] (generate-copresheaf-data {0 (first-set coll), 1 (second-set coll)} #{})]
     (visualize-clustered-digraph* "BT" p r)))
-
-
 
 

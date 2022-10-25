@@ -85,6 +85,11 @@
 
 (derive SetFunction :locus.base.logic.structure.protocols/set-function)
 
+(defn identity-function
+  [a]
+
+  (SetFunction. a a identity))
+
 (defmethod visualize :locus.base.logic.structure.protocols/structured-function
   [func]
 
@@ -107,6 +112,28 @@
           in-seq))
       true
       (vec (concat in-seq out-seq)))))
+
+; Get the sets and functions associated with a set function
+(defmethod get-set :locus.base.logic.structure.protocols/set-function
+  [f x]
+
+  (case x
+    0 (inputs f)
+    1 (outputs f)))
+
+(defmethod get-function :locus.base.logic.structure.protocols/set-function
+  [f [a b]]
+
+  (case [a b]
+    [0 0] (identity-function (inputs f))
+    [1 1] (identity-function (outputs f))
+    [0 1] f))
+
+(defmethod get-set :locus.base.logic.core.set/universal
+  [coll x] (case x 0 coll))
+
+(defmethod get-function :locus.base.logic.core.set/universal
+  [coll [a b]] (case [a b] [0 0] (identity-function coll)))
 
 ; Underlying function of a concrete morphism
 (defn underlying-function
@@ -195,11 +222,6 @@
 
 (defmethod compose* :locus.base.logic.structure.protocols/set-function
   [a b] (compose-functions a b))
-
-(defn identity-function
-  [a]
-
-  (SetFunction. a a identity))
 
 (defmethod identity-morphism :locus.base.logic.core.set/universal
   [coll] (identity-function coll))
@@ -904,20 +926,13 @@
       (quotient-function func i o))
     (all-congruences func)))
 
+; Relations on the set of congruences
 (defn preceding-congruence?
   [func [[in1 out1] [in2 out2]]]
 
   (and
     (set-superpartition? (list in1 in2))
     (set-superpartition? (list out1 out2))))
-
-(defn congruence-closure
-  [func in-partition out-partition]
-
-  [in-partition (partitionize-family
-                  (union
-                    out-partition
-                    (partition-image func in-partition)))])
 
 (defn covering-congruences
   [func in-partition out-partition]
@@ -945,6 +960,14 @@
             (list [in-partition out-partition] [new-in-partition new-out-partition]))
           (covering-congruences func in-partition out-partition)))
       (all-congruences func))))
+
+(defn congruence-closure
+  [func in-partition out-partition]
+
+  [in-partition (partitionize-family
+                  (union
+                    out-partition
+                    (partition-image func in-partition)))])
 
 ; Surjective components of the subalgebra lattice
 ; Set images are simply a way of getting surjective subobjects.

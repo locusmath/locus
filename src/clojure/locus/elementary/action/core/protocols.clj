@@ -103,3 +103,15 @@
           (contains? coll (apply-action ms action elem)))
         coll))
     (actions ms)))
+
+(defn action-closed-sets
+  [ms]
+
+  (set
+    (filter
+      (fn [i]
+        (action-closed-set? ms i))
+      (underlying-set ms))))
+
+; Action homomorphisms
+(defmulti action-homomorphism type)

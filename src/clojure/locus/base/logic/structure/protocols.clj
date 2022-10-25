@@ -133,6 +133,11 @@
 
 (defmulti wrap (fn [a b] (type a)))
 
+; Multimethods for presheaf theory
+(defmulti get-set (fn [a b] (type a)))
+
+(defmulti get-function (fn [a b] (type a)))
+
 ; Subobjects and congruences as generalized methods for dealing with all
 ; kinds of different types of data structures
 (defmulti subalgebra? (fn [a b] [(type a) (type b)]))

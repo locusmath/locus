@@ -8,54 +8,111 @@
             [locus.base.effects.global.permutation :refer :all]
             [locus.base.effects.global.transformation :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
+            [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.diset.core.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
-            [locus.elementary.lattice.core.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
-            [locus.elementary.semigroup.core.morphism :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
-            [locus.elementary.group.core.object :refer :all]
+            [locus.elementary.semigroup.partial.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.action.core.protocols :refer :all]
+            [locus.elementary.action.global.object :refer :all]
             [locus.elementary.category.partial.function :refer :all]
             [locus.elementary.category.partial.bijection :refer :all]
             [locus.elementary.category.partial.transformation :refer :all]
-            [locus.elementary.category.partial.permutation :refer :all]))
+            [locus.elementary.category.partial.permutation :refer :all]
+            [locus.nonassociative.magma.object :refer :all]
+            [locus.nonassociative.magmoid.object :refer :all]
+            [locus.nonassociative.partial-magma.object :refer :all]
+            [locus.nonassociative.partial-magma.object :refer :all]
+            [locus.nonassociative.partial-magma.morphism :refer :all])
+  (:import (locus.elementary.action.global.object MSet)
+           (locus.elementary.semigroup.partial.object PartialTransformationSemigroup)))
 
-; Let C be a category, and Arrows(C) its morphism set. Then the morphisms of C act on Arrows(C)
-; by self-induced actions. This produces a structure which we call a partial action system,
-; which has a lot in common with monoid actions. These partial action systems can also
-; be produced by semigroups of partial permutations and transformations.
+; Let C be a category. Then C is associated to two different sets: its object set and its morphism
+; set. We say that the morphism set has the structure of a partial semigroup (Arrows(C),*) in
+; which the product of two morphisms is only defined when they have a common intermediate object
+; between them. On the other hand, by this same principle the objects set Ob(C) has the structure
+; of a partial semigroup action by partial transformations, where each partial transformation
+; is an atomic chart on objects. The action of a morphism f: A to B is the partial transformation
+; (A,B) on Ob(C) which is defined only on A and which moves it to C.
+
+; The actions of categories and their generalisations such as partial magmoids are always actions
+; by atomic charts, which are defined by only one element but by generality we can also define
+; the most general concept of a partial algebraic action to be the action of some partial magma
+; by any partial transformations. By this approach we arrive at the concept of a PSet, which is
+; so named by generalisation of the idea of an MSet in total algebra. A PSet is the partial
+; algebraic generalisation of the concept of an MSet. A PSet is equivalent to a partial magma
+; homomorphism from some partial magma into the full partial transformation semigroup on a set.
 
 ; Partial action system
-; This actually maps a given action directly to a function
-(deftype PartialActionSystem [actions coll func]
+; The partial algebraic generalisation of the concept of an MSet.
+(deftype PSet [magma coll action]
   ConcreteObject
   (underlying-set [this] coll)
 
   EffectSystem
-  (actions [this] actions)
-  (apply-action [this action arg] ((func action) arg))
-  (action-domain [this action]
-    (relation-domain (underlying-relation (func action)))))
+  (actions [this]
+    (morphisms magma))
+  (action-domain [this elem]
+    (relation-domain (underlying-relation (action elem))))
+  (apply-action [this elem arg]
+    ((action elem) arg)))
 
-(derive PartialActionSystem :locus.base.logic.structure.protocols/structured-set)
+(derive PSet :locus.base.logic.structure.protocols/structured-set)
 
-; Conversion of structures to partial action systems
-(defmulti to-partial-action-system type)
+; Generalized conversion routines for actions on sets in partial algebra
+(defmulti to-pset type)
 
-(defmethod to-partial-action-system PartialActionSystem
-  [structure] PartialActionSystem)
+(defmethod to-pset PSet
+  [obj] obj)
+
+(defmethod to-pset MSet
+  [^MSet action]
+
+  (let [coll (.-coll action)]
+    (->PSet
+      (.-monoid action)
+      coll
+      (fn [a]
+        (->PartialTransformation
+          coll
+          coll
+          (fn [x]
+            (apply-action action a x)))))))
+
+(defmethod to-pset PartialTransformationSemigroup
+  [^PartialTransformationSemigroup semigroup]
+
+  (->PSet
+    (.-semigroup semigroup)
+    (.-coll semigroup)
+    (.-func semigroup)))
+
+; We can treat the object set of a category as like a sort of action in partial algebra
+(defn morphic-action-on-objects
+  [magmoid]
+
+  (PSet.
+    (composition-operation magmoid)
+    (objects magmoid)
+    (fn [morphism]
+      (->AtomicChart
+        (objects magmoid)
+        (source-element magmoid morphism)
+        (target-element magmoid morphism)))))
+
+(defmethod to-pset :locus.elementary.copresheaf.core.protocols/partial-magmoid
+  [magmoid] (morphic-action-on-objects magmoid))
 
 ; Get a partial transformation action
 (defn action-partial-transformation
   [ps action]
 
-  ((.func ps) action))
+  ((.action ps) action))
 
 ; Partial action preorders
-(defmethod action-preorder PartialActionSystem
+(defmethod action-preorder PSet
   [ps]
 
   (cl preorder?
@@ -64,20 +121,44 @@
         (map
           (fn [i]
             (underlying-relation (action-partial-transformation ps i)))
-          (.actions ps)))))
+          (actions ps)))))
 
-; Object action
-(defn object-action
-  [category]
+; Create a full semigroup of partial transformation PT_{S}
+(defn full-partial-transformation-semigroup
+  [coll]
 
-  (PartialActionSystem.
-    (morphisms category)
-    (objects category)
-    (fn [morphism]
-      (->AtomicChart
-        (objects category)
-        (source-element category morphism)
-        (target-element category morphism)))))
+  (->Semigroup
+    (fn [elem]
+      (and
+        (partial-transformation? elem)
+        (equal-universals? (source-object elem) coll)))
+    (fn [[a b]]
+      (compose a b))))
+
+(defmethod action-homomorphism PSet
+  [^PSet ps]
+
+  (->PartialMagmaMorphism
+    (.-magma ps)
+    (full-partial-transformation-semigroup (.-coll ps))
+    (.-action ps)))
+
+(defmethod to-partial-magma-homomorphism PSet
+  [^PSet ps] (action-homomorphism ps))
+
+; Create a partial semigroup action by atomic charts
+(defn atomic-charts-pset
+  [rel]
+
+  (let [coll (vertices rel)]
+    (->PSet
+      (transition-partial-magma rel)
+      coll
+      (fn [[a b]]
+        (->AtomicChart
+          coll
+          a
+          b)))))
 
 ; We need to be able to find some way of getting partial transformations from
 ; the morphic elements of a category based upon how they operate on one another
@@ -121,7 +202,7 @@
 (defn left-self-partial-action
   [category]
 
-  (PartialActionSystem.
+  (PSet.
     (morphisms category)
     (morphisms category)
     (fn [left-action]
@@ -130,7 +211,7 @@
 (defn right-self-partial-action
   [category]
 
-  (PartialActionSystem.
+  (PSet.
     (morphisms category)
     (morphisms category)
     (fn [right-action]
@@ -139,14 +220,57 @@
 (defn two-sided-self-partial-action
   [category]
 
-  (PartialActionSystem.
+  (PSet.
     (product (morphisms category) (morphisms category))
     (morphisms category)
     (fn [[left-action right-action]]
       (two-sided-self-partial-transformation category left-action right-action))))
 
+; Ontology of partial action systems
+(defmulti pset? type)
 
+(defmethod pset? PSet
+  [obj] true)
 
+(defn atomic-chart-pset?
+  [ps]
 
+  (and
+    (pset? ps)
+    (every?
+      (fn [i]
+        (let [action (action-partial-transformation ps i)]
+          (atomic-chart? action)))
+      (morphisms ps))))
 
+(defn partial-permutation-pset?
+  [ps]
 
+  (and
+    (pset? ps)
+    (every?
+      (fn [i]
+        (let [action (action-partial-transformation ps i)]
+          (partial-permutation? action)))
+      (morphisms ps))))
+
+(defn transitive-pset?
+  [ps]
+
+  (and
+    (pset? ps)
+    (complete-relation? (action-preorder ps))))
+
+(defn transitive-atomic-charts-pset?
+  [ps]
+
+  (and
+    (atomic-chart-pset? ps)
+    (complete-relation? (action-preorder ps))))
+
+(defn transitive-partial-permutation-pset?
+  [ps]
+
+  (and
+    (partial-permutation-pset? ps)
+    (complete-relation? (action-preorder ps))))

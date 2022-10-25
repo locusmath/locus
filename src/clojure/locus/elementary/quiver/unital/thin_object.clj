@@ -16,7 +16,8 @@
 
 ; A unital quiver is said to be thin provided that for each hom class Hom(A,B) for each pair of
 ; objects A and B in the quiver Q, the hom class contains no more than one element. In that case,
-; the unital quiver can be described entirely by a relation.
+; the unital quiver can be described entirely by a relation. The identity element is the
+; equal ordered pair containing a vertex.
 
 (deftype ThinUnitalQuiver [vertices edges]
   ConcreteObject
@@ -54,21 +55,6 @@
 
 (defmethod visualize ThinUnitalQuiver
   [^ThinUnitalQuiver quiver] (visualize (.-edges quiver)))
-
-; Products and coproducts of thin quivers with respect to the topos of thin unital quivers
-(defmethod product ThinUnitalQuiver
-  [& quivers]
-
-  (ThinUnitalQuiver.
-    (apply cartesian-product (map objects quivers))
-    (apply product-relation (map morphisms quivers))))
-
-(defmethod coproduct ThinUnitalQuiver
-  [& quivers]
-
-  (ThinUnitalQuiver.
-    (apply cartesian-coproduct (map objects quivers))
-    (apply sum-relation (map morphisms quivers))))
 
 ; Duls of thin unital quivers
 (defmethod dual ThinUnitalQuiver

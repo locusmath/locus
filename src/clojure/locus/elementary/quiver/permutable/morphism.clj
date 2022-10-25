@@ -54,6 +54,25 @@
 
 (derive MorphismOfPermutableQuivers :locus.elementary.copresheaf.core.protocols/morphism-of-structured-permutable-quivers)
 
+; Components of morphisms of permutable quivers
+(defmethod get-set MorphismOfPermutableQuivers
+  [morphism [i v]]
+
+  (case i
+    0 (get-set (source-object morphism) v)
+    1 (get-set (target-object morphism) v)))
+
+(defmethod get-function MorphismOfPermutableQuivers
+  [morphism [[i j] v]]
+
+  (let [source-data* [0 1 0 0 0]]
+    (case [i j]
+      [0 0] (get-function (source-object morphism) v)
+      [1 1] (get-function (target-object morphism) v)
+      [0 1] (compose
+              (get-function (target-object morphism) v)
+              (morphism-of-quivers-component-function morphism (get source-data* v))))))
+
 ; These types of morphisms are basically distinguished by the fact that they preserve
 ; the inverse functions of their permutable quivers.
 (defn morphism-of-inverse-functions

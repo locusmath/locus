@@ -68,22 +68,116 @@
 
 (derive Diamond :locus.elementary.copresheaf.core.protocols/diamond)
 
-; Validity test for diamonds
-(defn valid-diamond?
-  [m]
+; Component arrows of diamonds
+(defn input-set-function
+  [^Diamond diamond]
 
-  (= (compose-functions (target-object m) (first-function m))
-     (compose-functions (second-function m) (source-object m))))
+  (SetFunction.
+    (inputs (source-object diamond))
+    (inputs (target-object diamond))
+    (.-input_function diamond)))
 
-; Composition and identities in the topos of functions
-(defmethod compose* Diamond
-  [f g]
+(defn output-set-function
+  [^Diamond diamond]
 
-  (Diamond.
-    (source-object g)
-    (target-object f)
-    (compose-functions (first-function f) (first-function g))
-    (compose-functions (second-function f) (second-function g))))
+  (SetFunction.
+    (outputs (source-object diamond))
+    (outputs (target-object diamond))
+    (.-output_function diamond)))
+
+(defn common-composite-set-function
+  [morphism]
+
+  (compose (output-set-function morphism) (source-object morphism)))
+
+(defn diamond-component-function
+  [^Diamond diamond, x]
+
+  (case x
+    0 (input-set-function diamond)
+    1 (output-set-function diamond)))
+
+; Components of diamonds
+(defmethod get-set Diamond
+  [diamond [i v]]
+
+  (case i
+    0 (get-set (source-object diamond) v)
+    1 (get-set (target-object diamond) v)))
+
+(defmethod get-function Diamond
+  [diamond [[i v] [j w]]]
+
+  (case [i j]
+    [0 0] (get-function (source-object diamond) [v w])
+    [1 1] (get-function (target-object diamond) [v w])
+    [0 1] (compose
+            (get-function (target-object diamond) [v w])
+            (diamond-component-function diamond v))))
+
+; Morphisms of functions especially useful in abstract algebra
+(defn morphism-of-unary-operations
+  [source target func]
+
+  (->Diamond
+    source
+    target
+    func
+    func))
+
+(defn morphism-of-binary-operations
+  [source target func]
+
+  (->Diamond
+    source
+    target
+    (product func func)
+    func))
+
+(defn morphism-of-ternary-operations
+  [source target func]
+
+  (->Diamond
+    source
+    target
+    (product func func func)
+    func))
+
+(defn morphism-of-quaternary-operations
+  [source target func]
+
+  (->Diamond
+    source
+    target
+    (product func func func func)
+    func))
+
+; Algebraic homomorphisms in partial algebra
+(defn morphism-of-partial-binary-operations
+  [source target func]
+
+  (->Diamond
+    source
+    target
+    (->SetFunction
+      (inputs source)
+      (outputs source)
+      (fn [[a b]]
+        (list (func a) (func b))))
+    (->SetFunction
+      (outputs source)
+      (outputs target)
+      func)))
+
+ ; Composition and identities in the topos of functions
+ (defmethod compose* Diamond
+   [f g]
+
+   (Diamond.
+     (source-object g)
+     (target-object f)
+     (compose-functions (first-function f) (first-function g))
+     (compose-functions (second-function f) (second-function g))))
 
 (defn identity-diamond
   [f]
@@ -126,29 +220,6 @@
     (source-output-set diamond)
     (target-input-set diamond)
     (target-output-set diamond)))
-
-; These methods ensure that we can handle the first and second functions by
-; using the topos of functions and the methods of categorical logic.
-(defn input-set-function
-  [morphism]
-
-  (SetFunction.
-    (inputs (source-object morphism))
-    (inputs (target-object morphism))
-    (.input_function morphism)))
-
-(defn output-set-function
-  [morphism]
-
-  (SetFunction.
-    (outputs (source-object morphism))
-    (outputs (target-object morphism))
-    (.output_function morphism)))
-
-(defn common-composite-set-function
-  [morphism]
-
-  (compose (output-set-function morphism) (source-object morphism)))
 
 ; The upper cospan and the lower span in the topos Sets^[1,2,1]
 ; relates it to te topoi Sets^[1,2] and Sets^[2,1]
@@ -214,7 +285,7 @@
     (input-action-triangle diamond)
     (output-action-triangle diamond)))
 
-; Create diamond from triangles
+; Create diamond from pairs of triangles
 (defn combine-triangles
   [^TriangleCopresheaf in, ^TriangleCopresheaf out]
 
@@ -465,6 +536,13 @@
     (quotient-function (input-set-function diamond) in-partition1 in-partition2)
     (quotient-function (output-set-function diamond) out-partition1 out-partition2)))
 
+; Validity test for diamonds
+(defn valid-diamond?
+  [m]
+
+  (= (compose-functions (target-object m) (first-function m))
+     (compose-functions (second-function m) (source-object m))))
+
 ; Ontology of diamonds
 (defn diamond?
   [morphism]
@@ -592,12 +670,12 @@
   [^Diamond diamond]
 
   (let [[p v] (generate-copresheaf-data
-               {0 (source-input-set diamond)
-                1 (source-output-set diamond)
-                2 (target-input-set diamond)
-                3 (target-output-set diamond)}
-               #{(list 0 1 (source-object diamond))
-                 (list 2 3 (target-object diamond))
-                 (list 0 2 (first-function diamond))
-                 (list 1 3 (second-function diamond))})]
+                {0 (source-input-set diamond)
+                 1 (source-output-set diamond)
+                 2 (target-input-set diamond)
+                 3 (target-output-set diamond)}
+                #{(list 0 1 (source-object diamond))
+                  (list 2 3 (target-object diamond))
+                  (list 0 2 (first-function diamond))
+                  (list 1 3 (second-function diamond))})]
     (visualize-clustered-digraph* "BT" p v)))

@@ -93,6 +93,26 @@
     (fn [morphism]
       (target-identity quiv morphism))))
 
+; Get the sets and functions of a unital quiver
+(defmethod get-set ::unital-quiver
+  [quiver x]
+
+  (case x
+    0 (morphisms quiver)
+    1 (objects quiver)))
+
+(defmethod get-function ::unital-quiver
+  [quiver x]
+
+  (case x
+    0 (identity-function (morphisms quiver))
+    1 (identity-function (objects quiver))
+    2 (source-function quiver)
+    3 (target-function quiver)
+    4 (identity-element-function quiver)
+    5 (source-identity-function quiver)
+    6 (target-identity-function quiver)))
+
 ; Adjoin identities to an existing quiver
 (defn adjoin-identities
   [quiv id]

@@ -54,14 +54,32 @@
 (derive PermutableQuiver ::permutable-quiver)
 
 ; Get the inverse function from a permutable quiver
-(defmethod inverse-function PermutableQuiver
-  [^PermutableQuiver quiv]
+(defmethod inverse-function ::permutable-quiver
+  [quiv]
 
   (->SetFunction
     (morphisms quiv)
     (morphisms quiv)
     (fn [edge]
       (invert-morphism quiv edge))))
+
+; Get the sets and functions of a permutable quiver
+(defmethod get-set ::permutable-quiver
+  [quiver x]
+
+  (case x
+    0 (morphisms quiver)
+    1 (objects quiver)))
+
+(defmethod get-function ::permutable-quiver
+  [quiver x]
+
+  (case x
+    0 (identity-function (morphisms quiver))
+    1 (identity-function (objects quiver))
+    2 (source-function quiver)
+    3 (target-function quiver)
+    4 (inverse-function quiver)))
 
 ; Constructors for permutable quivers
 ; Adjoin inverses to a quiver to get a permutable one

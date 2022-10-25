@@ -23,7 +23,7 @@
             [locus.elementary.bijection.core.morphism :refer :all]
             [locus.elementary.dependency.nset.object :refer :all]
             [locus.elementary.dependency.nfunction.object :refer :all]
-            [locus.elementary.dependency.nfunction.nbijection :refer :all]
+            [locus.elementary.dependency.nbijection.object :refer :all]
             [locus.elementary.dependency.chain.object :refer :all]
             [locus.elementary.triangle.core.morphism :refer :all]
             [locus.elementary.incidence.core.morphism :refer :all]
@@ -40,7 +40,7 @@
            (locus.elementary.bijection.core.morphism Gem)
            (locus.elementary.dependency.nset.object NSet)
            (locus.elementary.dependency.nfunction.object NFunction)
-           (locus.elementary.dependency.nfunction.nbijection NBijection)
+           (locus.elementary.dependency.nbijection.object NBijection)
            (locus.elementary.dependency.chain.object ChainCopresheaf)
            (locus.elementary.triangle.core.morphism TriangleMorphism)
            (locus.elementary.incidence.core.morphism MorphismOfSpans)
@@ -58,416 +58,175 @@
   (second-function [this]
     object-function))
 
-; Special types of preorders for use in defining dependency functors as copresheaves
-(def trivial-order
-  (relational-poset '#{(0 0)}))
+; Get the sets and functions associated with dependency copresheaves
+(defmethod get-set Dependency
+  [^Dependency dependency, x]
 
-(def t2-order
-  (relational-poset '#{(0 0) (0 1) (1 1)}))
+  (object-apply dependency x))
 
-(def e2-order
-  (relational-poset (coreflexive-relation #{0 1})))
+(defmethod get-function Dependency
+  [^Dependency dependency, x]
 
-(def k2-preorder
-  (relational-preposet (complete-relation #{0 1})))
+  (morphism-apply dependency x))
 
-; Size three
-(def t3-order
-  (relational-poset (total-order 0 1 2)))
+; Index preorders for copresheaves over preorders
+(defmethod index :default
+  [obj] nil)
 
-(def span-object-order
-  (relational-poset (weak-order [#{0} #{1 2}])))
+(defmethod index :locus.base.logic.core.set/universal
+  [coll]
 
-(def cospan-object-order
-  (relational-poset (weak-order [#{0 1} #{2}])))
+  (relational-preposet
+    (weak-order [#{0}])))
 
-; Size four
-(def difunction-order
-  (relational-poset '#{(0 0) (1 1) (0 1) (2 2) (3 3) (2 3)}))
+(defmethod index :locus.base.logic.structure.protocols/set-function
+  [func]
 
-(def dibijection-preorder
-  (relational-poset (equivalence-relation #{#{0 1} #{2 3}})))
+  (relational-poset
+    (weak-order [#{0} #{1}])))
 
-(def diamond-order
-  (relational-poset (weak-order [#{0} #{1 2} #{3}])))
+(defmethod index :locus.elementary.copresheaf.core.protocols/diset
+  [diset]
 
-(def gem-preorder
-  (relational-preposet (total-preorder [#{0 1} #{2 3}])))
+  (relational-preposet
+    (weak-order [#{0 1}])))
 
-; Additional preorders
-(def e3-order
-  (relational-poset (coreflexive-relation #{0 1 2})))
+(defmethod index :locus.elementary.copresheaf.core.protocols/bijection
+  [bijection]
 
-(def k3-preorder
-  (relational-preposet (complete-relation #{0 1 2})))
+  (relational-preposet
+    (total-preorder [#{0 1}])))
 
-(def one-two-preorder
-  (relational-preposet (total-preorder [#{0} #{1 2}])))
+(defmethod index TriangleCopresheaf
+  [triangle]
 
+  (relational-poset
+    (total-order 0 1 2)))
+
+(defmethod index Span
+  [span]
+
+  (relational-poset
+    (weak-order [#{0} #{1 2}])))
+
+(defmethod index Cospan
+  [cospan]
+
+  (relational-poset
+    (weak-order [#{0 1} #{2}])))
+
+(defmethod index Difunction
+  [difunction]
+
+  (product
+    (to-poset (total-order 0 1))
+    (to-poset (weak-order [#{0 1}]))))
+
+(defmethod index Dibijection
+  [dibijection]
+
+  (product
+    (to-preposet (total-preorder [#{0 1}]))
+    (to-preposet (weak-order [#{0 1}]))))
+
+(defmethod index Diamond
+  [diamond]
+
+  (product
+    (to-poset (total-order 0 1))
+    (to-poset (total-order 0 1))))
+
+(defmethod index Gem
+  [gem]
+
+  (product
+    (to-poset (total-order 0 1))
+    (to-preposet (total-preorder [#{0 1}]))))
+
+(defmethod index MorphismOfCospans
+  [morphism]
+
+  (product
+    (to-poset (total-order 0 1))
+    (to-poset (weak-order [#{0 1} #{2}]))))
+
+(defmethod index Cube
+  [cube]
+
+  (product
+    (to-poset (total-order 0 1))
+    (product
+      (to-poset (total-order 0 1))
+      (to-poset (total-order 0 1)))))
+
+(defmethod index MorphismOfSpans
+  [morphism]
+
+  (product
+    (to-poset (total-order 0 1))
+    (to-poset (weak-order [#{0} #{1 2}]))))
+
+(defmethod index TriangleMorphism
+  [morphism]
+
+  (product
+    (to-poset (total-order 0 1))
+    (to-poset (total-order 0 1 2))))
+
+(defmethod index NSet
+  [nset]
+
+  (nth-antichain (nset-type nset)))
+
+(defmethod index NFunction
+  [nfunction]
+
+  (product
+    (to-poset (total-order 0 1))
+    (nth-antichain (nfunction-type nfunction))))
+
+(defmethod index NBijection
+  [nbijection]
+
+  (product
+    (to-preposet (total-preorder [#{0 1}]))
+    (nth-antichain (nbijection-type nbijection))))
+
+(defmethod index ChainCopresheaf
+  [^ChainCopresheaf chain]
+
+  (nth-chain (inc (count (composition-sequence chain)))))
+
+(defmethod index ChainMorphism
+  [morphism]
+
+  (product
+    (to-poset (total-order 0 1))
+    (index (source-object morphism))))
+
+(defmethod index Dependency
+  [^Dependency dependency] (.-order dependency))
+
+; Convert presheaves over preorders into a common format
+(defmulti to-dependency type)
+
+(defmethod to-dependency Dependency
+  [dependency] dependency)
+
+(defmethod to-dependency :default
+  [dependency]
+
+  (let [dep (index dependency)]
+    (if (nil? dep)
+      (throw (new IllegalArgumentException))
+      (->Dependency dep (partial get-set dependency) (partial get-function dependency)))))
+
+; The topos of lower bijective triangles consists of presheaves over the total
+; preorder [2,1]. Its elements are like special cases of triangle copresheaves over
+; the total order [1,1,1] except their lower half is invertible.
 (def two-one-preorder
   (relational-preposet (total-preorder [#{0 1} #{2}])))
 
-(def two-two-order
-  (relational-poset (weak-order [#{0 1} #{2 3}])))
-
-; Non connected preorders
-(def t2-plus-one-order
-  (relational-poset '#{(0 0) (1 1) (2 2) (1 2)}))
-
-(def k2-plus-one-preorder
-  (relational-preposet '#{(0 0) (1 1) (2 2) (1 2) (2 1)}))
-
-(def ditriangle-order
-  (relational-poset
-    '#{(0 0) (1 1) (2 2) (0 1) (0 2) (1 2) (3 3) (4 4) (5 5) (3 5) (3 4) (4 5)}))
-
-; Mechanisms for converting copresheaves into dependency functors
-; These mechanisms convert the various familiar copresheaves over preorders like sets, functions,
-; bijections, morphisms of functions, morphisms of bijections, disets, morphisms of disets,
-; morphisms of diamonds, spans, cospans, and so on into members of the dependency functor
-; class. The class of dependency functors, which defines all copresheaves over preorders
-; is now a common mechanism for studying the different types of copresheaves over preorders.
-(defmulti to-dependency type)
-
-(defmethod to-dependency :locus.base.logic.core.set/universal
-  [coll]
-
-  (->Dependency
-    trivial-order
-    (fn [obj]
-      coll)
-    (fn [[a b]]
-      (identity-function coll))))
-
-(defmethod to-dependency :locus.base.logic.structure.protocols/set-function
-  [func]
-
-  (->Dependency
-    t2-order
-    (fn [obj]
-      (case obj
-        0 (inputs func)
-        1 (outputs func)))
-    (fn [[a b]]
-      (case [a b]
-        [0 0] (identity-function (inputs func))
-        [1 1] (identity-function (outputs func))
-        [0 1] func))))
-
-(defmethod to-dependency :locus.elementary.copresheaf.core.protocols/diset
-  [diset]
-
-  (->Dependency
-    e2-order
-    (fn [obj]
-      (case obj
-        0 (first-set diset)
-        1 (second-set diset)))
-    (fn [[a b]]
-      (case [a b]
-        [0 0] (identity-function (first-set diset))
-        [1 1] (identity-function (second-set diset))))))
-
-(defmethod to-dependency :locus.elementary.copresheaf.core.protocols/bijection
-  [^Bijection bijection]
-
-  (->Dependency
-    k2-preorder
-    (fn [obj]
-      (case obj
-        0 (inputs bijection)
-        1 (outputs bijection)))
-    (fn [[a b]]
-      (case [a b]
-        [0 0] (identity-function (inputs bijection))
-        [1 1] (identity-function (outputs bijection))
-        [0 1] (underlying-function bijection)
-        [1 0] (underlying-function (inv bijection))))))
-
-(defmethod to-dependency Span
-  [^Span span]
-
-  (->Dependency
-    span-object-order
-    (fn [obj]
-      (case obj
-        0 (span-flags span)
-        1 (span-edges span)
-        2 (span-vertices span)))
-    (fn [[a b]]
-      (case [a b]
-        [0 0] (identity-function (span-flags span))
-        [1 1] (identity-function (span-edges span))
-        [2 2] (identity-function (span-vertices span))
-        [0 1] (edge-function span)
-        [0 2] (vertex-function span)))))
-
-(defmethod to-dependency Cospan
-  [^Cospan cospan]
-
-  (->Dependency
-    cospan-object-order
-    (fn [obj]
-      (case obj
-        0 (first-cospan-source cospan)
-        1 (second-cospan-source cospan)
-        2 (cospan-target cospan)))
-    (fn [[a b]]
-      (case [a b]
-        [0 0] (identity-function (first-cospan-source cospan))
-        [1 1] (identity-function (second-cospan-source cospan))
-        [2 2] (identity-function (cospan-target cospan))
-        [0 2] (first-cospan-function cospan)
-        [1 2] (second-cospan-function cospan)))))
-
-(defmethod to-dependency TriangleCopresheaf
-  [^TriangleCopresheaf triangle]
-
-  (->Dependency
-    t3-order
-    (fn [obj]
-      (case obj
-        0 (triangle-source triangle)
-        1 (triangle-middle triangle)
-        2 (triangle-target triangle)))
-    (fn [[a b]]
-      (case [a b]
-        [0 0] (identity-function (triangle-source triangle))
-        [1 1] (identity-function (triangle-middle triangle))
-        [2 2] (identity-function (triangle-target triangle))
-        [0 1] (prefunction triangle)
-        [1 2] (postfunction triangle)
-        [0 2] (compfunction triangle)))))
-
-(defmethod to-dependency Difunction
-  [^Difunction difunction]
-
-  (->Dependency
-    difunction-order
-    (fn [obj]
-      (case obj
-        0 (inputs (first-function difunction))
-        1 (outputs (first-function difunction))
-        2 (inputs (second-function difunction))
-        3 (outputs (second-function difunction))))
-    (fn [[a b]]
-      (case [a b]
-        [0 0] (identity-function (inputs (first-function difunction)))
-        [1 1] (identity-function (outputs (first-function difunction)))
-        [2 2] (identity-function (inputs (second-function difunction)))
-        [3 3] (identity-function (outputs (second-function difunction)))
-        [0 1] (first-function difunction)
-        [2 3] (second-function difunction)))))
-
-(defmethod to-dependency Dibijection
-  [^Dibijection dibijection]
-
-  (->Dependency
-    dibijection-preorder
-    (fn [obj]
-      (case obj
-        0 (inputs (first-function dibijection))
-        1 (outputs (first-function dibijection))
-        2 (inputs (second-function dibijection))
-        3 (outputs (second-function dibijection))))
-    (fn [[a b]]
-      (case [a b]
-        [0 0] (identity-function (inputs (first-function dibijection)))
-        [1 1] (identity-function (outputs (first-function dibijection)))
-        [2 2] (identity-function (inputs (second-function dibijection)))
-        [3 3] (identity-function (outputs (second-function dibijection)))
-        [0 1] (first-function dibijection)
-        [1 0] (underlying-function (inv (first-bijection dibijection)))
-        [2 3] (second-function dibijection)
-        [3 2] (underlying-function (inv (second-bijection dibijection)))))))
-
-(defmethod to-dependency Diamond
-  [^Diamond diamond]
-
-  (->Dependency
-    diamond-order
-    (fn [obj]
-      (case obj
-        0 (source-input-set diamond)
-        1 (source-output-set diamond)
-        2 (target-input-set diamond)
-        3 (target-output-set diamond)))
-    (fn [[a b]]
-      (case [a b]
-        [0 0] (identity-function (source-input-set diamond))
-        [1 1] (identity-function (source-output-set diamond))
-        [2 2] (identity-function (target-input-set diamond))
-        [3 3] (identity-function (target-output-set diamond))
-
-        [0 1] (source-object diamond)
-        [2 3] (target-object diamond)
-
-        [0 2] (first-function diamond)
-        [1 3] (second-function diamond)
-
-        [0 3] (common-composite-set-function diamond)))))
-
-(defmethod to-dependency Gem
-  [^Gem gem]
-
-  (let [source-bijection (source-object gem)
-        target-bijection (target-object gem)]
-    (->Dependency
-     gem-preorder
-     (fn [obj]
-       0 (inputs (source-object gem))
-       1 (outputs (source-object gem))
-       2 (inputs (target-object gem))
-       3 (outputs (target-object gem)))
-     (fn [[a b]]
-       (case [a b]
-         [0 0] (identity-function (inputs (source-object gem)))
-         [1 1] (identity-function (outputs (source-object gem)))
-         [2 2] (identity-function (inputs (target-object gem)))
-         [3 3] (identity-function (outputs (target-object gem)))
-         [0 1] (underlying-function source-bijection)
-         [1 0] (underlying-function (inv source-bijection))
-         [2 3] (underlying-function target-bijection)
-         [3 2] (underlying-function (inv target-bijection))
-         [0 2] (first-function gem)
-         [0 3] (compose (underlying-function target-bijection) (first-function gem))
-         [1 2] (compose (underlying-function (inv target-bijection)) (second-function gem))
-         [1 3] (second-function gem))))))
-
-; Conversion routines for generally sized copresheaves
-(defmethod to-dependency NSet
-  [^NSet nset]
-
-  (let [colls (.-colls nset)
-        n (count colls)]
-    (->Dependency
-      (nth-antichain n)
-      (fn [i]
-        (nth-set nset i))
-      (fn [[i j]]
-        (identity-function (nth-set nset i))))))
-
-(defmethod to-dependency NFunction
-  [^NFunction nfunction]
-
-  (let [funcs (.-funcs nfunction)
-        arity (count funcs)]
-    (letfn [(nth-set [obj]
-              (if (even? obj)
-                (inputs (nth funcs (/ obj 2)))
-                (outputs (nth funcs (/ (dec obj) 2)))))
-            (get-function [[n m]]
-              (if (= n m)
-                (identity-function (nth-set n))
-                (nth funcs (int (/ n 2)))))]
-      (->Dependency (n-pair-order arity) nth-set get-function))))
-
-(defmethod to-dependency NBijection
-  [^NBijection nbijection]
-
-  (let [funcs (.-bijections nbijection)
-        arity (count funcs)]
-    (letfn [(nth-set [obj]
-              (if (even? obj)
-                (inputs (nth funcs (/ obj 2)))
-                (outputs (nth funcs (/ (dec obj) 2)))))
-            (get-function [[n m]]
-              (if (= n m)
-                (identity-function (nth-set n))
-                (if (< n m)
-                  (underlying-function (nth funcs (int (/ n 2))))
-                  (underlying-function (inv (nth funcs (/ m 2)))))))]
-      (->Dependency (unordered-n-pair-preorder arity) nth-set get-function))))
-
-(defmethod to-dependency ChainCopresheaf
-  [^ChainCopresheaf chain]
-
-  (->Dependency
-    (nth-chain (inc (count (.-functions chain))))
-    (fn [i]
-      (nth-set-from-source chain i))
-    (fn [[a b]]
-      (get-chain-transition-function chain a b))))
-
-; Create a dependency copresheaf by a morphism of dependencies
-(defn create-dependency-by-morphism
-  [^Dependency source, ^Dependency target, ^clojure.lang.IFn func]
-
-  (->Dependency
-    (product
-      (relational-preposet '#{(0 0) (1 1) (0 1)})
-      (.-order source))
-    (fn [[i v]]
-      (case i
-        0 (object-apply source v)
-        1 (object-apply target v)))
-    (fn [[[a b] [c d]]]
-      (let [first-arrow [a c]
-            second-arrow [b d]]
-        (case first-arrow
-          [0 0] (morphism-apply source second-arrow)
-          [1 1] (morphism-apply target second-arrow)
-          [0 1] (compose (morphism-apply target second-arrow) (func b)))))))
-
-(defmethod to-dependency TriangleMorphism
-  [^TriangleMorphism morphism]
-
-  (create-dependency-by-morphism
-    (to-dependency (source-object morphism))
-    (to-dependency (target-object morphism))
-    (fn [obj]
-      (case obj
-        0 (triangle-source-function morphism)
-        1 (triangle-middle-function morphism)
-        2 (triangle-target-function morphism)))))
-
-(defmethod to-dependency MorphismOfSpans
-  [^MorphismOfSpans morphism]
-
-  (create-dependency-by-morphism
-    (to-dependency (source-object morphism))
-    (to-dependency (target-object morphism))
-    (fn [obj]
-      (case obj
-        0 (span-flag-function morphism)
-        1 (span-edge-function morphism)
-        2 (span-vertex-function morphism)))))
-
-(defmethod to-dependency MorphismOfCospans
-  [^MorphismOfCospans morphism]
-
-  (create-dependency-by-morphism
-    (to-dependency (source-object morphism))
-    (to-dependency (target-object morphism))
-    (fn [obj]
-      (case obj
-        0 (first-cospan-source-function morphism)
-        1 (second-cospan-source-function morphism)
-        2 (cospan-target-function morphism)))))
-
-(defmethod to-dependency Cube
-  [^Cube morphism]
-
-  (create-dependency-by-morphism
-    (to-dependency (source-object morphism))
-    (to-dependency (target-object morphism))
-    (fn [obj]
-      (case obj
-        0 (source-input-function morphism)
-        1 (source-output-function morphism)
-        2 (target-input-function morphism)
-        3 (target-output-function morphism)))))
-
-(defmethod to-dependency ChainMorphism
-  [^ChainMorphism morphism]
-
-  (create-dependency-by-morphism
-    (to-dependency (source-object morphism))
-    (to-dependency (target-object morphism))
-    (fn [i]
-      (nth-chain-morphism-component-function morphism i))))
-
-; Copresheaves over height two total preorders on three objects
 (defn lower-bijective-triangle
   [func bijection]
 
@@ -491,6 +250,21 @@
           [0 2] (compose func (underlying-function bijection))
           [1 2] func)))))
 
+(defn relational-lower-bijective-triangle
+  [rel]
+
+  (lower-bijective-triangle
+    (relation-transition-map rel 1 2)
+    (make-bijection-by-function-pair
+      (relation-transition-map rel 0 1)
+      (relation-transition-map rel 1 0))))
+
+; The topos of upper bijective triangles consists of presheaves over the total
+; preorder [1,2]. Its elements are like triangle copresheaves over the total order
+; [1,1,1] except their upper half is invertible.
+(def one-two-preorder
+  (relational-preposet (total-preorder [#{0} #{1 2}])))
+
 (defn upper-bijective-triangle
   [bijection func]
 
@@ -513,6 +287,327 @@
           [2 1] (underlying-function (inv bijection))
           [0 1] func
           [0 2] (compose (underlying-function bijection) func))))))
+
+(defn relational-upper-bijective-triangle
+  [rel]
+
+  (upper-bijective-triangle
+    (make-bijection-by-function-pair
+      (relation-transition-map rel 1 2)
+      (relation-transition-map rel 2 1))
+    (relation-transition-map rel 0 1)))
+
+; The topos of trijections is a natural generalisation of the topos of bijections to
+; a morphism on three objects. Like the topos of bijections, it is boolean and all of
+; its algebraic properties coincide with the topos of sets.
+(def k3-preorder
+  (relational-preposet
+    (total-preorder [#{0 1 2}])))
+
+(defn trijection
+  [f g]
+
+  (let [s0 (inputs g)
+        s1 (outputs g)
+        s2 (outputs f)]
+    (->Dependency
+      k3-preorder
+      (fn [obj]
+        (case obj
+          0 s0
+          1 s1
+          2 s2))
+      (fn [[a b]]
+        (case [a b]
+          [0 0] (identity-function s0)
+          [0 1] (underlying-function g)
+          [0 2] (underlying-function (compose f g))
+          [1 0] (underlying-function (inv g))
+          [1 1] (identity-function s1)
+          [1 2] (underlying-function f)
+          [2 0] (underlying-function (inv (compose f g)))
+          [2 1] (underlying-function (inv f))
+          [2 2] (identity-function s2))))))
+
+(defn relational-trijection
+  [rel]
+
+  (trijection
+    (make-bijection-by-function-pair
+      (relation-transition-map rel 1 2)
+      (relation-transition-map rel 2 1))
+    (make-bijection-by-function-pair
+      (relation-transition-map rel 0 1)
+      (relation-transition-map rel 1 0))))
+
+; The topos of set function pairs is the topos of copresheaves over the index category
+; T_2 + 1. So it is another example of a presheaf topos of a preorder.
+(def t2-plus-one-order
+  (relational-poset '#{(0 0) (1 1) (2 2) (1 2)}))
+
+(defn set-function-pair
+  [coll func]
+
+  (let [s0 coll
+        s1 (inputs func)
+        s2 (outputs func)]
+    (Dependency.
+      t2-plus-one-order
+      (fn [obj]
+        (case obj
+          0 s0
+          1 s1
+          2 s2))
+      (fn [[a b]]
+        (case [a b]
+          [0 0] (identity-function s0)
+          [1 1] (identity-function s1)
+          [2 2] (identity-function s2)
+          [1 2] func)))))
+
+; The topos of set and bijection pairs is the topos of copresheaves over the index category
+; K_2 + 1. So it is another example of a presheaf topos of a preorder.
+(def k2-plus-one-preorder
+  (relational-preposet '#{(0 0) (1 1) (2 2) (1 2) (2 1)}))
+
+(defn set-bijection-pair
+  [coll bijection]
+
+  (let [s0 coll
+        s1 (inputs bijection)
+        s2 (outputs bijection)]
+    (Dependency.
+      k2-plus-one-preorder
+      (fn [obj]
+        (case obj
+          0 s0
+          1 s1
+          2 s2))
+      (fn [[a b]]
+        (case [a b]
+          [0 0] (identity-function s0)
+          [1 1] (identity-function s1)
+          [2 2] (identity-function s2)
+          [1 2] (underlying-function bijection)
+          [2 1] (underlying-function (inv bijection)))))))
+
+; The topos of triples of sets Sets^3 is the next level generalisation of the topos of pairs
+; of sets Sets^2 to three objects instead of two. It is again a boolean topos, as it
+; shares that property with the topos Sets^2 but unlike Sets it is not bivalent.
+(def e3-order
+  (relational-poset (coreflexive-relation #{0 1 2})))
+
+(defn triset
+  [a b c]
+
+  (->Dependency
+    e3-order
+    (fn [n]
+      (case n
+        0 a
+        1 b
+        2 c))
+    (fn [[i j]]
+      (case [i j]
+        [0 0] (identity-function a)
+        [1 1] (identity-function b)
+        [2 2] (identity-function c)))))
+
+; Copresheaves for generalized incidence structures
+(defn nth-span-order
+  [n]
+
+  (relational-poset
+    (weak-order
+      [#{0} (set (range 1 (inc n)))])))
+
+(defn nspan
+  [& funcs]
+
+  (let [n (count funcs)]
+    (letfn [(nth-set [i]
+              (if (zero? i)
+                (inputs (first funcs))
+                (outputs (nth funcs (dec i)))))]
+      (Dependency.
+        (nth-span-order n)
+        nth-set
+        (fn [[i j]]
+          (if (= i j)
+            (identity-function (nth-set i))
+            (nth funcs (dec j))))))))
+
+; Copresheaves for generalized cospans
+(defn nth-cospan-order
+  [n]
+
+  (relational-poset
+    (weak-order
+      [(set (range 1 (inc n))) #{0}])))
+
+(defn ncospan
+  [& funcs]
+
+  (let [n (count funcs)]
+    (letfn [(nth-set [i]
+              (if (zero? i)
+                (outputs (first funcs))
+                (inputs (nth funcs (dec i)))))]
+      (Dependency.
+        (nth-cospan-order n)
+        nth-set
+        (fn [[i j]]
+          (if (= i j)
+            (identity-function (nth-set i))
+            (nth funcs (dec i))))))))
+
+; Multi incidence relations defined by indexed membership relations.
+(defn multi-incidence-order
+  [n]
+
+  (relational-poset
+    (weak-order
+      [(set (range n))
+       (set (range n (+ n 2)))])))
+
+(def two-two-order
+  (multi-incidence-order 2))
+
+(defn nth-member-flags
+  [vertices edges n]
+
+  (seqable-binary-relation
+    edges
+    vertices
+    (fn [[edge vertex]]
+      (contains? (nth edge n) vertex))))
+
+(defn multi-incidence-structure
+  ([vertices edges]
+   (multi-incidence-structure vertices edges (count (first edges))))
+  ([vertices edges arity]
+
+   (let [edge-index (+ arity 1)
+         vertex-index (+ arity 2)]
+     (letfn [(get-component-set [n]
+               (cond
+                 (< n arity) (nth-member-flags vertices edges n)
+                 (= n edge-index) edges
+                 (= n vertex-index) vertices))
+             (get-component-function [[i j]]
+               (cond
+                 (= i j) (identity-function (get-component-set i))
+                 (= j edge-index) (->SetFunction
+                                    (nth-member-flags vertices edges i)
+                                    edges
+                                    first)
+                 (= j vertex-index) (->SetFunction
+                                      (nth-member-flags vertices edges i)
+                                      vertices
+                                      second)))]
+       (->Dependency
+         (multi-incidence-order arity)
+         get-component-set
+         get-component-function)))))
+
+(defn crown
+  [vertices edges] (multi-incidence-structure vertices edges 2))
+
+; Presheaves over the weak order [1,1,2]
+(def lower-common-tree
+  (relational-poset
+    (weak-order [#{0} #{1} #{2 3}])))
+
+(defn combine-prefunction-equal-triangles
+  [triangle1 triangle2]
+
+  (letfn [(get-component-set [n]
+            (case n
+              0 (triangle-source triangle1)
+              1 (triangle-middle triangle1)
+              2 (triangle-target triangle1)
+              3 (triangle-target triangle2)))
+          (get-component-function [[i j]]
+            (if (= i j)
+              (identity-function (get-component-set i))
+              (case [i j]
+                [0 1] (prefunction triangle1)
+                [0 2] (compfunction triangle1)
+                [0 3] (compfunction triangle2)
+                [1 2] (postfunction triangle1)
+                [1 3] (postfunction triangle2))))]
+    (->Dependency
+      lower-common-tree
+      get-component-set
+      get-component-function)))
+
+; Presheaves over the weak order [2, 1, 1]
+(def upper-common-tree
+  (relational-poset
+    (weak-order [#{0 1} #{2} #{3}])))
+
+(defn combine-postfunction-equal-triangles
+  [triangle1 triangle2]
+
+  (letfn [(get-component-set [n]
+            (case n
+              0 (triangle-source triangle1)
+              1 (triangle-source triangle2)
+              2 (triangle-middle triangle1)
+              3 (triangle-target triangle1)))
+          (get-component-function [[i j]]
+            (if (= i j)
+              (identity-function (get-component-set i))
+              (case [i j]
+                [0 2] (prefunction triangle1)
+                [0 3] (compfunction triangle1)
+                [1 2] (prefunction triangle2)
+                [1 3] (compfunction triangle2)
+                [2 3] (postfunction triangle1))))]
+    (->Dependency
+      upper-common-tree
+      get-component-set
+      get-component-function)))
+
+; Presheaves over the disjoint union of total orders T_3 + T_3
+(def ditriangle-order
+  (relational-poset
+    '#{(0 0) (1 1) (2 2) (0 1) (0 2) (1 2) (3 3) (4 4) (5 5) (3 5) (3 4) (4 5)}))
+
+(defn ditriangle
+  [triangle1 triangle2]
+
+  (Dependency.
+    ditriangle-order
+    (fn [obj]
+      (case obj
+        0 (triangle-source triangle1)
+        1 (triangle-middle triangle1)
+        2 (triangle-target triangle1)
+        3 (triangle-source triangle2)
+        4 (triangle-middle triangle2)
+        5 (triangle-target triangle2)))
+    (fn [[a b]]
+      (case [a b]
+        [0 0] (identity-function (triangle-source triangle1))
+        [1 1] (identity-function (triangle-middle triangle1))
+        [2 2] (identity-function (triangle-target triangle1))
+        [3 3] (identity-function (triangle-source triangle2))
+        [4 4] (identity-function (triangle-middle triangle2))
+        [5 5] (identity-function (triangle-target triangle2))
+        [0 1] (prefunction triangle1)
+        [0 2] (compfunction triangle1)
+        [1 2] (postfunction triangle1)
+        [3 4] (prefunction triangle2)
+        [3 5] (compfunction triangle2)
+        [4 5] (postfunction triangle2)))))
+
+(defn combine-composable-difunctions
+  [f g]
+
+  (ditriangle
+    (TriangleCopresheaf. (first-function f) (first-function g))
+    (TriangleCopresheaf. (second-function f) (second-function g))))
 
 ; Create a multijection copresheaf over a complete thin groupoid
 (defn multijection
@@ -544,172 +639,60 @@
         nth-set
         nth-function))))
 
-(defn trijection
-  [a b]
+; Generalized tuples of sets and functions
+(defn height-two-multichain-order
+  [n k]
 
-  (multijection a b))
+  (union
+    (weak-order [(set (range n))])
+    (set
+      (mapcat
+       (fn [i]
+         (let [start-index (+ n (* 2 i))]
+           #{(list start-index start-index)
+             (list start-index (inc start-index))
+             (list (inc start-index) (inc start-index))}))
+       (range k)))))
 
-; Functions and bijections with adjoined sets
-(defn set-function-pair
-  [coll func]
+(defn set-and-function-system
+  [sets functions]
 
-  (let [s0 coll
-        s1 (inputs func)
-        s2 (outputs func)]
-    (Dependency.
-      t2-plus-one-order
-      (fn [obj]
-        (case obj
-          0 s0
-          1 s1
-          2 s2))
-      (fn [[a b]]
-        (case [a b]
-          [0 0] (identity-function s0)
-          [1 1] (identity-function s1)
-          [2 2] (identity-function s2)
-          [1 2] func)))))
+  (letfn [(get-component-set [n]
+            (if (< n (count sets))
+              (nth sets n)
+              (let [adjusted-index (- n (count sets))]
+                (if (even? adjusted-index)
+                  (inputs (nth functions (/ adjusted-index 2)))
+                  (outputs (nth functions (/ (dec adjusted-index) 2)))))))
+          (get-component-function [[i j]]
+            (if (= i j)
+              (identity-function (get-component-set i))
+              (let [adjusted-index (/ (- i (count sets)) 2)]
+                (nth functions adjusted-index))))]
+    (->Dependency
+      (height-two-multichain-order (count sets) (count functions))
+      get-component-set
+      get-component-function)))
 
-(defn set-bijection-pair
-  [coll bijection]
-
-  (let [s0 coll
-        s1 (inputs bijection)
-        s2 (outputs bijection)]
-    (Dependency.
-      k2-plus-one-preorder
-      (fn [obj]
-        (case obj
-          0 s0
-          1 s1
-          2 s2))
-      (fn [[a b]]
-        (case [a b]
-          [0 0] (identity-function s0)
-          [1 1] (identity-function s1)
-          [2 2] (identity-function s2)
-          [1 2] (underlying-function bijection)
-          [2 1] (underlying-function (inv bijection)))))))
-
-; The topos of trisets is the topos Sets^{1+1+1}.
-(defn triset
-  [a b c]
+; Create dependency by morphism
+(defn create-dependency-by-morphism
+  [^Dependency source, ^Dependency target, ^clojure.lang.IFn func]
 
   (->Dependency
-    e3-order
-    (fn [n]
-      (case n
-        0 a
-        1 b
-        2 c))
-    (fn [[i j]]
-      (case [i j]
-        [0 0] (identity-function a)
-        [1 1] (identity-function b)
-        [2 2] (identity-function c)))))
-
-; Crown copresheaves as descriptors of relations of sets
-(defn crown
-  [vertices relation-of-sets]
-
-  (let [first-member-flags (seqable-binary-relation
-                             relation-of-sets
-                             vertices
-                             (fn [[set-pair first-elem]]
-                               (contains? (first set-pair) first-elem)))
-        second-member-flags (seqable-binary-relation
-                              relation-of-sets
-                              vertices
-                              (fn [[set-pair second-elem]]
-                                (contains? (second set-pair) second-elem)))]
-    (->Dependency
-     two-two-order
-     (fn [obj]
-       (case obj
-         0 first-member-flags
-         1 second-member-flags
-         2 relation-of-sets
-         3 vertices))
-     (fn [[i j]]
-       (case [[i j]]
-         [0 0] (identity-function first-member-flags)
-         [1 1] (identity-function second-member-flags)
-         [2 2] (identity-function relation-of-sets)
-         [3 3] (identity-function vertices)
-         [0 2] (->SetFunction first-member-flags relation-of-sets first)
-         [0 3] (->SetFunction first-member-flags vertices second)
-         [1 2] (->SetFunction second-member-flags relation-of-sets first)
-         [1 3] (->SetFunction second-member-flags vertices second))))))
-
-; Copresheaves for generalized incidence structures
-(defn nspan
-  [& funcs]
-
-  (let [n (count funcs)]
-    (letfn [(nth-set [i]
-              (if (zero? i)
-                (inputs (first funcs))
-                (outputs (nth funcs (dec i)))))]
-      (Dependency.
-        (nth-span-order n)
-        nth-set
-        (fn [[i j]]
-          (if (= i j)
-            (identity-function (nth-set i))
-            (nth funcs (dec j))))))))
-
-; Copresheaves for generalized cospans
-(defn ncospan
-  [& funcs]
-
-  (let [n (count funcs)]
-    (letfn [(nth-set [i]
-              (if (zero? i)
-                (outputs (first funcs))
-                (inputs (nth funcs (dec i)))))]
-      (Dependency.
-        (nth-cospan-order n)
-        nth-set
-        (fn [[i j]]
-          (if (= i j)
-            (identity-function (nth-set i))
-            (nth funcs (dec i))))))))
-
-; Copresheaves in the topos of ditriangles
-(defn ditriangle
-  [triangle1 triangle2]
-
-  (Dependency.
-    ditriangle-order
-    (fn [obj]
-      (case obj
-        0 (triangle-source triangle1)
-        1 (triangle-middle triangle1)
-        2 (triangle-target triangle1)
-        3 (triangle-source triangle2)
-        4 (triangle-middle triangle2)
-        5 (triangle-target triangle2)))
-    (fn [[a b]]
-      (case [a b]
-        [0 0] (identity-function (triangle-source triangle1))
-        [1 1] (identity-function (triangle-middle triangle1))
-        [2 2] (identity-function (triangle-target triangle1))
-        [3 3] (identity-function (triangle-source triangle2))
-        [4 4] (identity-function (triangle-middle triangle2))
-        [5 5] (identity-function (triangle-target triangle2))
-        [0 1] (prefunction triangle1)
-        [0 2] (compfunction triangle1)
-        [1 2] (postfunction triangle1)
-        [3 4] (prefunction triangle2)
-        [3 5] (compfunction triangle2)
-        [4 5] (postfunction triangle2)))))
-
-(defn combine-difunctions
-  [f g]
-
-  (ditriangle
-    (TriangleCopresheaf. (first-function f) (first-function g))
-    (TriangleCopresheaf. (second-function f) (second-function g))))
+    (product
+      (relational-preposet '#{(0 0) (1 1) (0 1)})
+      (.-order source))
+    (fn [[i v]]
+      (case i
+        0 (object-apply source v)
+        1 (object-apply target v)))
+    (fn [[[a b] [c d]]]
+      (let [first-arrow [a c]
+            second-arrow [b d]]
+        (case first-arrow
+          [0 0] (morphism-apply source second-arrow)
+          [1 1] (morphism-apply target second-arrow)
+          [0 1] (compose (morphism-apply target second-arrow) (func b)))))))
 
 ; Create a dependency functor from a relational copresheaf
 ; The underlying preorder of the ordering relation provided must be a preorder
@@ -807,6 +790,7 @@
         (list a b (morphism-apply copresheaf [a b])))
       (covering-relation (underlying-relation cat)))))
 
+; Visualisation of dependency copresheaves
 (defmethod visualize Dependency
   [^Dependency dependency]
 

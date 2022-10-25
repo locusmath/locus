@@ -56,6 +56,25 @@
 
 (derive MorphismOfUnitalQuivers :locus.elementary.copresheaf.core.protocols/morphism-of-structured-unital-quivers)
 
+; Components of morphisms of permutable quivers
+(defmethod get-set MorphismOfUnitalQuivers
+  [morphism [i v]]
+
+  (case i
+    0 (get-set (source-object morphism) v)
+    1 (get-set (target-object morphism) v)))
+
+(defmethod get-function MorphismOfUnitalQuivers
+  [morphism [[i j] v]]
+
+  (let [source-data* [0 1 0 0 1 0 0]]
+    (case [i j]
+      [0 0] (get-function (source-object morphism) v)
+      [1 1] (get-function (target-object morphism) v)
+      [0 1] (compose
+              (get-function (target-object morphism) v)
+              (morphism-of-quivers-component-function morphism (get source-data* v))))))
+
 ; Get the morphisms of identity element functions of a morphism of unital quivers
 ; the order of the functions in the morphism is transposed because the identity
 ; element function goes backwards between vertices and edges.

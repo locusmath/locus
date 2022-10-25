@@ -1,4 +1,4 @@
-(ns locus.elementary.dependency.nfunction.nbijection
+(ns locus.elementary.dependency.nbijection.object
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.sequence.core.object :refer :all]
@@ -39,11 +39,30 @@
     (NBijection.
       (map inv bijections))))
 
+; Component morphisms of nth bijections
 (defn nth-bijection
   [^NBijection func, i]
 
   (nth (.-bijections func) i))
 
+; Components of nfunctions
+(defmethod get-set NBijection
+  [nfunction [i v]]
+
+  (case i
+    0 (get-set (source-object nfunction) v)
+    1 (get-set (target-object nfunction) v)))
+
+(defmethod get-function NBijection
+  [nfunction [[i v] [j w]]]
+
+  (case [i j]
+    [0 0] (identity-function (inputs (nth-bijection nfunction v)))
+    [1 1] (identity-function (outputs (nth-bijection nfunction v)))
+    [0 1] (underlying-function (nth-bijection nfunction v))
+    [1 0] (underlying-function (inv (nth-bijection nfunction v)))))
+
+; The parent topos of an n-bijection
 (defn nbijection-type
   [^NBijection func]
 

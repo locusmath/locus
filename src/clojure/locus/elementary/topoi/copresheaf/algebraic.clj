@@ -9,7 +9,6 @@
             [locus.combinat.incidence.incidence-structure :refer :all]
             [locus.magmoid.magma.object :refer :all]
             [locus.algebra.pointed-set.object :refer :all]
-            [locus.algebra.partial-magma.object :refer :all]
             [locus.additive.base.core.protocols :refer :all]
             [locus.additive.semiring.core.object :refer :all])
   (:import (locus.elementary.topoi.copresheaf.object Copresheaf)

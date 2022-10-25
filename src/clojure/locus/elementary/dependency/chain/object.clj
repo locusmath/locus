@@ -16,21 +16,68 @@
 ; over finite chain total orders.
 (deftype ChainCopresheaf [functions])
 
-; Composition sequences
+; Get an nth set starting from the source
 (defn composition-sequence
   [^ChainCopresheaf chain]
 
   (.-functions chain))
 
-(defn chain-composition
-  [^ChainCopresheaf chain]
+(defn nth-set-from-source
+  [chain i]
 
-  (apply compose (composition-sequence chain)))
+  (let [reverse-functions (reverse (composition-sequence chain))]
+    (if (zero? i)
+      (inputs (first reverse-functions))
+      (outputs (nth reverse-functions (dec i))))))
 
+(defn set-sequence-from-source
+  [chain]
+
+  (let [functions (reverse (composition-sequence chain))]
+    (concat
+      (map inputs functions)
+      (list (outputs (last functions))))))
+
+(defn get-function-at-nth-point-from-source
+  [chain i]
+
+  (let [functions (composition-sequence chain)
+        last-index (dec (count functions))]
+    (nth functions (- last-index i))))
+
+(defn get-chain-transition-function
+  [chain x y]
+
+  (if (= x y)
+    (identity-function (nth-set-from-source chain x))
+    (apply
+      compose
+      (map
+        (fn [i]
+          (get-function-at-nth-point-from-source chain i))
+        (reverse (range x y))))))
+
+(defmethod get-set ChainCopresheaf
+  [^ChainCopresheaf chain, i]
+
+  (nth-set-from-source chain i))
+
+(defmethod get-function ChainCopresheaf
+  [^ChainCopresheaf chain, [a b]]
+
+  (get-chain-transition-function chain a b))
+
+; Get the parent topos of a chain copresheaf
 (defn chain-type
   [^ChainCopresheaf chain]
 
   (count (composition-sequence chain)))
+
+; Get the composition of a chain copresheaf
+(defn chain-composition
+  [^ChainCopresheaf chain]
+
+  (apply compose (composition-sequence chain)))
 
 ; Compose components in the chain copresheaf
 (defn compose-components
@@ -40,9 +87,9 @@
         functions (composition-sequence chain)]
     (->ChainCopresheaf
       (concat
-       (take i functions)
-       (list (compose (nth functions j) (nth functions i)))
-       (drop (inc j) functions)))))
+        (take i functions)
+        (list (compose (nth functions j) (nth functions i)))
+        (drop (inc j) functions)))))
 
 (defn adjoin-identity-function
   [chain i]
@@ -51,12 +98,12 @@
         n (count functions)]
     (->ChainCopresheaf
       (concat
-       (take i functions)
-       (let [coll (if (= n i)
-                    (inputs (last functions))
-                    (outputs (nth functions i)))]
-         (list (identity-function coll)))
-       (drop i functions)))))
+        (take i functions)
+        (let [coll (if (= n i)
+                     (inputs (last functions))
+                     (outputs (nth functions i)))]
+          (list (identity-function coll)))
+        (drop i functions)))))
 
 ; Eliminate identity functions from a chain copresheaf
 (defn eliminate-identity-functions
@@ -132,42 +179,6 @@
               chains)))
         (range n)))))
 
-; Get an nth set starting from the source
-(defn nth-set-from-source
-  [chain i]
-
-  (let [reverse-functions (reverse (composition-sequence chain))]
-    (if (zero? i)
-      (inputs (first reverse-functions))
-      (outputs (nth reverse-functions (dec i))))))
-
-(defn set-sequence-from-source
-  [chain]
-
-  (let [functions (reverse (composition-sequence chain))]
-    (concat
-      (map inputs functions)
-      (list (outputs (last functions))))))
-
-(defn get-function-at-nth-point-from-source
-  [chain i]
-
-  (let [functions (composition-sequence chain)
-        last-index (dec (count functions))]
-    (nth functions (- last-index i))))
-
-(defn get-chain-transition-function
-  [chain x y]
-
-  (if (= x y)
-    (identity-function (nth-set-from-source chain x))
-    (apply
-      compose
-      (map
-        (fn [i]
-          (get-function-at-nth-point-from-source chain i))
-        (reverse (range x y))))))
-
 ; Ontology of chain copresheaves
 (defn chain-copresheaf?
   [chain]
@@ -227,5 +238,4 @@
                 generate-copresheaf-data
                 (create-chain-data (composition-sequence chain)))]
     (visualize-clustered-digraph* "LR" p t)))
-
 

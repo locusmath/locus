@@ -12,7 +12,6 @@
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.group.core.object :refer :all]
-            [locus.elementary.action.partial.object :refer :all]
             [locus.elementary.action.core.protocols :refer :all]
             [locus.elementary.category.relation.set-relation :refer :all]
             [locus.elementary.category.partial.function :refer :all]
@@ -45,15 +44,6 @@
 
 ; Semigroups
 (derive PartialTransformationSemigroup :locus.elementary.copresheaf.core.protocols/semigroup)
-
-; Convert partial transformation semigroups into partial action systems
-(defmethod to-partial-action-system PartialTransformationSemigroup
-  [^PartialTransformationSemigroup structure]
-
-  (->PartialActionSystem
-    (underlying-set (.semigroup structure))
-    (.coll structure)
-    (.func structure)))
 
 ; The semigroup of atomic charts describes a preorder as a type of action
 (defn atomic-charts-semigroup

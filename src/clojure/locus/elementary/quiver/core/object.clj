@@ -57,6 +57,34 @@
 
 (derive Quiver ::quiver)
 
+; Source and target functions
+(defn source-function
+  [q]
+
+  (SetFunction. (morphisms q) (objects q) (source-fn q)))
+
+(defn target-function
+  [q]
+
+  (SetFunction. (morphisms q) (objects q) (target-fn q)))
+
+; Components of quivers
+(defmethod get-set ::quiver
+  [quiver x]
+
+  (case x
+    0 (morphisms quiver)
+    1 (objects quiver)))
+
+(defmethod get-function ::quiver
+  [quiver x]
+
+  (case x
+    0 (identity-function (morphisms quiver))
+    1 (identity-function (objects quiver))
+    2 (source-function quiver)
+    3 (target-function quiver)))
+
 ; These are very useful shorthands
 (defn source-element
   [quiv elem]
@@ -88,23 +116,6 @@
       (fn [morphism]
         [morphism (target-element quiver morphism)])
       (morphisms quiver))))
-
-; Source and target functions
-(defn source-function
-  [q]
-
-  (SetFunction.
-    (morphisms q)
-    (objects q)
-    (source-fn q)))
-
-(defn target-function
-  [q]
-
-  (SetFunction.
-    (morphisms q)
-    (objects q)
-    (target-fn q)))
 
 ; Generalized mechanisms for creating quivers
 (defn get-nth-component-map

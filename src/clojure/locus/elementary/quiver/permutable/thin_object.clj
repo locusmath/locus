@@ -87,21 +87,6 @@
 
   (visualize (.edges quiv)))
 
-; Products and coproducts in the topos of permutable quivers
-(defmethod product ThinPermutableQuiver
-  [& quivers]
-
-  (ThinPermutableQuiver.
-    (apply cartesian-product (map objects quivers))
-    (apply product-relation (map morphisms quivers))))
-
-(defmethod coproduct ThinPermutableQuiver
-  [& quivers]
-
-  (ThinPermutableQuiver.
-    (apply cartesian-product (map objects quivers))
-    (apply product-relation (map morphisms quivers))))
-
 ; Duals in the category of thin permutable quivers
 (defmethod dual ThinPermutableQuiver
   [^ThinPermutableQuiver quiver] quiver)

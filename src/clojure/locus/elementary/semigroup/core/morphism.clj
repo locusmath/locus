@@ -28,10 +28,8 @@
   (outputs [this] (underlying-set out-semigroup))
 
   StructuredDifunction
-  (first-function [this]
-    (SetFunction. (inputs this) (outputs this) func))
-  (second-function [this]
-    (SetFunction. #{0} #{0} {0 0}))
+  (first-function [this] (SetFunction. (inputs this) (outputs this) func))
+  (second-function [this] (SetFunction. #{0} #{0} {0 0}))
 
   clojure.lang.IFn
   (invoke [this arg] (func arg))
@@ -40,15 +38,10 @@
   ; Semigroup homomorphisms are also morphisms of functions
   ConcreteHigherMorphism
   (underlying-morphism-of-functions [this]
-    (let [sf (SetFunction.
-               (inputs in-semigroup)
-               (outputs out-semigroup)
-               func)]
-      (Diamond.
-        (underlying-function in-semigroup)
-        (underlying-function out-semigroup)
-        (function-product sf sf)
-        sf))))
+    (morphism-of-binary-operations
+      (underlying-function in-semigroup)
+      (underlying-function out-semigroup)
+      (SetFunction. (inputs this) (outputs this) func))))
 
 (derive SemigroupMorphism :locus.elementary.copresheaf.core.protocols/semigroup-homomorphism)
 

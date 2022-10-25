@@ -8,7 +8,8 @@
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.core.morphism :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
-            [locus.elementary.quiver.unital.object :refer :all])
+            [locus.elementary.quiver.unital.object :refer :all]
+            [locus.elementary.diamond.core.object :refer :all])
   (:import [locus.base.function.core.object SetFunction]
            [locus.elementary.diamond.core.object Diamond]
            (locus.elementary.semigroup.monoid.object Monoid)))
@@ -30,10 +31,8 @@
   (outputs [this] (underlying-set out-monoid))
 
   StructuredDifunction
-  (first-function [this]
-    (SetFunction. (inputs this) (outputs this) func))
-  (second-function [this]
-    (SetFunction. #{0} #{0} {0 0}))
+  (first-function [this] (SetFunction. (inputs this) (outputs this) func))
+  (second-function [this] (SetFunction. #{0} #{0} {0 0}))
 
   clojure.lang.IFn
   (invoke [this arg] (func arg))
@@ -42,15 +41,10 @@
   ; Monoid homomorphisms are also morphisms of functions
   ConcreteHigherMorphism
   (underlying-morphism-of-functions [this]
-    (let [sf (SetFunction.
-               (inputs in-monoid)
-               (outputs out-monoid)
-               func)]
-      (Diamond.
-        (underlying-function in-monoid)
-        (underlying-function out-monoid)
-        (function-product sf sf)
-        sf))))
+    (morphism-of-binary-operations
+      (underlying-function in-monoid)
+      (underlying-function out-monoid)
+      (SetFunction. (inputs this) (outputs this) func))))
 
 (derive MonoidMorphism :locus.elementary.copresheaf.core.protocols/monoid-homomorphism)
 

@@ -49,6 +49,27 @@
 
 (derive Difunction :locus.elementary.copresheaf.core.protocols/difunction)
 
+; Components of difunctions
+(defmethod get-set Difunction
+  [difunction [i v]]
+
+  (case [i v]
+    [0 0] (first-set (source-object difunction))
+    [0 1] (second-set (source-object difunction))
+    [1 0] (first-set (target-object difunction))
+    [1 1] (second-set (target-object difunction))))
+
+(defmethod get-function Difunction
+  [difunction [[i v] [j w]]]
+
+  (case [[i v] [j w]]
+    [[0 0] [0 0]] (identity-function (first-set (source-object difunction)))
+    [[0 1] [0 1]] (identity-function (second-set (source-object difunction)))
+    [[1 0] [1 0]] (identity-function (first-set (target-object difunction)))
+    [[1 1] [1 1]] (identity-function (second-set (target-object difunction)))
+    [[0 0] [1 0]] (first-function difunction)
+    [[0 1] [1 1]] (second-function difunction)))
+
 ; Difunction applications
 (defn first-apply
   [func x]
@@ -182,6 +203,21 @@
     (subset-character new-in (first-set pair))
     (subset-character new-out (second-set pair))))
 
+; Joining pairs of pairs of sets
+(defn join-pair-of-set-pairs
+  [& args]
+
+  (list
+    (apply join-set-pairs (map first args))
+    (apply meet-set-pairs (map second args))))
+
+(defn meet-pair-of-set-pairs
+  [& args]
+
+  (list
+    (apply meet-set-pairs (map first args))
+    (apply meet-set-pairs (map second args))))
+
 ; Products and coproducts in the topos of difunctions
 (defn difunction-product
   [& pairs]
@@ -243,13 +279,6 @@
     (first-function difunction)
     (subfunction (second-function difunction) new-in new-out)))
 
-(defn subdifunction?
-  [difunction [a c] [b d]]
-
-  (and
-    (subfunction? (first-function difunction) a b)
-    (subfunction? (second-function difunction) c d)))
-
 (defn subdifunction
   [difunction [a c] [b d]]
 
@@ -257,23 +286,23 @@
     (subfunction (first-function difunction) a b)
     (subfunction (second-function difunction) c d)))
 
-; Joining pairs of pairs of sets
-(defn join-pair-of-set-pairs
-  [& args]
+; Ontology of subdifunctions
+(defn subdifunction?
+  [difunction [a c] [b d]]
+
+  (and
+    (subfunction? (first-function difunction) a b)
+    (subfunction? (second-function difunction) c d)))
+
+(defn subdifunction-closure
+  [difunction [a c] [b d]]
 
   (list
-    (apply join-set-pairs (map first args))
-    (apply meet-set-pairs (map second args))))
-
-(defn meet-pair-of-set-pairs
-  [& args]
-
-  (list
-    (apply meet-set-pairs (map first args))
-    (apply meet-set-pairs (map second args))))
+    (list a (union c (set-image (first-function difunction) a)))
+    (list b (union d (set-image (second-function difunction) b)))))
 
 ; Enumeration of subobjects of difunctions
-(defn difunction-subalgebras
+(defn subdifunctions
   [difunction]
 
   (set
@@ -296,6 +325,14 @@
     (first-function difunction)
     (quotient-function (second-function difunction) in-partition out-partition)))
 
+(defn quotient-difunction
+  [difunction [partition1 partition2] [partition3 partition4]]
+
+  (Difunction.
+    (quotient-function (first-function difunction) partition1 partition3)
+    (quotient-function (second-function difunction) partition2 partition4)))
+
+; Test for congruences of difunctions
 (defn difunction-congruence?
   [difunction [partition1 partition2] [partition3 partition4]]
 
@@ -303,12 +340,16 @@
     (io-relation? (first-function difunction) partition1 partition3)
     (io-relation? (second-function difunction) partition2 partition4)))
 
-(defn quotient-difunction
+(defn difunction-congruence-closure
   [difunction [partition1 partition2] [partition3 partition4]]
 
-  (Difunction.
-    (quotient-function (first-function difunction) partition1 partition3)
-    (quotient-function (second-function difunction) partition2 partition4)))
+  (list
+    (list
+      partition1
+      (join-set-partitions partition2 (partition-image (first-function difunction) partition1)))
+    (list
+      partition3
+      (join-set-partitions partition4 (partition-image (second-function difunction) partition3)))))
 
 ; The congruence lattices of difunctions
 (defn difunction-congruences

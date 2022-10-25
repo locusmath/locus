@@ -57,6 +57,48 @@
 
 (derive Gem :locus.elementary.copresheaf.core.protocols/gem)
 
+; Gem component arrow functions
+(defn gem-input-set-function
+  [^Gem gem]
+
+  (->SetFunction
+    (inputs (source-object gem))
+    (inputs (target-object gem))
+    (.-input_function gem)))
+
+(defn gem-output-set-function
+  [^Gem gem]
+
+  (->SetFunction
+    (outputs (source-object gem))
+    (outputs (target-object gem))
+    (.-output_function gem)))
+
+(defn gem-component-function
+  [^Gem gem, n]
+
+  (case n
+    0 (gem-input-set-function gem)
+    1 (gem-output-set-function gem)))
+
+; Get sets and functions from gem copresheaves
+(defmethod get-set Gem
+  [gem [i v]]
+
+  (case i
+    0 (get-set (source-object gem) v)
+    1 (get-set (target-object gem) v)))
+
+(defmethod get-function Gem
+  [gem [[i v] [j w]]]
+
+  (case [i j]
+    [0 0] (get-function (source-object gem) [v w])
+    [1 1] (get-function (target-object gem) [v w])
+    [0 1] (compose
+            (get-function (target-object gem) [v w])
+            (gem-component-function gem v))))
+
 ; Composition and identities in the topos of bijections
 (defmethod compose* Gem
   [a b]

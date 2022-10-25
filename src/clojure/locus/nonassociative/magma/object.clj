@@ -15,7 +15,8 @@
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.group.core.object :refer :all])
-  (:import (locus.base.function.core.object SetFunction)))
+  (:import (locus.base.function.core.object SetFunction)
+           (clojure.lang IPersistentMap)))
 
 ; Let S be a set then a magma on S is simply a function of the form
 ; f : S^2 -> S. We consider magmas to be a special subcategory of the
@@ -59,6 +60,11 @@
 
   (Magma. (outputs func) func))
 
+(defmethod to-magma IPersistentMap
+  [coll]
+
+  (to-magma (mapfn coll)))
+
 ; Create a magma by a table
 (defn magma-by-table
   [coll]
@@ -77,6 +83,35 @@
     (fn [i]
       (= i (magma (list i i))))
     (underlying-set magma)))
+
+; Get the central elements of a magma
+(defn central-magma-element?
+  [magma elem]
+
+  (every?
+    (fn [i]
+      (= (magma (list elem i))
+         (magma (list i elem))))
+    (morphisms magma)))
+
+(defn central-elements-of-magma
+  [magma]
+
+  (set
+    (filter
+      (fn [morphism]
+        (central-magma-element? magma morphism))
+      (morphisms magma))))
+
+(defn magma-element-centralizer
+  [magma elem]
+
+  (set
+    (filter
+      (fn [morphism]
+        (= (magma (list morphism elem))
+           (magma (list elem morphism))))
+      (morphisms magma))))
 
 ; We can dualize any magma by reversing its ordering
 (defmethod dual Magma
@@ -149,11 +184,53 @@
     (fn [[c1 c2]]
       (projection partition (magma (list (first c1) (first c2)))))))
 
-; Ontology of magmas
-(defn magma?
+; Magmas as special types of magmoids with a single element
+(defmulti magma? type)
+
+(defmethod magma? :locus.elementary.copresheaf.core.protocols/magma
+  [magma] true)
+
+(defmethod magma? :locus.elementary.copresheaf.core.protocols/magmoid
+  [magmoid] (= (count (objects magmoid)) 1))
+
+; Unital magmas include monoids as a special case
+(defmulti unital-magma? type)
+
+(defmethod unital-magma? :locus.elementary.copresheaf.core.protocols/monoid
+  [monoid] true)
+
+(defmethod unital-magma? :default
   [magma]
 
-  (= (type magma) Magma))
+  (letfn [(magma-identity-element? [magma identity-element]
+            (every?
+              (fn [i]
+                (= (magma (list identity-element i))
+                   (magma (list i identity-element))
+                   i))
+              (morphisms magma)))]
+    (not
+      (every?
+        (fn [i]
+          (not (magma-identity-element? magma i)))
+        (morphisms magma)))))
+
+; Ontology of magmas
+(defn magma-with-zero?
+  [magma]
+
+  (letfn [(magma-zero-element? [magma zero-element]
+            (every?
+              (fn [i]
+                (= (magma (list i zero-element))
+                   (magma (list zero-element i))
+                   zero-element))
+              (morphisms magma)))]
+    (not
+      (every?
+        (fn [i]
+          (not (magma-zero-element? magma i)))
+        (morphisms magma)))))
 
 (defn commutative-magma?
   [magma]
@@ -203,3 +280,4 @@
   (intersection
     commutative-magma?
     idempotent-magma?))
+

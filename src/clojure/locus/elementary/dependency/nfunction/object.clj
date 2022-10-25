@@ -31,11 +31,29 @@
   (target-object [this]
     (NSet. (map outputs funcs))))
 
+; Components of nfunctions:
 (defn nth-function
   [^NFunction func, i]
 
   (nth (.funcs func) i))
 
+; Components of nfunctions
+(defmethod get-set NFunction
+  [nfunction [i v]]
+
+  (case i
+    0 (get-set (source-object nfunction) v)
+    1 (get-set (target-object nfunction) v)))
+
+(defmethod get-function NFunction
+  [diamond [[i v] [j w]]]
+
+  (case [i j]
+    [0 0] (get-function (source-object diamond) [v w])
+    [1 1] (get-function (target-object diamond) [v w])
+    [0 1] (nth-function diamond v)))
+
+; The parent topos of an nfunction copresheaf
 (defn nfunction-type
   [^NFunction func]
 
@@ -56,6 +74,16 @@
   [func]
 
   (NFunction. [func]))
+
+; Get the image of an nfunction
+(defn nset-image
+  [nfunction nset]
+
+  (->NSet
+    (map-indexed
+      (fn [i v]
+        ((nth-function nfunction i) v))
+      (.-colls nset))))
 
 ; Composition and identities in toposes of copresheaves over discrete categories
 (defmethod identity-morphism NSet
@@ -102,4 +130,5 @@
   [func]
 
   (= (type func) NFunction))
+
 

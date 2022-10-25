@@ -20,13 +20,12 @@
 ; copresheaves over the cube shaped partial order. Diamond copresheaves play
 ; such a central role in mathematics, that we must have a special class
 ; defined for dealing with them.
-
 (deftype Cube [source target f g h i]
   AbstractMorphism
   (source-object [this] source)
   (target-object [this] target))
 
-; The morphic components of the cube morphism
+; Component arrows of cube copresheaves
 (defn source-input-function
   [^Cube cube]
 
@@ -58,6 +57,33 @@
     (target-output-set (source-object cube))
     (target-output-set (target-object cube))
     (.-i cube)))
+
+(defn cube-component-function
+  [cube [a b]]
+
+  (case [a b]
+    [0 0] (source-input-function cube)
+    [0 1] (source-output-function cube)
+    [1 0] (target-input-function cube)
+    [1 1] (target-output-function cube)))
+
+; Components of cube copresheaves
+(defmethod get-set Cube
+  [cube [i v]]
+
+  (case i
+    0 (get-set (source-object cube) v)
+    1 (get-set (target-object cube) v)))
+
+(defmethod get-function Cube
+  [cube [[i v] [j w]]]
+
+  (case [i j]
+    [0 0] (get-function (source-object cube) [v w])
+    [1 1] (get-function (target-object cube) [v w])
+    [0 1] (compose
+            (get-function (target-object cube) [v w])
+            (cube-component-function cube v))))
 
 ; Constructors for cubes
 (defmethod identity-morphism Diamond

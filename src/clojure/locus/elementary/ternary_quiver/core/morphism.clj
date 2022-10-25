@@ -31,6 +31,39 @@
   (first-function [this] morphism-function)
   (second-function [this] object-function))
 
+; Component arrows of morphisms of ternary quivers
+(defn morphism-of-ternary-quivers-component-function
+  [quiver x]
+
+  (case x
+    0 (->SetFunction
+        (first-set (source-object quiver))
+        (first-set (target-object quiver))
+        (first-function quiver))
+    1 (->SetFunction
+        (second-set (source-object quiver))
+        (second-set (target-object quiver))
+        (second-function quiver))))
+
+; Components of morphisms of ternary quivers
+(defmethod get-set MorphismOfTernaryQuivers
+  [morphism [i v]]
+
+  (case i
+    0 (get-set (source-object morphism) v)
+    1 (get-set (target-object morphism) v)))
+
+(defmethod get-function MorphismOfTernaryQuivers
+  [morphism [[i j] v]]
+
+  (let [source-data* [0 1 0 0 0]]
+    (case [i j]
+      [0 0] (get-function (source-object morphism) v)
+      [1 1] (get-function (target-object morphism) v)
+      [0 1] (compose
+              (get-function (target-object morphism) v)
+              (morphism-of-ternary-quivers-component-function morphism (get source-data* v))))))
+
 ; Get the morphism of first component functions from the ternary quiver morphism
 (defn morphism-of-first-component-functions
   [^MorphismOfTernaryQuivers morphism]
@@ -105,6 +138,25 @@
     (target-object a)
     (comp (first-function a) (first-function b))
     (comp (second-function a) (second-function b))))
+
+; Products and coproducts in the topos of morphisms of ternary quivers
+(defmethod product MorphismOfTernaryQuivers
+  [& morphisms]
+
+  (->MorphismOfTernaryQuivers
+    (apply product (map source-object morphisms))
+    (apply product (map target-object morphisms))
+    (apply product (map first-function morphisms))
+    (apply product (map second-function morphisms))))
+
+(defmethod coproduct MorphismOfTernaryQuivers
+  [& morphisms]
+
+  (->MorphismOfTernaryQuivers
+    (apply coproduct (map source-object morphisms))
+    (apply coproduct (map target-object morphisms))
+    (apply coproduct (map first-function morphisms))
+    (apply coproduct (map second-function morphisms))))
 
 ; Ontology of morphisms of ternary quivers
 (defn morphism-of-ternary-quivers?

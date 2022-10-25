@@ -51,7 +51,7 @@
 
 (derive TernaryQuiver :locus.elementary.copresheaf.core.protocols/ternary-quiver)
 
-; Accessors for the components of the morphisms of ternary quivers
+; Component functions of a ternary quiver
 (defn first-component
   [^TernaryQuiver q, e]
 
@@ -67,15 +67,6 @@
 
   ((third-component-fn q) e))
 
-(defn transition-triple
-  [^TernaryQuiver q, e]
-
-  (list
-    (first-component q e)
-    (second-component q e)
-    (third-component q e)))
-
-; Component functions of a ternary quiver
 (defn first-component-function
   [quiver]
 
@@ -99,6 +90,48 @@
     (morphisms quiver)
     (objects quiver)
     (third-component-fn quiver)))
+
+; Components of ternary quivers
+(defmethod get-set :locus.elementary.copresheaf.core.protocols/ternary-quiver
+  [quiver x]
+
+  (case x
+    0 (morphisms quiver)
+    1 (objects quiver)))
+
+(defmethod get-function :locus.elementary.copresheaf.core.protocols/ternary-quiver
+  [quiver x]
+
+  (case x
+    0 (identity-function (morphisms quiver))
+    1 (identity-function (objects quiver))
+    2 (first-component-function quiver)
+    3 (second-component-function quiver)
+    4 (third-component-function quiver)))
+
+; Underlying relations and multirelations for ternary quivers
+(defn transition-triple
+  [^TernaryQuiver q, e]
+
+  (list
+    (first-component q e)
+    (second-component q e)
+    (third-component q e)))
+
+(defmethod underlying-multirelation TernaryQuiver
+  [^TernaryQuiver q]
+
+  (multiset
+    (map
+      (fn [e]
+        (transition-triple q e))
+      (morphisms q))))
+
+(defmethod underlying-relation TernaryQuiver
+  [^TernaryQuiver q]
+
+  (set
+    (underlying-multirelation q)))
 
 ; A ternary quiver has three different types of binary quivers associated to it
 (defn front-quiver
@@ -127,22 +160,6 @@
     (objects quiver)
     (first-component-fn quiver)
     (third-component-fn quiver)))
-
-; Underlying relations and multirelations for ternary quivers
-(defmethod underlying-multirelation TernaryQuiver
-  [^TernaryQuiver q]
-
-  (multiset
-    (map
-      (fn [e]
-        (transition-triple q e))
-      (morphisms q))))
-
-(defmethod underlying-relation TernaryQuiver
-  [^TernaryQuiver q]
-
-  (set
-    (underlying-multirelation q)))
 
 ; Create a ternary quiver from a ternary relation
 (defn relational-ternary-quiver
@@ -306,7 +323,7 @@
     (partition-inverse-image (second-component-function quiver) partition)
     (partition-inverse-image (third-component-function quiver) partition)))
 
-; Subobjects and quotients in the topos of ternary quivers
+; Subobjects in the topos of ternary quivers
 (defn ternary-subquiver
   [quiver new-edges new-vertices]
 
@@ -317,20 +334,6 @@
     (second-component-fn quiver)
     (third-component-fn quiver)))
 
-(defn ternary-quotient-quiver
-  [quiver edge-partition vertex-partition]
-
-  (->TernaryQuiver
-    edge-partition
-    vertex-partition
-    (fn [part]
-      (projection edge-partition (first-component quiver (first part))))
-    (fn [part]
-      (projection edge-partition (second-component quiver (first part))))
-    (fn [part]
-      (projection edge-partition (third-component quiver (first part))))))
-
-; Full and wide subquivers in the topos of ternary quivers
 (defn full-ternary-subquiver
   [quiver new-vertices]
 
@@ -348,12 +351,12 @@
 
 ; Checking for ternary subquivers
 (defn ternary-subquiver?
-  [quiver coll]
+  [quiver in-set out-set]
 
   (superset?
     (list
-      (ternary-quiver-set-image quiver coll)
-      coll)))
+      (ternary-quiver-set-image quiver in-set)
+      out-set)))
 
 (defn ternary-subquiver-closure
   [quiver new-in new-out]
@@ -361,6 +364,59 @@
   (list
     new-in
     (union new-out (ternary-quiver-set-image quiver new-in))))
+
+; Enumeration theory for all subobjects of a ternary quiver
+(defn ternary-subquivers
+  [quiver]
+
+  (set
+    (mapcat
+      (fn [in-set]
+        (let [minimal-out-set (ternary-quiver-set-image quiver in-set)
+              possible-out-additions (difference (objects quiver) minimal-out-set)]
+          (map
+            (fn [out-additions]
+              (list in-set (union minimal-out-set out-additions)))
+            (power-set possible-out-additions))))
+      (power-set (morphisms quiver)))))
+
+; Covering relations for ternary quivers
+(defn covering-ternary-subquivers
+  [quiver in-set out-set]
+
+  (set
+    (concat
+      (for [i (difference (morphisms quiver) in-set)
+            :when (ternary-subquiver? quiver #{i} out-set)]
+        (list (conj in-set i) out-set))
+      (for [i (difference (objects quiver) out-set)]
+        (list in-set (conj out-set i))))))
+
+(defn ternary-subquivers-covering
+  [quiv]
+
+  (set
+    (mapcat
+      (fn [[in-set out-set]]
+        (map
+          (fn [[new-in-set new-out-set]]
+            (list [in-set out-set] [new-in-set new-out-set]))
+          (covering-ternary-subquivers quiv in-set out-set)))
+      (ternary-subquivers quiv))))
+
+; Quotients in the topos of ternary quivers
+(defn ternary-quotient-quiver
+  [quiver edge-partition vertex-partition]
+
+  (->TernaryQuiver
+    edge-partition
+    vertex-partition
+    (fn [part]
+      (projection edge-partition (first-component quiver (first part))))
+    (fn [part]
+      (projection edge-partition (second-component quiver (first part))))
+    (fn [part]
+      (projection edge-partition (third-component quiver (first part))))))
 
 ; Check for congruences in the topos of ternary quivers
 (defn ternary-quiver-congruence?
@@ -379,6 +435,46 @@
     (join-set-partitions
       out-partition
       (ternary-quiver-partition-image quiver in-partition))))
+
+; Congruences of ternary quivers
+(defn ternary-quiver-congruences
+  [quiver]
+
+  (set
+    (mapcat
+      (fn [in-partition]
+        (let [current-image-partition (ternary-quiver-partition-image quiver in-partition)]
+          (map
+            (fn [out-partition]
+              (list in-partition out-partition))
+            (set-partition-coarsifications current-image-partition))))
+      (enumerate-set-partitions (morphisms quiver)))))
+
+; Covering relation on congruences of ternary quivers
+(defn ternary-quiver-covering-congruences
+  [quiver in-set out-set]
+
+  (concat
+    (set
+      (for [i (direct-set-partition-coarsifications in-set)
+            :when (set-superpartition?
+                    (list (ternary-quiver-partition-image quiver i) out-set))]
+        (list i out-set)))
+    (set
+      (for [i (direct-set-partition-coarsifications out-set)]
+        (list in-set i)))))
+
+(defn ternary-quiver-congruences-covering
+  [quiver]
+
+  (set
+    (mapcat
+      (fn [[in-partition out-partition]]
+        (map
+          (fn [[new-in-partition new-out-partition]]
+            (list [in-partition out-partition] [new-in-partition new-out-partition]))
+          (ternary-quiver-covering-congruences quiver in-partition out-partition)))
+      (ternary-quiver-congruences quiver))))
 
 ; Ontology of ternary quivers
 (defmulti ternary-quiver? type)

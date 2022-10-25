@@ -51,6 +51,30 @@
 (defmethod visualize PathQuiver
   [quiver] (visualize (underlying-quiver quiver)))
 
+; Components of two globular sets
+(defmethod get-set PathQuiver
+  [two-quiver x]
+
+  (case x
+    0 (objects two-quiver)
+    1 (morphisms two-quiver)
+    2 (two-morphisms two-quiver)))
+
+(defmethod get-function PathQuiver
+  [two-quiver coll]
+
+  (cond
+    (= coll '(0 0 0)) (identity-function (objects two-quiver))
+    (= coll '(1 0 0)) (source-function two-quiver)
+    (= coll '(1 0 1)) (target-function two-quiver)
+    (= coll '(1 1 0)) (identity-function (morphisms two-quiver))
+    (= coll '(2 2 0)) (identity-function (two-morphisms two-quiver))
+    (= coll '(2 1 0)) (s-function two-quiver)
+    (= coll '(2 1 1)) (t-function two-quiver)
+    (= coll '(2 0 0)) (ss-function two-quiver)
+    (= coll '(2 0 1)) (st-function two-quiver)
+    (= coll '(2 0 2)) (tt-function two-quiver)))
+
 ; Get the paths of a path quiver or other object of topos theory
 (defmethod paths PathQuiver
   [^PathQuiver quiv]

@@ -18,7 +18,11 @@
             [locus.elementary.quiver.permutable.thin-object :refer :all]
             [locus.elementary.quiver.dependency.object :refer :all]))
 
-; Thin objects in the topos of dependency quivers
+; A dependency quiver is said to be thin provided that for each hom class Hom(A,B) there is
+; no more then one morphism in the class. In that case the dependency quiver is said to be
+; thin and it can be described by a relation. The identity of an element is the equal
+; ordered pair and the inverse of an ordered pair is its reversal.
+
 (deftype ThinDependencyQuiver [vertices edges]
   ConcreteObject
   (underlying-set [this] vertices)
@@ -63,21 +67,6 @@
 
 (defmethod visualize ThinDependencyQuiver
   [^ThinDependencyQuiver quiver] (visualize (.-edges quiver)))
-
-; Products and coproducts in the topos of dependency quivers
-(defmethod product ThinDependencyQuiver
-  [& quivers]
-
-  (ThinDependencyQuiver.
-    (apply cartesian-product (map objects quivers))
-    (apply product-relation (map morphisms quivers))))
-
-(defmethod coproduct ThinDependencyQuiver
-  [& quivers]
-
-  (ThinDependencyQuiver.
-    (apply cartesian-coproduct (map objects quivers))
-    (apply sum-relation (map morphisms quivers))))
 
 ; Duals in the topos of dependency quivers
 (defmethod dual ThinDependencyQuiver

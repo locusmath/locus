@@ -11,7 +11,11 @@
 ; Morphism in the topos of triangles Sets^{T_3}
 ; Morphisms in triangles have three components ordered one after another which describe the component
 ; morphisms for each of the objects in the base index category T_3 of the copresheaf topos that
-; forms the category of triangle copresheaves.
+; forms the category of triangle copresheaves. At the same time, morphisms of triangles are
+; themselves presheaves in the topos Sets^{T_2 x T_3} which means that they have all attendant
+; presheaf topos theoretic properties associated with them such as products, coproducts,
+; subobjects and quotients.
+
 (deftype TriangleMorphism [source-triangle target-triangle sfn mfn tfn]
   AbstractMorphism
   (source-object [this]
@@ -37,7 +41,7 @@
 
 (derive TriangleMorphism :locus.base.logic.structure.protocols/structured-function)
 
-; Triangle morphisms
+; Triangle component functions
 (defn triangle-source-function
   [^TriangleMorphism func]
 
@@ -61,6 +65,32 @@
     (triangle-target (source-object func))
     (triangle-target (target-object func))
     (.-tfn func)))
+
+(defn triangle-morphism-component-function
+  [triangle n]
+
+  (case n
+    0 (triangle-source-function triangle)
+    1 (triangle-middle-function triangle)
+    2 (triangle-target-function triangle)))
+
+; Components of morphisms of triangles
+(defmethod get-set TriangleMorphism
+  [morphism [i v]]
+
+  (case i
+    0 (get-set (source-object morphism) v)
+    1 (get-set (target-object morphism) v)))
+
+(defmethod get-function TriangleMorphism
+  [morphism [[i v] [j w]]]
+
+  (case [i j]
+    [0 0] (get-function (source-object morphism) [v w])
+    [1 1] (get-function (target-object morphism) [v w])
+    [0 1] (compose
+            (get-function (target-object morphism) [v w])
+            (triangle-morphism-component-function morphism v))))
 
 ; Composition and identities in the topos of triangles
 (defmethod compose* TriangleMorphism

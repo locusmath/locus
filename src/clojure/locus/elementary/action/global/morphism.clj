@@ -1,6 +1,7 @@
 (ns locus.elementary.action.global.morphism
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
+            [locus.elementary.action.core.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.base.partition.core.setpart :refer :all]
             [locus.base.function.core.object :refer :all]
@@ -33,6 +34,22 @@
     (clojure.lang.AFn/applyToHelper this args)))
 
 (derive EquivariantMap :locus.elementary.copresheaf.core.protocols/equivariant-map)
+
+; The component sets and functions of equivariant maps
+(defmethod get-set EquivariantMap
+  [morphism x]
+
+  (case x
+    0 (underlying-set (source-object morphism))
+    1 (underlying-set (target-object morphism))))
+
+(defmethod get-function EquivariantMap
+  [morphism [[i j] m]]
+
+  (case [i j]
+    [0 0] (get-function (source-object morphism) m)
+    [1 1] (get-function (target-object morphism) m)
+    [0 1] (compose (get-function (target-object morphism) m) (underlying-function morphism))))
 
 ; Composition and identities in the topos of monoid actions
 (defmethod compose* EquivariantMap

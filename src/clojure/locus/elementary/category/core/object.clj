@@ -86,6 +86,9 @@
 (defmethod visualize :locus.elementary.copresheaf.core.protocols/category
   [cat] (visualize (underlying-unital-quiver cat)))
 
+(defmethod visualize :locus.elementary.copresheaf.core.protocols/semigroupoid
+  [semigroupoid] (visualize (underlying-quiver semigroupoid)))
+
 ; Special support for thin categories
 (defn compose-ordered-pairs
   [[[a b] [c d]]]
@@ -247,7 +250,7 @@
       (compose a b))))
 
 ; Products and coproducts in the category of categories
-(defmethod product :locus.elementary.copresheaf.core.protocols/category
+(defn category-product
   [& categories]
 
   (->Category
@@ -258,7 +261,7 @@
           (c (list (nth morphisms1 i) (nth morphisms2 i))))
         categories))))
 
-(defmethod coproduct :locus.elementary.copresheaf.core.protocols/category
+(defn category-coproduct
   [& categories]
 
   (->Category
@@ -267,6 +270,12 @@
       (when (= i j)
         (let [c (nth categories i)]
           (list i (c (list v w))))))))
+
+(defmethod product :locus.elementary.copresheaf.core.protocols/category
+  [& categories] (apply category-product categories))
+
+(defmethod coproduct :locus.elementary.copresheaf.core.protocols/category
+  [& categories] (apply category-coproduct categories))
 
 ; The coproduct of monoids
 ; The coproduct of monoids can be computed by converting each of the individual
@@ -289,21 +298,21 @@
 
   (->Category
     (unital-subquiver (underlying-unital-quiver category) new-morphisms new-objects)
-    (.-op category)))
+    category))
 
 (defn wide-subcategory
   [category new-morphisms]
 
   (->Category
     (wide-unital-subquiver (underlying-unital-quiver category) new-morphisms)
-    (.-op category)))
+    category))
 
 (defn full-subcategory
   [category new-objects]
 
   (->Category
     (full-unital-subquiver (underlying-unital-quiver category) new-objects)
-    (.-op category)))
+    category))
 
 ; Testing for subcategories
 (defn compositionally-closed-set?
@@ -418,13 +427,27 @@
      (unital-quiver-congruence? quiver morphism-partition object-partition)
      (compositional-congruence? category morphism-partition))))
 
+(defn fix-partition*
+  [partition]
+
+  (set (map set partition)))
+
+(defn fixed*
+  [pair-partitions]
+
+  (set
+    (map
+      (fn [[a b]]
+        (list (fix-partition* a) (fix-partition* b)))
+      pair-partitions)))
+
 (defn categorical-congruences
   [category]
 
   (filter
     (fn [[morphism-partition object-partition]]
       (compositional-congruence? category morphism-partition))
-    (unital-quiver-congruences (underlying-unital-quiver category))))
+    (fixed* (unital-quiver-congruences (underlying-unital-quiver category)))))
 
 (defn categorical-congruences-relation
   [category]
@@ -600,42 +623,6 @@
     (fn [obj]
       [obj obj []])))
 
-; The new theory of doubles of categories
-; A double of a category C combines it in an ordered fashion with
-; itself C+C, so it has twice as many objects as its predecessor.
-; On the other hand, it has three times as many morphisms, defined
-; by freely combining morphisms from one category to the other
-; in an ordered fashion.
-(defn double-category
-  [category]
-
-  (Category.
-    (UnitalQuiver.
-      (coproduct
-        (morphisms category)
-        (morphisms category)
-        (morphisms category))
-      (coproduct
-        (objects category)
-        (objects category))
-      (fn [[i v]]
-        (case i
-          0 (list 0 (source-element category v))
-          1 (list 1 (source-element category v))
-          2 (list 0 (source-element category v))))
-      (fn [[i v]]
-        (case i
-          0 (list 0 (target-element category v))
-          1 (list 1 (target-element category v))
-          2 (list 1 (target-element category v))))
-      (fn [[i v]]
-        (list i (identity-morphism-of category v))))
-    (fn [[[i v] [j w]]]
-      (cond
-        (or (= i j 0) (= i j 1)) (list i (category (list v w)))
-        (and (= i 2) (= j 0)) (list 2 (category (list v w)))
-        (and (= i 1) (= j 2)) (list 2 (category (list v w)))))))
-
 ; Special classes of categories
 (defn connected-category?
   [category]
@@ -686,14 +673,21 @@
 
   (and
     (category? category)
-    (let [coll (multiplicities-map (underlying-multirelation category))]
-      (every?
-        (fn [pair]
-          (let [[a b] pair]
-            (or
-              (= a b)
-              (<= (get coll pair) 1))))
-        coll))))
+    (loop [remaining-morphisms (seq (morphisms category))
+           found-pairs #{}]
+      (if (empty? remaining-morphisms)
+        true
+        (let [current-morphism (first remaining-morphisms)
+              [a b] (transition category current-morphism)]
+          (if (= a b)
+            (recur
+              (rest remaining-morphisms)
+              found-pairs)
+            (if (contains? found-pairs [a b])
+              false
+              (recur
+                (rest remaining-morphisms)
+                (conj found-pairs [a b])))))))))
 
 ; Ontology of thin categories
 (defmethod thin-category? :locus.elementary.copresheaf.core.protocols/semigroupoid
@@ -944,10 +938,21 @@
 
   (and
     (category? category)
-    (every?
-      (fn [a]
-        (= 1 (quiver-hom-cardinality category a a)))
-      (objects category))))
+    (loop [remaining-morphisms (seq (morphisms category))
+           found-objects #{}]
+      (if (empty? remaining-morphisms)
+        true
+        (let [current-morphism (first remaining-morphisms)
+              [a b] (transition category current-morphism)]
+          (if (not= a b)
+            (recur
+              (rest remaining-morphisms)
+              found-objects)
+            (if (contains? found-objects a)
+              false
+              (recur
+                (rest remaining-morphisms)
+                (conj found-objects a)))))))))
 
 (defn connected-endotrivial-category?
   [category]

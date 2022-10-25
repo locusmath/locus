@@ -31,16 +31,33 @@
   (applyTo [this args]
     (clojure.lang.AFn/applyToHelper this args)))
 
-; Convert morphism of copresheaves into copresheaves
-(defmulti to-copresheaf type)
-
-(defmethod to-copresheaf MorphismOfCopresheaves
+; Index categories for morphisms of copresheaves
+(defmethod index MorphismOfCopresheaves
   [^MorphismOfCopresheaves morphism]
 
-  (let [source-functor (.-source_functor morphism)
-        target-functor (.-target_functor morphism)
+  (category-product t2 (index (source-object morphism))))
+
+; Get sets and function components of morphisms of copresheaves
+(defmethod get-set MorphismOfCopresheaves
+  [morphism [i v]]
+
+  (case i
+    0 (object-apply (source-object morphism) v)
+    1 (object-apply (target-object morphism) v)))
+
+(defmethod get-function MorphismOfCopresheaves
+  [morphism [[i j] v]]
+
+  (let [source (source-object morphism)
+        target (target-object morphism)
+        index-category (index source)
         func (.-func morphism)]
-    (create-copresheaf-by-morphism source-functor target-functor func)))
+    (case [i j]
+      [0 0] (morphism-apply source v)
+      [1 1] (morphism-apply target v)
+      [0 1] (compose
+              (morphism-apply target v)
+              (func (source-element index-category v))))))
 
 ; Composition and identities in the topos of copresheaves
 (defmethod identity-morphism Copresheaf

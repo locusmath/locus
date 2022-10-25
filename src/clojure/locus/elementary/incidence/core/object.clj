@@ -3,6 +3,7 @@
             [locus.base.logic.limit.product :refer :all]
             [locus.base.sequence.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
+            [locus.base.partition.core.setpart :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.function.core.util :refer :all]
@@ -28,6 +29,67 @@
     (->CartesianCoproduct [flags edges vertices])))
 
 (derive Span :locus.base.logic.structure.protocols/structured-set)
+
+; Span components
+(defn span-flags
+  [^Span span]
+
+  (.flags span))
+
+(defn span-vertices
+  [^Span span]
+
+  (.vertices span))
+
+(defn span-edges
+  [^Span span]
+
+  (.edges span))
+
+(defn edge-fn
+  [^Span span]
+
+  (.efn span))
+
+(defn vertex-fn
+  [^Span span]
+
+  (.vfn span))
+
+(defn edge-function
+  [^Span span]
+
+  (SetFunction.
+    (span-flags span)
+    (span-edges span)
+    (.-efn span)))
+
+(defn vertex-function
+  [^Span span]
+
+  (SetFunction.
+    (span-flags span)
+    (span-edges span)
+    (.-vfn span)))
+
+; Get the components of span copresheaves
+(defmethod get-set Span
+  [^Span span, x]
+
+  (case x
+    0 (span-flags span)
+    1 (span-edges span)
+    2 (span-vertices span)))
+
+(defmethod get-function Span
+  [^Span span, [a b]]
+
+  (case [a b]
+    [0 0] (identity-function (span-flags span))
+    [1 1] (identity-function (span-edges span))
+    [2 2] (identity-function (span-vertices span))
+    [0 1] (edge-function span)
+    [0 2] (vertex-function span)))
 
 ; Create a span from a pair of functions
 (defn span
@@ -55,32 +117,17 @@
 (defmethod to-span :locus.base.logic.core.set/universal
   [rel] (relation-to-span rel))
 
-; Components of the span copresheaf
-(defn span-flags
-  [^Span span]
+; Numeric properties of spans
+(def span-order
+  (comp count span-vertices))
 
-  (.flags span))
+(def span-size
+  (comp count span-edges))
 
-(defn span-vertices
-  [^Span span]
+(def span-cardinality-sum
+  (comp count span-flags))
 
-  (.vertices span))
-
-(defn span-edges
-  [^Span span]
-
-  (.edges span))
-
-(defn edge-fn
-  [^Span span]
-
-  (.efn span))
-
-(defn vertex-fn
-  [^Span span]
-
-  (.vfn span))
-
+; Properties of flags
 (defn edge-component
   [^Span span, flag]
 
@@ -91,46 +138,29 @@
 
   ((.vfn span) flag))
 
-(defn edge-function
-  [^Span span]
+(defn flag-pair
+  [^Span span, flag]
 
-  (SetFunction.
-    (span-flags span)
-    (span-edges span)
-    (fn [flag]
-      (edge-component span flag))))
+  (list
+    (edge-component span flag)
+    (vertex-component span flag)))
 
-(defn vertex-function
-  [^Span span]
+(defn flag-triple
+  [^Span span, flag]
 
-  (SetFunction.
-    (span-flags span)
-    (span-edges span)
-    (fn [flag]
-      (vertex-component span flag))))
+  (list flag (edge-component span flag) (vertex-component span flag)))
 
-; The underlying relations of span copresheaves
 (defmethod underlying-relation Span
   [^Span span]
 
   (set
     (map
       (fn [flag]
-        (list flag (edge-component span flag) (vertex-component span flag)))
+        (flag-triple span flag))
       (span-flags span))))
 
 (defmethod underlying-multirelation Span
   [^Span span] (underlying-relation span))
-
-; Numeric properties of spans
-(def span-order
-  (comp count span-vertices))
-
-(def span-size
-  (comp count span-edges))
-
-(def span-cardinality-sum
-  (comp count span-flags))
 
 ; Properties of edges
 (defn get-edge-flags
@@ -215,14 +245,6 @@
   [^Span span, vertex]
 
   (zero? (count (vertex-degree span vertex))))
-
-; Properties of flags
-(defn flag-pair
-  [^Span span, flag]
-
-  (list
-    (edge-component span flag)
-    (vertex-component span flag)))
 
 ; Enumerate special types of edges
 (defn empty-edges
@@ -506,10 +528,10 @@
               (map
                 seq
                 (seqable-binary-relation
-                 edges
-                 vertices
-                 (fn [[edge vertex]]
-                   (contains? edge vertex)))))]
+                  edges
+                  vertices
+                  (fn [[edge vertex]]
+                    (contains? edge vertex)))))]
     (simple-span
       edges
       vertices
@@ -610,74 +632,6 @@
     first
     second))
 
-; Subobjects of spans
-(defn subspan
-  [span new-flags new-edges new-vertices]
-
-  (Span.
-    new-flags
-    new-edges
-    new-vertices
-    (edge-function span)
-    (vertex-function span)))
-
-(defn restrict-flags
-  [span new-flags]
-
-  (Span.
-    new-flags
-    (span-edges span)
-    (span-vertices span)
-    (edge-function span)
-    (vertex-function span)))
-
-(defn subspan?
-  [span new-flags new-edges new-vertices]
-
-  (let [efn (edge-function span)
-        vfn (vertex-function span)]
-    (and
-      (superset?
-        (list (set-image efn new-flags) new-edges))
-      (superset?
-        (list (set-image vfn new-flags) new-vertices)))))
-
-; Quotients in the topos of span copresheaves
-(defn span-congruence?
-  [span flag-partition edge-partition vertex-partition]
-
-  (let [efn (edge-function span)
-        vfn (vertex-function span)]
-    (and
-      (io-relation? efn flag-partition edge-partition)
-      (io-relation? vfn flag-partition vertex-partition))))
-
-(defn quotient-span
-  [span flag-partition edge-partition vertex-partition]
-
-  (let [efn (edge-function span)
-        vfn (vertex-function span)]
-    (span
-      (quotient-function
-        efn
-        flag-partition
-        edge-partition)
-      (quotient-function
-        vfn
-        flag-partition
-        vertex-partition))))
-
-(defn together-injective-quotient
-  [span]
-
-  (restrict-flags
-    span
-    (set
-      (map
-        (fn [flag-set]
-          (first flag-set))
-        (flag-partition span)))))
-
 ; Products and coproducts in the topos of span copresheaves
 (defn span-product
   [& spans]
@@ -718,6 +672,207 @@
   [& args]
 
   (apply span-coproduct args))
+
+; Subobjects of spans
+(defn subspan
+  [span new-flags new-edges new-vertices]
+
+  (Span.
+    new-flags
+    new-edges
+    new-vertices
+    (edge-function span)
+    (vertex-function span)))
+
+(defn restrict-flags
+  [span new-flags]
+
+  (Span.
+    new-flags
+    (span-edges span)
+    (span-vertices span)
+    (edge-function span)
+    (vertex-function span)))
+
+; Ontology of subspans
+(defn subspan?
+  [span new-flags new-edges new-vertices]
+
+  (let [efn (edge-function span)
+        vfn (vertex-function span)]
+    (and
+      (superset?
+        (list (set-image efn new-flags) new-edges))
+      (superset?
+        (list (set-image vfn new-flags) new-vertices)))))
+
+(defn subspan-closure
+  [span new-flags new-edges new-vertices]
+
+  (list
+    new-flags
+    (union new-edges (set-image (edge-function span) new-flags))
+    (union new-vertices (set-image (vertex-function span) new-flags))))
+
+; Enumeration theory for subspans
+(defn subspans
+  [span]
+
+  (let [efn (edge-function span)
+        vfn (vertex-function span)]
+    (set
+     (mapcat
+       (fn [flag-set]
+         (let [minimal-edge-set (set-image efn flag-set)
+               minimal-vertex-set (set-image vfn flag-set)
+               possible-edge-additions (difference (span-edges span) minimal-edge-set)
+               possible-vertex-additions (difference (span-vertices span) minimal-vertex-set)]
+           (for [edges (power-set possible-edge-additions)
+                 vertices (power-set possible-vertex-additions)]
+             (list flag-set (union minimal-edge-set edges) (union minimal-vertex-set vertices)))))
+       (power-set (span-flags span))))))
+
+; Covering relations for span copresheaves
+(defn covering-subspans
+  [span new-flags new-edges new-vertices]
+
+  (let [efn (edge-function span)
+        vfn (vertex-function span)]
+    (set
+      (concat
+        (let [flag-additions (set
+                               (filter
+                                 (fn [flag]
+                                   (and
+                                     (contains? new-edges (efn flag))
+                                     (contains? new-vertices (vfn flag))))
+                                 (difference (span-flags span) new-flags)))]
+          (map
+            (fn [flag-addition]
+              (list (conj new-flags flag-addition) new-edges new-vertices))
+            flag-additions))
+        (let [edge-additions (difference (span-edges span) new-edges)]
+          (map
+            (fn [edge-addition]
+              (list new-flags (conj new-edges edge-addition) new-vertices))
+            edge-additions))
+        (let [vertex-additions (difference (span-vertices span) new-vertices)]
+          (map
+            (fn [vertex-addition]
+              (list new-flags new-edges (conj new-vertices vertex-addition)))
+            vertex-additions))))))
+
+(defn subspans-covering
+  [span]
+
+  (set
+    (mapcat
+      (fn [[a b c]]
+        (map
+          (fn [[x y z]]
+            (list (list a b c) (list x y z)))
+          (covering-subspans span a b c)))
+      (subspans span))))
+
+; Span quotients
+(defn quotient-span
+  [span flag-partition edge-partition vertex-partition]
+
+  (let [efn (edge-function span)
+        vfn (vertex-function span)]
+    (span
+      (quotient-function
+        efn
+        flag-partition
+        edge-partition)
+      (quotient-function
+        vfn
+        flag-partition
+        vertex-partition))))
+
+(defn together-injective-quotient
+  [span]
+
+  (restrict-flags
+    span
+    (set
+      (map
+        (fn [flag-set]
+          (first flag-set))
+        (flag-partition span)))))
+
+; Span congruences
+(defn span-congruence?
+  [span flag-partition edge-partition vertex-partition]
+
+  (let [efn (edge-function span)
+        vfn (vertex-function span)]
+    (and
+      (io-relation? efn flag-partition edge-partition)
+      (io-relation? vfn flag-partition vertex-partition))))
+
+(defn span-congruence-closure
+  [span flag-partition edge-partition vertex-partition]
+
+  (list
+    flag-partition
+    (join-set-partitions
+      edge-partition
+      (partition-image (edge-function span) flag-partition))
+    (join-set-partitions
+      vertex-partition
+      (partition-image (vertex-function span) vertex-partition))))
+
+; Get all congruences of a span copresheaf
+(defn span-congruences
+  [span]
+
+  (let [efn (edge-function span)
+        vfn (vertex-function span)]
+    (set
+      (mapcat
+        (fn [flag-partition]
+          (let [minimal-edge-partition (partition-image efn flag-partition)
+                minimal-vertex-partition (partition-image vfn flag-partition)]
+            (map
+              (fn [[a b]]
+                (list flag-partition a b))
+              (cartesian-product
+                (set-partition-coarsifications minimal-edge-partition)
+                (set-partition-coarsifications minimal-vertex-partition)))))
+        (enumerate-set-partitions (span-flags span))))))
+
+; Covering relations in the topos of span congruences
+(defn span-covering-congruences
+  [span flag-partition edge-partition vertex-partition]
+
+  (let [efn (edge-function span)
+        vfn (vertex-function span)]
+    (set
+      (concat
+        (for [i (direct-set-partition-coarsifications flag-partition)
+              :when (and
+                      (set-superpartition?
+                        (list (partition-image efn i) edge-partition))
+                      (set-superpartition?
+                        (list (partition-image vfn i) vertex-partition)))]
+          (list i edge-partition vertex-partition))
+        (for [i (direct-set-partition-coarsifications edge-partition)]
+          (list flag-partition i vertex-partition))
+        (for [i (direct-set-partition-coarsifications vertex-partition)]
+          (list flag-partition edge-partition i))))))
+
+(defn span-congruences-covering
+  [span]
+
+  (set
+    (mapcat
+      (fn [[p q r]]
+        (map
+          (fn [[new-p new-q new-r]]
+            (list [p q r] [new-p new-q new-r]))
+          (span-covering-congruences span p q r)))
+      (span-congruences span))))
 
 ; Ontology of span copresheaves
 (defn span?
@@ -1016,5 +1171,3 @@
                 #{(list 0 1 (edge-function span))
                   (list 0 2 (vertex-function span))})]
     (visualize-clustered-digraph* "BT" p v)))
-
-

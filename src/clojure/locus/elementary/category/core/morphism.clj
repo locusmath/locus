@@ -44,23 +44,17 @@
 
   ConcreteHigherMorphism
   (underlying-morphism-of-functions [this]
-    (->Diamond
+    (morphism-of-partial-binary-operations
       (underlying-function (source-object this))
       (underlying-function (target-object this))
-      (SetFunction.
-        (inputs (source-object this))
-        (inputs (target-object this))
-        (fn [[morphism1 morphism2]]
-          (list
-            (morphism-function morphism1)
-            (morphism-function morphism2))))
-      (SetFunction.
-        (outputs (source-object this))
-        (outputs (target-object this))
-        morphism-function))))
+      morphism-function)))
 
 ; The position of functors within the type hierarchy
 (derive Functor :locus.elementary.copresheaf.core.protocols/functor)
+
+; Index categories for functors
+(defmethod index Functor
+  [functor] (source-object functor))
 
 ; Classes of functors
 (defn endofunctor?

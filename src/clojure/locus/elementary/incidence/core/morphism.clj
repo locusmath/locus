@@ -16,6 +16,10 @@
 ; Morphisms in the topos Sets^{[1,2]} of span copresheaves
 ; Morphisms of spans have three components: a flag component function, an edge component function,
 ; and a vertex component function. Together they make up the data of a natural transformation.
+; A morphism of spans can also be treated as a presheaf in the topos Sets^{T_2 x [1,2]} so it
+; has all attendant presheaf theoretic functionality associated with it such as products,
+; coproducts, subobjects, and quotients.
+
 (deftype MorphismOfSpans [source-span target-span ffn efn vfn]
   AbstractMorphism
   (source-object [this]
@@ -65,6 +69,43 @@
     (span-vertices (source-object morphism))
     (span-vertices (target-object morphism))
     (.-vfn morphism)))
+
+(defn span-morphism-component-function
+  [morphism n]
+
+  (case n
+    0 (span-flag-function morphism)
+    1 (span-edge-function morphism)
+    2 (span-vertex-function morphism)))
+
+; Components of morphisms of spans
+(defmethod get-set MorphismOfSpans
+  [morphism [i v]]
+
+  (case i
+    0 (get-set (source-object morphism) v)
+    1 (get-set (target-object morphism) v)))
+
+(defmethod get-function MorphismOfSpans
+  [morphism [[i v] [j w]]]
+
+  (case [i j]
+    [0 0] (get-function (source-object morphism) [v w])
+    [1 1] (get-function (target-object morphism) [v w])
+    [0 1] (compose
+            (get-function (target-object morphism) [v w])
+            (span-morphism-component-function morphism v))))
+
+; Inclusions of span copresheaves
+(defn inclusion-of-spans
+  [span a b c]
+
+  (MorphismOfSpans.
+    (subspan span a b c)
+    span
+    (inclusion-function a (span-flags span))
+    (inclusion-function b (span-edges span))
+    (inclusion-function c (span-vertices span))))
 
 ; Composition and identities in the topos of span copresheaves
 (defmethod compose* MorphismOfSpans

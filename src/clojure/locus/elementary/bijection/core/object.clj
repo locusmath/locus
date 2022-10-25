@@ -27,6 +27,9 @@
   (source-object [this] in)
   (target-object [this] out)
 
+  StructuredBijection
+  (underlying-bijection [this] this)
+
   StructuredDiset
   (first-set [this] in)
   (second-set [this] out)
@@ -51,6 +54,23 @@
     (clojure.lang.AFn/applyToHelper this args)))
 
 (derive Bijection :locus.elementary.copresheaf.core.protocols/bijection)
+
+; The elements of bijections
+(defmethod get-set :locus.elementary.copresheaf.core.protocols/bijection
+  [bijection x]
+
+  (case x
+    0 (inputs bijection)
+    1 (outputs bijection)))
+
+(defmethod get-function :locus.elementary.copresheaf.core.protocols/bijection
+  [bijection [a b]]
+
+  (case [a b]
+    [0 0] (identity-function (inputs bijection))
+    [1 1] (identity-function (outputs bijection))
+    [0 1] (underlying-function bijection)
+    [1 0] (underlying-function (inv bijection))))
 
 ; Convert bijections to invertible functions
 (defmethod to-invertible-function Bijection
@@ -133,6 +153,16 @@
     coll
     identity
     identity))
+
+; Make a bijection from an invertible pair of functions
+(defn make-bijection-by-function-pair
+  [f g]
+
+  (->Bijection
+    (inputs g)
+    (outputs g)
+    g
+    f))
 
 ; Create a bijection from a simple pair
 (defn pair-bijection

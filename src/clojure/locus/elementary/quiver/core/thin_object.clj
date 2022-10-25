@@ -58,21 +58,6 @@
 (defmethod visualize ThinQuiver
   [quiv] (visualize (underlying-relation quiv)))
 
-; Products and coproducts of thin quivers with respect to the topos of quivers
-(defmethod product ThinQuiver
-  [& quivers]
-
-  (ThinQuiver.
-    (apply cartesian-product (map objects quivers))
-    (apply product-relation (map morphisms quivers))))
-
-(defmethod coproduct ThinQuiver
-  [& quivers]
-
-  (ThinQuiver.
-    (apply cartesian-coproduct (map objects quivers))
-    (apply sum-relation (map morphisms quivers))))
-
 ; Transposition of thin quivers
 (defmethod dual ThinQuiver
   [^ThinQuiver quiv] (->ThinQuiver (.-vertices quiv) (transpose (.-edges quiv))))

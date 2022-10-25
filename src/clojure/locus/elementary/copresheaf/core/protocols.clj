@@ -411,6 +411,9 @@
 (defmethod groupoid-functor? :default
   [x] (isa? (type x) ::groupoid-functor))
 
+; Index categories of copresheaves
+(defmulti index type)
+
 ; Section elements of copresheaves
 ; Let F : C -> Sets be a copresheaf. Then a section of F is a pair of an object X of C and a member
 ; of the set F(X). The sections of a copresheaf are the elements of their underlying set, in our
