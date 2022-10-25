@@ -44,7 +44,7 @@ Locus is based upon the idea of organizing mathematical theories using presheaf 
 Topos theory can be used to study either the spatial locations in geometry or the memory locations used in computation.
 
 ## Documentation 
-A user manual is provided in the documentation folder. It describes our original research into the topos theoretic foundations of computation and their implementation.
+A user manual is provided in the documentation folder. It describes our original research into the topos theoretic foundations of computation and their implementation. A revised and updated version of the user manual will be developed soon.
 
 ## Authors
 John Bernier
