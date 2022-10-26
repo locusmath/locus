@@ -4,6 +4,7 @@
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
+            [locus.base.partition.core.object :refer [projection]]
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.elementary.bijection.core.object :refer :all]
@@ -61,7 +62,7 @@
     (func arg))
   (applyTo [this args]
     (clojure.lang.AFn/applyToHelper this args)))
-
+s
 (defmethod to-function SetRelation
   [^SetRelation rel]
 
@@ -70,6 +71,7 @@
     (.target rel)
     (.func rel)))
 
+; Underlying relations of visualisation of set relations
 (defmethod underlying-relation SetRelation
   [rel]
 
@@ -86,24 +88,6 @@
 
 (defmethod visualize SetRelation
   [rel] (visualize (underlying-relation rel)))
-
-; Set relation triples
-(defn relation-triple
-  [rel]
-
-  (list
-    (source-object rel)
-    (target-object rel)
-    (underlying-relation rel)))
-
-; Convert an image function into a set relation
-(defn singleton-images-relation
-  [^ImageFunction func]
-
-  (->SetRelation
-    (.source func)
-    (.target func)
-    (.func func)))
 
 ; Set relations form a category Rel of sets and relations
 (defmethod compose* SetRelation
@@ -123,7 +107,47 @@
     coll
     (fn [i] #{i})))
 
-; Rel is a dagger category with the following involution
+; Generalized conversion mechanisms for set relations
+(defmulti to-set-relation type)
+
+(defmethod to-set-relation SetRelation
+  [rel] rel)
+
+(defmethod to-set-relation :locus.base.logic.core.set/universal
+  [rel]
+
+  (SetRelation.
+    (relation-domain rel)
+    (relation-codomain rel)
+    (fn [x]
+      (set (for [[a b] rel
+                 :when (= a x)]
+             b)))))
+
+(defmethod to-set-relation :locus.base.logic.structure.protocols/set-function
+  [func]
+
+  (SetRelation.
+    (inputs func)
+    (outputs func)
+    (fn [x]
+      #{(func x)})))
+
+(defmethod to-set-relation Bijection
+  [bijection]
+
+  (to-set-relation (underlying-function bijection)))
+
+(defmethod to-set-relation IPersistentMap
+  [coll]
+
+  (SetRelation.
+    (set (keys coll))
+    (set (vals coll))
+    (fn [i]
+      #{(get coll i)})))
+
+; Rel is a dagger category with its inverse being the converse operation
 (defn relational-fiber
   [rel target-element]
 
@@ -162,44 +186,6 @@
         (relational-fiber rel i))
       coll)))
 
-(defn relation-inverse-image
-  [rel coll]
-
-  (set
-    (filter
-      (fn [i]
-        (superset? (list (rel i) coll)))
-      (first-set rel))))
-
-; The whole point of our set image and inverse image system adapted to the
-; allegory rel of relations is to support this system of relation restrictions
-(defn restrict-set-relation
-  [rel a b]
-
-  (SetRelation.
-    a
-    b
-    (fn [i]
-      (rel i))))
-
-(defn restrict-set-relation-source
-  [rel new-source]
-
-  (SetRelation.
-    new-source
-    (target-object rel)
-    (fn [i]
-      (rel i))))
-
-(defn restrict-set-relation-target
-  [rel new-target]
-
-  (SetRelation.
-    (source-object rel)
-    new-target
-    (fn [i]
-      (rel i))))
-
 ; Adjoin inputs and outputs to set relations
 (defmethod adjoin-inputs SetRelation
   [rel coll]
@@ -219,8 +205,51 @@
     (fn [i]
       (rel i))))
 
-; Enumeration of relation restriction pairs
-(defn relation-restriction-pair?
+; Set relations have the property that every pair (X,Y) that is a subset of their inputs and their
+; outputs can be used to create a subobject.
+(defn set-subrelation
+  [rel new-in new-out]
+
+  (->SetFunction
+    new-in
+    new-out
+    (fn [i]
+      (intersection new-out (rel i)))))
+
+(defn restrict-set-relation
+  [rel new-in]
+
+  (SetRelation.
+    new-in
+    (target-object rel)
+    (fn [i]
+      (rel i))))
+
+(defn restrict-set-relation-target
+  [rel new-out]
+
+  (set-subrelation rel (source-object rel) new-out))
+
+; Set relations also have the property that every pair (P,Q) of partitions induces a quotient
+; relation as congruences are simply ways of keeping things single-valued and that is not
+; an issue here.
+(defn quotient-set-relation
+  [rel in-partition out-partition]
+
+  (SetRelation.
+    in-partition
+    out-partition
+    (fn [in-part]
+      (let [outs (relational-image rel in-part)]
+        (set
+          (map
+           (fn [out]
+             (projection out-partition out))
+           outs))))))
+
+; Although set relations have the property that every pair of sets (X,y) induces a corresponding
+; subobject we still have a concept of closure that is worth examining.
+(defn set-relation-closed-set?
   [rel a b]
 
   (every?
@@ -228,7 +257,7 @@
       (superset? (list (rel i) b)))
     a))
 
-(defn enumerate-set-subrelations
+(defn set-relation-closed-sets
   [rel]
 
   (let [in (source-object rel)
@@ -241,6 +270,33 @@
               (list new-source (union current-image i)))
             (power-set (difference out current-image)))))
       (->PowerSet in))))
+
+(defn relation-closed-inverse-image
+  [rel coll]
+
+  (set
+    (filter
+      (fn [i]
+        (superset? (list (rel i) coll)))
+      (first-set rel))))
+
+; Set relation triples
+(defn relation-triple
+  [rel]
+
+  (list
+    (source-object rel)
+    (target-object rel)
+    (underlying-relation rel)))
+
+; Convert an image function into a set relation
+(defn singleton-images-relation
+  [^ImageFunction func]
+
+  (->SetRelation
+    (.source func)
+    (.target func)
+    (.func func)))
 
 ; Hom classes in Rel are partially ordered and complemented
 (defn empty-set-relation
@@ -272,41 +328,6 @@
       (fn [i]
         (difference in (rel i))))))
 
-; General mapping conversions for allegories
-(defmulti to-set-relation type)
-
-(defmethod to-set-relation SetFunction
-  [func]
-
-  (SetRelation.
-    (inputs func)
-    (outputs func)
-    (fn [x]
-      #{(func x)})))
-
-(defmethod to-set-relation Bijection
-  [func] (to-set-relation (underlying-function func)))
-
-(defmethod to-set-relation IPersistentMap
-  [func]
-
-  (SetRelation.
-    (set (keys func))
-    (set (vals func))
-    (fn [i]
-      #{(func i)})))
-
-(defmethod to-set-relation :locus.base.logic.core.set/universal
-  [rel]
-
-  (SetRelation.
-    (relation-domain rel)
-    (relation-codomain rel)
-    (fn [x]
-      (set (for [[a b] rel
-                 :when (= a x)]
-             b)))))
-
 ; Convert between set relations and multivalued functions
 (defn set-relation->multivalued-function
   [func]
@@ -325,6 +346,34 @@
     (dimembers (outputs func))
     (fn [i]
       (func i))))
+
+; Products and coproducts of set relations
+(defmethod product SetRelation
+  [& relations]
+
+  (SetRelation.
+    (apply product (map source-object relations))
+    (apply product (map target-object relations))
+    (fn [coll]
+      (apply
+        product
+        (map-indexed
+         (fn [i v]
+           ((nth relations i) v))
+         coll)))))
+
+(defmethod coproduct SetRelation
+  [& relations]
+
+  (SetRelation.
+    (apply coproduct (map source-object relations))
+    (apply coproduct (map target-object relations))
+    (fn [[i v]]
+      (set
+        (map
+          (fn [w]
+            (list i w))
+          ((nth relations i) v))))))
 
 ; The relational hom of two sets
 (defn included-set-relation?

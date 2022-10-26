@@ -49,12 +49,14 @@
 (defmethod identity-morphism Functor
   [functor]
 
-  (NaturalTransformation.
-    functor
-    functor
-    (fn [obj]
-      (identity-morphism
-        ((second-function functor) obj)))))
+  (let [target-category (target-object functor)]
+    (NaturalTransformation.
+     functor
+     functor
+     (fn [obj]
+       (identity-morphism-of
+         target-category
+         (object-apply functor obj))))))
 
 (defmethod compose* NaturalTransformation
   [a b]
@@ -101,27 +103,46 @@
     (fn [[a b]]
       (compose a b))))
 
+; Get the index category of a natural transformation treated as a functor
+(defmethod index NaturalTransformation
+  [^NaturalTransformation transformation]
+
+  (let [source-category (source-object (source-object transformation))]
+    (category-product (thin-category '#{(0 0) (0 1) (1 1)}) source-category)))
+
+(defmethod get-object NaturalTransformation
+  [^NaturalTransformation transformation, [i v]]
+
+  (case i
+    0 (let [source-functor (source-object transformation)]
+        (object-apply source-functor v))
+    1 (let [target-functor (target-object transformation)]
+        (object-apply target-functor v))))
+
+(defmethod get-morphism NaturalTransformation
+  [^NaturalTransformation transformation, [[i j] v]]
+
+  (let [source-functor (source-object transformation)
+        target-functor (target-object transformation)
+        index-category (source-object source-functor)
+        target-category (target-object source-functor)]
+    (case [i j]
+      [0 0] (morphism-apply source-functor v)
+      [1 1] (morphism-apply target-functor v)
+      [0 1] (target-category
+              (list
+                (morphism-apply target-functor v)
+                (transformation (source-element index-category v)))))))
+
 ; Natural transformations are functors over a product category
 (defmethod to-functor NaturalTransformation
   [^NaturalTransformation transformation]
 
   (let [source-functor (source-object transformation)
-        target-functor (target-object transformation)
         index-category (source-object source-functor)
-        target-category (target-object source-functor)
-        double-index-category (category-product (thin-category '#{(0 0) (0 1) (1 1)}) index-category)]
+        target-category (target-object source-functor)]
     (->Functor
-      double-index-category
+      (index transformation)
       target-category
-      (fn [[i v]]
-        (case i
-          0 (object-apply source-functor v)
-          1 (object-apply target-functor v)))
-      (fn [[[i j] v]]
-        (case [i j]
-          [0 0] (morphism-apply source-functor v)
-          [1 1] (morphism-apply target-functor v)
-          [0 1] (target-category
-                  (list
-                    (morphism-apply target-functor v)
-                    (transformation (source-element index-category v)))))))))
+      (partial get-object transformation)
+      (partial get-morphism transformation))))

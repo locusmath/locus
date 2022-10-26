@@ -13,10 +13,10 @@
 ; fundamental topos Sets^[1,2,1] in two different ways. Triangle copresheaves
 ; are equivalent to composable pairs in the topos Sets of sets and functions.
 ; This file implements triangle copresheaves in terms of such composable
-; pairs of functions and it provides all their relevant presheaf
+; pairs of functions, and it provides all their relevant presheaf
 ; theoretic functionality.
 
-(deftype TriangleCopresheaf [f g]
+(deftype SetTriangle [f g]
   ConcreteObject
   (underlying-set [this]
     (->CartesianCoproduct
@@ -24,50 +24,50 @@
        (outputs g)
        (outputs f)])))
 
-(derive TriangleCopresheaf :locus.base.logic.structure.protocols/structured-set)
+(derive SetTriangle :locus.base.logic.structure.protocols/structured-set)
 
 ; Triangle components
 (defn triangle-source
-  [^TriangleCopresheaf triangle]
+  [^SetTriangle triangle]
 
   (inputs (.-g triangle)))
 
 (defn triangle-middle
-  [^TriangleCopresheaf triangle]
+  [^SetTriangle triangle]
 
   (outputs (.-g triangle)))
 
 (defn triangle-target
-  [^TriangleCopresheaf triangle]
+  [^SetTriangle triangle]
 
   (outputs (.-f triangle)))
 
 (defn prefunction
-  [^TriangleCopresheaf triangle]
+  [^SetTriangle triangle]
 
   (.-g triangle))
 
 (defn postfunction
-  [^TriangleCopresheaf triangle]
+  [^SetTriangle triangle]
 
   (.-f triangle))
 
 (defn compfunction
-  [^TriangleCopresheaf triangle]
+  [^SetTriangle triangle]
 
   (compose (.-f triangle) (.-g triangle)))
 
 ; Components of triangles
-(defmethod get-set TriangleCopresheaf
-  [^TriangleCopresheaf triangle, x]
+(defmethod get-set SetTriangle
+  [^SetTriangle triangle, x]
 
   (case x
     0 (triangle-source triangle)
     1 (triangle-middle triangle)
     2 (triangle-target triangle)))
 
-(defmethod get-function TriangleCopresheaf
-  [^TriangleCopresheaf triangle, [a b]]
+(defmethod get-function SetTriangle
+  [^SetTriangle triangle, [a b]]
 
   (case [a b]
     [0 0] (identity-function (triangle-source triangle))
@@ -78,8 +78,8 @@
     [1 2] (postfunction triangle)))
 
 ; The underlying relations of triangles
-(defmethod underlying-relation TriangleCopresheaf
-  [^TriangleCopresheaf triangle]
+(defmethod underlying-relation SetTriangle
+  [^SetTriangle triangle]
 
   (let [prefunction (.-g triangle)
         postfunction (.-f triangle)]
@@ -92,21 +92,21 @@
             (postfunction (prefunction input))))
         (inputs prefunction)))))
 
-(defmethod underlying-multirelation TriangleCopresheaf
+(defmethod underlying-multirelation SetTriangle
   [triangle] (underlying-relation triangle))
 
 ; Generalized conversion mechanisms
 (defn relation-to-triangle
   [rel]
 
-  (->TriangleCopresheaf
+  (->SetTriangle
     (relation-transition-map rel 1 2)
     (relation-transition-map rel 0 1)))
 
 (defmulti to-triangle type)
 
-(defmethod to-triangle TriangleCopresheaf
-  [^TriangleCopresheaf triangle] triangle)
+(defmethod to-triangle SetTriangle
+  [^SetTriangle triangle] triangle)
 
 (defmethod to-triangle :locus.base.logic.core.set/universal
   [rel] (relation-to-triangle rel))
@@ -114,7 +114,7 @@
 (defmethod to-triangle :locus.elementary.copresheaf.core.protocols/bijection
   [bijection]
 
-  (->TriangleCopresheaf
+  (->SetTriangle
     (underlying-function (inv bijection))
     (underlying-function bijection)))
 
@@ -122,35 +122,35 @@
 (defn trivial-triangle
   [coll]
 
-  (TriangleCopresheaf. (identity-function coll) (identity-function coll)))
+  (SetTriangle. (identity-function coll) (identity-function coll)))
 
 (defn prefunction-trivial-triangle
   [func]
 
-  (TriangleCopresheaf. func (identity-function (source-object func))))
+  (SetTriangle. func (identity-function (source-object func))))
 
 (defn postfunction-trivial-triangle
   [func]
 
-  (TriangleCopresheaf. (identity-function (target-object func)) func))
+  (SetTriangle. (identity-function (target-object func)) func))
 
 (defn triple-triangle
   [a b c]
 
-  (->TriangleCopresheaf
+  (->SetTriangle
     (pair-function b c)
     (pair-function a b)))
 
 (defn inclusion-triangle
   [a b c]
 
-  (->TriangleCopresheaf
+  (->SetTriangle
     (inclusion-function b c)
     (inclusion-function a b)))
 
 ; Triangle component sets and functions
 (defn triangle-component-sets
-  [^TriangleCopresheaf triangle]
+  [^SetTriangle triangle]
 
   (list
     (triangle-source triangle)
@@ -158,20 +158,20 @@
     (triangle-target triangle)))
 
 (defn triangle-component-functions
-  [^TriangleCopresheaf triangle]
+  [^SetTriangle triangle]
 
   (list (.-f triangle) (.-g triangle)))
 
 ; Get the kernels of the triangle
 (defn triangle-source-kernels
-  [^TriangleCopresheaf triangle]
+  [^SetTriangle triangle]
 
   (list
     (function-kernel (prefunction triangle))
     (function-kernel (compfunction triangle))))
 
 (defn triangle-target-images
-  [^TriangleCopresheaf triangle]
+  [^SetTriangle triangle]
 
   (list
     (function-image (postfunction triangle))
@@ -181,23 +181,23 @@
 (defn triangle-product
   [& args]
 
-  (TriangleCopresheaf.
+  (SetTriangle.
     (apply product (map postfunction args))
     (apply product (map prefunction args))))
 
 (defn triangle-coproduct
   [& args]
 
-  (TriangleCopresheaf.
+  (SetTriangle.
     (apply coproduct (map postfunction args))
     (apply coproduct (map prefunction args))))
 
-(defmethod product TriangleCopresheaf
+(defmethod product SetTriangle
   [& args]
 
   (apply triangle-product args))
 
-(defmethod coproduct TriangleCopresheaf
+(defmethod coproduct SetTriangle
   [& args]
 
   (apply triangle-coproduct args))
@@ -206,21 +206,21 @@
 (defn subtriangle
   [triangle new-source new-middle new-target]
 
-  (TriangleCopresheaf.
+  (SetTriangle.
     (subfunction (postfunction triangle) new-middle new-target)
     (subfunction (prefunction triangle) new-source new-middle)))
 
 (defn restrict-triangle-source
   [triangle new-source]
 
-  (TriangleCopresheaf.
+  (SetTriangle.
     (postfunction triangle)
     (restrict-function (prefunction triangle) new-source)))
 
 (defn reduce-prefunction
   [triangle new-source new-middle]
 
-  (TriangleCopresheaf.
+  (SetTriangle.
     (postfunction triangle)
     (subfunction (prefunction triangle) new-source new-middle)))
 
@@ -325,7 +325,7 @@
 (defn quotient-triangle
   [triangle source-partition middle-partition target-partition]
 
-  (TriangleCopresheaf.
+  (SetTriangle.
     (quotient-function (postfunction triangle) middle-partition target-partition)
     (quotient-function (prefunction triangle) source-partition middle-partition)))
 
@@ -411,58 +411,58 @@
       (triangle-congruences triangle))))
 
 ; Ontology of triangle copresheaves
-(defn triangle?
+(defn set-triangle?
   [x]
 
-  (= (type x) TriangleCopresheaf))
+  (= (type x) SetTriangle))
 
 (defn prefunction-endo-triangle?
   [x]
 
   (and
-    (triangle? x)
+    (set-triangle? x)
     (endofunction? (prefunction x))))
 
 (defn postfunction-endo-triangle?
   [x]
 
   (and
-    (triangle? x)
+    (set-triangle? x)
     (endofunction? (postfunction x))))
 
 (defn composition-endo-triangle?
   [x]
 
   (and
-    (triangle? x)
+    (set-triangle? x)
     (endofunction? (compfunction x))))
 
 (defn prefunction-trivial-triangle?
   [x]
 
   (and
-    (triangle? x)
+    (set-triangle? x)
     (identity-function? (prefunction x))))
 
 (defn postfunction-trivial-triangle?
   [x]
 
   (and
-    (triangle? x)
+    (set-triangle? x)
     (identity-function? (postfunction x))))
 
 (defn composition-trivial-triangle?
   [x]
 
   (and
-    (triangle? x)
+    (set-triangle? x)
     (identity-function? (compfunction x))))
 
 (defn trivial-triangle?
   [x]
 
   (and
-    (triangle? x)
+    (set-triangle? x)
     (identity-function? (prefunction x))
     (identity-function? (postfunction x))))
 
@@ -471,27 +471,27 @@
   [x]
 
   (and
-    (triangle? x)
+    (set-triangle? x)
     (invertible? (prefunction x))))
 
 (defn postfunction-invertible-triangle?
   [x]
 
   (and
-    (triangle? x)
+    (set-triangle? x)
     (invertible? (postfunction x))))
 
 (defn invertible-triangle?
   [x]
 
   (and
-    (triangle? x)
+    (set-triangle? x)
     (invertible? (prefunction x))
     (invertible? (postfunction x))))
 
 ; Triangles are nicely visualizable
-(defmethod visualize TriangleCopresheaf
-  [^TriangleCopresheaf triangle]
+(defmethod visualize SetTriangle
+  [^SetTriangle triangle]
 
   (let [[p v] (generate-copresheaf-data
                 {0 (triangle-source triangle)

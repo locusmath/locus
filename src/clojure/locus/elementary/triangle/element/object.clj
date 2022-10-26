@@ -6,7 +6,7 @@
             [locus.base.function.core.object :refer :all]
             [locus.base.function.core.util :refer :all]
             [locus.elementary.triangle.core.object :refer :all])
-  (:import (locus.elementary.triangle.core.object TriangleCopresheaf)))
+  (:import (locus.elementary.triangle.core.object SetTriangle)))
 
 ; Elements of triangle copresheaves
 (deftype TriangleElement [triangle id value]
@@ -22,8 +22,8 @@
 
 (derive TriangleElement :locus.base.logic.structure.protocols/element)
 
-(defmethod wrap TriangleCopresheaf
-  [^TriangleCopresheaf triangle [i v]]
+(defmethod wrap SetTriangle
+  [^SetTriangle triangle [i v]]
 
   (TriangleElement. triangle i v))
 

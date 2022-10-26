@@ -18,7 +18,7 @@
            (locus.base.function.core.object SetFunction)
            (locus.elementary.cospan.core.object Cospan)
            (locus.elementary.incidence.core.object Span)
-           (locus.elementary.triangle.core.object TriangleCopresheaf)))
+           (locus.elementary.triangle.core.object SetTriangle)))
 
 ; Objects in the topos Sets^[1, {1,1} 1]
 ; A diamond is so called because when depicted its defining commutative diagram appears
@@ -267,14 +267,14 @@
 (defn input-action-triangle
   [^Diamond diamond]
 
-  (TriangleCopresheaf.
+  (SetTriangle.
     (target-object diamond)
     (input-set-function diamond)))
 
 (defn output-action-triangle
   [^Diamond diamond]
 
-  (TriangleCopresheaf.
+  (SetTriangle.
     (output-set-function diamond)
     (source-object diamond)))
 
@@ -287,7 +287,7 @@
 
 ; Create diamond from pairs of triangles
 (defn combine-triangles
-  [^TriangleCopresheaf in, ^TriangleCopresheaf out]
+  [^SetTriangle in, ^SetTriangle out]
 
   (let [target-function (.-f in)
         input-function (.-g in)
@@ -318,12 +318,12 @@
     (->IdentityFunction (outputs func))))
 
 (defn to-input-action-diamond
-  [^TriangleCopresheaf triangle]
+  [^SetTriangle triangle]
 
   (input-action-diamond (.f triangle) (.g triangle)))
 
 (defn to-output-action-diamond
-  [^TriangleCopresheaf triangle]
+  [^SetTriangle triangle]
 
   (output-action-diamond (.g triangle) (.f triangle)))
 
@@ -335,8 +335,8 @@
         id2 (intrinsic-identity-function? (second-function diamond))]
     (cond
       (and id1 id2) (source-object diamond)
-      id1 (TriangleCopresheaf. (second-function diamond) (source-object diamond))
-      id2 (TriangleCopresheaf. (target-object diamond) (first-function diamond))
+      id1 (SetTriangle. (second-function diamond) (source-object diamond))
+      id2 (SetTriangle. (target-object diamond) (first-function diamond))
       :else diamond)))
 
 ; There are subalgebra and congruence components of morphisms of functions

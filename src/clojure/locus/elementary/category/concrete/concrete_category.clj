@@ -16,6 +16,7 @@
             [locus.elementary.group.permutation.permutation-group :refer :all]
             [locus.elementary.lattice.core.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
+            [locus.elementary.category.partial.function :refer :all]
             [locus.elementary.category.relation.set-relation :refer :all])
   (:import (locus.elementary.semigroup.transformation.transformation_monoid TransformationMonoid)
            (locus.elementary.group.permutation.permutation_group PermutationGroup)))
@@ -134,6 +135,42 @@
       (->PowerSet obj))
     (fn [arrow]
       (to-function arrow))))
+
+; The category of partial functions is a concrete category
+(defn nullable-set
+  [coll]
+
+  (conj
+    (set
+      (map
+        (fn [i]
+          #{i})
+        coll))
+    #{}))
+
+(defn nullable-function
+  [func]
+
+  (->SetFunction
+    (nullable-set (inputs func))
+    (nullable-set (outputs func))
+    (fn [coll]
+      (set (map func coll)))))
+
+(def partial-sets
+  (ConcreteCategory.
+    (->UnitalQuiver
+      partial-function?
+      universal?
+      source-object
+      target-object
+      partial-identity-function)
+    (fn [[a b]]
+      (compose a b))
+    (fn [obj]
+      (nullable-set obj))
+    (fn [arrow]
+      (nullable-function arrow))))
 
 ; By the same token we can consider the dual category of the topos of sets to be concrete
 (def sets-opposite

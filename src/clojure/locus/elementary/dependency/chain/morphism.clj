@@ -8,7 +8,7 @@
             [locus.base.function.core.util :refer :all]
             [locus.elementary.dependency.chain.object :refer :all])
   (:import (locus.base.function.core.object SetFunction)
-           (locus.elementary.dependency.chain.object ChainCopresheaf)))
+           (locus.elementary.dependency.chain.object SetChain)))
 
 ; Let Sets^{T_n} be the topos of copresheaves over a total order T_n. Then a morphism in this
 ; topos is called a morphism of chains. This file exists to support the implementation
@@ -64,8 +64,8 @@
           (compose (nth (.-funcs a) i) (nth (.-funcs b) i)))
         (range n)))))
 
-(defmethod identity-morphism ChainCopresheaf
-  [^ChainCopresheaf chain]
+(defmethod identity-morphism SetChain
+  [^SetChain chain]
 
   (->ChainMorphism
     chain

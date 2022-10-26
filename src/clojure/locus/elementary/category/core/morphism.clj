@@ -9,6 +9,8 @@
             [locus.elementary.difunction.core.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.quiver.core.morphism :refer :all]
+            [locus.elementary.quiver.unital.object :refer :all]
+            [locus.elementary.quiver.unital.morphism :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.semigroup.monoid.morphism :refer :all]
@@ -55,6 +57,21 @@
 ; Index categories for functors
 (defmethod index Functor
   [functor] (source-object functor))
+
+; Composition and identities in the category of categories
+(defmethod compose* Functor
+  [^Functor f ^Functor g]
+
+  (Functor.
+    (source-object g)
+    (target-object f)
+    (comp (.morphism_function f) (.morphism_function g))
+    (comp (.object_function f) (.object_function g))))
+
+(defmethod identity-morphism :locus.elementary.copresheaf.core.protocols/category
+  [category]
+
+  (Functor. category category identity identity))
 
 ; Classes of functors
 (defn endofunctor?
@@ -113,20 +130,68 @@
 
   (morphisms (target-object functor)))
 
-; Composition and identities in the category of categories
-(defmethod compose* Functor
-  [^Functor f ^Functor g]
+; Get all objects or all morphisms of a functor
+(defn all-objects
+  [functor]
 
-  (Functor.
-    (source-object g)
-    (target-object f)
-    (comp (.morphism_function f) (.morphism_function g))
-    (comp (.object_function f) (.object_function g))))
+  (set
+    (map
+      (partial get-object functor)
+      (objects (index functor)))))
 
-(defmethod identity-morphism :locus.elementary.copresheaf.core.protocols/category
-  [category]
+(defn all-morphisms
+  [functor]
 
-  (Functor. category category identity identity))
+  (set
+    (map
+      (partial get-morphism functor)
+      (morphisms (index functor)))))
+
+; Create special types of functors
+(defn object-functor
+  [category obj]
+
+  (->Functor
+    (thin-category (weak-order [#{0}]))
+    category
+    (constantly (identity-morphism-of category obj))
+    (constantly obj)))
+
+(defn arrow-functor
+  [category morphism]
+
+  (->Functor
+    (thin-category (weak-order [#{0} #{1}]))
+    category
+    (fn [obj]
+      (case obj
+        0 (source-element category morphism)
+        1 (target-element category morphism)))
+    (fn [[a b]]
+      (case [a b]
+        [0 0] (source-identity category morphism)
+        [1 1] (target-identity category morphism)
+        [0 1] morphism))))
+
+(defn path-functor
+  [category [f g]]
+
+  (->Functor
+    (thin-category (weak-order [#{0} #{1} #{2}]))
+    category
+    (fn [obj]
+      (case obj
+        0 (source-element category g)
+        1 (target-element category g)
+        2 (target-element category f)))
+    (fn [[a b]]
+      (case [a b]
+        [0 0] (source-identity category g)
+        [0 1] g
+        [0 2] (category (list f g))
+        [1 1] (target-identity category g)
+        [1 2] f
+        [2 2] (target-identity category f)))))
 
 ; Functorial conversions
 (defmulti to-functor type)

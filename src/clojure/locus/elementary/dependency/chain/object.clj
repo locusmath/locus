@@ -14,11 +14,11 @@
 ; it is common to deal with chain copresheaves with additional structure. In this
 ; file we will simply focus on the elementary topos theoretic aspects of copresheaves
 ; over finite chain total orders.
-(deftype ChainCopresheaf [functions])
+(deftype SetChain [functions])
 
 ; Get an nth set starting from the source
 (defn composition-sequence
-  [^ChainCopresheaf chain]
+  [^SetChain chain]
 
   (.-functions chain))
 
@@ -57,25 +57,25 @@
           (get-function-at-nth-point-from-source chain i))
         (reverse (range x y))))))
 
-(defmethod get-set ChainCopresheaf
-  [^ChainCopresheaf chain, i]
+(defmethod get-set SetChain
+  [^SetChain chain, i]
 
   (nth-set-from-source chain i))
 
-(defmethod get-function ChainCopresheaf
-  [^ChainCopresheaf chain, [a b]]
+(defmethod get-function SetChain
+  [^SetChain chain, [a b]]
 
   (get-chain-transition-function chain a b))
 
 ; Get the parent topos of a chain copresheaf
 (defn chain-type
-  [^ChainCopresheaf chain]
+  [^SetChain chain]
 
   (count (composition-sequence chain)))
 
 ; Get the composition of a chain copresheaf
 (defn chain-composition
-  [^ChainCopresheaf chain]
+  [^SetChain chain]
 
   (apply compose (composition-sequence chain)))
 
@@ -85,7 +85,7 @@
 
   (let [j (inc i)
         functions (composition-sequence chain)]
-    (->ChainCopresheaf
+    (->SetChain
       (concat
         (take i functions)
         (list (compose (nth functions j) (nth functions i)))
@@ -96,7 +96,7 @@
 
   (let [functions (composition-sequence chain)
         n (count functions)]
-    (->ChainCopresheaf
+    (->SetChain
       (concat
         (take i functions)
         (let [coll (if (= n i)
@@ -109,39 +109,42 @@
 (defn eliminate-identity-functions
   [chain]
 
-  (->ChainCopresheaf
+  (->SetChain
     (filter
       (fn [function]
         (not (identity-function? function)))
       (composition-sequence chain))))
 
 ; Conversion multimethods
-(defmulti to-chain-copresheaf type)
+(defmulti to-set-chain type)
 
-(defmethod to-chain-copresheaf ChainCopresheaf
-  [^ChainCopresheaf chain] chain)
+(defmethod to-set-chain SetChain
+  [^SetChain chain] chain)
 
-(defmethod to-chain-copresheaf SetFunction
-  [^SetFunction func] (->ChainCopresheaf [func]))
+(defmethod to-set-chain SetFunction
+  [^SetFunction func] (->SetChain [func]))
 
 (defn singleton-chain
   [& coll]
 
-  (ChainCopresheaf.
+  (SetChain.
     (reverse
       (map
         (fn [i]
           (pair-function (nth coll i) (nth coll (inc i))))
         (range (dec (count coll)))))))
 
-(defmethod to-chain-copresheaf clojure.lang.ISeq
+(defmethod to-set-chain clojure.lang.ISeq
+  [coll] (apply singleton-chain coll))
+
+(defmethod to-set-chain clojure.lang.IPersistentVector
   [coll] (apply singleton-chain coll))
 
 ; Create an inclusion chain from a monotone sequence of sets
 (defn inclusion-chain
   [coll]
 
-  (ChainCopresheaf.
+  (SetChain.
     (reverse
       (map
         (fn [i]
@@ -149,11 +152,11 @@
         (range (dec (count coll)))))))
 
 ; Products and coproducts in topoi of chain copresheaves
-(defmethod product ChainCopresheaf
+(defmethod product SetChain
   [& chains]
 
   (let [n (chain-type (first chains))]
-    (ChainCopresheaf.
+    (SetChain.
       (map
         (fn [i]
           (apply
@@ -164,11 +167,11 @@
               chains)))
         (range n)))))
 
-(defmethod coproduct ChainCopresheaf
+(defmethod coproduct SetChain
   [& chains]
 
   (let [n (chain-type (first chains))]
-    (ChainCopresheaf.
+    (SetChain.
       (map
         (fn [i]
           (apply
@@ -180,37 +183,37 @@
         (range n)))))
 
 ; Ontology of chain copresheaves
-(defn chain-copresheaf?
+(defn set-chain?
   [chain]
 
-  (= (type chain) ChainCopresheaf))
+  (= (type chain) SetChain))
 
 (defn chain-of-injective-functions?
   [chain]
 
   (and
-    (chain-copresheaf? chain)
+    (set-chain? chain)
     (every? injective? (composition-sequence chain))))
 
 (defn chain-of-surjective-functions?
   [chain]
 
   (and
-    (chain-copresheaf? chain)
+    (set-chain? chain)
     (every? surjective? (composition-sequence chain))))
 
 (defn chain-of-invertible-functions?
   [chain]
 
   (and
-    (chain-copresheaf? chain)
+    (set-chain? chain)
     (every? invertible? (composition-sequence chain))))
 
 (defn identity-free-chain?
   [chain]
 
   (and
-    (chain-copresheaf? chain)
+    (set-chain? chain)
     (every?
       (fn [i]
         (not (identity-function? i)))
@@ -231,8 +234,8 @@
                   functions)]
     (list (vector->map colls) triples)))
 
-(defmethod visualize ChainCopresheaf
-  [^ChainCopresheaf chain]
+(defmethod visualize SetChain
+  [^SetChain chain]
 
   (let [[p t] (apply
                 generate-copresheaf-data

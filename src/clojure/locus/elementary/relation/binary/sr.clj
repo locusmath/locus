@@ -78,6 +78,16 @@
         ((nth relations i) (list x y))))
     {:count (apply + (map count relations))}))
 
+; Take a set system and gets corresponding inclusion partial ordering
+(defn family-inclusion-ordering
+  [coll]
+
+  (SeqableRelation.
+    coll
+    (fn [[i j]]
+      (superset? (list i j)))
+    {}))
+
 ; Complete relations
 (defn complete-relation
   [coll]

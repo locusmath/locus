@@ -9,6 +9,7 @@
             [locus.elementary.semigroup.core.morphism :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
+            [locus.elementary.quiver.unital.morphism :refer :all]
             [locus.elementary.diamond.core.object :refer :all])
   (:import [locus.base.function.core.object SetFunction]
            [locus.elementary.diamond.core.object Diamond]
@@ -57,16 +58,6 @@
       (functor? func)
       (monoid? (source-object func))
       (monoid? (target-object func)))))
-
-; Identity element function morphisms
-(defn morphism-of-identity-element-functions
-  [func]
-
-  (Diamond.
-    (identity-element-function (source-object func))
-    (identity-element-function (target-object func))
-    (identity-function #{'()})
-    (underlying-function func)))
 
 ; Composition and identities
 (defmethod compose* MonoidMorphism

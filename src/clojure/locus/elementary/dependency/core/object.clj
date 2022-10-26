@@ -31,7 +31,7 @@
             [locus.elementary.diamond.core.morphism :refer :all]
             [locus.elementary.dependency.chain.morphism :refer :all])
   (:import (locus.elementary.bijection.core.object Bijection)
-           (locus.elementary.triangle.core.object TriangleCopresheaf)
+           (locus.elementary.triangle.core.object SetTriangle)
            (locus.elementary.incidence.core.object Span)
            (locus.elementary.cospan.core.object Cospan)
            (locus.elementary.difunction.core.object Difunction)
@@ -41,7 +41,7 @@
            (locus.elementary.dependency.nset.object NSet)
            (locus.elementary.dependency.nfunction.object NFunction)
            (locus.elementary.dependency.nbijection.object NBijection)
-           (locus.elementary.dependency.chain.object ChainCopresheaf)
+           (locus.elementary.dependency.chain.object SetChain)
            (locus.elementary.triangle.core.morphism TriangleMorphism)
            (locus.elementary.incidence.core.morphism MorphismOfSpans)
            (locus.elementary.cospan.core.morphism MorphismOfCospans)
@@ -97,7 +97,7 @@
   (relational-preposet
     (total-preorder [#{0 1}])))
 
-(defmethod index TriangleCopresheaf
+(defmethod index SetTriangle
   [triangle]
 
   (relational-poset
@@ -192,8 +192,8 @@
     (to-preposet (total-preorder [#{0 1}]))
     (nth-antichain (nbijection-type nbijection))))
 
-(defmethod index ChainCopresheaf
-  [^ChainCopresheaf chain]
+(defmethod index SetChain
+  [^SetChain chain]
 
   (nth-chain (inc (count (composition-sequence chain)))))
 
@@ -606,8 +606,8 @@
   [f g]
 
   (ditriangle
-    (TriangleCopresheaf. (first-function f) (first-function g))
-    (TriangleCopresheaf. (second-function f) (second-function g))))
+    (SetTriangle. (first-function f) (first-function g))
+    (SetTriangle. (second-function f) (second-function g))))
 
 ; Create a multijection copresheaf over a complete thin groupoid
 (defn multijection
@@ -768,6 +768,19 @@
       #{obj})
     (fn [[a b]]
       (pair-function a b))))
+
+; The copresheaf that takes a family of sets and that maps each ordered pair in its
+; partial order expressed as a thin category to an inclusion function.
+(defn inclusion-dependency
+  [family]
+
+  (Dependency.
+    (->Poset
+      family
+      (family-inclusion-ordering family))
+    identity
+    (fn [[a b]]
+      (inclusion-function a b))))
 
 ; Get the information necessary to turn a dependency copresheaf into a visualisation
 (defn object-indexed-family

@@ -69,7 +69,6 @@
 (derive ::semigroupoid ::structured-semigroupoid)
 (derive ::category ::structured-category)
 (derive ::groupoid ::structured-dependency-quiver)
-(derive ::unital-magmoid ::structured-unital-quiver)
 
 (derive ::magmoid ::partial-magmoid)
 (derive ::thin-partial-magmoid ::partial-magmoid)
@@ -79,20 +78,15 @@
 (derive ::partial-semigroup ::partial-magma)
 (derive ::semigroup ::partial-semigroup)
 
-(derive ::unital-magmoid ::magmoid)
 (derive ::semigroupoid ::magmoid)
 (derive ::category ::semigroupoid)
-(derive ::category ::unital-magmoid)
 (derive ::groupoid ::category)
 
 (derive ::magma ::magmoid)
-(derive ::unital-magma ::unital-magmoid)
-(derive ::unital-magma ::magma)
 (derive ::semigroup ::semigroupoid)
 (derive ::semigroup ::magma)
 (derive ::monoid ::category)
 (derive ::monoid ::semigroup)
-(derive ::monoid ::unital-magma)
 (derive ::group ::groupoid)
 (derive ::group ::monoid)
 (derive ::group-with-zero ::monoid)
@@ -140,6 +134,9 @@
 (derive ::monoid-homomorphism ::functor)
 (derive ::group-homomorphism ::monoid-homomorphism)
 (derive ::group-homomorphism ::groupoid-functor)
+
+; Ontology of structure copresheaves
+(derive ::bicopresheaf ::structure-copresheaf)
 
 ; Structured copresheaves in topos theory
 ; Structured pairs of sets, bijections, pairs of functions, pairs of bijections, morphisms
@@ -248,6 +245,21 @@
   [functor morphism]
 
   ((first-function functor) morphism))
+
+; The get object and get morphism functions for functors
+(defmulti get-object (fn [i obj] (type i)))
+
+(defmethod get-object :default
+  [functor object]
+
+  (object-apply functor object))
+
+(defmulti get-morphism (fn [i obj] (type i)))
+
+(defmethod get-morphism :default
+  [functor morphism]
+
+  (morphism-apply functor morphism))
 
 ; Let C be a category, then C is naturally associated with some generating set of morphisms
 ; upon which all the morphisms of C can be described. In particular, in order to define a copresheaf

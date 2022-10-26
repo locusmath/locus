@@ -52,7 +52,7 @@
            (locus.elementary.two_quiver.globular.object TwoGlobularSet)
            (locus.elementary.two_quiver.path.object PathQuiver)
            (locus.base.function.core.object SetFunction)
-           (locus.elementary.triangle.core.object TriangleCopresheaf)
+           (locus.elementary.triangle.core.object SetTriangle)
            (locus.elementary.category.core.morphism Functor)
            (locus.elementary.lattice.core.object Lattice)))
 
@@ -742,7 +742,7 @@
 (defmethod index :locus.elementary.copresheaf.core.protocols/partial-magmoid
   [obj] compositional-quiver-index-category)
 
-(defmethod index :locus.elementary.copresheaf.core.protocols/unital-magmoid
+(defmethod index :locus.elementary.copresheaf.core.protocols/category
   [obj] compositional-unital-quiver-index-category)
 
 (defmethod index :locus.elementary.copresheaf.core.protocols/groupoid
@@ -968,7 +968,7 @@
 ; take on the basic idea of a diamond copresheaf, which is so fundamental
 ; to our theory of the topos of functions
 (defn different-composition-diamond-copresheaf
-  [^TriangleCopresheaf first-triangle, ^TriangleCopresheaf second-triangle]
+  [^SetTriangle first-triangle, ^SetTriangle second-triangle]
 
   (letfn [(nth-set [obj]
             (case obj

@@ -6,7 +6,7 @@
             [locus.base.function.core.object :refer :all]
             [locus.elementary.diamond.core.object :refer :all]
             [locus.elementary.triangle.core.object :refer :all])
-  (:import (locus.elementary.triangle.core.object TriangleCopresheaf)))
+  (:import (locus.elementary.triangle.core.object SetTriangle)))
 
 ; Morphism in the topos of triangles Sets^{T_3}
 ; Morphisms in triangles have three components ordered one after another which describe the component
@@ -103,7 +103,7 @@
     (comp (.mfn a) (.mfn b))
     (comp (.tfn a) (.tfn b))))
 
-(defmethod identity-morphism TriangleCopresheaf
+(defmethod identity-morphism SetTriangle
   [^TriangleMorphism triangle]
 
   (TriangleMorphism.
@@ -178,8 +178,8 @@
   [f g]
 
   (->TriangleMorphism
-    (->TriangleCopresheaf (first-function f) (first-function g))
-    (->TriangleCopresheaf (second-function f) (second-function g))
+    (->SetTriangle (first-function f) (first-function g))
+    (->SetTriangle (second-function f) (second-function g))
     (source-object g)
     (target-object g)
     (target-object f)))
@@ -197,7 +197,7 @@
 
 ; Subobject classifiers in the topos Sets^{T_3}
 (def truth-triangle
-  (TriangleCopresheaf.
+  (SetTriangle.
     (mapfn {0 0, 1/2 1, 1 1})
     (mapfn {0 0, 1/3 1/2, 2/3 1, 1 1})))
 
