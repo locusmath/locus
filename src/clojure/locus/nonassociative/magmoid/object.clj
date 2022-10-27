@@ -80,6 +80,14 @@
 
   (->Magmoid (dual (underlying-quiver magmoid)) (comp magmoid reverse)))
 
+; Get the endomorphism magma of an object of a magmoid
+(defn endomorphism-magma
+  [magmoid x]
+
+  (->Magma
+    (quiver-hom-class magmoid x x)
+    magmoid))
+
 ; Subobjects of magmoids
 (defn restrict-magmoid
   [magmoid new-morphisms new-objects]

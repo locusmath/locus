@@ -292,6 +292,15 @@
     (dual (underlying-unital-quiver cat))
     (comp cat reverse)))
 
+; Get the endomorphism monoid of an object of a category
+(defn endomorphism-monoid
+  [category x]
+
+  (->Monoid
+    (quiver-hom-class category x x)
+    category
+    (identity-morphism-of category x)))
+
 ; We need some way of dealing with subobjects of categories
 (defn restrict-category
   [category new-morphisms new-objects]
@@ -427,18 +436,15 @@
      (unital-quiver-congruence? quiver morphism-partition object-partition)
      (compositional-congruence? category morphism-partition))))
 
-(defn fix-partition*
-  [partition]
-
-  (set (map set partition)))
-
-(defn fixed*
+(defn ^{:private true} fixed*
   [pair-partitions]
 
   (set
     (map
       (fn [[a b]]
-        (list (fix-partition* a) (fix-partition* b)))
+        (list
+          (set (map set a))
+          (set (map set b))))
       pair-partitions)))
 
 (defn categorical-congruences

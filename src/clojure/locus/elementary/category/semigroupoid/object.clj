@@ -200,6 +200,14 @@
 
   (->Semigroupoid (dual (underlying-quiver semigroupoid)) (comp semigroupoid reverse)))
 
+; Get the endomorphism semigroup of an object of a semigroupoid
+(defn endomorphism-semigroup
+  [semigroupoid x]
+
+  (->Semigroup
+    (quiver-hom-class semigroupoid x x)
+    semigroupoid))
+
 ; Subobjects of semigroupoids in the topos of composition quivers
 (defn restrict-semigroupoid
   [semigroupoid new-morphisms new-objects]

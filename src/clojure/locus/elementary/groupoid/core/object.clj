@@ -197,6 +197,17 @@
         (first (inverse-elements category morphism))))
     category))
 
+; Get the endomorphism group of an object of a groupoid
+(defn endomorphism-group
+  [groupoid x]
+
+  (->Group
+    (quiver-hom-class groupoid x x)
+    groupoid
+    (identity-morphism-of groupoid x)
+    (fn [x]
+      (invert-morphism groupoid x))))
+
 ; Subobjects in the category of groupoids
 (defn restrict-groupoid
   [groupoid new-morphisms new-objects]

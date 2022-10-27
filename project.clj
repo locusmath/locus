@@ -22,7 +22,7 @@
                  [dorothy "0.0.7"]
                  [org.scilab.forge/jlatexmath "1.0.7"]]
 
-  :main locus.elementary.dependency.core.object
+  :main locus.elementary.topoi.copresheaf.morphism
 
   :source-paths ["src/clojure"]
   :java-source-paths ["src/java"]

@@ -1002,6 +1002,17 @@
     (.morphism_function func)
     (.object_function func)))
 
+; Every single object of a copresheaf is an MSet
+(defn get-mset-by-object
+  [copresheaf x]
+
+  (let [cat (index copresheaf)]
+    (->MSet
+      (endomorphism-monoid cat x)
+      (get-set copresheaf x)
+      (fn [action x]
+        ((get-function copresheaf action) x)))))
+
 ; Change of category functors for topoi of copresheaves
 (defn change-of-category
   [functor copresheaf]
@@ -1092,6 +1103,42 @@
           (fn [copresheaf]
             (morphism-apply copresheaf morphism))
           copresheaves)))))
+
+; The section preorder of a copresheaf
+(defn sections
+  [copresheaf]
+
+  (set
+    (mapcat
+      (fn [obj]
+        (map
+          (fn [i]
+            (list obj i))
+          (get-set copresheaf obj)))
+      (objects (index copresheaf)))))
+
+(defn ^{:private true} section-relation-from-function
+  [copresheaf arrow]
+
+  (let [cat (index copresheaf)
+        source (source-element cat arrow)
+        target (target-element cat arrow)
+        func (get-function copresheaf arrow)]
+    (set
+      (map
+       (fn [[a b]]
+         (list (list source a) (list target b)))
+       (underlying-relation func)))))
+
+(defn section-preorder
+  [copresheaf]
+
+  (apply
+    union
+    (map
+      (fn [arrow]
+        (section-relation-from-function copresheaf arrow))
+      (morphisms (index copresheaf)))))
 
 ; Subalgebra lattices of copresheaves
 (defn closed-inclusion-map?

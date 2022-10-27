@@ -5,19 +5,27 @@
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.diset.core.object :refer :all]
-            [locus.elementary.bijection.core.object :refer :all]
+            [locus.elementary.diamond.core.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.quiver.core.morphism :refer :all]
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.category.core.morphism :refer :all]
             [locus.elementary.category.core.natural-transformation :refer :all]
             [locus.elementary.action.global.object :refer :all]
-            [locus.elementary.topoi.copresheaf.object :refer :all])
-  (:import (locus.elementary.topoi.copresheaf.object Copresheaf)))
+            [locus.elementary.topoi.copresheaf.object :refer :all]
+            [locus.elementary.difunction.core.object :refer :all])
+  (:import (locus.elementary.topoi.copresheaf.object Copresheaf)
+           (locus.elementary.difunction.core.object Difunction)
+           (locus.elementary.diamond.core.object Diamond)))
 
 ; Morphisms in a topos of copresheaves
-; Let C be a category and Sets^C its topos of copresheaves. Then a morphism of copresheaves
-; is simply a morphism in this topos.
+; Let C be a category and Sets^C its topos of copresheaves. Then a morphism of copresheaves is a
+; morphism in the topos Sets^C. By a simple construction, we can also treat this as a copresheaf
+; object of a topos in its own right by using the topos Sets^{T_2 x C}. We will use this
+; in order to create the presheaf theoretic logic of morphisms of presheaves. This is an important
+; part of making presheaf topos theory a holistic system, in which it is possible not only
+; to reason about presheaves but morphisms of them as well. With this, presheaf topos theory
+; is a complete system of reasoning.
 (deftype MorphismOfCopresheaves
   [source-functor target-functor func]
 
@@ -30,12 +38,6 @@
     (func arg))
   (applyTo [this args]
     (clojure.lang.AFn/applyToHelper this args)))
-
-; Index categories for morphisms of copresheaves
-(defmethod index MorphismOfCopresheaves
-  [^MorphismOfCopresheaves morphism]
-
-  (category-product t2 (index (source-object morphism))))
 
 ; Get sets and function components of morphisms of copresheaves
 (defmethod get-set MorphismOfCopresheaves
@@ -59,6 +61,31 @@
               (morphism-apply target v)
               (func (source-element index-category v))))))
 
+; Index categories for morphisms of copresheaves treated as copresheaves
+(defmethod index MorphismOfCopresheaves
+  [^MorphismOfCopresheaves morphism]
+
+  (category-product t2 (index (source-object morphism))))
+
+; Get the component function of a morphism of copresheaves by a I-object
+(defn morphism-of-copresheaves-component-function
+  [morphism x]
+
+  (morphism x))
+
+; Get the component diamond of a morphism of copresheaves by an I-morphism
+(defn morphism-of-copresheaves-component-diamond
+  [morphism x]
+
+  (let [cat (index (source-object morphism))
+        source (source-element cat x)
+        target (target-element cat x)]
+    (->Diamond
+     (get-function (source-object morphism) x)
+     (get-function (target-object morphism) x)
+     (morphism source)
+     (morphism target))))
+
 ; Composition and identities in the topos of copresheaves
 (defmethod identity-morphism Copresheaf
   [copresheaf]
@@ -77,6 +104,34 @@
     (fn [obj]
       (compose (a obj) (b obj)))))
 
+; Conversion routines for morphisms of copresheaves
+(defmulti to-morphism-of-copresheaves type)
+
+(defmethod to-morphism-of-copresheaves MorphismOfCopresheaves
+  [morphism] morphism)
+
+(defmethod to-morphism-of-copresheaves :locus.base.logic.structure.protocols/set-function
+  [func]
+
+  (->MorphismOfCopresheaves
+    (to-copresheaf (source-object func))
+    (to-copresheaf (target-object func))
+    (constantly func)))
+
+(defmethod to-morphism-of-copresheaves :locus.elementary.copresheaf.core.protocols/bijection
+  [bijection] (to-morphism-of-copresheaves (underlying-function bijection)))
+
+(defmethod to-morphism-of-copresheaves Diamond
+  [diamond]
+
+  (->MorphismOfCopresheaves
+    (to-copresheaf (source-object diamond))
+    (to-copresheaf (target-object diamond))
+    (fn [i]
+      (case i
+        0 (first-function diamond)
+        1 (second-function diamond)))))
+
 ; Conversion mechanisms for morphisms of copresheaves
 (defmethod to-natural-transformation MorphismOfCopresheaves
   [^MorphismOfCopresheaves morphism]
@@ -85,6 +140,26 @@
     (to-functor (source-object morphism))
     (to-functor (target-object morphism))
     (.func morphism)))
+
+; Get the section function of a morphism of copresheaves
+(defn section-function
+  [func]
+
+  (->SetFunction
+    (sections (source-object func))
+    (sections (target-object func))
+    (fn [[tag elem]]
+      (list tag ((func tag) elem)))))
+
+; Apply the index sum on the level of morphisms of copresheaves
+(defn morphism-index-sum
+  [& morphisms]
+
+  (->MorphismOfCopresheaves
+    (apply index-sum (map source-object morphisms))
+    (apply index-sum (map target-object morphisms))
+    (fn [i obj]
+      (list i ((nth morphisms i) obj)))))
 
 ; Ontology of morphisms of copresheaves
 (defn morphism-of-copresheaves?

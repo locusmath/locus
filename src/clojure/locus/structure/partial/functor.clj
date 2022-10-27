@@ -12,7 +12,8 @@
             [locus.elementary.category.partial.function :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.quiver.core.morphism :refer :all]
-            [locus.elementary.topoi.copresheaf.object :refer :all])
+            [locus.elementary.topoi.copresheaf.object :refer :all]
+            [locus.nonassociative.action.object :refer :all])
   (:import (locus.elementary.topoi.copresheaf.object Copresheaf)))
 
 ; A functor F : C -> Sets[Part] is a functor from a category to the category of sets and partial
@@ -119,8 +120,54 @@
     (partial get-set functor)
     (partial get-function functor)))
 
+; Every single object of a partial functor is a PSet over its endomorphism monoid
+(defn get-pset-by-object
+  [partial-functor object]
+
+  (let [cat (index partial-functor)]
+    (->PSet
+      (endomorphism-monoid cat object)
+      (get-object partial-functor object)
+      (fn [arrow]
+        (get-morphism partial-functor arrow)))))
+
+; A mechanism for automatically creating triangles in the category of sets and partial functions
+(defn partial-triangle
+  [f g]
+
+  (PartialFunctor.
+    (thin-category (weak-order [#{0} #{1} #{2}]))
+    (fn [obj]
+      (case obj
+        0 (source-object g)
+        1 (target-object g)
+        2 (target-object f)))
+    (fn [[a b]]
+      (case [a b]
+        [0 0] (partial-identity-function (source-object g))
+        [0 1] g
+        [0 2] (compose f g)
+        [1 1] (partial-identity-function (target-object g))
+        [1 2] f
+        [2 2] (partial-identity-function (target-object f))))))
+
 ; Ontology of partial functors
 (defn partial-functor?
   [x]
 
   (= (type x) PartialFunctor))
+
+(defn partial-function-chain?
+  [x]
+
+  (and
+    (partial-functor? x)
+    (total-order-category? (index x))))
+
+(defn partial-function-triangle?
+  [x]
+
+  (and
+    (partial-functor? x)
+    (total-order-category? (index x))
+    (= (count (objects (index x))) 3)))
