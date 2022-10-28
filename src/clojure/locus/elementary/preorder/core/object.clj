@@ -159,3 +159,10 @@
   (relational-poset
     (weak-order
       [#{0} (set (range 1 (inc n))) #{(inc n)}])))
+
+(defn discrete-preorder
+  [coll]
+
+  (->Preposet
+    (set coll)
+    (coreflexive-relation (set coll))))

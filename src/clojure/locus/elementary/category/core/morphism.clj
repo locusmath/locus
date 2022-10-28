@@ -227,6 +227,23 @@
     func
     identity))
 
+; The category of set monoids
+(def set-monoids
+  (->Category
+    (as-unital-quiver
+      monoid?
+      monoid-homomorphism?)
+    (fn [[a b]]
+      (compose a b))))
+
+(def set-preorders
+  (->Category
+    (as-unital-quiver
+      thin-category?
+      monotone-map?)
+    (fn [[a b]]
+      (compose a b))))
+
 ; We need support for some essential predicates for dealing with functors
 ; parallel functors in particular are the objects of natural transformations
 (defn parallel-functors?

@@ -1,4 +1,4 @@
-(ns locus.elementary.category.adjoint.functors
+(ns locus.structure.categorical.adjoint
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]

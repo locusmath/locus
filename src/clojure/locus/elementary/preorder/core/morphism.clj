@@ -71,6 +71,15 @@
 ; Monotone maps constitute functors
 (derive MonotoneMap :locus.elementary.copresheaf.core.protocols/functor)
 
+; Discrete monotone maps of preorders can be formed from set functions
+(defn discrete-monotone-map
+  [func]
+
+  (->MonotoneMap
+    (discrete-preorder (inputs func))
+    (discrete-preorder (outputs func))
+    func))
+
 ; Composition and identities of thin categories
 (defmethod identity-morphism Preposet
   [obj] (MonotoneMap. obj obj identity))

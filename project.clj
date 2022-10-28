@@ -1,4 +1,4 @@
-(defproject locus "1.3.4-SNAPSHOT"
+(defproject locus "1.3.6-SNAPSHOT"
   :description "A computer algebra system based upon topos theory."
   :license {:name "Apache License"
             :url "https://www.apache.org/licenses/LICENSE-2.0"}
