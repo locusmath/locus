@@ -280,6 +280,16 @@
     (fn [[i v]]
       (list i (third-component (nth quivers i) v)))))
 
+(defmethod product :locus.elementary.copresheaf.core.protocols/ternary-quiver
+  [& quivers]
+
+  (apply ternary-quiver-product quivers))
+
+(defmethod coproduct :locus.elementary.copresheaf.core.protocols/ternary-quiver
+  [& quivers]
+
+  (apply ternary-quiver-coproduct quivers))
+
 ; Images and inverse images in the topos Sets^{T_{2,3}} of ternary quivers
 ; Images and inverse images are described naturally in terms of the topos Sets^(->) which leads to
 ; the familiar conceptions of images and inverse images of sets in classical set theory. These

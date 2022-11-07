@@ -1,4 +1,4 @@
-(ns locus.elementary.category.semigroupoid.morphism
+(ns locus.elementary.semigroupoid.core.morphism
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.sequence.core.object :refer :all]
             [locus.base.function.core.object :refer :all]
@@ -13,9 +13,9 @@
             [locus.elementary.lattice.core.object :refer :all]
             [locus.elementary.lattice.core.morphism :refer :all]
             [locus.elementary.category.core.object :refer :all]
-            [locus.elementary.category.semigroupoid.object :refer :all])
-  (:import (locus.elementary.category.semigroupoid.object Semigroupoid)
-           (locus.base.function.core.object SetFunction)))
+            [locus.elementary.semigroupoid.core.object :refer :all])
+  (:import (locus.base.function.core.object SetFunction)
+           (locus.elementary.semigroupoid.core.object Semigroupoid)))
 
 ; A functor is a morphism of categories that preserves composition, the
 ; underlying quiver relations, and identities. So by generalisation a semifunctor
@@ -63,5 +63,11 @@
 
   (Semifunctor. category category identity identity))
 
+; Endomorphisms in the category of semigroupoids
+(defn endosemifunctor?
+  [func]
 
+  (and
+    (semifunctor? func)
+    (= (source-object func) (target-object func))))
 

@@ -119,7 +119,7 @@
     (underlying-function bijection)))
 
 ; Special types of triangles
-(defn trivial-triangle
+(defn constant-triangle
   [coll]
 
   (SetTriangle. (identity-function coll) (identity-function coll)))

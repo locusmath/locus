@@ -1,6 +1,14 @@
 # Locus
 An expert system based upon presheaf topos theory.
 
+## The geometry of memory
+Locus is based upon the idea that we can reason logically about the geometry of memory using topos theory.
+
+* Memory locations: congruences in the topos Sets
+* Data dependencies: congruences in the topos Sets^(->)
+
+Memory locations and data dependencies are presheaf congruences. This motivates our idea that computation should be modeled using presheaf theory.
+
 ## Visualisation of presheaves
 A typical presheaf over a partial order can be displayed using Graphviz clusters. Each cluster of nodes represents a set of the copresheaf and the arrows between them represent generating functions. These generalize the box and arrow diagrams typically used for displaying functions.
 
@@ -20,23 +28,23 @@ This method of visualisation works best for copresheaves over partial orders. Ot
 
 The same technique used in the copresheaf viewer can be used to view globular sets, which associate arbitrary quivers to the hom classes in a directed graph, instead of functions. So alternative mechanisms of visualisations are available for globular sets, which are another important class of presheaf encountered in topos theory.
 
-## Mathematical features
-Locus is based upon the idea of organizing mathematical theories using presheaf theory. Presheaves can be reasoned about using topos theory.
+## Features
+Locus is based upon the idea of organizing mathematical theories using presheaf theory. Locus enables computations in presheaf theory.
 
-* basic support for presheaves over preorders: including the functional dependencies of relations, sets, functions, disets, bijections, difunctions, dibijections, nsets, nfunctions, nbijections, triangles, spans, cospans, diamonds, gems, chains, ditriangles, cubes, trijections, multijections, and so on.
-* fundamental support for presheaves over monoids: MSets, GSets, and related structures.
+* support for presheaves over preorders: including the functional dependencies of relations, sets, functions, disets, bijections, difunctions, dibijections, nsets, nfunctions, nbijections, triangles, spans, cospans, diamonds, gems, chains, ditriangles, cubes, trijections, multijections, and so on.
+* presheaves over monoids: MSets, GSets, and related structures.
+* presheaves over free categories: concrete quiver representations
+* support for presheaves over product categories: bicopresheaves, tricopresheaves, the hom functor, etc. Support for presheaves over coproduct categories and the construction of such presheaves by direct sum of simpler presheaves.
 * support for a broad variety of presheaves over general categories: quivers, permutable quivers, unital quivers, dependency quivers, ternary quivers, higher arity quivers, functional quivers, compositional quivers, two quivers, n-quivers, path quivers, globular sets, simplicial sets, and presheaves over arbitrary categories.
-* support sheaves over sites
-* computations involving subobject and congruence lattices of copresheaves
+* support for presheaves over sites: sheaves as a special case in presheaf theory
 * functional dataflow analysis using congruence lattices of copresheaves
-* widespread use of concrete categories throughout the system for use in presheaf theory
-* extensive built in support for structure copresheaves over a wide variety of concrete categories: presheaves of groups, presheaves of rings, etc
-* an overall ontology of mathematics based upon structured presheaves: structured sets, structured functions, structured pairs of sets, structured pairs of functions, structured quivers, structure presheaves, structure sheaves, etc.
-* presheaf theoretic approaches to higher structures using globular and simplicial sets. Two-categories as structured two-globular sets.
-* generic arithmetic operations based upon rings and semirings
-* a number of basic arithmetical structures like complex numbers, quaternions, matrices, polynomials, rational functions, power series, formal laurent series, etc
-* basic support for algebraic varieties and their coordinate rings
-* support for modules, semimodules, and vector spaces as well as algorithms for treating commutative monoids as semimodules and commutative groups as modules
+* support for structure presheaves using functors over concrete categories: presheaves of monoids, presheaves of preorders, presheaves of categories, presheaves of rings, etc
+* presheaf based approaches to higher structures using globular and simplicial sets
+* presheaf based mechanisms for reasoning about the functional dependencies of relations
+* an enriched categories framework with support for a wide variety of types of structure: semiringoids, ringoids, ordered categories, lawvere metrics, two categories, linear categories, etc.
+* support for modules as ab-enriched structure presheaves of abelian groups over ringoids.
+* generic arithmetic support for a wide variety of data types: complex numbers, quaternions, matrices, polynomials, rational functions, power series, formal laurent series, etc
+* basic support for algebraic geometry
 * the hyperarithmetic of additive partitions
 * interfaces with apache commons math
 
@@ -52,7 +60,7 @@ Apache license version 2.0
 Copyright © 2022 John Bernier
 
 ## Version
-1.3.6 release
+1.4.0 release
 
 ## Contributing
 Contributions are welcome.

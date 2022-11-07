@@ -10,7 +10,7 @@
             [locus.elementary.lattice.core.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.category.core.morphism :refer :all]
-            [locus.elementary.category.core.natural-transformation :refer :all]
+            [locus.elementary.category.natural.transformation :refer :all]
             [locus.elementary.category.relation.set-relation :refer :all]
             [locus.elementary.order.core.object :refer :all]
             [locus.module.core.object :refer :all]

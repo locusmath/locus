@@ -66,6 +66,17 @@
     [0 2] (first-cospan-function cospan)
     [1 2] (second-cospan-function cospan)))
 
+; Create a constant cospan from a single set
+(defn constant-cospan
+  [coll]
+
+  (->Cospan
+    coll
+    coll
+    coll
+    identity
+    identity))
+
 ; Create a cospan copresheaf from a pair of functions
 (defn cospan
   [f g]

@@ -45,6 +45,12 @@
     (.-morphisms quiver)
     (.-op quiver)))
 
+; Get the fiber cardinality of a morphism in a functional quiver like this
+(defn morphism-fiber-cardinality
+  [quiver morphism]
+
+  (fiber-cardinality (function-of-functional-quiver quiver) morphism))
+
 ; Generalized conversion routines
 (defmulti to-functional-quiver type)
 

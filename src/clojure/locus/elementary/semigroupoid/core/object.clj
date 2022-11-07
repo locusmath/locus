@@ -1,4 +1,4 @@
-(ns locus.elementary.category.semigroupoid.object
+(ns locus.elementary.semigroupoid.core.object
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.sequence.core.object :refer :all]

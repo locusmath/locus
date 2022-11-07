@@ -2,7 +2,6 @@
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.sequence.core.object :refer :all]
             [locus.base.function.core.object :refer :all]
-            [locus.base.function.image.image-function :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
@@ -16,7 +15,8 @@
             [locus.elementary.quiver.core.morphism :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.elementary.quiver.unital.morphism :refer :all]
-            [locus.elementary.topoi.copresheaf.object :refer :all])
+            [locus.elementary.topoi.copresheaf.object :refer :all]
+            [locus.elementary.category.concrete.categories :refer :all])
   (:import (locus.elementary.semigroup.monoid.object Monoid)
            (locus.elementary.semigroup.monoid.morphism MonoidMorphism)))
 

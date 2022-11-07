@@ -13,7 +13,8 @@
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.quiver.core.morphism :refer :all]
             [locus.elementary.topoi.copresheaf.object :refer :all]
-            [locus.nonassociative.action.object :refer :all])
+            [locus.nonassociative.action.object :refer :all]
+            [locus.elementary.category.concrete.categories :refer :all])
   (:import (locus.elementary.topoi.copresheaf.object Copresheaf)))
 
 ; A functor F : C -> Sets[Part] is a functor from a category to the category of sets and partial

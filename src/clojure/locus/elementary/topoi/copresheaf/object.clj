@@ -992,6 +992,41 @@
           (= arrow '(0 1 3)) (compfunction first-triangle)
           (= arrow '(0 2 3)) (compfunction second-triangle))))))
 
+; A means by which we can create an nset copresheaf
+(defn nset-copresheaf
+  [coll]
+
+  (->Copresheaf
+    (nth-discrete-category (count coll))
+    (fn [i]
+      (nth coll i))
+    (fn [i]
+      (identity-function (nth coll i)))))
+
+; Create a constant copresheaf from a category and some set
+(defn constant-copresheaf
+  [category coll]
+
+  (->Copresheaf
+    category
+    (constantly coll)
+    (constantly (identity-function coll))))
+
+; Copresheaves over free categories are good ways of describing concrete quivers
+(defn free-copresheaf
+  [quiver morphism-function object-function]
+
+  (->Copresheaf
+    (free-category quiver)
+    (fn [obj]
+      (object-function obj))
+    (fn [[start end path]]
+      (apply
+        compose
+        (map
+          morphism-function
+          path)))))
+
 ; Convert copresheaves to functors
 (defmethod to-functor Copresheaf
   [^Copresheaf func]

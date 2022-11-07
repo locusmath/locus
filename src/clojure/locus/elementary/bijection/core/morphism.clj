@@ -121,6 +121,16 @@
 (defmethod identity-morphism Bijection
   [func] (identity-gem func))
 
+; Constant gems
+(defn constant-gem
+  [coll]
+
+  (->Gem
+    (identity-bijection coll)
+    (identity-bijection coll)
+    (identity-function coll)
+    (identity-function coll)))
+
 ; Subobject classifier for the topos of bijections
 ; The topos of bijections is boolean like the topos of sets
 (def truth-bijection

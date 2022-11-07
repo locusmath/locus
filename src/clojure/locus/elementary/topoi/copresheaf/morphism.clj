@@ -10,7 +10,7 @@
             [locus.elementary.quiver.core.morphism :refer :all]
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.category.core.morphism :refer :all]
-            [locus.elementary.category.core.natural-transformation :refer :all]
+            [locus.elementary.category.natural.transformation :refer :all]
             [locus.elementary.action.global.object :refer :all]
             [locus.elementary.topoi.copresheaf.object :refer :all]
             [locus.elementary.difunction.core.object :refer :all])
@@ -150,6 +150,15 @@
     (sections (target-object func))
     (fn [[tag elem]]
       (list tag ((func tag) elem)))))
+
+; Create a morphism of constant copresheaves by a diagonal functor
+(defn morphism-of-constant-copresheaves
+  [category function]
+
+  (->MorphismOfCopresheaves
+    (constant-copresheaf category (inputs function))
+    (constant-copresheaf category (outputs function))
+    (constantly function)))
 
 ; Apply the index sum on the level of morphisms of copresheaves
 (defn morphism-index-sum

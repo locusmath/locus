@@ -103,6 +103,12 @@
      (thin-unital-quiver vertices edges)
      compose-ordered-pairs)))
 
+; Create a discrete category
+(defn discrete-category
+  [coll]
+
+  (thin-category coll (coreflexive-relation coll)))
+
 ; Convert various mathematical objects to categories
 (defmulti to-category type)
 
@@ -149,6 +155,34 @@
 
 (defmethod to-category :locus.base.logic.core.set/universal
   [rel] (thin-category (set rel)))
+
+; The topos of sets
+(def sets
+  (->Category
+    (->UnitalQuiver
+      set-function?
+      universal?
+      inputs
+      outputs
+      identity-function)
+    (fn [[a b]]
+      (compose a b))))
+
+; Get the elements of a category as a structured set
+(defn categorical-elements
+  [category]
+
+  (union
+    (set
+      (map
+        (fn [arrow]
+          (list 0 arrow))
+        (morphisms category)))
+    (set
+      (map
+        (fn [object]
+          (list 1 object))
+        (objects category)))))
 
 ; Get the quiver define over the generating set of morphisms of a category.
 ; In particular, this
@@ -236,18 +270,6 @@
       (fn [i]
         (isomorphism-element? category i))
       (morphisms category))))
-
-; The topos of sets
-(def sets
-  (->Category
-    (->UnitalQuiver
-      set-function?
-      universal?
-      inputs
-      outputs
-      identity-function)
-    (fn [[a b]]
-      (compose a b))))
 
 ; Products and coproducts in the category of categories
 (defn category-product

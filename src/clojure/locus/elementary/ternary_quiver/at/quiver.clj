@@ -10,8 +10,8 @@
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.ternary-quiver.core.object :refer :all]
+            ;[locus.elementary.semigroupoid.core.object :refer :all]
             ;[locus.elementary.category.core.object :refer :all]
-            ;[locus.elementary.category.semigroupoid.object :refer :all]
             ;[locus.elementary.semigroup.core.object :refer :all]
             ))
 

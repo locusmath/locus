@@ -1,4 +1,4 @@
-(ns locus.elementary.category.comma.category
+(ns locus.elementary.category.arrow.category
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
@@ -11,7 +11,7 @@
             [locus.elementary.lattice.core.object :refer :all]
             [locus.elementary.category.element.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
-            [locus.elementary.category.comma.morphism :refer :all])
+            [locus.elementary.category.arrow.morphism :refer :all])
   (:import (locus.elementary.category.core.object Category)
            (locus.elementary.category.element.object CategoryMorphism)
            (locus.elementary.diamond.core.object Diamond)
@@ -34,11 +34,11 @@
 
   (Category.
     (->UnitalQuiver
-      (partial morphism-of-morphisms-of-category? category)
+      (partial arrow-transformation? category)
       (morphisms category)
       source-object
       target-object
-      identity-morphism-of-morphisms)
+      identity-arrow-transformation)
     (fn [[a b]]
       (compose a b))))
 

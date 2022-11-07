@@ -2,7 +2,6 @@
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.sequence.core.object :refer :all]
             [locus.base.function.core.object :refer :all]
-            [locus.base.function.image.image-function :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
@@ -16,7 +15,8 @@
             [locus.elementary.quiver.core.morphism :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.elementary.quiver.unital.morphism :refer :all]
-            [locus.elementary.topoi.copresheaf.object :refer :all])
+            [locus.elementary.topoi.copresheaf.object :refer :all]
+            [locus.elementary.category.concrete.categories :refer :all])
   (:import (locus.elementary.preorder.core.object Preposet)
            (locus.elementary.preorder.core.morphism MonotoneMap)))
 
@@ -127,3 +127,38 @@
   [functor]
 
   (= (type functor) PreposetalFunctor))
+
+(defn chain-of-preposets?
+  [functor]
+
+  (and
+    (preposetal-functor? functor)
+    (total-order-category? (index functor))))
+
+(defn preposet-object-functor?
+  [functor]
+
+  (and
+    (preposetal-functor? functor)
+    (let [cat (index functor)]
+      (= (count (objects cat)) (count (morphisms cat)) 1))))
+
+(defn preposet-morphism-functor?
+  [functor]
+
+  (and
+    (preposetal-functor? functor)
+    (let [cat (index functor)]
+      (and
+        (total-order-category? cat)
+        (= (count (objects cat)) 2)))))
+
+(defn preposet-isomorphism-functor?
+  [functor]
+
+  (and
+    (preposetal-functor? functor)
+    (let [cat (index functor)]
+      (and
+        (complete-thin-groupoid? cat)
+        (= (count (objects cat)) 2)))))

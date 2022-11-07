@@ -17,6 +17,7 @@
             [locus.elementary.lattice.core.object :refer :all]
             [locus.elementary.lattice.core.morphism :refer :all]
             [locus.elementary.category.core.object :refer :all]
+            [locus.elementary.preorder.core.object :refer :all]
             [locus.elementary.preorder.core.morphism :refer :all])
   (:import (locus.elementary.lattice.core.morphism LatticeMorphism)
            (locus.base.function.core.object SetFunction)
@@ -59,7 +60,7 @@
   [functor] (source-object functor))
 
 ; Composition and identities in the category of categories
-(defmethod compose* Functor
+(defmethod compose* :locus.elementary.copresheaf.core.protocols/functor
   [^Functor f ^Functor g]
 
   (Functor.
@@ -73,20 +74,17 @@
 
   (Functor. category category identity identity))
 
-; Classes of functors
-(defn endofunctor?
-  [func]
+; Compute a categorical elements function for a functor
+(defn categorical-elements-function
+  [functor]
 
-  (and
-    (functor? func)
-    (= (source-object func) (target-object func))))
-
-(defn endosemifunctor?
-  [func]
-
-  (and
-    (semifunctor? func)
-    (= (source-object func) (target-object func))))
+  (->SetFunction
+    (categorical-elements (source-object functor))
+    (categorical-elements (target-object functor))
+    (fn [[i v]]
+      (case i
+        0 (list 0 (morphism-apply functor v))
+        1 (list 1 (object-apply functor v))))))
 
 ; The underlying monotone map of a functor, along with the underlying preposet
 ; of a category together define a functor from the category of categories
@@ -98,6 +96,18 @@
     (underlying-preposet (source-object func))
     (underlying-preposet (target-object func))
     (second-function func)))
+
+; Turn a set function f: A -> B into a functor between discrete categories
+(defn discrete-functor
+  [func]
+
+  (->Functor
+    (discrete-category (inputs func))
+    (discrete-category (outputs func))
+    (fn [[a b]]
+      (list (func a) (func b)))
+    (fn [obj]
+      (func obj))))
 
 ; Monotone maps are functors of thin categories
 ; Therefore, they can be added to our ontology of functors and semifunctors.
@@ -147,6 +157,16 @@
       (partial get-morphism functor)
       (morphisms (index functor)))))
 
+; Constant functors are outputs of diagonal functors
+(defn constant-functor
+  [source target target-object]
+
+  (->Functor
+    source
+    target
+    (constantly (identity-morphism-of target target-object))
+    (constantly target-object)))
+
 ; Create special types of functors
 (defn object-functor
   [category obj]
@@ -163,15 +183,15 @@
   (->Functor
     (thin-category (weak-order [#{0} #{1}]))
     category
-    (fn [obj]
-      (case obj
-        0 (source-element category morphism)
-        1 (target-element category morphism)))
     (fn [[a b]]
       (case [a b]
         [0 0] (source-identity category morphism)
         [1 1] (target-identity category morphism)
-        [0 1] morphism))))
+        [0 1] morphism))
+    (fn [obj]
+      (case obj
+        0 (source-element category morphism)
+        1 (target-element category morphism)))))
 
 (defn path-functor
   [category [f g]]
@@ -179,11 +199,6 @@
   (->Functor
     (thin-category (weak-order [#{0} #{1} #{2}]))
     category
-    (fn [obj]
-      (case obj
-        0 (source-element category g)
-        1 (target-element category g)
-        2 (target-element category f)))
     (fn [[a b]]
       (case [a b]
         [0 0] (source-identity category g)
@@ -191,7 +206,12 @@
         [0 2] (category (list f g))
         [1 1] (target-identity category g)
         [1 2] f
-        [2 2] (target-identity category f)))))
+        [2 2] (target-identity category f)))
+    (fn [obj]
+      (case obj
+        0 (source-element category g)
+        1 (target-element category g)
+        2 (target-element category f)))))
 
 ; Functorial conversions
 (defmulti to-functor type)
@@ -227,23 +247,6 @@
     func
     identity))
 
-; The category of set monoids
-(def set-monoids
-  (->Category
-    (as-unital-quiver
-      monoid?
-      monoid-homomorphism?)
-    (fn [[a b]]
-      (compose a b))))
-
-(def set-preorders
-  (->Category
-    (as-unital-quiver
-      thin-category?
-      monotone-map?)
-    (fn [[a b]]
-      (compose a b))))
-
 ; We need support for some essential predicates for dealing with functors
 ; parallel functors in particular are the objects of natural transformations
 (defn parallel-functors?
@@ -254,4 +257,12 @@
     (functor? b)
     (= (source-object a) (source-object b))
     (= (target-object a) (target-object b))))
+
+; Classes of functors
+(defn endofunctor?
+  [func]
+
+  (and
+    (functor? func)
+    (= (source-object func) (target-object func))))
 

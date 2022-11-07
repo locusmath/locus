@@ -1,12 +1,12 @@
-(ns locus.grothendieck.topology.metric.open-set
+(ns locus.distance.set.open-set
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.base.function.core.object :refer :all]
-            [locus.grothendieck.topology.metric.object :refer :all]
-            [locus.grothendieck.topology.metric.open-ball :refer :all]))
+            [locus.distance.lawvere.metric :refer :all]
+            [locus.distance.set.open-ball :refer :all]))
 
 ; We can construct an open set in the metric topology of a metric space, by
 ; defining some kind of collection of open balls. This class handles the data

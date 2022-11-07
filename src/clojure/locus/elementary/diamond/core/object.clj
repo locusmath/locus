@@ -169,6 +169,16 @@
       (outputs target)
       func)))
 
+; Special types of morphisms of functions
+(defn constant-diamond
+  [coll]
+
+  (->Diamond
+    (identity-function coll)
+    (identity-function coll)
+    (identity-function coll)
+    (identity-function coll)))
+
  ; Composition and identities in the topos of functions
  (defmethod compose* Diamond
    [f g]

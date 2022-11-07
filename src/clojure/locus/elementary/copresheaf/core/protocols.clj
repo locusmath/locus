@@ -426,6 +426,12 @@
 ; Index categories of copresheaves
 (defmulti index type)
 
+; Index categories for multifunctors
+(defmulti index-multiplicands type)
+
+(defmethod index-multiplicands :default
+  [functor] (list (index functor)))
+
 ; Section elements of copresheaves
 ; Let F : C -> Sets be a copresheaf. Then a section of F is a pair of an object X of C and a member
 ; of the set F(X). The sections of a copresheaf are the elements of their underlying set, in our

@@ -21,6 +21,14 @@
 (defmethod to-composable-path ComposablePath
   [^ComposablePath path] path)
 
+; A composable path is just a functor F: T_3 -> C
+(defmethod to-functor ComposablePath)
+
+(defmethod to-functor ComposablePath
+  [^ComposablePath path]
+
+  (path-functor (.-category path) [(.-f path) (.-g path)]))
+
 ; Get the morphism components of a path as category morphism objects
 (defn premorphism
   [^ComposablePath path]

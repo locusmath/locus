@@ -12,7 +12,8 @@
             [locus.elementary.category.concrete.concrete-category :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.quiver.core.morphism :refer :all]
-            [locus.elementary.topoi.copresheaf.object :refer :all])
+            [locus.elementary.topoi.copresheaf.object :refer :all]
+            [locus.elementary.category.concrete.categories :refer :all])
   (:import (locus.elementary.category.relation.set_relation SetRelation)
            (locus.elementary.topoi.copresheaf.object Copresheaf)
            (locus.elementary.category.core.morphism Functor)))

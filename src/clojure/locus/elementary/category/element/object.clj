@@ -8,6 +8,7 @@
             [locus.elementary.group.core.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
+            [locus.elementary.category.core.morphism :refer :all]
             [locus.elementary.lattice.core.object :refer :all]
             [locus.elementary.semigroup.monoid.end :refer :all]
             [locus.elementary.group.core.aut :refer :all]
@@ -147,6 +148,17 @@
     (CategoryMorphism.
       c
       (identity-morphism-of c (.object obj)))))
+
+; Objects and morphisms of categories are like simple functors
+(defmethod to-functor CategoryObject
+  [obj]
+
+  (object-functor (parent obj) (member obj)))
+
+(defmethod to-functor CategoryMorphism
+  [morphism]
+
+  (arrow-functor (parent morphism) (member morphism)))
 
 ; Enumeration of automorphisms and endomorphisms
 (defn composable-morphisms?

@@ -1,4 +1,4 @@
-(ns locus.structure.bicopresheaf.object
+(ns locus.elementary.topoi.bicopresheaf.object
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.sequence.core.object :refer :all]
             [locus.base.function.core.object :refer :all]
@@ -12,131 +12,96 @@
             [locus.elementary.category.partial.function :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.quiver.core.morphism :refer :all]
+            [locus.elementary.quiver.unital.object :refer :all]
+            [locus.elementary.category.core.bifunctor :refer :all]
             [locus.elementary.topoi.copresheaf.object :refer :all]
             [locus.elementary.topoi.copresheaf.morphism :refer :all])
   (:import (locus.elementary.topoi.copresheaf.object Copresheaf)
            (locus.elementary.topoi.copresheaf.morphism MorphismOfCopresheaves)))
 
-; Bicopresheaves are functors from a category C into a copresheaf topos Sets^D. So when written
-; out they appear as functors of the form F: C -> Sets^D. A bicopresheaf has two different
+; Bicopresheaves are bifunctors to the topos of sets. A bicopresheaf has two different
 ; index categories C and D. It can be treated as a presheaf itself by using the product
 ; category C^D, and the topos Sets^{C x D} so bicopresheaves are still part of our fundamental
 ; topos theory of presheaves. Finally, bicopresheaves can be treated as a special type of
 ; structure copresheaf by the functor f : Sets^D -> Sets which makes a presheaf topos
 ; into a concrete category.
 
-(deftype Bicopresheaf [source-index target-index object-function morphism-function]
+(deftype Bicopresheaf [first-source second-source object-function morphism-function]
+  AbstractMorphism
+  (source-object [this] (category-product first-source second-source))
+  (target-object [this] sets)
+
   StructuredDifunction
   (first-function [this] morphism-function)
   (second-function [this] object-function))
 
 (derive Bicopresheaf :locus.elementary.copresheaf.core.protocols/structure-copresheaf)
 
-; As structure copresheaves every bicopresheaf has an underlying index category
+; Index categories of bicopresheaves
 (defmethod index Bicopresheaf
+  [^Bicopresheaf bicopresheaf] (source-object bicopresheaf))
+
+(defmethod index-multiplicands Bicopresheaf
   [^Bicopresheaf bicopresheaf]
 
-  (.-source_index bicopresheaf))
+  (list
+    (.-first_source bicopresheaf)
+    (.-second_source bicopresheaf)))
 
-(defn target-index
-  [^Bicopresheaf bicopresheaf]
-
-  (.-target_index bicopresheaf))
-
-; Bicopresheaves are structure copresheaves, so they have underlying objects and morphisms
-(defmethod get-object Bicopresheaf
-  [bicopresheaf object]
-
-  ((second-function bicopresheaf) object))
-
-(defmethod get-morphism Bicopresheaf
-  [bicopresheaf morphism]
-
-  ((first-function bicopresheaf) morphism))
-
-; Bicopresheaves are structure copresheaves. It follows that they have underlying copresheaves.
+; Get the sets and functions of a bicopresheaf
 (defmethod get-set Bicopresheaf
-  [bicopresheaf object]
+  [bicopresheaf x]
 
-  (sections (get-object bicopresheaf object)))
+  (object-apply bicopresheaf x))
 
 (defmethod get-function Bicopresheaf
-  [bicopresheaf morphism]
+  [bicopresheaf x]
 
-  (section-function (get-morphism bicopresheaf morphism)))
+  (morphism-apply bicopresheaf x))
 
-; Bicopresheaves are both structure copresheaves and bifunctorial presheaves. The deeper concept
-; can be acquired by using the get set in and get function in methods.
-(defn get-set-in
-  [bicopresheaf x y]
+; Get the objects and morphisms of a bicopresheaf
+(defmethod get-object Bicopresheaf
+  [bicopresheaf x]
 
-  (get-set (get-object bicopresheaf x) y))
+  (get-set bicopresheaf x))
 
-(defn get-function-in
-  [bicopresheaf x y]
+(defmethod get-morphism Bicopresheaf
+  [bicopresheaf x]
 
-  (get-function (get-morphism bicopresheaf x) y))
+  (get-function bicopresheaf x))
 
-; As structure copresheaves, bicopresheaves have underlying copresheaves
-(defmethod to-copresheaf Bicopresheaf
-  [bicopresheaf]
+; Get a copresheaf by partial application of a bicopresheaf
+(defn get-copresheaf
+  [^Bicopresheaf bicopresheaf, x]
 
-  (Copresheaf.
-    (index bicopresheaf)
-    (partial get-set bicopresheaf)
-    (partial get-function bicopresheaf)))
+  (let [x-identity (identity-morphism-of (.-first_source bicopresheaf) x)]
+    (->Copresheaf
+      (.-second_source bicopresheaf)
+      (fn [obj]
+        (get-set bicopresheaf (list x obj)))
+      (fn [arrow]
+        (get-function bicopresheaf (list x-identity arrow))))))
 
-; As presheaves of presheaves, bicopresheaves also have a deeper underlying presheaf
-(defn deep-index
-  [bicopresheaf]
+(defn get-dual-copresheaf
+  [^Bicopresheaf bicopresheaf, y]
 
-  (category-product
-    (index bicopresheaf)
-    (target-index bicopresheaf)))
+  (let [y-identity (identity-morphism-of (.-second_source bicopresheaf) y)]
+    (->Copresheaf
+      (.-first_source bicopresheaf)
+      (fn [obj]
+        (get-set bicopresheaf (list obj y)))
+      (fn [arrow]
+        (get-function bicopresheaf (list arrow y-identity))))))
 
-(defn deep-copresheaf
-  [bicopresheaf]
+; Convert bicopresheaves into functors
+(defmethod to-functor Bicopresheaf
+  [^Bicopresheaf bicopresheaf]
 
-  (->Copresheaf
-    (deep-index bicopresheaf)
-    (fn [[a b]]
-      (get-set-in bicopresheaf a b))
-    (fn [[a b]]
-      (get-function-in bicopresheaf a b))))
-
-; As a bifunctor a bicopresheaf has a dual defined by switching index categories
-(defn get-dual-object
-  [copresheaf d]
-
-  (->Copresheaf
-    (target-index copresheaf)
-    (fn [c-object]
-      (get-set-in copresheaf c-object d))
-    (fn [c-arrow]
-      (morphism-of-copresheaves-component-function
-        (get-morphism copresheaf c-arrow)
-        d))))
-
-(defn get-dual-morphism
-  [copresheaf d-arrow]
-
-  (let [cat (target-index copresheaf)
-        source (source-element cat d-arrow)
-        target (target-element cat d-arrow)]
-    (->MorphismOfCopresheaves
-      (get-dual-object copresheaf source)
-      (get-dual-object copresheaf target)
-      (fn [c-object]
-        (get-function-in copresheaf c-object d-arrow)))))
-
-(defn dual-bicopresheaf
-  [bicopresheaf]
-
-  (->Bicopresheaf
-    (target-index bicopresheaf)
-    (index bicopresheaf)
-    (partial get-dual-object bicopresheaf)
-    (partial get-dual-morphism bicopresheaf)))
+  (->Functor
+    (source-object bicopresheaf)
+    (target-object bicopresheaf)
+    (first-function bicopresheaf)
+    (second-function bicopresheaf)))
 
 ; Generalized conversion routines for bicopresheaves
 (defmulti to-bicopresheaf type)
@@ -169,6 +134,16 @@
         [0 1] morphism
         [1 1] (identity-morphism (target-object morphism))))))
 
+; Dual bicopresheaves
+(defn dual-bicopresheaf
+  [^Bicopresheaf bicopresheaf]
+
+  (->Bicopresheaf
+    (.-second_source bicopresheaf)
+    (.-first_source bicopresheaf)
+    (.-object_function bicopresheaf)
+    (comp (.-morphism_function bicopresheaf) reverse)))
+
 ; The dual concept of a morphism of copresheaves is a copresheaf of functions which can  be defined
 ; by a functor from a category to the fundamental topos Sets^(->)
 (defn copresheaf-of-functions
@@ -187,8 +162,8 @@
   [& bicopresheaves]
 
   (Bicopresheaf.
-    (index (first bicopresheaves))
-    (.-target_index (first bicopresheaves))
+    (.-first_source (first bicopresheaves))
+    (.-second_source (first bicopresheaves))
     (fn [obj]
       (apply
         index-sum

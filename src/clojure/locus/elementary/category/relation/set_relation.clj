@@ -62,7 +62,7 @@
     (func arg))
   (applyTo [this args]
     (clojure.lang.AFn/applyToHelper this args)))
-s
+
 (defmethod to-function SetRelation
   [^SetRelation rel]
 

@@ -179,6 +179,17 @@
      (fn [i]
        (list i i)))))
 
+(defn complete-relational-unital-quiver
+  [coll]
+
+  (->UnitalQuiver
+    (->CompleteRelation coll)
+    coll
+    first
+    second
+    (fn [i]
+      (list i i))))
+
 ; Multimethods for converting various objects into unital quivers
 (defmulti to-unital-quiver type)
 

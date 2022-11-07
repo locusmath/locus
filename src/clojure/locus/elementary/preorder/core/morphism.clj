@@ -32,30 +32,23 @@
   StructuredDifunction
   (first-function [this]
     (->SetFunction
-      (objects source)
-      (objects target)
-      func))
-  (second-function [this]
-    (->SetFunction
       (morphisms source)
       (morphisms target)
       (fn [edge]
         (map func edge))))
+  (second-function [this]
+    (->SetFunction
+      (objects source)
+      (objects target)
+      func))
 
   StructuredMorphismOfQuivers
   (underlying-morphism-of-quivers [this]
     (->MorphismOfQuivers
       (underlying-quiver source)
       (underlying-quiver target)
-      (->SetFunction
-        (first-set source)
-        (first-set target)
-        (fn [[a b]]
-          (list (func a) (func b))))
-      (->SetFunction
-        (underlying-set source)
-        (underlying-set target)
-        func)))
+      (first-function this)
+      (second-function this)))
 
   ; Functional aspects of monotone maps
   ConcreteMorphism

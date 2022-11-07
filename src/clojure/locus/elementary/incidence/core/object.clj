@@ -619,6 +619,17 @@
       first
       second)))
 
+; A constant span is created by a single set
+(defn constant-span
+  [coll]
+
+  (->Span
+    coll
+    coll
+    coll
+    identity
+    identity))
+
 ; Product span
 ; A product span is created by getting the pair of projection functions
 ; from the product and using them as edge and vertex functions.

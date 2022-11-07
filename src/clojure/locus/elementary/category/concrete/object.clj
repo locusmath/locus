@@ -1,12 +1,9 @@
-(ns locus.elementary.category.concrete.concrete-category
+(ns locus.elementary.category.concrete.object
   (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.sequence.core.object :refer :all]
             [locus.base.function.core.object :refer :all]
-            [locus.base.function.image.image-function :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.base.partition.core.setpart :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
@@ -14,10 +11,7 @@
             [locus.elementary.group.core.object :refer :all]
             [locus.elementary.semigroup.transformation.transformation-monoid :refer :all]
             [locus.elementary.group.permutation.permutation-group :refer :all]
-            [locus.elementary.lattice.core.object :refer :all]
-            [locus.elementary.category.core.object :refer :all]
-            [locus.elementary.category.partial.function :refer :all]
-            [locus.elementary.category.relation.set-relation :refer :all])
+            [locus.elementary.category.core.object :refer :all])
   (:import (locus.elementary.semigroup.transformation.transformation_monoid TransformationMonoid)
            (locus.elementary.group.permutation.permutation_group PermutationGroup)))
 
@@ -119,71 +113,3 @@
     (.-op category)
     (.-object_function category)
     (.-morphism_function category)))
-
-; The category of set relations is a concrete category
-(def rel
-  (ConcreteCategory.
-    (->UnitalQuiver
-      set-relation?
-      universal?
-      source-object
-      target-object
-      identity-relation)
-    (fn [[a b]]
-      (compose a b))
-    (fn [obj]
-      (->PowerSet obj))
-    (fn [arrow]
-      (to-function arrow))))
-
-; The category of partial functions is a concrete category
-(defn nullable-set
-  [coll]
-
-  (conj
-    (set
-      (map
-        (fn [i]
-          #{i})
-        coll))
-    #{}))
-
-(defn nullable-function
-  [func]
-
-  (->SetFunction
-    (nullable-set (inputs func))
-    (nullable-set (outputs func))
-    (fn [coll]
-      (set (map func coll)))))
-
-(def partial-sets
-  (ConcreteCategory.
-    (->UnitalQuiver
-      partial-function?
-      universal?
-      source-object
-      target-object
-      partial-identity-function)
-    (fn [[a b]]
-      (compose a b))
-    (fn [obj]
-      (nullable-set obj))
-    (fn [arrow]
-      (nullable-function arrow))))
-
-; By the same token we can consider the dual category of the topos of sets to be concrete
-(def sets-opposite
-  (ConcreteCategory.
-    (->UnitalQuiver
-      inverse-functional-set-relation?
-      universal?
-      source-object
-      target-object
-      identity-relation)
-    (fn [[a b]]
-      (compose a b))
-    (fn [obj]
-      (->PowerSet obj))
-    (fn [arrow]
-      (to-function arrow))))

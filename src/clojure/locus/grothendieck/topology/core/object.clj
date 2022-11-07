@@ -10,12 +10,12 @@
             [locus.elementary.order.total.object :refer :all]
             [locus.elementary.order.total.open-set :refer :all]
             [locus.elementary.order.total.open-interval :refer :all]
-            [locus.grothendieck.topology.metric.object :refer :all]
-            [locus.grothendieck.topology.metric.open-set :refer :all]
-            [locus.grothendieck.topology.metric.open-ball :refer :all])
+            [locus.distance.lawvere.metric :refer :all]
+            [locus.distance.set.open-ball :refer :all]
+            [locus.distance.set.open-set :refer :all])
   (:import (locus.elementary.lattice.core.object Lattice)
            (locus.elementary.order.total.object TotallyOrderedSet)
-           (locus.grothendieck.topology.metric.object MetricSpace)))
+           (locus.distance.lawvere.metric LawvereMetric)))
 
 ; A topological space is a base for a Grothendieck topos of sheaves.
 ; Topological spaces are therefore one of the major outlets for the
@@ -44,7 +44,7 @@
 
   (TopologicalSpace. (dimembers coll) coll))
 
-(defmethod topology MetricSpace
+(defmethod topology LawvereMetric
   [metric]
 
   (TopologicalSpace.

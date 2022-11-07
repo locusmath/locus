@@ -180,6 +180,15 @@
      first
      second)))
 
+(defn complete-relational-quiver
+  [coll]
+
+  (->Quiver
+    (->CompleteRelation coll)
+    coll
+    first
+    second))
+
 (defn binary-multirelation->tagged-ternary-relation
   [rel]
 
@@ -224,6 +233,12 @@
     (outputs func)
     func
     func))
+
+; A constant quiver has the same object and morphism set and identity component functions
+(defn constant-quiver
+  [coll]
+
+  (->Quiver coll coll identity identity))
 
 ; These are useful constructors for quivers
 (defmulti to-quiver type)
