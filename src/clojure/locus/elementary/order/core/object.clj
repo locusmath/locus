@@ -11,8 +11,7 @@
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
-            [locus.elementary.diset.core.object :refer :all]
-            [locus.elementary.difunction.core.funpair :refer :all])
+            [locus.elementary.preorder.core.object :refer :all])
   (:import (locus.elementary.quiver.core.object Quiver)))
 
 ; In our categorical framework, a Poset is simply a skeletal thin category. Although most of the
@@ -54,10 +53,20 @@
 
 ; Underlying relation and visualize multimethods
 (defmethod underlying-relation Poset
-  [this] (.rel this))
+  [this]
+
+  (->SeqableRelation (.-coll this) (.-rel this) {}))
 
 (defmethod visualize Poset
   [this] (visualize (covering-relation (underlying-relation this))))
+
+; Relational posets
+(defn relational-poset
+  [rel]
+
+  (Poset.
+    (vertices rel)
+    rel))
 
 ; Conversion multimethods
 (defmulti to-poset type)
@@ -71,14 +80,6 @@
   (Poset.
     (objects quiv)
     (underlying-relation quiv)))
-
-; Relational posets
-(defn relational-poset
-  [rel]
-
-  (Poset.
-    (vertices rel)
-    rel))
 
 (defmethod to-poset :default
   [rel]
@@ -106,7 +107,20 @@
 
   (Poset. (underlying-set coll) (transpose (underlying-relation coll))))
 
-; This function lets us create posets from arbitrary collections
+; Special types of partial orders on common sets
+(defn partitions-poset
+  [coll]
+
+  (Poset.
+    (set coll)
+    (binary-subrelation set-superpartition? coll)))
+
+(defn discrete-poset
+  [coll]
+
+  (Poset. (set coll) (coreflexive-relation coll)))
+
+; Convert common types of collections directly into partial orders
 (defn as-poset
   [coll]
 
@@ -119,17 +133,4 @@
           (number? selected-element) (binary-subrelation superrational? coll)
           (seq? selected-element) (binary-subrelation supersequence? coll)
           (multiset? selected-element) (binary-subrelation superbag? coll)
-          (set-function? selected-element) (binary-subrelation superfunction? coll)
-          (diset? selected-element) (binary-subrelation superdiset? coll))))))
-
-(defn partitions-poset
-  [coll]
-
-  (Poset.
-    (set coll)
-    (binary-subrelation set-superpartition? coll)))
-
-(defn discrete-poset
-  [coll]
-
-  (Poset. (set coll) (coreflexive-relation coll)))
+          (set-function? selected-element) (binary-subrelation superfunction? coll))))))

@@ -1,34 +1,21 @@
 (ns locus.elementary.lattice.core.object
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
-            [locus.base.logic.numeric.nms :refer :all]
-            [locus.base.logic.numeric.sig :refer :all]
             [locus.base.partition.core.setpart :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.incidence.signatures.nf :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.diset.core.object :refer :all]
-            [locus.elementary.bijection.core.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
-            [locus.elementary.quiver.core.thin-object :refer :all]
-            [locus.elementary.diamond.core.object :refer :all]
-            [locus.elementary.difunction.core.object :refer :all]
-            [locus.elementary.bijection.core.morphism :refer :all]
-            [locus.elementary.dependency.nset.object :refer :all])
+            [locus.elementary.quiver.core.thin-object :refer :all])
   (:import (locus.base.function.core.object SetFunction)
            (locus.base.logic.core.set Multiset)
            (locus.elementary.relation.binary.sr SeqableRelation)
-           (locus.elementary.quiver.core.object Quiver)
-           (locus.elementary.diset.core.object Diset)
-           (locus.elementary.bijection.core.object Bijection)
-           (locus.elementary.difunction.core.object Difunction)
-           (locus.elementary.bijection.core.morphism Gem)
-           (locus.elementary.dependency.nset.object NSet)))
+           (locus.elementary.quiver.core.object Quiver)))
 
 ; A lattice is a thin category C containing all binary products and coproducts.
 ; The coproducts are joins and the products are meets.
@@ -72,7 +59,7 @@
 
   ; The means necessary to make lattices into structured quivers
   StructuredDiset
-  (first-set [this] (join-precedence-relation elements join))
+  (first-set [this] (meet-precedence-relation elements meet))
   (second-set [this] elements)
 
   StructuredQuiver
@@ -98,6 +85,16 @@
 ; Ontology of lattices as categories
 (derive Lattice :locus.elementary.copresheaf.core.protocols/lattice)
 
+; We need some special way of getting the underlying relation of lattice
+(defmethod underlying-relation Lattice
+  [lattice]
+
+  (->SeqableRelation (objects lattice) (morphisms lattice) {}))
+
+(defmethod underlying-multirelation Lattice
+  [lattice]
+
+  (underlying-relation lattice))
 
 ; We need to be able to have some means of visualizing lattices
 (defmethod visualize Lattice
@@ -107,12 +104,6 @@
     (if (= 1 object-count)
       (visualize (underlying-relation lattice))
       (visualize (covering-relation (underlying-relation (underlying-quiver lattice)))))))
-
-; Conversion routines for lattices
-(defmulti to-lattice type)
-
-(defmethod to-lattice Lattice
-  [lattice] lattice)
 
 ; Create a lattice from a relation, with the hopes that the relation
 ; that you are providing is actually a lattice relation.
@@ -124,6 +115,12 @@
     (vertices rel)
     (join-operation rel)
     (meet-operation rel)))
+
+; Conversion routines for lattices
+(defmulti to-lattice type)
+
+(defmethod to-lattice Lattice
+  [lattice] lattice)
 
 (defmethod to-lattice Quiver
   [quiv]
@@ -140,12 +137,6 @@
   [rel]
 
   (relational-lattice rel))
-
-; We need some special way of getting the underlying relation of lattice
-(defmethod underlying-relation Lattice
-  [lattice]
-
-  (first-set lattice))
 
 ; Join and meet elements of lattice
 (defn join-elements
@@ -256,65 +247,6 @@
         (upper-bound-element? lattice i))
       (objects lattice))))
 
-; Intervals lattice
-(defn join-intervals*
-  [pair1 pair2]
-
-  (cond
-    (empty? pair1) pair2
-    (empty? pair2) pair1
-    :else (let [[a b] pair1
-                [c d] pair2]
-            [(min a c)
-             (max b d)])))
-
-(defn meet-intervals*
-  [pair1 pair2]
-
-  (cond
-    (empty? pair1) []
-    (empty? pair2) []
-    :else (let [[a b] pair1
-                [c d] pair2]
-            (let [new-start (max a c)
-                  new-end (min b d)]
-              (if (<= new-start new-end)
-                [new-start new-end]
-                [])))))
-
-(defn interval-lattice
-  [n]
-
-  (Lattice.
-    (all-intervals n)
-    (monoidalize join-intervals*)
-    (monoidalize meet-intervals*)))
-
-; Noncrossing partition lattice
-(defn noncrossing-partition-lattice
-  [n]
-
-  (Lattice.
-    (set
-      (filter
-        noncrossing-range-partition?
-        (set-partitions (set (range n)))))
-    join-noncrossing-partitions
-    meet-set-partitions))
-
-; Compute the lattice of preorders of a set
-(defn lattice-of-preorders
-  [coll]
-
-  (Lattice.
-    (fn [x]
-      (and
-        (preorder? x)
-        (= (vertices x) coll)))
-    (fn [& args]
-      (cl transitive? (apply union args)))
-    intersection))
-
 ; Total order lattices
 (defn nth-total-order-lattice
   [n]
@@ -324,26 +256,10 @@
     max
     min))
 
-; Get a lattice from a Moore family and its closure operation
-(defn moore-lattice
-  [family]
-
-  (Lattice.
-    (dimembers family)
-    (fn [& args]
-      (cl family (apply union args)))
-    intersection))
-
-; Youngs lattice of additive partitions
-(def youngs-lattice
-  (Lattice.
-    additive-partition?
-    young-join
-    young-meet))
-
-; We now need some way of dealing with subalgebras
+; A means of dealing with subalgebras of algebraic structures
 (defmulti sub type)
 
+; Distributive lattices and total orders of numbers
 (defmethod sub java.lang.Integer
   [n] (nth-total-order-lattice n))
 
@@ -353,6 +269,7 @@
 (defmethod sub clojure.lang.BigInt
   [n] (nth-total-order-lattice n))
 
+; Distributive lattices of multisets
 (defmethod sub Multiset
   [coll]
 
@@ -381,23 +298,6 @@
     join-set-partitions
     meet-set-partitions))
 
-; Subalgebras and congruences in the topos Sets^2
-(defmethod sub Diset
-  [pair]
-
-  (Lattice.
-    (seqable-diset-subalgebras pair)
-    join-set-pairs
-    meet-set-pairs))
-
-(defmethod con Diset
-  [pair]
-
-  (Lattice.
-    (seqable-diset-congruences pair)
-    join-set-pair-congruences
-    meet-set-pair-congruences))
-
 ; Subalgebras and congruences in the topos Sets^(->)
 (defmethod sub :locus.base.logic.structure.protocols/set-function
   [func]
@@ -417,109 +317,18 @@
         (congruence-closure func in out)))
     meet-set-pair-congruences))
 
-; Subalgebras and congruences of bijections
-(defmethod sub Bijection
-  [func]
+; Ontology of sublattices
+(defn sublattice?
+  [lattice coll]
 
-  (Lattice.
-    (all-subbijections func)
-    join-set-pairs
-    meet-set-pairs))
+  (every?
+    (fn [[a b]]
+      (and
+        (contains? coll (join-elements lattice a b))
+        (contains? coll (meet-elements lattice a b))))
+    (cartesian-power coll 2)))
 
-(defmethod con Bijection
-  [func]
-
-  (Lattice.
-    (set (bijection-congruences func))
-    (fn [& congruences]
-      (let [[in out] (apply join-set-pair-congruences congruences)]
-        (congruence-closure func in out)))
-    meet-set-pair-congruences))
-
-; Subalgebras and congruences of quivers
-(defmethod sub :locus.elementary.quiver.core.object/quiver
-  [quiv]
-
-  (Lattice.
-    (subquivers quiv)
-    join-set-pairs
-    meet-set-pairs))
-
-(defmethod con :locus.elementary.quiver.core.object/quiver
-  [quiv]
-
-  (Lattice.
-    (quiver-congruences quiv)
-    join-set-pair-congruences
-    meet-set-pair-congruences))
-
-; Subalgebras and congruencse of difunctions
-(defmethod sub Difunction
-  [x]
-
-  (product
-    (sub (first-function x))
-    (sub (second-function x))))
-
-(defmethod con Difunction
-  [x]
-
-  (product
-    (con (first-function x))
-    (con (second-function x))))
-
-; Subalgebras and congruences of morphisms of bijections
-(defmethod sub Gem
-  [gem]
-
-  (sub (interrelational-component gem)))
-
-(defmethod con Gem
-  [gem]
-
-  (con (interrelational-component gem)))
-
-; Subobjects and congruences of nsets
-(defmethod sub NSet
-  [nset]
-
-  (->Lattice
-    (nset-subalgebras nset)
-    join-set-sequences
-    meet-set-sequences))
-
-(defmethod con NSet
-  [nset]
-
-  (->Lattice
-    (nset-congruences nset)
-    join-set-sequence-congruences
-    meet-set-sequence-congruences))
-
-; Subalgebra lattices of lattices
-(defn enumerate-sublattices
-  [lattice]
-
-  (set
-    (filter
-      (fn [coll]
-        (every?
-          (fn [[a b]]
-            (and
-              (contains? coll (join-elements lattice a b))
-              (contains? coll (meet-elements lattice a b))))
-          (cartesian-product coll coll)))
-      (power-set (underlying-set lattice)))))
-
-(defmethod sub Lattice
-  [lattice]
-
-  (Lattice.
-    (enumerate-sublattices lattice)
-    union
-    intersection))
-
-(defn restrict-lattice
+(defn sublattice
   [lattice coll]
 
   (Lattice.
@@ -527,13 +336,37 @@
     (join-fn lattice)
     (meet-fn lattice)))
 
-; The subobject lattice of a set relation
-(comment
-  (defmethod sub SetRelation
-    [rel]
+; Computations with lattices of sublattices
+(defn enumerate-sublattices
+  [lattice]
 
-    (->Lattice
-      (set (enumerate-set-subrelations rel))
-      join-set-pairs
-      meet-set-pairs)))
+  (set
+    (filter
+      (fn [coll]
+        (sublattice? lattice coll))
+      (power-set (objects lattice)))))
 
+(defn sublattice-closure
+  [lattice coll]
+
+  (let [new-elements (set
+                       (apply
+                        concat
+                        (for [a coll
+                              b coll
+                              :let [m (meet-elements lattice a b)
+                                    j (join-elements lattice a b)]]
+                          (list m j))))
+        new-set-of-elements (union new-elements coll)]
+    (if (equal-universals? coll new-set-of-elements)
+      coll
+      (sublattice-closure lattice new-set-of-elements))))
+
+(defmethod sub Lattice
+  [lattice]
+
+  (Lattice.
+    (enumerate-sublattices lattice)
+    (fn [& colls]
+      (sublattice-closure lattice (apply union colls)))
+    intersection))

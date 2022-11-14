@@ -2,11 +2,13 @@
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
+            [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.relation.binary.vertexset :refer :all]
             [locus.elementary.incidence.system.family :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.lattice.core.object :refer :all]
+            [locus.elementary.preorder.core.object :refer :all]
             [locus.elementary.order.total.object :refer :all]
             [locus.elementary.order.total.open-set :refer :all]
             [locus.elementary.order.total.open-interval :refer :all]
@@ -28,10 +30,25 @@
 
 (derive TopologicalSpace :locus.base.logic.structure.protocols/structured-set)
 
-(defn topology?
-  [space]
+; The adjoint relationship between order and topology
+(defn alexandrov-topology
+  [preposet]
 
-  (= (type space) TopologicalSpace))
+  (->TopologicalSpace
+    (objects preposet)
+    (filters (underlying-relation preposet))))
+
+(defn specialization-preorder
+  [topology]
+
+  (->Preposet
+    (underlying-set topology)
+    (fn [[x y]]
+      (every?
+        (fn [open]
+          (or (not (contains? open x))
+              (contains? open y)))
+        (.-opens topology)))))
 
 ; A topological multimethod
 (defmulti topology type)
@@ -52,7 +69,14 @@
     (fn [open]
       (open-set-of-metric? metric open))))
 
-(defmethod topology TotallyOrderedSet
+(defmethod topology :locus.elementary.copresheaf.core.protocols/thin-category
+  [poset]
+
+  (alexandrov-topology poset))
+
+; The order topology of a totally ordered set is distinguished from the topology induced by a
+; preorder under the adjoint relationship between order and topology.
+(defn order-topology
   [order]
 
   (TopologicalSpace.
@@ -107,6 +131,11 @@
     (apply intersection (map #(.opens %) topologies))))
 
 ; The lattice of topological spaces
+(defn topology?
+  [space]
+
+  (= (type space) TopologicalSpace))
+
 (defn lattice-of-topological-spaces
   [coll]
 
@@ -139,5 +168,6 @@
   (and
     (topology? space)
     (power-set? (.opens space))))
+
 
 

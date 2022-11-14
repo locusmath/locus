@@ -13,13 +13,7 @@
             [locus.elementary.relation.binary.vertexset :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
-            [locus.elementary.quiver.core.morphism :refer :all]
-            [locus.elementary.quiver.unital.morphism :refer :all]
-            [locus.elementary.preorder.core.object :refer :all]
-            [locus.elementary.order.core.object :refer :all])
-  (:import (locus.elementary.quiver.core.object Quiver)
-           (locus.elementary.order.core.object Poset)
-           (locus.elementary.preorder.core.object Preposet)))
+            [locus.elementary.preorder.core.object :refer :all]))
 
 ; Let C,D be thin categories. Then a functor f : C -> D is entirely determined by its object
 ; part. It follows that we can save memory by defining a special class for that only
@@ -42,14 +36,6 @@
       (objects target)
       func))
 
-  StructuredMorphismOfQuivers
-  (underlying-morphism-of-quivers [this]
-    (->MorphismOfQuivers
-      (underlying-quiver source)
-      (underlying-quiver target)
-      (first-function this)
-      (second-function this)))
-
   ; Functional aspects of monotone maps
   ConcreteMorphism
   (inputs [this] (underlying-set source))
@@ -64,20 +50,8 @@
 ; Monotone maps constitute functors
 (derive MonotoneMap :locus.elementary.copresheaf.core.protocols/functor)
 
-; Discrete monotone maps of preorders can be formed from set functions
-(defn discrete-monotone-map
-  [func]
-
-  (->MonotoneMap
-    (discrete-preorder (inputs func))
-    (discrete-preorder (outputs func))
-    func))
-
 ; Composition and identities of thin categories
-(defmethod identity-morphism Preposet
-  [obj] (MonotoneMap. obj obj identity))
-
-(defmethod identity-morphism Poset
+(defmethod identity-morphism :locus.elementary.copresheaf.core.protocols/thin-category
   [obj] (MonotoneMap. obj obj identity))
 
 (defmethod compose* MonotoneMap
@@ -87,6 +61,41 @@
     (source-object b)
     (target-object a)
     (comp (.func a) (.func b))))
+
+; Convert various types of functors into monotone maps
+(defmulti to-monotone-map type)
+
+(defmethod to-monotone-map MonotoneMap
+  [^MonotoneMap func] func)
+
+; Discrete monotone maps of preorders can be formed from set functions
+(defn discrete-monotone-map
+  [func]
+
+  (->MonotoneMap
+    (discrete-preorder (inputs func))
+    (discrete-preorder (outputs func))
+    func))
+
+; Preorder images and inverse images
+(defn preorder-image
+  [func preorder]
+
+  (let [rel (underlying-relation preorder)]
+    (->Preposet
+      (outputs func)
+      (set
+        (for [[a b] rel]
+          (list (func a) (func b)))))))
+
+(defn preorder-inverse-image
+  [func preorder]
+
+  (let [rel (underlying-relation preorder)]
+    (->Preposet
+     (inputs func)
+     (fn [[a b]]
+       (boolean (rel (list (func a) (func b))))))))
 
 ; Quotient related monotone maps
 (defn quotient-monotone-map
@@ -105,22 +114,3 @@
     (relational-preposet (subrelation rel coll))
     (relational-preposet rel)
     identity))
-
-; We can get from structure preserving maps induced inclusion functions
-; a similar technique is even possible for semigroup homomorphisms
-(defn induced-inclusion
-  [morphism]
-
-  (let [source (source-object morphism)
-        source-relation (underlying-relation source)
-        source-vertices (underlying-set source)
-        target-relation (underlying-relation (target-object morphism))]
-    (inclusion-function
-      source-relation
-      (inflate-relation source-vertices target-relation morphism))))
-
-
-
-
-
-

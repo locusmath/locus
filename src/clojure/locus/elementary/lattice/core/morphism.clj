@@ -12,14 +12,15 @@
             [locus.elementary.quiver.core.thin-morphism :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.elementary.quiver.unital.morphism :refer :all]
-            [locus.elementary.lattice.core.object :refer :all])
+            [locus.elementary.lattice.core.object :refer :all]
+            [locus.elementary.preorder.core.object :refer :all]
+            [locus.elementary.preorder.core.morphism :refer :all])
   (:import (locus.elementary.lattice.core.object Lattice)
            (locus.elementary.diamond.core.object Diamond)))
 
 ; The category of lattices is distinguished from the category of categories,
 ; by its very special type of functors which are the lattice morphisms. These
 ; morphisms of lattices also need to preserve products and coproducts.
-
 (deftype LatticeMorphism
   [source target func]
 
@@ -84,6 +85,15 @@
   [lattice]
 
   (LatticeMorphism. lattice lattice identity))
+
+; Convert a lattice homomorphism into a monotone map
+(defmethod to-monotone-map LatticeMorphism
+  [^LatticeMorphism lattice-homomorphism]
+
+  (->MonotoneMap
+    (source-object lattice-homomorphism)
+    (target-object lattice-homomorphism)
+    (.-func lattice-homomorphism)))
 
 ; Morphisms of the component functions of a lattice
 (defn morphism-of-join-functions

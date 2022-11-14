@@ -296,44 +296,6 @@
   (->SetPartition
     (partition-inverse-image func (equivalence-classes partition))))
 
-; We can take the image and inverse image functions
-; on sets and turn them into functors
-(defn image-functor
-  [func]
-
-  (SetFunction.
-    (->PowerSet (inputs func))
-    (->PowerSet (outputs func))
-    (fn [coll]
-      (set-image func coll))))
-
-(defn inverse-image-functor
-  [func]
-
-  (SetFunction.
-    (->PowerSet (outputs func))
-    (->PowerSet (inputs func))
-    (fn [coll]
-      (set-inverse-image func coll))))
-
-(defn partition-image-functor
-  [func]
-
-  (SetFunction.
-    (->BellSet (inputs func))
-    (->BellSet (outputs func))
-    (fn [partition]
-      (partition-image func partition))))
-
-(defn partition-inverse-image-functor
-  [func]
-
-  (SetFunction.
-    (->BellSet (outputs func))
-    (->BellSet (inputs func))
-    (fn [partition]
-      (partition-inverse-image func partition))))
-
 ; The generalized kernel of a function
 (defn kernel
   [func]

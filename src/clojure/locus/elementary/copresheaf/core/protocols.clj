@@ -94,6 +94,7 @@
 (derive ::thin-semigroupoid ::semigroupoid)
 (derive ::thin-category ::thin-semigroupoid)
 (derive ::thin-category ::category)
+
 (derive ::thin-groupoid ::groupoid)
 (derive ::thin-groupoid ::thin-category)
 (derive ::thin-skeletal-category ::thin-category)

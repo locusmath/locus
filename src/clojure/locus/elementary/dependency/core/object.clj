@@ -29,7 +29,8 @@
             [locus.elementary.incidence.core.morphism :refer :all]
             [locus.elementary.cospan.core.morphism :refer :all]
             [locus.elementary.diamond.core.morphism :refer :all]
-            [locus.elementary.dependency.chain.morphism :refer :all])
+            [locus.elementary.dependency.chain.morphism :refer :all]
+            [locus.elementary.preorder.core.util :refer :all])
   (:import (locus.elementary.bijection.core.object Bijection)
            (locus.elementary.triangle.core.object SetTriangle)
            (locus.elementary.incidence.core.object Span)

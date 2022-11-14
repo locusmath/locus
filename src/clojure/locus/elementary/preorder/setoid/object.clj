@@ -88,7 +88,9 @@
 
 ; Underlying relation
 (defmethod underlying-relation Setoid
-  [^Setoid this] (.rel this))
+  [^Setoid this]
+
+  (->SeqableRelation (.-coll this) (.-rel this) {}))
 
 (defmethod visualize Setoid
   [^Setoid this] (visualize (underlying-relation this)))
