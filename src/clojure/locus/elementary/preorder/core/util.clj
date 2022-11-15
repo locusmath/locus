@@ -12,17 +12,18 @@
             [locus.elementary.preorder.core.object :refer :all]
             [locus.elementary.order.core.object :refer :all]))
 
+; Chain partial orders
+(defn nth-chain
+  [n]
+
+  (relational-poset (apply total-order (range n))))
+
 ; Create an antichain partial order
 (defn nth-antichain
   [n]
 
   (let [coll (set (range n))]
     (->Poset coll (coreflexive-relation coll))))
-
-(defn nth-chain
-  [n]
-
-  (relational-poset (apply total-order (range n))))
 
 (defn nth-complete-preorder
   [n]

@@ -134,3 +134,49 @@
           (seq? selected-element) (binary-subrelation supersequence? coll)
           (multiset? selected-element) (binary-subrelation superbag? coll)
           (set-function? selected-element) (binary-subrelation superfunction? coll))))))
+
+; This is a way of getting the lexicographic of two posets
+(defn lexicographic-product-order
+  [p1 p2]
+
+  (let [r1 (underlying-relation p1)
+        r2 (underlying-relation p2)]
+    (->Poset
+     (product (objects p1) (objects p2))
+     (fn [[x1 y1] [x2 y2]]
+       (or
+         (r1 (list x1 x2))
+         (and
+           (= x1 x2)
+           (r2 (list y1 y2))))))))
+
+(defn linear-sum
+  [& posets]
+
+  (->Poset
+    (apply cartesian-coproduct (map objects posets))
+    (fn [[i v1] [j v2]]
+      (or
+        (<= i j)
+        (and
+          (= i j)
+          (let [r (underlying-relation (nth posets i))]
+            (r (list v1 v2))))))))
+
+; Suborders of partial orders
+(defn subposet
+  [poset new-objects new-morphisms]
+
+  (->Poset new-objects new-morphisms))
+
+(defn wide-subposet
+  [poset new-morphisms]
+
+  (subposet poset (objects poset) new-morphisms))
+
+(defn full-subposet
+  [poset new-objects]
+
+  (->Poset
+    new-objects
+    (subrelation (underlying-relation poset) new-objects)))

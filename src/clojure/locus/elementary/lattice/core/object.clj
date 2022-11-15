@@ -256,6 +256,30 @@
     max
     min))
 
+(def divisibility-lattice
+  (->Lattice
+    natural-number?
+    lcm
+    gcd))
+
+(def naturals-lattice
+  (->Lattice
+    natural-number?
+    max
+    min))
+
+(def integers-lattice
+  (->Lattice
+    integer?
+    max
+    min))
+
+(def rationals-lattice
+  (->Lattice
+    rational?
+    max
+    min))
+
 ; A means of dealing with subalgebras of algebraic structures
 (defmulti sub type)
 

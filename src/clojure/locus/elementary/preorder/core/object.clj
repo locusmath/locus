@@ -71,6 +71,29 @@
 (defmethod visualize Preposet
   [this] (visualize (underlying-relation this)))
 
+; Ordering relations on preorders
+(defn preceding-element?
+  [preposet a b]
+
+  ((underlying-relation preposet) (list a b)))
+
+(defn comparable-elements?
+  [preposet a b]
+
+  (or
+    (preceding-element? preposet a b)
+    (preceding-element? preposet b a)))
+
+(defn incomparable-elements?
+  [preposet a b]
+
+  (not (comparable-elements? preposet a b)))
+
+(defn comparability-relation
+  [preposet]
+
+  (cl symmetric-binary-relation? (underlying-relation preposet)))
+
 ; Relation preorders
 (defn relational-preposet
   ([coll rel]
@@ -203,3 +226,47 @@
   (relational-preposet
     (set coll)
     (total-preorder (get-block-sets-sequence coll))))
+
+; Join and meet operations to be applied to preorders
+(defn stronger-preorder?
+  [a b]
+
+  (and
+    (= (underlying-set a) (underlying-set b))
+    (superset? (list (underlying-relation a) (underlying-relation b)))))
+
+(defn join-preposets
+  [& preposets]
+
+  (->Preposet
+    (apply union (map objects preposets))
+    (cl transitive? (apply union (map underlying-relation preposets)))))
+
+(defn meet-preposets
+  [& preposets]
+
+  (->Preposet
+    (apply intersection (map objects preposets))
+    (apply intersection (map underlying-relation preposets))))
+
+; Subobjects of preorders
+(defn subpreposet
+  [preposet new-objects new-morphisms]
+
+  (->Preposet
+    new-objects
+    new-morphisms))
+
+(defn wide-subpreposet
+  [preposet new-morphisms]
+
+  (subpreposet preposet (objects preposet) new-morphisms))
+
+(defn full-subpreposet
+  [preposet new-objects]
+
+  (->Preposet
+    new-objects
+    (subrelation (underlying-relation preposet) new-objects)))
+
+
