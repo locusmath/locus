@@ -37,14 +37,6 @@
   (first-function [this] morphism-function)
   (second-function [this] object-function)
 
-  StructuredMorphismOfQuivers
-  (underlying-morphism-of-quivers [this]
-    (->MorphismOfQuivers
-      (underlying-quiver source)
-      (underlying-quiver target)
-      (SetFunction. (first-set source) (first-set target) morphism-function)
-      (SetFunction. (second-set source) (second-set target) object-function)))
-
   ConcreteHigherMorphism
   (underlying-morphism-of-functions [this]
     (morphism-of-partial-binary-operations
@@ -111,7 +103,12 @@
 
 ; Monotone maps are functors of thin categories
 ; Therefore, they can be added to our ontology of functors and semifunctors.
-(defn monotone-map?
+(defmulti monotone-map? type)
+
+(defmethod monotone-map? :locus.elementary.copresheaf.core.protocols/monotone-map
+  [monotone-map] true)
+
+(defmethod monotone-map? :default
   [func]
 
   (and

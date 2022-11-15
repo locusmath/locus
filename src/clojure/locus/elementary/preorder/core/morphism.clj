@@ -48,7 +48,7 @@
     (clojure.lang.AFn/applyToHelper this args)))
 
 ; Monotone maps constitute functors
-(derive MonotoneMap :locus.elementary.copresheaf.core.protocols/functor)
+(derive MonotoneMap :locus.elementary.copresheaf.core.protocols/monotone-map)
 
 ; Composition and identities of thin categories
 (defmethod identity-morphism :locus.elementary.copresheaf.core.protocols/thin-category
@@ -97,6 +97,20 @@
      (fn [[a b]]
        (boolean (rel (list (func a) (func b))))))))
 
+(defmethod image
+  [:locus.base.logic.structure.protocols/set-function
+   :locus.elementary.copresheaf.core.protocols/thin-category]
+  [func preorder]
+
+  (preorder-image func preorder))
+
+(defmethod inverse-image
+  [:locus.base.logic.structure.protocols/set-function
+   :locus.elementary.copresheaf.core.protocols/thin-category]
+  [func preorder]
+
+  (preorder-inverse-image func preorder))
+
 ; Quotient related monotone maps
 (defn quotient-monotone-map
   [rel partition]
@@ -114,3 +128,22 @@
     (relational-preposet (subrelation rel coll))
     (relational-preposet rel)
     identity))
+
+; Specialized monotone maps related to images/preimages
+(defn induced-direct-image-monotone-map
+  [func]
+
+  (->MonotoneMap
+    (->PowerSet (inputs func))
+    (->PowerSet (outputs func))
+    (fn [coll]
+      (set-image func coll))))
+
+(defn induced-inverse-image-monotone-map
+  [func]
+
+  (->MonotoneMap
+    (->PowerSet (outputs func))
+    (->PowerSet (inputs func))
+    (fn [coll]
+      (set-inverse-image func coll))))

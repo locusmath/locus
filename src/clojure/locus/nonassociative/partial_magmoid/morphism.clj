@@ -36,14 +36,6 @@
   (first-function [this] morphism-function)
   (second-function [this] object-function)
 
-  StructuredMorphismOfQuivers
-  (underlying-morphism-of-quivers [this]
-    (->MorphismOfQuivers
-      (underlying-quiver source)
-      (underlying-quiver target)
-      (->SetFunction (morphisms source) (morphisms target) morphism-function)
-      (->SetFunction (objects source) (objects target) object-function)))
-
   ConcreteHigherMorphism
   (underlying-morphism-of-functions [this]
     (morphism-of-partial-binary-operations

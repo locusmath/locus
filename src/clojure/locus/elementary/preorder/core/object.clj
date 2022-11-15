@@ -94,6 +94,11 @@
 
   (cl symmetric-binary-relation? (underlying-relation preposet)))
 
+(defn underlying-covering-relation
+  [structure]
+
+  (covering-relation (underlying-relation structure)))
+
 ; Relation preorders
 (defn relational-preposet
   ([coll rel]

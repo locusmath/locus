@@ -25,25 +25,6 @@
   (invoke [this arg] (func arg))
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
-; The adjoint relationship between order and topology
-(defn specialization-monotone-map
-  [continuous-map]
-
-  (->MonotoneMap
-    (specialization-preorder (source-object continuous-map))
-    (specialization-preorder (target-object continuous-map))
-    (fn [i]
-      (continuous-map i))))
-
-(defn alexandrov-continuous-function
-  [monotone-map]
-
-  (->ContinuousMap
-    (alexandrov-topology (source-object monotone-map))
-    (alexandrov-topology (target-object monotone-map))
-    (fn [i]
-      (monotone-map i))))
-
 ; Identities and composition in the category Top
 (defmethod identity-morphism TopologicalSpace
   [topology]
@@ -82,6 +63,39 @@
     (->TopologicalSpace
       (inputs function)
       input-opens)))
+
+(defmethod image
+  [:locus.base.logic.structure.protocols/set-function
+   :locus.grothendieck.topology.core.object/topology]
+  [func topology]
+
+  (topological-image func topology))
+
+(defmethod inverse-image
+  [:locus.base.logic.structure.protocols/set-function
+   :locus.grothendieck.topology.core.object/topology]
+  [func topology]
+
+  (topological-inverse-image func topology))
+
+; The adjoint relationship between order and topology
+(defn specialization-monotone-map
+  [continuous-map]
+
+  (->MonotoneMap
+    (specialization-preorder (source-object continuous-map))
+    (specialization-preorder (target-object continuous-map))
+    (fn [i]
+      (continuous-map i))))
+
+(defn alexandrov-continuous-function
+  [monotone-map]
+
+  (->ContinuousMap
+    (alexandrov-topology (source-object monotone-map))
+    (alexandrov-topology (target-object monotone-map))
+    (fn [i]
+      (monotone-map i))))
 
 ; Ontology of continuous maps
 (defn continuous-map?

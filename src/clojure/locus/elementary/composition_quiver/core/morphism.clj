@@ -34,15 +34,7 @@
 
   StructuredDifunction
   (first-function [this] morphism-function)
-  (second-function [this] object-function)
-
-  StructuredMorphismOfQuivers
-  (underlying-morphism-of-quivers [this]
-    (->MorphismOfQuivers
-      (underlying-quiver source)
-      (underlying-quiver target)
-      (first-function this)
-      (second-function this))))
+  (second-function [this] object-function))
 
 (derive MorphismOfCompositionQuivers :locus.elementary.copresheaf.core.protocols/morphism-of-structured-quivers)
 

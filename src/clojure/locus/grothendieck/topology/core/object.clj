@@ -28,7 +28,8 @@
   ConcreteObject
   (underlying-set [this] points))
 
-(derive TopologicalSpace :locus.base.logic.structure.protocols/structured-set)
+(derive ::topology :locus.base.logic.structure.protocols/structured-set)
+(derive TopologicalSpace ::topology)
 
 ; The adjoint relationship between order and topology
 (defn alexandrov-topology

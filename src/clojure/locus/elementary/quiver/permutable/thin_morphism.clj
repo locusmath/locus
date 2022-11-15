@@ -42,10 +42,6 @@
       (objects target-quiver)
       func))
 
-  StructuredMorphismOfQuivers
-  (underlying-morphism-of-quivers [this]
-    this)
-
   clojure.lang.IFn
   (invoke [this arg]
     (func arg))

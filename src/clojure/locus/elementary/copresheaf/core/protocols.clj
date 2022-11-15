@@ -127,6 +127,9 @@
 
 (derive ::functor ::semifunctor)
 (derive ::functor ::morphism-of-structured-unital-quivers)
+
+(derive ::monotone-map ::functor)
+
 (derive ::groupoid-functor ::functor)
 (derive ::groupoid-functor ::morphism-of-structured-dependency-quivers)
 

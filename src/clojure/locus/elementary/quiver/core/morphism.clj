@@ -20,15 +20,6 @@
 ; with respect to any morphism in the topos of quivers. Furthermore, there is a subobject
 ; classifier of Quivers, which we implement in this file.
 
-; A protocol that abstracts the idea of a morphism of quivers
-(defprotocol StructuredMorphismOfQuivers
-  "Let f : C -> Quiv define a category C structured over the topos of quivers. Then every morphism in
-  C is associated to a morphism of quivers. This protocol defines the morphism part of functorial mappings
-  of this sort, which are frequently encountered in category theory and topos theory."
-
-  (underlying-morphism-of-quivers [this]
-    "This takes a morphism and returns its corresponding morphism in the topos of quivers."))
-
 ; Morphism of quivers
 (deftype MorphismOfQuivers [source-quiver target-quiver input-function output-function]
   AbstractMorphism
@@ -47,9 +38,6 @@
   (first-function [this] input-function)
   (second-function [this] output-function)
 
-  StructuredMorphismOfQuivers
-  (underlying-morphism-of-quivers [this] this)
-
   clojure.lang.IFn
   (invoke [this [i v]]
     (cond
@@ -59,6 +47,33 @@
     (clojure.lang.AFn/applyToHelper this args)))
 
 (derive MorphismOfQuivers :locus.elementary.copresheaf.core.protocols/morphism-of-structured-quivers)
+
+; Let f : C -> Quiv define a category C structured over the topos of quivers. Then every morphism in
+; C is associated to a morphism of quivers. This method defines the morphism part of functorial mappings
+; of this sort, which are frequently encountered in category theory and topos theory. The underlying
+; morphism of quivers method takes such a morphism and returns the corresponding morphism in
+; the topos of quivers.
+(defmulti underlying-morphism-of-quivers type)
+
+(defmethod underlying-morphism-of-quivers MorphismOfQuivers
+  [^MorphismOfQuivers morphism] morphism)
+
+(defmethod underlying-morphism-of-quivers :default
+  [morphism]
+
+  (let [first-quiver (underlying-quiver (source-object morphism))
+        second-quiver (underlying-quiver (target-object morphism))]
+    (->MorphismOfQuivers
+      first-quiver
+      second-quiver
+      (->SetFunction
+        (morphisms first-quiver)
+        (morphisms second-quiver)
+        (first-function morphism))
+      (->SetFunction
+        (objects first-quiver)
+        (objects second-quiver)
+        (second-function morphism)))))
 
 ; Component functions
 (defn morphism-of-quivers-component-function

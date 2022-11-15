@@ -22,15 +22,6 @@
 ; identity and the vertex identity. Then the morphisms in this elementary topos are simply
 ; the corresponding morphisms of presheaves.
 
-; The structured morphism class will be used to interpret the theory of functors
-; from the category of groupoids to the topos of permutable quivers
-(defprotocol StructuredMorphismOfPermutableQuivers
-  "A structured morphism of permutable quivers is any morphism that has an underlying
-   functor to the topos of permutable quivers."
-
-  (underlying-morphism-of-permutable-quivers [this]
-    "Get the underlying morphism of permutable quivers of a morphism."))
-
 ; Morphisms in the topos of permutable quivers
 (deftype MorphismOfPermutableQuivers [source-quiver target-quiver input-function output-function]
   AbstractMorphism
@@ -39,20 +30,27 @@
 
   StructuredDifunction
   (first-function [this] input-function)
-  (second-function [this] output-function)
-
-  StructuredMorphismOfQuivers
-  (underlying-morphism-of-quivers [this]
-    (->MorphismOfQuivers
-      source-quiver
-      target-quiver
-      input-function
-      output-function))
-
-  StructuredMorphismOfPermutableQuivers
-  (underlying-morphism-of-permutable-quivers [this] this))
+  (second-function [this] output-function))
 
 (derive MorphismOfPermutableQuivers :locus.elementary.copresheaf.core.protocols/morphism-of-structured-permutable-quivers)
+
+; A structured morphism of permutable quivers is any morphism that is a member of a category
+; that comes equipped with a forgetful functor to the topos of permutable quivers. The
+; underlying-morphism-of-permutable-quivers method gets this underlying morphism
+; of permutable quivers.
+(defmulti underlying-morphism-of-permutable-quivers type)
+
+(defmethod underlying-morphism-of-permutable-quivers MorphismOfPermutableQuivers
+  [^MorphismOfPermutableQuivers morphism] morphism)
+
+(defmethod underlying-morphism-of-permutable-quivers :default
+  [morphism]
+
+  (->MorphismOfPermutableQuivers
+    (underlying-permutable-quiver (source-object morphism))
+    (underlying-permutable-quiver (target-object morphism))
+    (first-function morphism)
+    (second-function morphism)))
 
 ; Components of morphisms of permutable quivers
 (defmethod get-set MorphismOfPermutableQuivers

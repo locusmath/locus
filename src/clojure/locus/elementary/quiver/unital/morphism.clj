@@ -25,14 +25,6 @@
 ; instance of morphisms of unital quivers comes from the data of a functor of categories, then
 ; the morphism of unital quivers describe the fact that the functor preserves identities.
 
-; Generalized morphisms of in the topos of unital quivers
-(defprotocol StructuredMorphismOfUnitalQuivers
-  "A structured morphism of unital quivers, such as a functor, is any morphism equipped with a
-   functor to the topos of unital quivers."
-
-  (underlying-morphism-of-unital-quivers [this]
-    "Get the underlying morphism of unital quivers of a morphism."))
-
 ; Morphisms in the topos of unital quivers
 (deftype MorphismOfUnitalQuivers [source-quiver target-quiver input-function output-function]
   AbstractMorphism
@@ -41,20 +33,26 @@
 
   StructuredDifunction
   (first-function [this] input-function)
-  (second-function [this] output-function)
-
-  StructuredMorphismOfQuivers
-  (underlying-morphism-of-quivers [this]
-    (->MorphismOfQuivers
-      source-quiver
-      target-quiver
-      input-function
-      output-function))
-
-  StructuredMorphismOfUnitalQuivers
-  (underlying-morphism-of-unital-quivers [this] this))
+  (second-function [this] output-function))
 
 (derive MorphismOfUnitalQuivers :locus.elementary.copresheaf.core.protocols/morphism-of-structured-unital-quivers)
+
+; A structured morphism of unital quivers, such as a functor, is any morphism equipped with a
+; forgetful functor to the topos of unital quivers. The underlying-morphism-of-unital-quivers
+; get the result of applying this forgetful functor to such a morphism.
+(defmulti underlying-morphism-of-unital-quivers type)
+
+(defmethod underlying-morphism-of-unital-quivers MorphismOfUnitalQuivers
+  [^MorphismOfUnitalQuivers morphism] morphism)
+
+(defmethod underlying-morphism-of-unital-quivers :default
+  [morphism]
+
+  (->MorphismOfUnitalQuivers
+    (underlying-unital-quiver (source-object morphism))
+    (underlying-unital-quiver (target-object morphism))
+    (first-function morphism)
+    (second-function morphism)))
 
 ; Components of morphisms of permutable quivers
 (defmethod get-set MorphismOfUnitalQuivers

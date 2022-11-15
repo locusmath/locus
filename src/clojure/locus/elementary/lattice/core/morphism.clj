@@ -8,10 +8,7 @@
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.diamond.core.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
-            [locus.elementary.quiver.core.morphism :refer :all]
-            [locus.elementary.quiver.core.thin-morphism :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
-            [locus.elementary.quiver.unital.morphism :refer :all]
             [locus.elementary.lattice.core.object :refer :all]
             [locus.elementary.preorder.core.object :refer :all]
             [locus.elementary.preorder.core.morphism :refer :all])
@@ -41,23 +38,6 @@
       (fn [pair]
         (map func pair))))
 
-  ; Lattice homomorphisms are morphisms of quivers
-  StructuredMorphismOfQuivers
-  (underlying-morphism-of-quivers [this]
-    (->MorphismOfQuivers
-      (underlying-quiver source)
-      (underlying-quiver target)
-      (first-function this)
-      (second-function this)))
-
-  StructuredMorphismOfUnitalQuivers
-  (underlying-morphism-of-unital-quivers [this]
-    (->MorphismOfUnitalQuivers
-      (underlying-unital-quiver source)
-      (underlying-unital-quiver target)
-      (first-function this)
-      (second-function this)))
-
   ; Functional aspects of lattice homomorphisms
   ConcreteMorphism
   (inputs [this] (underlying-set source))
@@ -70,7 +50,7 @@
     (clojure.lang.AFn/applyToHelper this args)))
 
 ; The hierarchy of lattice morphisms
-(derive LatticeMorphism :locus.elementary.copresheaf.core.protocols/functor)
+(derive LatticeMorphism :locus.elementary.copresheaf.core.protocols/monotone-map)
 
 ; Composition and identities in the category of lattices
 (defmethod compose* LatticeMorphism

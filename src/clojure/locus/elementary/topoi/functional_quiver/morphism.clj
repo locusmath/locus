@@ -23,11 +23,7 @@
 
   StructuredDifunction
   (first-function [this] morphism-function)
-  (second-function [this] object-function)
-
-  StructuredMorphismOfQuivers
-  (underlying-morphism-of-quivers
-    (MorphismOfQuivers. source target morphism-function object-function)))
+  (second-function [this] object-function))
 
 ; Composition and identities in the topos of functional quivers
 (defmethod identity-morphism FunctionalQuiver

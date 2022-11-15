@@ -23,15 +23,7 @@
 ; Dependency quivers are simply presheaves over the category consisting of two objects and
 ; eight morphisms: the source, target, reverse, source identity, target identity, identity
 ; vertex identity, and edge identity morphisms with their obvious compositions. Then morphisms in
-; this topos are the corresponding morphisms of presheaves.
-
-; Generalized morphisms of in the topos of dependency quivers
-(defprotocol StructuredMorphismOfDependencyQuivers
-  "A structured morphism of dependency quivers is a morphism in a category equipped with a functor
-  to te the topos of dependency quivers. An example is a morphism in the category of groupoids."
-
-  (underlying-morphism-of-dependency-quivers [this]
-    "Get the underlying morphism of dependency quivers of this morphism."))
+; of these quivers are the corresponding morphisms of presheaves.
 
 ; Morphisms in the topos of dependency quivers
 (deftype MorphismOfDependencyQuivers [source-quiver target-quiver input-function output-function]
@@ -41,26 +33,26 @@
 
   StructuredDifunction
   (first-function [this] input-function)
-  (second-function [this] output-function)
-
-  StructuredMorphismOfQuivers
-  (underlying-morphism-of-quivers [this]
-    (->MorphismOfQuivers
-      source-quiver
-      target-quiver
-      input-function
-      output-function))
-
-  StructuredMorphismOfUnitalQuivers
-  (underlying-morphism-of-unital-quivers [this] this)
-
-  StructuredMorphismOfPermutableQuivers
-  (underlying-morphism-of-permutable-quivers [this] this)
-
-  StructuredMorphismOfDependencyQuivers
-  (underlying-morphism-of-dependency-quivers [this] this))
+  (second-function [this] output-function))
 
 (derive MorphismOfDependencyQuivers :locus.elementary.copresheaf.core.protocols/morphism-of-structured-dependency-quivers)
+
+; A structured morphism of dependency quivers is a morphism in a category equipped with a functor
+; to the topos of dependency quivers. An example is a morphism in the category of groupoids.
+; The underlying-morphism-of-dependency-quivers method gets you this
+(defmulti underlying-morphism-of-dependency-quivers type)
+
+(defmethod underlying-morphism-of-dependency-quivers MorphismOfDependencyQuivers
+  [^MorphismOfDependencyQuivers quiver] quiver)
+
+(defmethod underlying-morphism-of-dependency-quivers :default
+  [morphism]
+
+  (->MorphismOfDependencyQuivers
+    (underlying-dependency-quiver (source-object morphism))
+    (underlying-dependency-quiver (target-object morphism))
+    (first-function morphism)
+    (second-function morphism)))
 
 ; Components of morphisms of permutable quivers
 (defmethod get-set MorphismOfDependencyQuivers

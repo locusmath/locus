@@ -22,7 +22,7 @@
                  [dorothy "0.0.7"]
                  [org.scilab.forge/jlatexmath "1.0.7"]]
 
-  :main locus.grothendieck.topology.core.object
+  :main locus.elementary.lattice.core.morphism
 
   :source-paths ["src/clojure"]
   :java-source-paths ["src/java"]

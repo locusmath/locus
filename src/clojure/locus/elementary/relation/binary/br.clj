@@ -2810,6 +2810,28 @@
    (partial-order? rel)
    (<= (count (weak-connectivity rel)) 1)))
 
+(defn unique-minima-preorder?
+  [rel]
+
+  (and
+    (preorder? rel)
+    (<= (count (supremum rel #{})) 1)))
+
+(defn unique-maxima-preorder?
+  [rel]
+
+  (and
+    (preorder? rel)
+    (<= (count (infimum rel #{})) 1)))
+
+(defn uniquely-bounded-preorder?
+  [rel]
+
+  (and
+    (preorder? rel)
+    (<= (count (supremum rel #{})) 1)
+    (<= (count (infimum rel #{})) 1)))
+
 (defn lower-bounded-preorder?
   [rel]
 

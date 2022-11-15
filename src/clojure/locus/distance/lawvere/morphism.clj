@@ -26,14 +26,6 @@
   (second-function [this]
     (->SetFunction (objects source) (objects target) func))
 
-  StructuredMorphismOfQuivers
-  (underlying-morphism-of-quivers [this]
-    (->MorphismOfQuivers
-      (underlying-quiver source)
-      (underlying-quiver target)
-      (first-function this)
-      (second-function this)))
-
   ConcreteMorphism
   (inputs [this] (underlying-set source))
   (outputs [this] (underlying-set target))

@@ -29,15 +29,6 @@
   StructuredDifunction
   (first-function [this] morphism-function)
   (second-function [this] object-function)
-
-  StructuredMorphismOfQuivers
-  (underlying-morphism-of-quivers [this]
-    (->MorphismOfQuivers
-      (underlying-quiver source)
-      (underlying-quiver target)
-      (SetFunction. (first-set source) (first-set target) morphism-function)
-      (SetFunction. (second-set source) (second-set target) object-function)))
-
   ConcreteHigherMorphism
   (underlying-morphism-of-functions [this]
     (morphism-of-partial-binary-operations
