@@ -6,7 +6,7 @@
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.lattice.core.object :refer :all]
+            [locus.order.lattice.core.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]

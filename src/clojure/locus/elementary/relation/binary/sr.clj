@@ -499,5 +499,21 @@
                 (= n 1) 1
                 :else (* n (dec n)))})))
 
+; Join and meet precedence relations determined by functions
+(defn join-precedence-relation
+  [coll join]
 
+  (SeqableRelation.
+    coll
+    (fn [[a b]]
+      (= (join a b) b))
+    {}))
 
+(defn meet-precedence-relation
+  [coll meet]
+
+  (SeqableRelation.
+    coll
+    (fn [[a b]]
+      (= (meet a b) a))
+    {}))

@@ -5,9 +5,9 @@
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
-            [locus.elementary.lattice.core.object :refer :all]
-            [locus.elementary.lattice.term.lattice-term :refer :all])
-  (:import (locus.elementary.lattice.term.lattice_term LatticeTerm)))
+            [locus.order.lattice.core.object :refer :all]
+            [locus.order.lattice.term.lattice-term :refer :all])
+  (:import (locus.order.lattice.term.lattice_term LatticeTerm)))
 
 (require '[dorothy.core :as dot])
 (require '[dorothy.jvm :refer (render save! show!)])

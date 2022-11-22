@@ -6,8 +6,8 @@
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
-            [locus.elementary.preorder.core.object :refer :all]
-            [locus.elementary.preorder.core.morphism :refer :all]
+            [locus.order.general.core.object :refer :all]
+            [locus.order.general.core.morphism :refer :all]
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.category.core.morphism :refer :all]
             [locus.elementary.category.concrete.concrete-category :refer :all]
@@ -17,8 +17,8 @@
             [locus.elementary.quiver.unital.morphism :refer :all]
             [locus.elementary.topoi.copresheaf.object :refer :all]
             [locus.elementary.category.concrete.categories :refer :all])
-  (:import (locus.elementary.preorder.core.object Preposet)
-           (locus.elementary.preorder.core.morphism MonotoneMap)))
+  (:import (locus.order.general.core.object Preposet)
+           (locus.order.general.core.morphism MonotoneMap)))
 
 ; A preposetal functor is a functor from a category C to the category of preorders and monotone
 ; maps. It is a structure presheaf, as every preorder has an underlying set and every monotone

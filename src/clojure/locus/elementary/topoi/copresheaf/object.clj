@@ -16,7 +16,7 @@
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.category.core.generated-category :refer :all]
             [locus.elementary.groupoid.core.object :refer :all]
-            [locus.elementary.lattice.core.object :refer :all]
+            [locus.order.lattice.core.object :refer :all]
             [locus.elementary.category.core.morphism :refer :all]
             [locus.elementary.difunction.core.object :refer :all]
             [locus.elementary.diset.core.object :refer :all]
@@ -54,7 +54,7 @@
            (locus.base.function.core.object SetFunction)
            (locus.elementary.triangle.core.object SetTriangle)
            (locus.elementary.category.core.morphism Functor)
-           (locus.elementary.lattice.core.object Lattice)))
+           (locus.order.lattice.core.object Lattice)))
 
 ; Copresheaves
 ; A copresheaf is a set-valued functor and therefore an object of a topos Sets^(C). These are the

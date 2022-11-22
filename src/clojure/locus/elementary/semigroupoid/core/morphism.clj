@@ -10,8 +10,8 @@
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.semigroup.monoid.morphism :refer :all]
-            [locus.elementary.lattice.core.object :refer :all]
-            [locus.elementary.lattice.core.morphism :refer :all]
+            [locus.order.lattice.core.object :refer :all]
+            [locus.order.lattice.core.morphism :refer :all]
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.semigroupoid.core.object :refer :all])
   (:import (locus.base.function.core.object SetFunction)

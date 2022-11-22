@@ -15,14 +15,14 @@
             [locus.elementary.diamond.core.object :refer :all]
             [locus.elementary.diset.core.object :refer :all]
             [locus.elementary.bijection.core.object :refer :all]
-            [locus.elementary.lattice.core.object :refer :all]
+            [locus.order.lattice.core.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.elementary.quiver.permutable.object :refer :all]
             [locus.elementary.quiver.dependency.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all])
-  (:import (locus.elementary.lattice.core.object Lattice)
+  (:import (locus.order.lattice.core.object Lattice)
            (locus.base.function.core.object SetFunction)
            (locus.elementary.semigroup.monoid.object Monoid)
            (locus.elementary.semigroup.core.object Semigroup)))

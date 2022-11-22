@@ -13,11 +13,11 @@
             [locus.elementary.bijection.core.object :refer :all]
             [locus.elementary.bijection.core.morphism :refer :all]
             [locus.elementary.difunction.core.object :refer :all]
-            [locus.elementary.lattice.core.object :refer :all]
+            [locus.order.lattice.core.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all])
-  (:import (locus.elementary.lattice.core.object Lattice)
+  (:import (locus.order.lattice.core.object Lattice)
            (locus.base.function.core.object SetFunction)
            (locus.elementary.semigroup.core.object Semigroup)))
 

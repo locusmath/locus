@@ -117,6 +117,18 @@
     inv))
 
 ; Relational dependency quivers
+(defn coreflexive-relational-dependency-quiver
+  [coll]
+
+  (->DependencyQuiver
+    (coreflexive-relation coll)
+    coll
+    first
+    second
+    (fn [i]
+      (list i i))
+    reverse))
+
 (defn relational-dependency-quiver
   ([rel]
    (relational-dependency-quiver (vertices rel) rel))

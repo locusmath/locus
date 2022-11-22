@@ -4,8 +4,8 @@
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.grothendieck.topology.core.object :refer :all]
-            [locus.elementary.preorder.core.object :refer :all]
-            [locus.elementary.preorder.core.morphism :refer :all])
+            [locus.order.general.core.object :refer :all]
+            [locus.order.general.core.morphism :refer :all])
   (:import (locus.grothendieck.topology.core.object TopologicalSpace)))
 
 ; We say that a map of topological spaces f: X -> Y is a continuous map

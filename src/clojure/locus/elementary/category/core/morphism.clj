@@ -14,15 +14,15 @@
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.semigroup.monoid.morphism :refer :all]
-            [locus.elementary.lattice.core.object :refer :all]
-            [locus.elementary.lattice.core.morphism :refer :all]
+            [locus.order.lattice.core.object :refer :all]
+            [locus.order.lattice.core.morphism :refer :all]
             [locus.elementary.category.core.object :refer :all]
-            [locus.elementary.preorder.core.object :refer :all]
-            [locus.elementary.preorder.core.morphism :refer :all])
-  (:import (locus.elementary.lattice.core.morphism LatticeMorphism)
+            [locus.order.general.core.object :refer :all]
+            [locus.order.general.core.morphism :refer :all])
+  (:import (locus.order.lattice.core.morphism LatticeMorphism)
            (locus.base.function.core.object SetFunction)
            (locus.elementary.semigroup.monoid.morphism MonoidMorphism)
-           (locus.elementary.preorder.core.morphism MonotoneMap)))
+           (locus.order.general.core.morphism MonotoneMap)))
 
 ; Let Cat be the category of categories. Then Cat has categories as its objects and
 ; functors as morphisms. In this file we describe our implementation of the morphisms
@@ -100,21 +100,6 @@
       (list (func a) (func b)))
     (fn [obj]
       (func obj))))
-
-; Monotone maps are functors of thin categories
-; Therefore, they can be added to our ontology of functors and semifunctors.
-(defmulti monotone-map? type)
-
-(defmethod monotone-map? :locus.elementary.copresheaf.core.protocols/monotone-map
-  [monotone-map] true)
-
-(defmethod monotone-map? :default
-  [func]
-
-  (and
-    (functor? func)
-    (thin-category? (source-object func))
-    (thin-category? (target-object func))))
 
 ; Applications
 (defn source-objects
@@ -254,6 +239,15 @@
     (functor? b)
     (= (source-object a) (source-object b))
     (= (target-object a) (target-object b))))
+
+; Determine which functors are actually monotone maps
+(defmethod monotone-map? :default
+  [func]
+
+  (and
+    (functor? func)
+    (thin-category? (source-object func))
+    (thin-category? (target-object func))))
 
 ; Classes of functors
 (defn endofunctor?

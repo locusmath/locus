@@ -180,6 +180,15 @@
      first
      second)))
 
+(defn coreflexive-relational-quiver
+  [coll]
+
+  (->Quiver
+    (coreflexive-relation coll)
+    coll
+    first
+    second))
+
 (defn complete-relational-quiver
   [coll]
 

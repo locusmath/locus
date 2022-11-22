@@ -167,6 +167,17 @@
     (constantly obj)
     (constantly id)))
 
+(defn coreflexive-relational-unital-quiver
+  [coll]
+
+  (->UnitalQuiver
+    (coreflexive-relation coll)
+    coll
+    first
+    second
+    (fn [i]
+      (list i i))))
+
 (defn relational-unital-quiver
   ([rel]
    (relational-unital-quiver (vertices rel) rel))

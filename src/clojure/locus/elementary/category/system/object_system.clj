@@ -5,7 +5,7 @@
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.group.core.object :refer :all]
-            [locus.elementary.lattice.core.object :refer :all]
+            [locus.order.lattice.core.object :refer :all]
             [locus.elementary.category.element.object :refer :all])
   (:import (locus.elementary.category.element.object CategoryObject)))
 

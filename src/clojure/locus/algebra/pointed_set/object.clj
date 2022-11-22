@@ -8,7 +8,7 @@
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.incidence.system.family :refer :all]
-            [locus.elementary.lattice.core.object :refer :all])
+            [locus.order.lattice.core.object :refer :all])
   (:import (locus.base.function.core.object SetFunction)))
 
 ; Pointed sets are functional algebras so they implement IFn

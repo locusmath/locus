@@ -7,8 +7,8 @@
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.diamond.core.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
-            [locus.elementary.lattice.core.object :refer :all]
-            [locus.elementary.lattice.core.morphism :refer :all])
+            [locus.order.lattice.core.object :refer :all]
+            [locus.order.lattice.core.morphism :refer :all])
   (:import [locus.base.function.core.object SetFunction]
            [locus.elementary.diamond.core.object Diamond]
            (locus.elementary.semigroup.core.object Semigroup)))
@@ -92,6 +92,23 @@
     (meet-semilattice (source-object lattice-homomorphism))
     (meet-semilattice (target-object lattice-homomorphism))
     (underlying-function lattice-homomorphism)))
+
+; Morphisms of the component functions of a lattice
+(defn morphism-of-join-functions
+  [morphism]
+
+  (morphism-of-binary-operations
+    (join-function (source-object morphism))
+    (join-function (target-object morphism))
+    (underlying-function morphism)))
+
+(defn morphism-of-meet-functions
+  [morphism]
+
+  (morphism-of-binary-operations
+    (meet-function (source-object morphism))
+    (meet-function (target-object morphism))
+    (underlying-function morphism)))
 
 ; Composition and identities in the category of semigroups
 (defmethod compose* SemigroupMorphism

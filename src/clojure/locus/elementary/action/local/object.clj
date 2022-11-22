@@ -8,7 +8,7 @@
             [locus.base.effects.local.permutation :refer :all]
             [locus.base.effects.global.transformation :refer :all]
             [locus.base.effects.global.permutation :refer :all]
-            [locus.elementary.lattice.core.object :refer :all]
+            [locus.order.lattice.core.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.core.morphism :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]

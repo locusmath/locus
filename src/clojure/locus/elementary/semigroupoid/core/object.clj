@@ -11,11 +11,11 @@
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.quiver.core.thin-object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
-            [locus.elementary.lattice.core.object :refer :all]
+            [locus.order.lattice.core.object :refer :all]
             [locus.elementary.category.core.object :refer :all])
   (:import (locus.elementary.semigroup.core.object Semigroup)
            (locus.elementary.category.core.object Category)
-           (locus.elementary.lattice.core.object Lattice)
+           (locus.order.lattice.core.object Lattice)
            (locus.elementary.quiver.core.thin_object ThinQuiver)))
 
 ; A semigroupoid is a presheaf in the topos of compositional quivers. Its underlying quiver

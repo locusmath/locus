@@ -9,7 +9,7 @@
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.category.core.morphism :refer :all]
-            [locus.elementary.lattice.core.object :refer :all]
+            [locus.order.lattice.core.object :refer :all]
             [locus.elementary.semigroup.monoid.end :refer :all]
             [locus.elementary.group.core.aut :refer :all]
             [locus.elementary.quiver.core.object :refer :all]

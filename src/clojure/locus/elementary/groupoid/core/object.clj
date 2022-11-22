@@ -11,9 +11,9 @@
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.group.core.object :refer :all]
-            [locus.elementary.lattice.core.object :refer :all]
+            [locus.order.lattice.core.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
-            [locus.elementary.preorder.setoid.object :refer :all]
+            [locus.order.general.symmetric.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.elementary.quiver.permutable.object :refer :all]
             [locus.elementary.quiver.dependency.object :refer :all]
@@ -21,7 +21,7 @@
             [locus.elementary.bijection.core.object :refer :all])
   (:import (locus.elementary.group.core.object Group)
            (locus.elementary.category.core.object Category)
-           (locus.elementary.preorder.setoid.object Setoid)
+           (locus.order.general.symmetric.object Setoid)
            (locus.elementary.quiver.dependency.object DependencyQuiver)
            (locus.elementary.quiver.dependency.thin_object ThinDependencyQuiver)))
 

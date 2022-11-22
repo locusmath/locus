@@ -12,9 +12,9 @@
             [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.relation.binary.vertexset :refer :all]
-            [locus.elementary.lattice.core.object :refer :all]
+            [locus.order.lattice.core.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all])
-  (:import (locus.elementary.lattice.core.object Lattice)
+  (:import (locus.order.lattice.core.object Lattice)
            (java.util Optional)
            (locus.base.function.core.object SetFunction)))
 

@@ -8,7 +8,7 @@
             [locus.elementary.group.core.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
-            [locus.elementary.lattice.core.object :refer :all]
+            [locus.order.lattice.core.object :refer :all]
             [locus.elementary.category.element.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.category.arrow.morphism :refer :all])

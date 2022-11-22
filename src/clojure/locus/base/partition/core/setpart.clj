@@ -361,6 +361,35 @@
         (projection partition b)))
     rel))
 
+; Join set pair congruences
+(defn join-set-pairs
+  [& args]
+
+  (list
+    (apply union (map first args))
+    (apply union (map second args))))
+
+(defn meet-set-pairs
+  [& args]
+
+  (list
+    (apply intersection (map first args))
+    (apply intersection (map second args))))
+
+(defn join-set-pair-congruences
+  [& args]
+
+  (list
+    (apply join-set-partitions (map first args))
+    (apply join-set-partitions (map second args))))
+
+(defn meet-set-pair-congruences
+  [& args]
+
+  (list
+    (apply meet-set-partitions (map first args))
+    (apply meet-set-partitions (map second args))))
+
 ; The family of all partitions of a set
 (deftype BellSet [coll]
   clojure.lang.Seqable

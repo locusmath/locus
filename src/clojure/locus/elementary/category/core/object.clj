@@ -10,9 +10,9 @@
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.order.core.object :refer :all]
-            [locus.elementary.preorder.core.object :refer :all]
-            [locus.elementary.preorder.setoid.object :refer :all]
+            [locus.order.general.core.object :refer :all]
+            [locus.order.general.symmetric.object :refer :all]
+            [locus.order.general.skeletal.object :refer :all]
             [locus.elementary.diset.core.object :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.quiver.core.thin-object :refer :all]
@@ -21,12 +21,12 @@
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.group.core.object :refer :all]
-            [locus.elementary.lattice.core.object :refer :all])
-  (:import (locus.elementary.lattice.core.object Lattice)
+            [locus.order.lattice.core.object :refer :all])
+  (:import (locus.order.lattice.core.object Lattice)
            (locus.elementary.quiver.unital.object UnitalQuiver)
-           (locus.elementary.preorder.core.object Preposet)
-           (locus.elementary.preorder.setoid.object Setoid)
-           (locus.elementary.order.core.object Poset)
+           (locus.order.general.core.object Preposet)
+           (locus.order.general.symmetric.object Setoid)
+           (locus.order.general.skeletal.object Poset)
            (locus.elementary.group.core.object Group)))
 
 ; A category is a presheaf in the topos of compositional quivers. It shares membership in this

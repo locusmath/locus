@@ -135,6 +135,33 @@
       (empty? (proper-direct-successors rel i)))
     (vertices rel))))
 
+; Get maximal and minimal vertices for vertex sets
+(defn maximal-member-vertices
+  [rel coll]
+
+  (difference
+    coll
+    (set
+      (for [[a b] rel
+           :when (and
+                   (boolean (coll a))
+                   (boolean (coll b))
+                   (not= a b))]
+       a))))
+
+(defn minimal-member-vertices
+  [rel coll]
+
+  (difference
+    coll
+    (set
+      (for [[a b] rel
+            :when (and
+                    (boolean (coll a))
+                    (boolean (coll b))
+                    (not= a b))]
+        b))))
+
 ; Ontology of vertices
 (defn vertex?
   [rel vertex]

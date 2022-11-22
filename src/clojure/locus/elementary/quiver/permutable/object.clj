@@ -105,6 +105,16 @@
     inv))
 
 ; Permutable quivers from symmetric relations
+(defn coreflexive-relational-permutable-quiver
+  [coll]
+
+  (->PermutableQuiver
+    (coreflexive-relation coll)
+    coll
+    first
+    second
+    reverse))
+
 (defn relational-permutable-quiver
   ([rel]
    (relational-permutable-quiver (vertices rel) rel))

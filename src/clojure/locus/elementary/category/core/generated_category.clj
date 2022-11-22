@@ -17,11 +17,11 @@
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.group.core.object :refer :all]
-            [locus.elementary.lattice.core.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
-            [locus.elementary.order.core.object :refer :all]
-            [locus.elementary.preorder.core.object :refer :all]
-            [locus.elementary.preorder.setoid.object :refer :all]))
+            [locus.order.lattice.core.object :refer :all]
+            [locus.order.general.core.object :refer :all]
+            [locus.order.general.skeletal.object :refer :all]
+            [locus.order.general.symmetric.object :refer :all]))
 
 ; A generated category is a category with a specifically specified morphic generating set.
 ; This is useful because it allows us to specify the data of a category, without having

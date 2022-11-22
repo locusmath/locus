@@ -8,7 +8,7 @@
             [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
-            [locus.elementary.lattice.core.object :refer :all]
+            [locus.order.lattice.core.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
             [locus.grothendieck.topology.core.object :refer :all])
   (:import (locus.grothendieck.topology.core.object TopologicalSpace)))

@@ -11,7 +11,7 @@
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.lattice.core.object :refer :all]
+            [locus.order.lattice.core.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.group.core.object :refer :all])

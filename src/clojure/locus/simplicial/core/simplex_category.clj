@@ -6,7 +6,7 @@
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
-            [locus.elementary.lattice.core.object :refer :all]
+            [locus.order.lattice.core.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
             [locus.simplicial.core.simplicial-morphism :refer :all]))
 

@@ -4,13 +4,13 @@
             [locus.polynomial.core.object :refer :all]
             [locus.variety.affine.impl :refer :all]
             [locus.polynomial.fractional.object :refer :all]
-            [locus.elementary.lattice.term.lattice-term :refer :all])
+            [locus.order.lattice.term.lattice-term :refer :all])
   (:import (javax.swing JFrame JPanel JLabel)
            (org.scilab.forge.jlatexmath TeXIcon TeXConstants TeXFormula)
            (locus.polynomial.core.object Polynomial)
            (locus.variety.affine.impl AffineVariety)
            (locus.polynomial.fractional.object RationalExpression)
-           (locus.elementary.lattice.term.lattice_term LatticeTerm)))
+           (locus.order.lattice.term.lattice_term LatticeTerm)))
 
 ; This file allows us to treat the various mathematical expressions in Locus
 ; as though they are in Latex. This allows for an easier visualisation of

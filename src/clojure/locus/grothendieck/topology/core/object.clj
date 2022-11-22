@@ -7,16 +7,16 @@
             [locus.elementary.incidence.system.family :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.lattice.core.object :refer :all]
-            [locus.elementary.preorder.core.object :refer :all]
-            [locus.elementary.order.total.object :refer :all]
-            [locus.elementary.order.total.open-set :refer :all]
-            [locus.elementary.order.total.open-interval :refer :all]
+            [locus.order.general.core.object :refer :all]
+            [locus.order.lattice.core.object :refer :all]
+            [locus.order.lattice.total.object :refer :all]
+            [locus.order.lattice.total.open-interval :refer :all]
+            [locus.order.lattice.total.open-set :refer :all]
             [locus.distance.lawvere.metric :refer :all]
             [locus.distance.set.open-ball :refer :all]
             [locus.distance.set.open-set :refer :all])
-  (:import (locus.elementary.lattice.core.object Lattice)
-           (locus.elementary.order.total.object TotallyOrderedSet)
+  (:import (locus.order.lattice.core.object Lattice)
+           (locus.order.lattice.total.object TotallyOrderedSet)
            (locus.distance.lawvere.metric LawvereMetric)))
 
 ; A topological space is a base for a Grothendieck topos of sheaves.

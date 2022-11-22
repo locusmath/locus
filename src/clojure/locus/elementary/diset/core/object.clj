@@ -173,35 +173,6 @@
     (apply intersection (map first-set args))
     (apply intersection (map second-set args))))
 
-; Join and meet for set pairs instead of disets
-(defn join-set-pairs
-  [& args]
-
-  (list
-    (apply union (map first args))
-    (apply union (map second args))))
-
-(defn meet-set-pairs
-  [& args]
-
-  (list
-    (apply intersection (map first args))
-    (apply intersection (map second args))))
-
-(defn join-set-pair-congruences
-  [& args]
-
-  (list
-    (apply join-set-partitions (map first args))
-    (apply join-set-partitions (map second args))))
-
-(defn meet-set-pair-congruences
-  [& args]
-
-  (list
-    (apply meet-set-partitions (map first args))
-    (apply meet-set-partitions (map second args))))
-
 ; Operations for getting subobjects of disets
 (defn restrict-first-set
   [pair a]

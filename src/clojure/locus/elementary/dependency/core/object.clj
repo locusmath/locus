@@ -6,14 +6,16 @@
             [locus.base.logic.structure.protocols :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.function.core.util :refer :all]
+            [locus.order.general.core.object :refer :all]
+            [locus.order.general.core.util :refer :all]
+            [locus.order.general.skeletal.object :refer :all]
+            [locus.order.general.discrete.object :refer :all]
             [locus.elementary.diset.core.object :refer :all]
             [locus.elementary.bijection.core.object :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.relation.binary.product :refer :all]
             [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.preorder.core.object :refer :all]
-            [locus.elementary.order.core.object :refer :all]
             [locus.elementary.triangle.core.object :refer :all]
             [locus.elementary.incidence.core.object :refer :all]
             [locus.elementary.cospan.core.object :refer :all]
@@ -30,7 +32,7 @@
             [locus.elementary.cospan.core.morphism :refer :all]
             [locus.elementary.diamond.core.morphism :refer :all]
             [locus.elementary.dependency.chain.morphism :refer :all]
-            [locus.elementary.preorder.core.util :refer :all])
+            [locus.elementary.indexed.family.object :refer :all])
   (:import (locus.elementary.bijection.core.object Bijection)
            (locus.elementary.triangle.core.object SetTriangle)
            (locus.elementary.incidence.core.object Span)
@@ -48,7 +50,9 @@
            (locus.elementary.cospan.core.morphism MorphismOfCospans)
            (locus.elementary.diamond.core.morphism Cube)
            (locus.elementary.dependency.chain.morphism ChainMorphism)
-           (locus.base.function.core.object SetFunction)))
+           (locus.base.function.core.object SetFunction)
+           (locus.elementary.indexed.family.object IndexedFamily)
+           (locus.order.general.discrete.object DiscretePoset)))
 
 ; Copresheaves over preorders Sets^P
 ; These are generalisations of functional dependencies of relations.
@@ -207,6 +211,11 @@
 
 (defmethod index Dependency
   [^Dependency dependency] (.-order dependency))
+
+(defmethod index IndexedFamily
+  [^IndexedFamily family]
+
+  (DiscretePoset. (index-set family)))
 
 ; Convert presheaves over preorders into a common format
 (defmulti to-dependency type)

@@ -5,7 +5,7 @@
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.action.core.protocols :refer :all]
             [locus.elementary.action.global.object :refer :all]
-            [locus.elementary.lattice.core.object :refer :all]
+            [locus.order.lattice.core.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.group.core.object :refer :all]
