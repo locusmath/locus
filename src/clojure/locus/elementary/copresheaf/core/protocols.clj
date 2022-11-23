@@ -449,6 +449,25 @@
   (member [this]
     "The member of the set produced by the copresheaf over this object."))
 
+; The topos theoretic foundations of abstract algebra are based upon the idea of a generalized
+; nary quiver, which is a pair of sets with n-different parallel morphisms between them.
+; These can be used to produce a topos theoretic perspective of nary operations for use in
+; topos theoretic universal algebra. Topos theoretic algebraic structures, including globular
+; sets and categories, are constructed by chaining various nary quivers together.
+(defmulti quiver-arity type)
+
+(defmethod quiver-arity ::diset
+  [diset] 0)
+
+(defmethod quiver-arity :locus.base.logic.structure.protocols/set-function
+  [func] 1)
+
+(defmethod quiver-arity ::structured-quiver
+  [quiver] 2)
+
+(defmethod quiver-arity ::ternary-quiver
+  [ternary-quiver] 3)
+
 ; Generate copresheaf data that can be used for visualisation routines
 (defn generate-copresheaf-data
   [object-family morphism-triples]
@@ -534,4 +553,6 @@
   [magmoid]
 
   (display-table (underlying-function magmoid)))
+
+
 

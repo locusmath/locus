@@ -33,17 +33,17 @@
 
 ; Component arrows of morphisms of ternary quivers
 (defn morphism-of-ternary-quivers-component-function
-  [quiver x]
+  [morphism x]
 
   (case x
     0 (->SetFunction
-        (first-set (source-object quiver))
-        (first-set (target-object quiver))
-        (first-function quiver))
+        (first-set (source-object morphism))
+        (first-set (target-object morphism))
+        (first-function morphism))
     1 (->SetFunction
-        (second-set (source-object quiver))
-        (second-set (target-object quiver))
-        (second-function quiver))))
+        (second-set (source-object morphism))
+        (second-set (target-object morphism))
+        (second-function morphism))))
 
 ; Components of morphisms of ternary quivers
 (defmethod get-set MorphismOfTernaryQuivers

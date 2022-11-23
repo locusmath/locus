@@ -1,4 +1,4 @@
-(defproject locus "1.4.3-SNAPSHOT"
+(defproject locus "1.4.4-SNAPSHOT"
   :description "A computer algebra system based upon topos theory."
   :license {:name "Apache License"
             :url "https://www.apache.org/licenses/LICENSE-2.0"}
@@ -22,7 +22,7 @@
                  [dorothy "0.0.7"]
                  [org.scilab.forge/jlatexmath "1.0.7"]]
 
-  :main locus.elementary.dependency.core.object
+  :main locus.elementary.nary-quiver.core.object
 
   :source-paths ["src/clojure"]
   :java-source-paths ["src/java"]

@@ -40,7 +40,8 @@
             [locus.elementary.ternary-quiver.core.morphism :refer :all]
             [locus.elementary.two-quiver.core.object :refer :all]
             [locus.elementary.two-quiver.path.object :refer :all]
-            [locus.elementary.two-quiver.globular.object :refer :all])
+            [locus.elementary.two-quiver.globular.object :refer :all]
+            [locus.elementary.galois.copresheaf.object :refer :all])
   (:import (locus.elementary.quiver.core.morphism MorphismOfQuivers)
            (locus.elementary.quiver.permutable.morphism MorphismOfPermutableQuivers)
            (locus.elementary.quiver.unital.morphism MorphismOfUnitalQuivers)
@@ -54,7 +55,8 @@
            (locus.base.function.core.object SetFunction)
            (locus.elementary.triangle.core.object SetTriangle)
            (locus.elementary.category.core.morphism Functor)
-           (locus.order.lattice.core.object Lattice)))
+           (locus.order.lattice.core.object Lattice)
+           (locus.elementary.galois.copresheaf.object GaloisCopresheaf)))
 
 ; Copresheaves
 ; A copresheaf is a set-valued functor and therefore an object of a topos Sets^(C). These are the
@@ -101,6 +103,32 @@
 ; Index categories
 (defmethod index Copresheaf
   [^Copresheaf copresheaf] (.-category copresheaf))
+
+; Index categories for galois copresheaves
+(def galois-index-category
+  (adjoin-composition
+    (create-unital-quiver
+      {0 0
+       1 1}
+      {2 [0 1]
+       3 [1 0]
+       4 [0 0]
+       5 [1 1]})
+    (fn [[a b]]
+      (letfn [(identity-arrow? [x]
+                (or (= x 0) (= x 1)))]
+        (cond
+          (identity-arrow? a) b
+          (identity-arrow? b) a
+          (= a b 4) 4
+          (= a b 5) 5
+          (and (= a 3) (= b 2)) 4
+          (and (= a 2) (= b 3)) 5
+          (and (= a 2) (= b 4)) 2
+          (and (= a 3) (= b 5)) 3)))))
+
+(defmethod index GaloisCopresheaf
+  [^GaloisCopresheaf copresheaf] galois-index-category)
 
 ; Index categories for quivers
 (def t2
