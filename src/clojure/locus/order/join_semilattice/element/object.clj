@@ -5,9 +5,10 @@
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
             [locus.order.general.core.object :refer :all]
-            [locus.order.join-semilattice.core.object :refer :all])
+            [locus.order.join-semilattice.core.object :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
   (:import (locus.order.join_semilattice.core.object JoinSemilattice)))
 
 ; An object of a thin category having all binary coproducts

@@ -2,14 +2,15 @@
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.sequence.core.object :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.partition.core.setpart :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
             [locus.elementary.two-quiver.core.object :refer :all]))
 
 ; Two globular sets are the first model in the topos theory of higher categories, starting with

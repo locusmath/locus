@@ -2,18 +2,19 @@
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.sequence.core.object :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
             [locus.base.partition.core.setpart :refer :all]
             [locus.base.partition.core.object :refer [projection]]
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.quiver.core.object :refer :all])
+            [locus.quiver.binary.core.object :refer :all])
   (:import [locus.base.function.core.object SetFunction]
-           [locus.elementary.relation.binary.sr SeqableRelation]
-           (locus.elementary.quiver.core.object Quiver)))
+           [locus.quiver.relation.binary.sr SeqableRelation]
+           (locus.quiver.binary.core.object Quiver)))
 
 ; A category is a structure equipped with a set of arrows between points having
 ; a source function, a target function, identities for each object, and the

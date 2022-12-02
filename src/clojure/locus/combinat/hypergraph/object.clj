@@ -1,12 +1,13 @@
 (ns locus.combinat.hypergraph.object
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
             [locus.base.sequence.core.object :refer :all]
+            [locus.base.logic.structure.protocols :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
             [locus.elementary.incidence.system.family :refer :all]
             [locus.elementary.incidence.system.multifamily :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]))
 
 ; Hypergraphs are simple incidence structures

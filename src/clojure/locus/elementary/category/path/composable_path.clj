@@ -3,11 +3,12 @@
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.diset.core.object :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
+            [locus.quiver.diset.core.object :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.category.core.morphism :refer :all]
-            [locus.elementary.category.element.object :refer :all]))
+            [locus.elementary.category.element.object :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]))
 
 ; A composable path in a category is a pair of morphisms g : A -> B and f : B -> C
 ; such that the composition f*g exists. In the copresheaf formulation of categories,

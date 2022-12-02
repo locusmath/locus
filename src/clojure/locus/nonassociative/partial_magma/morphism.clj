@@ -5,16 +5,17 @@
             [locus.base.partition.core.setpart :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
-            [locus.elementary.quiver.core.morphism :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
+            [locus.quiver.binary.core.morphism :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.unary.core.morphism :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.two-quiver.core.object :refer :all]
             [locus.elementary.two-quiver.path.object :refer :all]
-            [locus.elementary.diamond.core.object :refer :all]
             [locus.nonassociative.partial-magma.object :refer :all])
   (:import (locus.nonassociative.partial_magma.object PartialMagma)))
 

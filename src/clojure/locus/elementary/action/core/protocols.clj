@@ -1,7 +1,8 @@
 (ns locus.elementary.action.core.protocols
   (:require [locus.base.logic.core.set :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]))
 

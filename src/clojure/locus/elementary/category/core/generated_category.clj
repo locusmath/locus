@@ -6,13 +6,13 @@
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.relation.binary.vertices :refer :all]
-            [locus.elementary.diset.core.object :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
-            [locus.elementary.quiver.core.thin-object :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.relation.binary.vertices :refer :all]
+            [locus.quiver.diset.core.object :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
+            [locus.quiver.binary.thin.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
@@ -21,7 +21,8 @@
             [locus.order.lattice.core.object :refer :all]
             [locus.order.general.core.object :refer :all]
             [locus.order.general.skeletal.object :refer :all]
-            [locus.order.general.symmetric.object :refer :all]))
+            [locus.order.general.symmetric.object :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]))
 
 ; A generated category is a category with a specifically specified morphic generating set.
 ; This is useful because it allows us to specify the data of a category, without having

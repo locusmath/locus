@@ -6,17 +6,18 @@
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.mbr :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.mbr :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
             [locus.elementary.quiver.permutable.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
-            [locus.elementary.quiver.core.thin-object :refer :all]
+            [locus.quiver.binary.thin.object :refer :all]
             [locus.elementary.quiver.unital.thin-object :refer :all]
             [locus.elementary.quiver.permutable.thin-object :refer :all]
-            [locus.elementary.quiver.dependency.object :refer :all]))
+            [locus.elementary.quiver.dependency.object :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]))
 
 ; A dependency quiver is said to be thin provided that for each hom class Hom(A,B) there is
 ; no more then one morphism in the class. In that case the dependency quiver is said to be

@@ -7,7 +7,8 @@
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.group.term.signed-list :refer :all]
             [locus.elementary.group.term.signed-multiset :refer :all]
-            [locus.elementary.group.core.object :refer :all]))
+            [locus.elementary.group.core.object :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]))
 
 ; Every variety of semigroups is associated with a class of free semigroups. There are a number
 ; of different classes provided by us: free semigroups, free bands, free semilattices,

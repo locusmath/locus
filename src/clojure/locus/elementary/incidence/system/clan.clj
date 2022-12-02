@@ -2,7 +2,7 @@
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.sequence.core.object :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
             [locus.elementary.incidence.system.family :refer :all]
             [locus.elementary.incidence.system.multifamily :refer :all])
   (:import [locus.base.logic.core.set Multiset]))

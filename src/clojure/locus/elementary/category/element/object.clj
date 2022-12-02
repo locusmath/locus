@@ -6,14 +6,15 @@
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.group.core.object :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.category.core.morphism :refer :all]
             [locus.order.lattice.core.object :refer :all]
             [locus.elementary.semigroup.monoid.end :refer :all]
             [locus.elementary.group.core.aut :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
-            [locus.elementary.quiver.unital.object :refer :all])
+            [locus.quiver.binary.core.object :refer :all]
+            [locus.elementary.quiver.unital.object :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
   (:import (locus.elementary.category.core.object Category)))
 
 ; Elements of categories

@@ -1,13 +1,15 @@
 (ns locus.elementary.topoi.system.partsys
   (:require [locus.base.logic.core.set :refer :all]
+            [locus.base.logic.limit.product :refer :all]
             [locus.base.sequence.core.object :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.partition.core.setpart :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
             [locus.elementary.incidence.system.family :refer :all]
-            [locus.elementary.difunction.core.funpair :refer :all]))
+            [locus.elementary.dependency.difunction.funpair :refer :all]))
 
 ; Sets of set partitions
 ; This naturally includes the theory of suborders of partition lattices, which

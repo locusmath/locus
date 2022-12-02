@@ -5,14 +5,15 @@
             [locus.base.partition.core.setpart :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.elementary.quiver.permutable.object :refer :all]
             [locus.elementary.quiver.dependency.object :refer :all]
-            [locus.order.general.core.object :refer :all]))
+            [locus.order.general.core.object :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]))
 
 ; A discrete category is a way of representing each set as a category. In this way, there exists
 ; an embedding functor F: Sets -> Cat that embeds the topos of Sets into the category of all

@@ -2,20 +2,21 @@
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.sequence.core.object :refer :all]
             [locus.base.logic.limit.product :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
+            [locus.quiver.binary.core.morphism :refer :all]
+            [locus.quiver.unary.core.morphism :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.group.core.object :refer :all]
-            [locus.nonassociative.magma.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
+            [locus.nonassociative.magma.object :refer :all]
             [locus.nonassociative.magma.morphism :refer :all]
-            [locus.nonassociative.magmoid.object :refer :all]
-            [locus.elementary.quiver.core.morphism :refer :all]
-            [locus.elementary.diamond.core.object :refer :all])
+            [locus.nonassociative.magmoid.object :refer :all])
   (:import (locus.nonassociative.magma.object Magma)
            (locus.nonassociative.magmoid.object Magmoid)
            (locus.nonassociative.magma.morphism MagmaMorphism)))

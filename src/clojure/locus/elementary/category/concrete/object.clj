@@ -4,14 +4,15 @@
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.base.partition.core.setpart :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.group.core.object :refer :all]
             [locus.elementary.semigroup.transformation.transformation-monoid :refer :all]
             [locus.elementary.group.permutation.permutation-group :refer :all]
-            [locus.elementary.category.core.object :refer :all])
+            [locus.elementary.category.core.object :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
   (:import (locus.elementary.semigroup.transformation.transformation_monoid TransformationMonoid)
            (locus.elementary.group.permutation.permutation_group PermutationGroup)))
 

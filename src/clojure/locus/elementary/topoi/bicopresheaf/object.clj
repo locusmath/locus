@@ -5,17 +5,18 @@
             [locus.base.function.image.image-function :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.category.core.morphism :refer :all]
             [locus.elementary.category.concrete.concrete-category :refer :all]
-            [locus.elementary.category.partial.function :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
-            [locus.elementary.quiver.core.morphism :refer :all]
+            [locus.mapping.partial.function :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
+            [locus.quiver.binary.core.morphism :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.elementary.category.core.bifunctor :refer :all]
             [locus.elementary.topoi.copresheaf.object :refer :all]
-            [locus.elementary.topoi.copresheaf.morphism :refer :all])
+            [locus.elementary.topoi.copresheaf.morphism :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
   (:import (locus.elementary.topoi.copresheaf.object Copresheaf)
            (locus.elementary.topoi.copresheaf.morphism MorphismOfCopresheaves)))
 

@@ -6,7 +6,7 @@
             [locus.base.logic.numeric.sig :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.base.function.core.object :refer :all]
-            [locus.elementary.relation.numeric.nr :refer :all]))
+            [locus.quiver.relation.numeric.nr :refer :all]))
 
 ; Young functions defined in terms of young coordinate systems, which
 ; in turn can be used to define young's lattice

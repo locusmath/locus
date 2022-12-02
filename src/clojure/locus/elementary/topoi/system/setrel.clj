@@ -2,10 +2,10 @@
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.sequence.core.object :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.vertices :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]))
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.vertices :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]))
 
 ; Binary relation on sets
 ; These are generalisations of functional dependency relations. Furthermore,

@@ -6,7 +6,8 @@
             [locus.order.lattice.core.object :refer :all]
             [locus.order.lattice.term.lattice-term :refer :all]
             [locus.order.lattice.term.lattice-equation :refer :all]
-            [locus.order.lattice.term.lattice-equation-system :refer :all])
+            [locus.order.lattice.term.lattice-equation-system :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
   (:import (locus.order.lattice.core.object Lattice)))
 
 ; Finitely presented lattices

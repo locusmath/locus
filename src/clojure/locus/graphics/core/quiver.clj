@@ -2,28 +2,28 @@
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
+            [locus.order.lattice.core.object :refer :all]
+            [locus.order.general.skeletal.object :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.unary.core.morphism :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
+            [locus.quiver.diset.core.object :refer :all]
             [locus.elementary.incidence.system.family :refer :all]
             [locus.elementary.incidence.system.clan :refer :all]
-            [locus.elementary.diamond.core.object :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.category.core.morphism :refer :all]
             [locus.elementary.topoi.copresheaf.object :refer :all]
             [locus.elementary.dependency.core.object :refer :all]
             [locus.elementary.dependency.nset.object :refer :all]
             [locus.elementary.dependency.nfunction.object :refer :all]
             [locus.elementary.bijection.core.object :refer :all]
-            [locus.elementary.diset.core.object :refer :all]
             [locus.elementary.action.global.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.category.core.generated-category :refer :all]
             [locus.elementary.groupoid.core.object :refer :all]
             [locus.elementary.group.core.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
-            [locus.order.lattice.core.object :refer :all]
-            [locus.order.general.skeletal.object :refer :all]
             [locus.elementary.quiver.dependency.object :refer :all]
             [locus.elementary.quiver.permutable.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
@@ -31,14 +31,13 @@
             [locus.elementary.triangle.core.object :refer :all]
 
     ;[locus.elementary.topoi.copresheaf.algebraic :refer :all]
-
             )
   (:import (javax.swing JFrame JLabel ImageIcon JPanel JButton JList JScrollPane JSplitPane SwingConstants CellRendererPane ListCellRenderer UIManager)
            (java.awt GridLayout Color Dimension FlowLayout RenderingHints BasicStroke Toolkit Image)
            (javax.swing.event ListSelectionListener)
            (java.awt.event MouseAdapter ComponentEvent MouseEvent ComponentAdapter)
            (locus.elementary.topoi.copresheaf.object Copresheaf)
-           (locus.elementary.diamond.core.object Diamond)
+           (locus.quiver.unary.core.morphism Diamond)
            (java.util ArrayList)
            (java.awt.image BufferedImage)
            (java.awt.geom GeneralPath)

@@ -3,11 +3,12 @@
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
-            [locus.elementary.group.core.object :refer :all]))
+            [locus.elementary.group.core.object :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]))
 
 ; The category of groups is a concrete category, with forgetful set-valued functor from any group
 ; to its set of morphisms. Thusly, we say that a group element is synonymous with a morphism

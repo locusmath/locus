@@ -3,9 +3,10 @@
             [locus.base.sequence.core.object :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols]
-            [locus.elementary.quiver.core.object :refer :all]
             [locus.order.lattice.core.object :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
             [locus.elementary.category.core.object :refer :all]))
 
 ; We can use the data stored in instances of the SimplicialMorphism class to

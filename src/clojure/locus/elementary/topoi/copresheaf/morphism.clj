@@ -3,20 +3,21 @@
             [locus.base.sequence.core.object :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.diset.core.object :refer :all]
-            [locus.elementary.diamond.core.object :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
-            [locus.elementary.quiver.core.morphism :refer :all]
+            [locus.quiver.diset.core.object :refer :all]
+            [locus.quiver.unary.core.morphism :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
+            [locus.quiver.binary.core.morphism :refer :all]
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.category.core.morphism :refer :all]
             [locus.elementary.category.natural.transformation :refer :all]
             [locus.elementary.action.global.object :refer :all]
             [locus.elementary.topoi.copresheaf.object :refer :all]
-            [locus.elementary.difunction.core.object :refer :all])
+            [locus.quiver.diset.core.morphism :refer :all])
   (:import (locus.elementary.topoi.copresheaf.object Copresheaf)
-           (locus.elementary.difunction.core.object Difunction)
-           (locus.elementary.diamond.core.object Diamond)))
+           (locus.quiver.diset.core.morphism Difunction)
+           (locus.quiver.unary.core.morphism Diamond)))
 
 ; Morphisms in a topos of copresheaves
 ; Let C be a category and Sets^C its topos of copresheaves. Then a morphism of copresheaves is a

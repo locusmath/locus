@@ -6,13 +6,14 @@
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
-            [locus.elementary.quiver.core.thin-object :refer :all]
-            [locus.elementary.quiver.unital.object :refer :all])
-  (:import (locus.elementary.quiver.core.object Quiver)))
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
+            [locus.quiver.binary.thin.object :refer :all]
+            [locus.elementary.quiver.unital.object :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
+  (:import (locus.quiver.binary.core.object Quiver)))
 
 ; A unital quiver is said to be thin provided that for each hom class Hom(A,B) for each pair of
 ; objects A and B in the quiver Q, the hom class contains no more than one element. In that case,

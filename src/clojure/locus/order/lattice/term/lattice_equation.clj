@@ -6,7 +6,8 @@
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.order.general.core.object :refer :all]
             [locus.order.lattice.core.object :refer :all]
-            [locus.order.lattice.term.lattice-term :refer :all])
+            [locus.order.lattice.term.lattice-term :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
   (:import (locus.order.lattice.core.object Lattice)
            (locus.order.lattice.term.lattice_term LatticeTerm)))
 

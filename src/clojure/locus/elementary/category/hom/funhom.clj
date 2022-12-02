@@ -2,15 +2,16 @@
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.sequence.core.object :refer :all]
             [locus.base.logic.limit.product :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
             [locus.base.partition.core.setpart :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.diamond.core.object :refer :all]
-            [locus.elementary.category.hom.sethom :refer :all])
+            [locus.quiver.unary.core.morphism :refer :all]
+            [locus.elementary.category.hom.sethom :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
   (:import [locus.base.function.core.object SetFunction]
-           (locus.elementary.diamond.core.object Diamond)))
+           (locus.quiver.unary.core.morphism Diamond)))
 
 ; Let Sets^(->) be the topos of functions. Suppose that we have an ordered
 ; pair of functions (f,g). Then the hom class of (f,g) consists of all

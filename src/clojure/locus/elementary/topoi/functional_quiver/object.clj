@@ -2,14 +2,15 @@
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.sequence.core.object :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.partition.core.setpart :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]))
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
+            [locus.quiver.binary.core.object :refer :all]))
 
 ; A functional quiver is a copresheaf in the topos Sets^C where C is the category consisting of
 ; three objects and six morphisms: the identity morphisms, the source and target morphisms

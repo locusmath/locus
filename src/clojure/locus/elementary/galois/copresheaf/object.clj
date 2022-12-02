@@ -2,15 +2,16 @@
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.sequence.core.object :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
             [locus.base.partition.core.setpart :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.function.core.util :refer :all]
             [locus.base.effects.global.identity :refer :all]
             [locus.base.invertible.function.object :refer :all]
-            [locus.elementary.bijection.core.object :refer :all])
+            [locus.elementary.bijection.core.object :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
   (:import (locus.elementary.bijection.core.object Bijection)))
 
 ; A Galois copresheaf is a Galois connection minus any axioms of order theory. It is the

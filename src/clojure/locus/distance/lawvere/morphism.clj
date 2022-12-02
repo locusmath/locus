@@ -1,14 +1,15 @@
 (ns locus.distance.lawvere.morphism
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
+            [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.base.function.core.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.category.core.morphism :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
-            [locus.elementary.quiver.core.morphism :refer :all])
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
+            [locus.quiver.binary.core.morphism :refer :all])
   (:import (locus.distance.lawvere.metric LawvereMetric)))
 
 ; Morphisms in the category of metric spaces

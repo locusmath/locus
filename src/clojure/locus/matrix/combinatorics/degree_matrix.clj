@@ -1,17 +1,16 @@
 (ns locus.matrix.combinatorics.degree-matrix
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
-            [locus.elementary.incidence.system.family :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.vertices :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.incidence.system.family :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.vertices :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.combinat.hypergraph.object :refer :all])
-  (:import (locus.elementary.quiver.core.object Quiver)))
+  (:import (locus.quiver.binary.core.object Quiver)))
 
 (defn build-diagonal-matrix
   [coll]

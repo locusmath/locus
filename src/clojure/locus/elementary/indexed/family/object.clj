@@ -4,7 +4,8 @@
             [locus.base.partition.core.setpart :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all])
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
   (:import (clojure.lang IPersistentMap IPersistentVector)))
 
 ; Let C be a discrete category on a set S, then we say that a copresheaf over C is the same thing

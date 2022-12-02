@@ -6,9 +6,10 @@
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.incidence.system.family :refer :all]
             [locus.elementary.incidence.system.multifamily :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
             [locus.combinat.hypergraph.object :refer :all]
             [locus.elementary.incidence.core.object :refer :all])
   (:import (locus.base.function.core.object SetFunction)

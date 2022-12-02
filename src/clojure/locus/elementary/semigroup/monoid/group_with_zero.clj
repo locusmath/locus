@@ -4,14 +4,15 @@
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.base.function.core.object :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
             [locus.elementary.group.core.object :refer :all]
-            [locus.order.lattice.core.object :refer :all])
+            [locus.order.lattice.core.object :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
   (:import (locus.elementary.semigroup.monoid.object Monoid)
            (locus.elementary.group.core.object Group)
            (locus.elementary.semigroup.core.object Semigroup)))

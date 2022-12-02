@@ -6,10 +6,11 @@
             [locus.base.function.core.util :refer :all]
             [locus.base.effects.global.identity :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.group.core.object :refer :all]
@@ -18,37 +19,39 @@
             [locus.elementary.groupoid.core.object :refer :all]
             [locus.order.lattice.core.object :refer :all]
             [locus.elementary.category.core.morphism :refer :all]
-            [locus.elementary.difunction.core.object :refer :all]
-            [locus.elementary.diset.core.object :refer :all]
+            [locus.quiver.diset.core.morphism :refer :all]
+            [locus.quiver.diset.core.object :refer :all]
             [locus.elementary.bijection.core.object :refer :all]
             [locus.elementary.bijection.core.morphism :refer :all]
-            [locus.elementary.diamond.core.object :refer :all]
+            [locus.quiver.unary.core.morphism :refer :all]
             [locus.elementary.incidence.core.object :refer :all]
             [locus.elementary.triangle.core.object :refer :all]
             [locus.elementary.dependency.core.object :refer :all]
             [locus.elementary.action.global.object :refer :all]
             [locus.elementary.action.global.morphism :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.elementary.quiver.permutable.object :refer :all]
             [locus.elementary.quiver.dependency.object :refer :all]
-            [locus.elementary.quiver.core.morphism :refer :all]
+            [locus.quiver.binary.core.morphism :refer :all]
             [locus.elementary.quiver.unital.morphism :refer :all]
             [locus.elementary.quiver.permutable.morphism :refer :all]
             [locus.elementary.quiver.dependency.morphism :refer :all]
-            [locus.elementary.ternary-quiver.core.object :refer :all]
-            [locus.elementary.ternary-quiver.core.morphism :refer :all]
+            [locus.quiver.ternary.core.object :refer :all]
+            [locus.quiver.ternary.core.morphism :refer :all]
             [locus.elementary.two-quiver.core.object :refer :all]
             [locus.elementary.two-quiver.path.object :refer :all]
             [locus.elementary.two-quiver.globular.object :refer :all]
-            [locus.elementary.galois.copresheaf.object :refer :all])
-  (:import (locus.elementary.quiver.core.morphism MorphismOfQuivers)
+            [locus.elementary.galois.copresheaf.object :refer :all]
+            [locus.quiver.nary.core.object :refer :all]
+            [locus.quiver.nary.core.morphism :refer :all])
+  (:import (locus.quiver.binary.core.morphism MorphismOfQuivers)
            (locus.elementary.quiver.permutable.morphism MorphismOfPermutableQuivers)
            (locus.elementary.quiver.unital.morphism MorphismOfUnitalQuivers)
            (locus.elementary.quiver.dependency.morphism MorphismOfDependencyQuivers)
            (locus.elementary.action.global.object MSet)
            (locus.elementary.action.global.morphism EquivariantMap)
-           (locus.elementary.ternary_quiver.core.morphism MorphismOfTernaryQuivers)
+           (locus.quiver.ternary.core.morphism MorphismOfTernaryQuivers)
            (locus.elementary.two_quiver.core.object TwoQuiver)
            (locus.elementary.two_quiver.globular.object TwoGlobularSet)
            (locus.elementary.two_quiver.path.object PathQuiver)
@@ -56,7 +59,8 @@
            (locus.elementary.triangle.core.object SetTriangle)
            (locus.elementary.category.core.morphism Functor)
            (locus.order.lattice.core.object Lattice)
-           (locus.elementary.galois.copresheaf.object GaloisCopresheaf)))
+           (locus.elementary.galois.copresheaf.object GaloisCopresheaf)
+           (locus.quiver.nary.core.object NaryQuiver)))
 
 ; Copresheaves
 ; A copresheaf is a set-valued functor and therefore an object of a topos Sets^(C). These are the
@@ -130,6 +134,12 @@
 (defmethod index GaloisCopresheaf
   [^GaloisCopresheaf copresheaf] galois-index-category)
 
+; Nary quivers as copresheaves
+(defmethod index NaryQuiver
+  [nary-quiver]
+
+  (n-arrow-category (quiver-arity nary-quiver)))
+
 ; Index categories for quivers
 (def t2
   (thin-category (total-order 0 1)))
@@ -144,7 +154,7 @@
        3 [0 1]})
     '#{2, 3}))
 
-(defmethod index :locus.elementary.quiver.core.object/quiver
+(defmethod index :locus.quiver.binary.core.object/quiver
   [quiver] t2*)
 
 (defmethod index MorphismOfQuivers
@@ -935,9 +945,9 @@
 ; higher order nary-relations. In particular, there are ternary quivers
 ; which are the set valued functors which correspond most readily
 ; to ternary relations.
-(defn nary-quiver
+(defn nary-quiver-copresheaf
   ([rel]
-   (nary-quiver
+   (nary-quiver-copresheaf
      (count (first rel))
      (vertices rel)
      rel))
@@ -958,17 +968,17 @@
                  (fn [edge]
                    (nth edge arrow))))))))
 
-(defn ternary-quiver
+(defn ternary-quiver-copresheaf
   ([edges]
-   (nary-quiver 3 (vertices edges) edges))
+   (nary-quiver-copresheaf 3 (vertices edges) edges))
   ([vertices edges]
-   (nary-quiver 3 vertices edges)))
+   (nary-quiver-copresheaf 3 vertices edges)))
 
-(defn quaternary-quiver
+(defn quaternary-quiver-copresheaf
   ([edges]
-   (nary-quiver 4 (vertices edges) edges))
+   (nary-quiver-copresheaf 4 (vertices edges) edges))
   ([vertices edges]
-   (nary-quiver 4 vertices edges)))
+   (nary-quiver-copresheaf 4 vertices edges)))
 
 ; Generalizations of morphisms of functions described as presheaves
 (defn higher-diamond

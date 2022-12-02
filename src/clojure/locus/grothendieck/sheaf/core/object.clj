@@ -3,12 +3,13 @@
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
             [locus.elementary.category.hom.sethom :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.topoi.copresheaf.object :refer :all]
-            [locus.grothendieck.topology.core.object :refer :all]
-            [locus.grothendieck.topology.core.morphism :refer :all]
+            [locus.topology.core.object :refer :all]
+            [locus.topology.core.morphism :refer :all]
             [locus.grothendieck.site.core.object :refer :all])
   (:import (locus.base.function.core.object SetFunction)))
 

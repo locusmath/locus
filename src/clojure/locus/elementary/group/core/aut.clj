@@ -5,19 +5,20 @@
             [locus.base.function.core.object :refer :all]
             [locus.base.function.core.util :refer :all]
             [locus.elementary.bijection.core.object :refer :all]
-            [locus.elementary.diamond.core.object :refer :all]
+            [locus.quiver.unary.core.morphism :refer :all]
             [locus.elementary.bijection.core.morphism :refer :all]
-            [locus.elementary.diset.core.object :refer :all]
-            [locus.elementary.difunction.core.object :refer :all]
+            [locus.quiver.diset.core.object :refer :all]
+            [locus.quiver.diset.core.morphism :refer :all]
             [locus.elementary.category.hom.sethom :refer :all]
             [locus.elementary.category.hom.bhom :refer :all]
             [locus.elementary.category.hom.dhom :refer :all]
             [locus.elementary.category.hom.funhom :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
-            [locus.elementary.group.core.object :refer :all])
+            [locus.elementary.group.core.object :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
   (:import (locus.base.function.core.object SetFunction)
-           (locus.elementary.diset.core.object Diset)
+           (locus.quiver.diset.core.object Diset)
            (locus.elementary.bijection.core.object Bijection)))
 
 ; Let C be a category, then the set of all isomorphisms of C forms a wide subcategory called

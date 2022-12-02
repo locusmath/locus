@@ -2,16 +2,17 @@
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.sequence.core.object :refer :all]
             [locus.base.logic.limit.product :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
             [locus.base.partition.core.setpart :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.category.hom.sethom :refer :all]
-            [locus.elementary.diset.core.object :refer :all]
-            [locus.elementary.difunction.core.object :refer :all])
-  (:import [locus.elementary.diset.core.object Diset]
-           [locus.elementary.difunction.core.object Difunction]
+            [locus.quiver.diset.core.object :refer :all]
+            [locus.quiver.diset.core.morphism :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
+  (:import [locus.quiver.diset.core.object Diset]
+           [locus.quiver.diset.core.morphism Difunction]
            (locus.base.logic.core.set SeqableUniversal)))
 
 ; This file supports the creation of hom classes in the topos Sets^2.

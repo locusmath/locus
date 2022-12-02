@@ -2,17 +2,18 @@
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.sequence.core.object :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.partition.core.setpart :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
-            [locus.elementary.quiver.core.morphism :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
+            [locus.quiver.binary.core.morphism :refer :all]
             [locus.elementary.topoi.functional-quiver.object :refer :all])
-  (:import (locus.elementary.quiver.core.morphism MorphismOfQuivers)
+  (:import (locus.quiver.binary.core.morphism MorphismOfQuivers)
            (locus.elementary.topoi.functional_quiver.object FunctionalQuiver)))
 
 ; Morphisms in the topos of functional quivers

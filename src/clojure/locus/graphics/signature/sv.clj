@@ -1,8 +1,9 @@
 (ns locus.graphics.signature.sv
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.base.logic.numeric.young-diagram :refer :all])
+            [locus.base.logic.numeric.young-diagram :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all])
   (:import [java.awt.image BufferedImage]
            [javax.swing JFrame JLabel ImageIcon]
            (locus.base.logic.numeric.young_diagram YoungDiagram)))

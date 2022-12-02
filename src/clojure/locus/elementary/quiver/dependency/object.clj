@@ -7,15 +7,16 @@
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.mbr :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.mbr :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
             [locus.elementary.quiver.permutable.object :refer :all]
-            [locus.elementary.quiver.unital.object :refer :all])
+            [locus.elementary.quiver.unital.object :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
   (:import [locus.base.function.core.object SetFunction]
-           (locus.elementary.quiver.core.object Quiver)))
+           (locus.quiver.binary.core.object Quiver)))
 
 ; The topos of dependency quivers consists of quivers equipped also with an identity function
 ; and a transpose function. A dependency quiver handles all the data of a groupoid, except

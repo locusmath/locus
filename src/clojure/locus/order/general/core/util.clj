@@ -6,11 +6,12 @@
             [locus.base.partition.core.setpart :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
             [locus.order.general.core.object :refer :all]
-            [locus.order.general.skeletal.object :refer :all]))
+            [locus.order.general.skeletal.object :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]))
 
 ; Chain partial orders
 (defn nth-chain

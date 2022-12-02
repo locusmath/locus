@@ -1,10 +1,11 @@
 (ns locus.algebra.universal.field
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.base.function.core.object :refer :all]
-            [locus.elementary.diamond.core.object :refer :all]
-            [locus.base.function.core.util :refer :all]))
+            [locus.base.function.core.util :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
+            [locus.quiver.unary.core.morphism :refer :all]))
 
 ; Topos theoretic type system:
 ; The topos theoretic type system extends the JVM type system to support

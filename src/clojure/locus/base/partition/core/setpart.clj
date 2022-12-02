@@ -390,6 +390,34 @@
     (apply meet-set-partitions (map first args))
     (apply meet-set-partitions (map second args))))
 
+; Let F be a family of sets. Then a set S is contained in a member of F provided that there
+; exists some T in F such that S is a subset of T. This is a useful convenience method for
+; testing if sets are contained in members of family of sets, which can be used to compute
+; the difference of set partitions.
+(defn contained-in-member?
+  [family coll]
+
+  (not
+    (every?
+      (fn [i]
+        (not (superset? (list coll i))))
+      family)))
+
+(defn partition-difference
+  [p q]
+
+  (set
+    (mapcat
+      (fn [part]
+        (let [contained? (contained-in-member? q part)]
+          (if contained?
+            (map
+              (fn [i]
+                #{i})
+              part)
+            (list part))))
+      p)))
+
 ; The family of all partitions of a set
 (deftype BellSet [coll]
   clojure.lang.Seqable

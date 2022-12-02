@@ -4,7 +4,7 @@
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.base.partition.core.setpart :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
@@ -17,8 +17,9 @@
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.category.core.morphism :refer :all]
             [locus.elementary.category.concrete.object :refer :all]
-            [locus.elementary.category.partial.function :refer :all]
-            [locus.elementary.category.relation.set-relation :refer :all])
+            [locus.mapping.partial.function :refer :all]
+            [locus.mapping.multivalued.hyperfunction :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
   (:import (locus.elementary.category.concrete.object ConcreteCategory)))
 
 ; The category of partial functions is a concrete category
@@ -61,11 +62,11 @@
 (def sets-opposite
   (ConcreteCategory.
     (->UnitalQuiver
-      inverse-functional-set-relation?
+      inverse-functional-hyperfunction?
       universal?
       source-object
       target-object
-      identity-relation)
+      identity-hyperfunction)
     (fn [[a b]]
       (compose a b))
     (fn [obj]
@@ -77,11 +78,11 @@
 (def rel
   (ConcreteCategory.
     (->UnitalQuiver
-      set-relation?
+      hyperfunction?
       universal?
       source-object
       target-object
-      identity-relation)
+      identity-hyperfunction)
     (fn [[a b]]
       (compose a b))
     (fn [obj]

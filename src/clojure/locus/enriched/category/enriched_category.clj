@@ -1,18 +1,19 @@
 (ns locus.enriched.category.enriched-category
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.sequence.core.object :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
             [locus.order.lattice.core.object :refer :all]
+            [locus.order.general.skeletal.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.category.core.morphism :refer :all]
             [locus.elementary.category.natural.transformation :refer :all]
-            [locus.elementary.category.relation.set-relation :refer :all]
-            [locus.order.general.skeletal.object :refer :all]
+            [locus.mapping.multivalued.hyperfunction :refer :all]
             [locus.module.core.object :refer :all]
             [locus.module.core.morphism :refer :all]
             [locus.semimodule.core.object :refer :all]
@@ -60,7 +61,7 @@
 ; Rel is a 2-category with ordered hom classes
 (def rel
   (EnrichedCategory.
-    set-relation?
+    hyperfunction?
     universal?
     source-object
     target-object
@@ -68,9 +69,9 @@
     identity-morphism
     (fn [a b]
       (->Poset
-        (relational-hom-class a b)
+        (hyperhom a b)
         (fn [[rel1 rel2]]
-          (included-set-relation? a b))))))
+          (included-hyperfunction? a b))))))
 
 ; Get the module category of a ring
 (defn module-category

@@ -2,7 +2,7 @@
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.logic.numeric.ap :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
             [locus.elementary.incidence.signatures.nf :refer :all]))
 
 ; Let N be a natural number, then N can be associated to a set of additive partitions. An additive partition

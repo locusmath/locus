@@ -6,14 +6,15 @@
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.diset.core.object :refer :all]
-            [locus.elementary.difunction.core.object :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.diset.core.object :refer :all]
+            [locus.quiver.diset.core.morphism :refer :all]
             [locus.elementary.dependency.nset.object :refer :all])
-  (:import (locus.elementary.diset.core.object Diset)
-           (locus.elementary.difunction.core.object Difunction)
+  (:import (locus.quiver.diset.core.object Diset)
+           (locus.quiver.diset.core.morphism Difunction)
            (locus.base.function.core.object SetFunction)
            (locus.elementary.dependency.nset.object NSet)))
 

@@ -2,6 +2,7 @@
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.action.core.protocols :refer :all]
             [locus.elementary.action.global.object :refer :all]

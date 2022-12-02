@@ -5,13 +5,13 @@
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.base.partition.core.setpart :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.unary.ur :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.relation.ternary.op :refer :all]
-            [locus.elementary.relation.ternary.tr :refer :all]
-            [locus.elementary.relation.quaternary.qr :refer :all])
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.unary.ur :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.relation.ternary.op :refer :all]
+            [locus.quiver.relation.ternary.tr :refer :all]
+            [locus.quiver.relation.quaternary.qr :refer :all])
   (:import (locus.base.function.core.object SetFunction)))
 
 ; Ontology of operations

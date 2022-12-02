@@ -10,19 +10,20 @@
             [locus.order.general.core.util :refer :all]
             [locus.order.general.skeletal.object :refer :all]
             [locus.order.general.discrete.object :refer :all]
-            [locus.elementary.diset.core.object :refer :all]
+            [locus.quiver.diset.core.object :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
             [locus.elementary.bijection.core.object :refer :all]
+            [locus.elementary.bijection.core.morphism :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
             [locus.elementary.triangle.core.object :refer :all]
             [locus.elementary.incidence.core.object :refer :all]
             [locus.elementary.cospan.core.object :refer :all]
-            [locus.elementary.difunction.core.object :refer :all]
-            [locus.elementary.difunction.dibijection.object :refer :all]
-            [locus.elementary.diamond.core.object :refer :all]
-            [locus.elementary.bijection.core.morphism :refer :all]
+            [locus.quiver.diset.core.morphism :refer :all]
+            [locus.elementary.dependency.dibijection.object :refer :all]
+            [locus.quiver.unary.core.morphism :refer :all]
             [locus.elementary.dependency.nset.object :refer :all]
             [locus.elementary.dependency.nfunction.object :refer :all]
             [locus.elementary.dependency.nbijection.object :refer :all]
@@ -30,16 +31,16 @@
             [locus.elementary.triangle.core.morphism :refer :all]
             [locus.elementary.incidence.core.morphism :refer :all]
             [locus.elementary.cospan.core.morphism :refer :all]
-            [locus.elementary.diamond.core.morphism :refer :all]
+            [locus.elementary.cube.core.object :refer :all]
             [locus.elementary.dependency.chain.morphism :refer :all]
             [locus.elementary.indexed.family.object :refer :all])
   (:import (locus.elementary.bijection.core.object Bijection)
+           (locus.quiver.diset.core.morphism Difunction)
            (locus.elementary.triangle.core.object SetTriangle)
            (locus.elementary.incidence.core.object Span)
            (locus.elementary.cospan.core.object Cospan)
-           (locus.elementary.difunction.core.object Difunction)
-           (locus.elementary.difunction.dibijection.object Dibijection)
-           (locus.elementary.diamond.core.object Diamond)
+           (locus.elementary.dependency.dibijection.object Dibijection)
+           (locus.quiver.unary.core.morphism Diamond)
            (locus.elementary.bijection.core.morphism Gem)
            (locus.elementary.dependency.nset.object NSet)
            (locus.elementary.dependency.nfunction.object NFunction)
@@ -48,7 +49,7 @@
            (locus.elementary.triangle.core.morphism TriangleMorphism)
            (locus.elementary.incidence.core.morphism MorphismOfSpans)
            (locus.elementary.cospan.core.morphism MorphismOfCospans)
-           (locus.elementary.diamond.core.morphism Cube)
+           (locus.elementary.cube.core.object Cube)
            (locus.elementary.dependency.chain.morphism ChainMorphism)
            (locus.base.function.core.object SetFunction)
            (locus.elementary.indexed.family.object IndexedFamily)

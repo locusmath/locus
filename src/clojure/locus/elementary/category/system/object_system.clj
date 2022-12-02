@@ -6,7 +6,8 @@
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.group.core.object :refer :all]
             [locus.order.lattice.core.object :refer :all]
-            [locus.elementary.category.element.object :refer :all])
+            [locus.elementary.category.element.object :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
   (:import (locus.elementary.category.element.object CategoryObject)))
 
 ; Let C be a category, and Ob(C) its set of objects. Then the power set P(Ob(C))

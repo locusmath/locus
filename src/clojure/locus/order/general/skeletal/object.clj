@@ -6,14 +6,15 @@
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.relation.binary.vertexset :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.relation.binary.vertexset :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
-            [locus.order.general.core.object :refer :all])
-  (:import (locus.elementary.quiver.core.object Quiver)))
+            [locus.order.general.core.object :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
+  (:import (locus.quiver.binary.core.object Quiver)))
 
 ; In our categorical framework, a Poset is simply a skeletal thin category. Although most of the
 ; details of Posets are described by thin categories, some multimethods behave differently

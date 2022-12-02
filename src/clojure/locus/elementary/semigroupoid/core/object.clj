@@ -6,17 +6,18 @@
             [locus.base.partition.core.setpart :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
-            [locus.elementary.quiver.core.thin-object :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
+            [locus.quiver.binary.thin.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.order.lattice.core.object :refer :all]
-            [locus.elementary.category.core.object :refer :all])
+            [locus.elementary.category.core.object :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
   (:import (locus.elementary.semigroup.core.object Semigroup)
            (locus.elementary.category.core.object Category)
            (locus.order.lattice.core.object Lattice)
-           (locus.elementary.quiver.core.thin_object ThinQuiver)))
+           (locus.quiver.binary.thin.object ThinQuiver)))
 
 ; A semigroupoid is a presheaf in the topos of compositional quivers. Its underlying quiver
 ; does not need to be a quiver with identity. It shares membership in this topos with
@@ -162,7 +163,7 @@
       {})))
 
 ; Adjoin a composition operation to a quiver
-(defmethod adjoin-composition :locus.elementary.quiver.core.object/quiver
+(defmethod adjoin-composition :locus.quiver.base.core.protocols/quiver
   [quiv f]
 
   (->Semigroupoid quiv f))

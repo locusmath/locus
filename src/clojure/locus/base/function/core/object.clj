@@ -351,6 +351,19 @@
     (fn [i]
       (fiber-cardinality func i))))
 
+; Let f: A -> B be a function then f^C : B -> A is a relation rather than an ordinary function.
+; However, as a relation it has an inverse image. This forms an alternative adjunction to the
+; familiar image/inverse image adjunction. This adjunction takes the converse relation image
+; and the converse relation inverse image as its adjoints.
+(defn fiber-inverse-image
+  [func coll]
+
+  (set
+    (filter
+      (fn [output]
+        (superset? (list (fiber func output) coll)))
+      (outputs func))))
+
 ; Kernel classes in functions
 (defn kernel-class-of
   [func x]

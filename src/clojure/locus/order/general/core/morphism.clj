@@ -7,14 +7,16 @@
             [locus.base.partition.core.object :refer [projection]]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.relation.binary.vertices :refer :all]
-            [locus.elementary.relation.binary.vertexset :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.relation.binary.vertices :refer :all]
+            [locus.quiver.relation.binary.vertexset :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
-            [locus.order.general.core.object :refer :all]))
+            [locus.order.general.core.object :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
+            [locus.mapping.multivalued.hyperfunction :refer :all]))
 
 ; Let C,D be thin categories. Then a functor f : C -> D is entirely determined by its object
 ; part. It follows that we can save memory by defining a special class for that only
@@ -144,12 +146,17 @@
         (projection partition i)))))
 
 ; Specialized monotone maps related to images/preimages
+(defn power-set-poset
+  [coll]
+
+  (->Preposet (->PowerSet coll) superset?))
+
 (defn induced-direct-image-monotone-map
   [func]
 
   (->MonotoneMap
-    (->PowerSet (inputs func))
-    (->PowerSet (outputs func))
+    (power-set-poset (inputs func))
+    (power-set-poset (outputs func))
     (fn [coll]
       (set-image func coll))))
 
@@ -157,10 +164,28 @@
   [func]
 
   (->MonotoneMap
-    (->PowerSet (outputs func))
-    (->PowerSet (inputs func))
+    (power-set-poset (outputs func))
+    (power-set-poset (inputs func))
     (fn [coll]
       (set-inverse-image func coll))))
+
+(defn hyperfunction-monotone-map
+  [func]
+
+  (->MonotoneMap
+    (power-set-poset (source-object func))
+    (power-set-poset (target-object func))
+    (fn [coll]
+      (hyperfunction-set-image func coll))))
+
+(defn inverse-hyperfunction-monotone-map
+  [func]
+
+  (->MonotoneMap
+    (power-set-poset (source-object func))
+    (power-set-poset (target-object func))
+    (fn [coll]
+      (hyperfunction-set-inverse-image func coll))))
 
 ; Reflect principal ideals and filters in order to better understand residuated mappings, and their
 ; category which is equivalent to the category of adjoints of preorders

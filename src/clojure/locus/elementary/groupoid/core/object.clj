@@ -6,9 +6,9 @@
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.group.core.object :refer :all]
             [locus.order.lattice.core.object :refer :all]
@@ -18,7 +18,8 @@
             [locus.elementary.quiver.permutable.object :refer :all]
             [locus.elementary.quiver.dependency.object :refer :all]
             [locus.elementary.quiver.dependency.thin-object :refer :all]
-            [locus.elementary.bijection.core.object :refer :all])
+            [locus.elementary.bijection.core.object :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
   (:import (locus.elementary.group.core.object Group)
            (locus.elementary.category.core.object Category)
            (locus.order.general.symmetric.object Setoid)

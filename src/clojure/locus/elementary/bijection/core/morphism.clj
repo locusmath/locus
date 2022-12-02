@@ -5,14 +5,15 @@
             [locus.base.partition.core.setpart :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.unary.core.morphism :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.bijection.core.object :refer :all]
-            [locus.elementary.diamond.core.object :refer :all])
+            [locus.elementary.bijection.core.object :refer :all])
   (:import [locus.base.function.core.object SetFunction]
-           [locus.elementary.diamond.core.object Diamond]
+           [locus.quiver.unary.core.morphism Diamond]
            [locus.elementary.bijection.core.object Bijection]))
 
 ; Objects in the topos Sets^[2,2]

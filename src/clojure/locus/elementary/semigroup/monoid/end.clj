@@ -3,20 +3,21 @@
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.base.function.core.object :refer :all]
-            [locus.elementary.difunction.core.object :refer :all]
-            [locus.elementary.diset.core.object :refer :all]
+            [locus.quiver.diset.core.morphism :refer :all]
+            [locus.quiver.diset.core.object :refer :all]
             [locus.elementary.bijection.core.object :refer :all]
-            [locus.elementary.diamond.core.object :refer :all]
+            [locus.quiver.unary.core.morphism :refer :all]
             [locus.elementary.bijection.core.morphism :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.category.hom.sethom :refer :all]
             [locus.elementary.category.hom.bhom :refer :all]
             [locus.elementary.category.hom.dhom :refer :all]
-            [locus.elementary.category.hom.funhom :refer :all])
+            [locus.elementary.category.hom.funhom :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
   (:import (locus.base.function.core.object SetFunction)
-           (locus.elementary.diset.core.object Diset)
+           (locus.quiver.diset.core.object Diset)
            (locus.elementary.bijection.core.object Bijection)
            (locus.elementary.semigroup.monoid.object Monoid)))
 

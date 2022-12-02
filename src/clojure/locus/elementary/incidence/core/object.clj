@@ -5,15 +5,16 @@
             [locus.base.logic.structure.protocols :refer :all]
             [locus.base.partition.core.setpart :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.function.core.util :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.diset.core.object :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.diset.core.object :refer :all]
             [locus.elementary.bijection.core.object :refer :all])
   (:import (locus.base.function.core.object SetFunction)
-           (locus.elementary.relation.binary.sr SeqableRelation)))
+           (locus.quiver.relation.binary.sr SeqableRelation)))
 
 ; Objects in the topos Sets^[1,2]
 ; Span copresheaves can be used to define generalisations of hypergraphs, that include repeated

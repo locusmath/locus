@@ -3,6 +3,7 @@
   (:require [locus.base.logic.core.set :refer :all :exclude [add]]
             [locus.base.logic.numeric.natural :refer [factors]]
             [locus.base.logic.structure.protocols :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.additive.base.generic.arithmetic :refer :all]
             [locus.additive.base.core.protocols :refer :all]

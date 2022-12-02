@@ -3,18 +3,19 @@
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.diamond.core.object :refer :all]
+            [locus.quiver.unary.core.morphism :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.group.core.object :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.order.lattice.core.object :refer :all]
             [locus.elementary.category.element.object :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
-            [locus.elementary.category.arrow.morphism :refer :all])
+            [locus.quiver.binary.core.object :refer :all]
+            [locus.elementary.category.arrow.morphism :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
   (:import (locus.elementary.category.core.object Category)
            (locus.elementary.category.element.object CategoryMorphism)
-           (locus.elementary.diamond.core.object Diamond)
+           (locus.quiver.unary.core.morphism Diamond)
            (locus.base.function.core.object SetFunction)))
 
 ; Let C be a category, then C^(->) is its arrow category. This category has special morphisms that define it

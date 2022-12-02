@@ -5,16 +5,17 @@
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
-            [locus.order.general.core.object :refer :all])
+            [locus.order.general.core.object :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
   (:import (locus.base.function.core.object SetFunction)
            (locus.base.logic.core.set Multiset)
-           (locus.elementary.relation.binary.sr SeqableRelation)
-           (locus.elementary.quiver.core.object Quiver)))
+           (locus.quiver.relation.binary.sr SeqableRelation)
+           (locus.quiver.binary.core.object Quiver)))
 
 ; A lattice is a thin category C containing all binary products and coproducts.
 ; The coproducts are joins and the products are meets.

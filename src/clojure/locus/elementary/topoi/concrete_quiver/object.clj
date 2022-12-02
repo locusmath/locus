@@ -2,12 +2,13 @@
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.sequence.core.object :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.partition.core.setpart :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
             [locus.elementary.topoi.copresheaf.object :refer :all]))
 
 ; A concrete quiver is the same thing as a copresheaf F: Free(Q) -> Sets, from the free

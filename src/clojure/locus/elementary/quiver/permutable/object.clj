@@ -7,14 +7,15 @@
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.mbr :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.quiver.core.object :refer :all])
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.mbr :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
   (:import [locus.base.function.core.object SetFunction]
-           [locus.elementary.relation.binary.sr SeqableRelation]
-           (locus.elementary.quiver.core.object Quiver)))
+           [locus.quiver.relation.binary.sr SeqableRelation]
+           (locus.quiver.binary.core.object Quiver)))
 
 ; This is the topos of quivers except with an extra arrow defining the inverse
 ; of any edge, which leads to a different presheaf topos. Then this leads to the topos

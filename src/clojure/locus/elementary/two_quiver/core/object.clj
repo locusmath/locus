@@ -2,16 +2,17 @@
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.sequence.core.object :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.partition.core.setpart :refer :all]
             [locus.base.partition.core.object :refer [projection]]
-            [locus.elementary.quiver.core.object :refer :all])
-  (:import (locus.elementary.quiver.core.object Quiver)))
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.quiver.binary.core.object :refer :all])
+  (:import (locus.quiver.binary.core.object Quiver)))
 
 ; A 2-quiver is defined by an ordered pair of quivers P,Q : A -> B -> C, in which the two
 ; quivers are composable so that the morphism set of one quiver is equal to the object

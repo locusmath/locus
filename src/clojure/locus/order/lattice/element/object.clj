@@ -5,9 +5,10 @@
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
             [locus.order.general.core.object :refer :all]
-            [locus.order.lattice.core.object :refer :all])
+            [locus.order.lattice.core.object :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
   (:import (locus.order.lattice.core.object Lattice)))
 
 ; Let L be a lattice. Then L is a thin category containing all binary products

@@ -3,8 +3,9 @@
             [locus.base.logic.limit.product :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
             [locus.order.boolean.algebra.object :refer :all]
             [locus.order.lattice.core.object :refer :all]
             [locus.order.lattice.term.lattice-term :refer :all])

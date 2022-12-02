@@ -2,7 +2,7 @@
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.sequence.core.object :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
@@ -10,7 +10,8 @@
             [locus.elementary.group.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
-            [locus.elementary.category.element.object :refer :all])
+            [locus.elementary.category.element.object :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
   (:import (locus.elementary.semigroup.core.object Semigroup)))
 
 ; Let C be a category, and Arrows(C) its set of morphisms. Then the power set P(Arrows(C)) consists of

@@ -4,12 +4,13 @@
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
             [locus.order.general.core.object :refer :all]
             [locus.order.lattice.total.object :refer :all]
-            [locus.order.lattice.total.open-interval :refer :all])
+            [locus.order.lattice.total.open-interval :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
   (:import (locus.order.lattice.total.object TotallyOrderedSet)))
 
 ; The base of the order topology of a finite total order consists of open intervals,

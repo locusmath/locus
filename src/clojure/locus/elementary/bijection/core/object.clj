@@ -7,10 +7,10 @@
             [locus.base.invertible.function.object :refer :all]
             [locus.base.partition.core.setpart :refer :all]
             [locus.base.partition.core.object :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.relation.binary.product :refer :all])
+            [locus.quiver.base.core.protocols :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all])
   (:import [locus.base.logic.core.set SeqableUniversal]
-           [locus.base.function.core.object SetFunction]
            (locus.base.invertible.function.object InvertibleFunction)
            (clojure.lang IPersistentMap)))
 

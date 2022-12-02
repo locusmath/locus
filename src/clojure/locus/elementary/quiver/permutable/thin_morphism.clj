@@ -6,16 +6,17 @@
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.relation.binary.vertexset :refer :all]
-            [locus.elementary.diamond.core.object :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
-            [locus.elementary.quiver.core.morphism :refer :all]
-            [locus.elementary.quiver.core.thin-object :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.relation.binary.vertexset :refer :all]
+            [locus.quiver.unary.core.morphism :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
+            [locus.quiver.binary.core.morphism :refer :all]
+            [locus.quiver.binary.thin.object :refer :all]
             [locus.elementary.quiver.permutable.object :refer :all]
-            [locus.elementary.quiver.permutable.thin-object :refer :all])
+            [locus.elementary.quiver.permutable.thin-object :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
   (:import [locus.base.function.core.object SetFunction]
            (locus.elementary.quiver.permutable.thin_object ThinPermutableQuiver)))
 

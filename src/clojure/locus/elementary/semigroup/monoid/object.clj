@@ -6,17 +6,18 @@
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.diset.core.object :refer :all]
-            [locus.elementary.diamond.core.object :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.diset.core.object :refer :all]
+            [locus.quiver.unary.core.morphism :refer :all]
             [locus.elementary.bijection.core.object :refer :all]
             [locus.elementary.bijection.core.morphism :refer :all]
-            [locus.elementary.difunction.core.object :refer :all]
+            [locus.quiver.diset.core.morphism :refer :all]
             [locus.order.lattice.core.object :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
-            [locus.elementary.semigroup.core.object :refer :all])
+            [locus.elementary.semigroup.core.object :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
   (:import (locus.order.lattice.core.object Lattice)
            (locus.base.function.core.object SetFunction)
            (locus.elementary.semigroup.core.object Semigroup)))

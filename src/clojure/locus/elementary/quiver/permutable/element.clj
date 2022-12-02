@@ -3,10 +3,11 @@
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
             [locus.elementary.quiver.permutable.object :refer :all]
-            [locus.elementary.quiver.core.element :as qe])
-  (:import (locus.elementary.quiver.core.element QuiverObject QuiverMorphism)))
+            [locus.quiver.binary.element.object :as qe]
+            [locus.quiver.base.core.protocols :refer :all])
+  (:import (locus.quiver.binary.element.object QuiverObject QuiverMorphism)))
 
 ; Morphic elements of permutable quivers
 (deftype PermutableQuiverMorphism [quiver morphism]

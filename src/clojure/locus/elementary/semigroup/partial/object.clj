@@ -1,23 +1,24 @@
 (ns locus.elementary.semigroup.partial.object
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
             [locus.base.partition.core.setpart :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.base.function.core.object :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.group.core.object :refer :all]
             [locus.elementary.action.core.protocols :refer :all]
-            [locus.elementary.category.relation.set-relation :refer :all]
-            [locus.elementary.category.partial.function :refer :all]
-            [locus.elementary.category.partial.bijection :refer :all]
-            [locus.elementary.category.partial.transformation :refer :all]
-            [locus.elementary.category.partial.permutation :refer :all]))
+            [locus.mapping.multivalued.hyperfunction :refer :all]
+            [locus.mapping.partial.function :refer :all]
+            [locus.mapping.partial.transformation :refer :all]
+            [locus.mapping.partial.permutation :refer :all]
+            [locus.mapping.partial.bijection :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]))
 
 ; Partial transformation semigroups
 (deftype PartialTransformationSemigroup [semigroup coll func]
@@ -65,7 +66,7 @@
   (let [coll (.coll structure)
         partial-transformation ((.func structure) elem)
         domain (defined-domain partial-transformation)]
-    (->SetRelation
+    (->Hyperfunction
       coll
       coll
       (fn [i]

@@ -6,15 +6,16 @@
             [locus.base.partition.core.setpart :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.elementary.quiver.permutable.object :refer :all]
             [locus.elementary.quiver.dependency.object :refer :all]
-            [locus.order.general.core.object :refer :all])
-  (:import (locus.elementary.quiver.core.object Quiver)))
+            [locus.order.general.core.object :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
+  (:import (locus.quiver.binary.core.object Quiver)))
 
 ; Thin categories include all preorders such as equivalence relations. As thin categories, equivalence relations
 ; have all inverses for each morphism. It follows that equivalence relations are also thin groupoids,

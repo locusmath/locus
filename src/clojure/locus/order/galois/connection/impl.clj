@@ -6,15 +6,17 @@
             [locus.base.partition.core.setpart :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.relation.binary.vertexset :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.relation.binary.vertexset :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.order.general.core.object :refer :all]
             [locus.order.general.core.morphism :refer :all]
-            [locus.order.general.core.isomorphism :refer :all])
+            [locus.order.general.core.isomorphism :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
+            [locus.mapping.multivalued.hyperfunction :refer :all])
   (:import (locus.order.general.core.isomorphism PreorderIsomorphism)))
 
 ; A galois connection is a generalization of the relationship between images and inverse images
@@ -46,6 +48,24 @@
     (->GaloisConnection
       (->MonotoneMap source target forwards)
       (->MonotoneMap target source backwards))))
+
+; Galois connections from images
+; Let f: A -> B be a mapping between two sets then image and the inverse together form an adjunction
+; between the power sets of A and B and the image functions are the upper and lower adjoints of a
+; monotone galois connection.
+(defn function-image-galois-connection
+  [func]
+
+  (->GaloisConnection
+    (induced-direct-image-monotone-map func)
+    (induced-inverse-image-monotone-map func)))
+
+(defn hyperfunction-image-galois-connection
+  [func]
+
+  (->GaloisConnection
+    (hyperfunction-monotone-map func)
+    (inverse-hyperfunction-monotone-map func)))
 
 ; The lower adjoint and right adjoint of a Galois connection are defined by overloaded
 ; multimethods that can also be applicable to adjoint functors of categories. The lower adjoint

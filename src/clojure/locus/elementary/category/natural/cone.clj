@@ -4,11 +4,12 @@
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.order.lattice.core.object :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.elementary.category.core.morphism :refer :all]
             [locus.elementary.category.core.object :refer :all]
-            [locus.elementary.category.natural.transformation :refer :all])
+            [locus.elementary.category.natural.transformation :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
   (:import (locus.elementary.category.core.morphism Functor)))
 
 ; A cone is a natural transformation from a constant functor to some other functor.

@@ -6,20 +6,21 @@
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.effects.global.permutation :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.group.core.object :refer :all]
             [locus.elementary.action.global.object :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
             [locus.elementary.quiver.dependency.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.elementary.quiver.permutable.object :refer :all]
             [locus.elementary.group.core.morphism :refer :all]
             [locus.elementary.group.core.aut :refer :all]
-            [locus.elementary.category.hom.sethom :refer :all])
+            [locus.elementary.category.hom.sethom :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
   (:import (locus.base.effects.global.permutation Permutation)
            (locus.base.function.core.object SetFunction)
            (locus.elementary.group.core.morphism GroupMorphism)))

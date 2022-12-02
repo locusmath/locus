@@ -4,10 +4,11 @@
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
             [locus.order.general.core.object :refer :all]
             [locus.order.lattice.core.object :refer :all]
-            [locus.order.lattice.term.lattice-term :refer :all])
+            [locus.order.lattice.term.lattice-term :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
   (:import (locus.order.lattice.core.object Lattice)
            (locus.order.lattice.term.lattice_term LatticeTerm)))
 

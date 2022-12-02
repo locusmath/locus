@@ -5,12 +5,13 @@
             [locus.base.partition.core.setpart :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.diset.core.object :refer :all])
-  (:import (locus.elementary.diset.core.object Diset)))
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.diset.core.object :refer :all])
+  (:import (locus.quiver.diset.core.object Diset)))
 
 ; Let Sets^n be the topos of copresheaves over a discrete category. Then then the objects of the
 ; topos Sets^n are called nsets and they are defined now by the NSet class. An nset is a natural

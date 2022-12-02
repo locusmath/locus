@@ -2,10 +2,11 @@
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.base.partition.core.setpart :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.function.core.util :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.bijection.core.object :refer :all]))
 
 ; Objects of the elementary topos Sets^(T_3) of copresheaves over the total

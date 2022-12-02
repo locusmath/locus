@@ -3,9 +3,10 @@
             [locus.base.sequence.core.object :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.function.core.util :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.dependency.chain.object :refer :all])
   (:import (locus.base.function.core.object SetFunction)
            (locus.elementary.dependency.chain.object SetChain)))

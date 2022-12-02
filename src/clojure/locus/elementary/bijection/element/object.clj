@@ -5,6 +5,7 @@
             [locus.base.partition.core.object :refer :all]
             [locus.base.partition.core.setpart :refer :all]
             [locus.base.function.core.object :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.bijection.core.object :refer :all])
   (:import (locus.elementary.bijection.core.object Bijection)))

@@ -2098,6 +2098,12 @@
       rel)))
 
 ; Visualization
+; isdirected determines rather or this is a directed or an undirected graph
+; rankdir is a graphviz attribute that describes how the graph is layed out
+; the clusters let you specify the clusters in the graph
+; edges is a set of edges described as a set of ordered or unordered pairs
+; islabeled is a boolean indicating rather or not labels are used
+; labels is an association of vertex names to vertex labels
 (defn visualize-graphviz-file*
   [isdirected randkir clusters edges islabeled labels]
 

@@ -9,19 +9,20 @@
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.incidence.system.family :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.relation.binary.product :refer :all]
-            [locus.elementary.diamond.core.object :refer :all]
-            [locus.elementary.diset.core.object :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.relation.binary.product :refer :all]
+            [locus.quiver.unary.core.morphism :refer :all]
+            [locus.quiver.diset.core.object :refer :all]
             [locus.elementary.bijection.core.object :refer :all]
             [locus.order.lattice.core.object :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.elementary.quiver.permutable.object :refer :all]
             [locus.elementary.quiver.dependency.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
-            [locus.elementary.semigroup.monoid.object :refer :all])
+            [locus.elementary.semigroup.monoid.object :refer :all]
+            [locus.quiver.base.core.protocols :refer :all])
   (:import (locus.order.lattice.core.object Lattice)
            (locus.base.function.core.object SetFunction)
            (locus.elementary.semigroup.monoid.object Monoid)

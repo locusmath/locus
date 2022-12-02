@@ -3,8 +3,9 @@
             [locus.base.function.core.object :refer :all]
             [locus.base.partition.core.setpart :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.quiver.core.object :refer :all])
+            [locus.quiver.binary.core.object :refer :all])
   (:import (locus.graph.base DenseDigraph IDigraph IGraph DenseGraph)
            (locus.graph.factories BasicGraphFactory BasicDigraphFactory)))
 

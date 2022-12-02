@@ -4,14 +4,15 @@
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.relation.binary.br :refer :all]
-            [locus.elementary.relation.binary.sr :refer :all]
-            [locus.elementary.quiver.core.object :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
+            [locus.quiver.relation.binary.br :refer :all]
+            [locus.quiver.relation.binary.sr :refer :all]
+            [locus.quiver.binary.core.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.order.lattice.core.object :refer :all]
             [locus.elementary.category.core.object :refer :all]
-            [locus.grothendieck.topology.core.object :refer :all])
-  (:import (locus.grothendieck.topology.core.object TopologicalSpace)))
+            [locus.topology.core.object :refer :all])
+  (:import (locus.topology.core.object TopologicalSpace)))
 
 ; Sites are the fundamental index categories of Grothendieck toposes.
 ; A site is equipped with a coverage cov : Ob(C) -> CoveringFamilies.

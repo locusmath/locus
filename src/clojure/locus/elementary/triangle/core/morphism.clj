@@ -2,9 +2,10 @@
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.base.function.core.object :refer :all]
-            [locus.elementary.diamond.core.object :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
+            [locus.quiver.base.core.protocols :refer :all]
+            [locus.quiver.unary.core.morphism :refer :all]
             [locus.elementary.triangle.core.object :refer :all])
   (:import (locus.elementary.triangle.core.object SetTriangle)))
 
