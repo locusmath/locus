@@ -1359,3 +1359,33 @@
   (and
     (reflexive-thin-quiver? quiv)
     (lattice-relation? (underlying-relation quiv))))
+
+; Algebraic quivers are essentially ones whose source or target functions are injective
+(defn ab-quiver?
+  [quiv]
+
+  (and
+    (quiver? quiv)
+    (distinct-seq?
+      (map
+        (fn [morphism]
+          (target-element quiv morphism))
+        (morphisms quiv)))))
+
+(defn inverse-ab-quiver?
+  [quiv]
+
+  (and
+    (quiver? quiv)
+    (distinct-seq?
+      (map
+        (fn [morphism]
+          (source-element quiv morphism))
+        (morphisms quiv)))))
+
+(defn reversible-ab-quiver?
+  [quiv]
+
+  (and
+    (ab-quiver? quiv)
+    (inverse-ab-quiver? quiv)))

@@ -1,5 +1,5 @@
 # Locus
-An expert system based upon topos theory.
+A computer algebra system based upon presheaf theory.
 
 ## The geometry of memory
 Locus is based upon the idea that we can reason logically about the geometry of memory using topos theory.
@@ -13,10 +13,6 @@ Memory locations and data dependencies are presheaf congruences. This motivates 
 A typical presheaf over a partial order can be displayed using Graphviz clusters. Each cluster of nodes represents a set of the copresheaf and the arrows between them represent generating functions. These generalize the box and arrow diagrams typically used for displaying functions.
 
 <img width="500" style="border:1px solid black;" src="https://i.ibb.co/gFW1y3P/triangle.png">
-
-The resulting diagram is like an extended Hasse diagram with clusters instead of nodes. Here is another example from the topos Sets^(2,1).
-
-<img width="500" style="border:1px solid black;" src="https://i.ibb.co/mF94BTj/cospan.png">
 
 Copresheaves in the topos Sets^(1,2) are used in the topos theory of hypegraphs. Any hypergraph or finite set system produces a corresponding span copresheaf.
 

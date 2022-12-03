@@ -306,6 +306,17 @@
 (defmethod index-multiplicands :default
   [functor] (list (index functor)))
 
+; Underlying preorders and semigroups
+(defmulti underlying-preorder type)
+
+(defmethod underlying-preorder ::thin-category
+  [category] category)
+
+(defmulti underlying-semigroup type)
+
+(defmethod underlying-semigroup ::semigroup
+  [semigroup] semigroup)
+
 ; Elements of higher categories and higher quivers
 (defmulti k-morphisms (fn [quiver i] (type quiver)))
 
