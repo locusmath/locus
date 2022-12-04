@@ -180,15 +180,11 @@
 
   ((first-function functor) morphism))
 
-; The get object and get morphism functions for functors
-(defmulti get-object (fn [i obj] (type i)))
-
+; Default implementations of the get object and get morphism multimethods
 (defmethod get-object :default
   [functor object]
 
   (object-apply functor object))
-
-(defmulti get-morphism (fn [i obj] (type i)))
 
 (defmethod get-morphism :default
   [functor morphism]

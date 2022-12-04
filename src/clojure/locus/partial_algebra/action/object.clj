@@ -1,4 +1,4 @@
-(ns locus.nonassociative.action.object
+(ns locus.partial-algebra.action.object
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.partition.core.setpart :refer :all]
@@ -18,15 +18,15 @@
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.action.core.protocols :refer :all]
             [locus.elementary.action.global.object :refer :all]
-            [locus.mapping.partial.function :refer :all]
-            [locus.mapping.partial.bijection :refer :all]
-            [locus.mapping.partial.transformation :refer :all]
-            [locus.mapping.partial.permutation :refer :all]
             [locus.nonassociative.magma.object :refer :all]
             [locus.nonassociative.magmoid.object :refer :all]
-            [locus.nonassociative.partial-magma.object :refer :all]
-            [locus.nonassociative.partial-magma.object :refer :all]
-            [locus.nonassociative.partial-magma.morphism :refer :all])
+            [locus.partial.mapping.function :refer :all]
+            [locus.partial.mapping.bijection :refer :all]
+            [locus.partial.mapping.transformation :refer :all]
+            [locus.partial.mapping.permutation :refer :all]
+            [locus.partial-algebra.partial-magma.object :refer :all]
+            [locus.partial-algebra.partial-magma.object :refer :all]
+            [locus.partial-algebra.partial-magma.morphism :refer :all])
   (:import (locus.elementary.action.global.object MSet)
            (locus.elementary.semigroup.partial.object PartialTransformationSemigroup)))
 

@@ -1,4 +1,4 @@
-(ns locus.mapping.multivalued.hyperfunction
+(ns locus.hyper.mapping.function
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.function.image.image-function :refer :all]
@@ -44,6 +44,7 @@
 ; This subalgebra lattice is basically implemented in the lattice folder. It restores
 ; the subobject lattice of a function in the special case in which a function is
 ; expressed as a hyperfunction.
+
 (deftype Hyperfunction [source target func]
   AbstractMorphism
   (source-object [this] source)
@@ -55,9 +56,11 @@
   (applyTo [this args]
     (clojure.lang.AFn/applyToHelper this args)))
 
-(derive Hyperfunction :locus.base.logic.structure.protocols/structured-function)
+(derive ::hyperfunction :locus.base.logic.structure.protocols/structured-function)
+(derive ::hypertransformation ::hyperfunction)
 
-(defmethod to-function Hyperfunction
+; Convert hyperfunctions into set functions
+(defmethod to-function ::hyperfunction
   [^Hyperfunction rel]
 
   (ImageFunction.
@@ -65,8 +68,42 @@
     (.target rel)
     (.func rel)))
 
+(defn identity-hyperfunction
+  [coll]
+
+  (Hyperfunction.
+    coll
+    coll
+    (fn [i] #{i})))
+
+; Hyperfunctions are structure copresheaves
+(defmethod get-object ::hyperfunction
+  [hyperfunction i]
+
+  (case i
+    0 (source-object hyperfunction)
+    1 (target-object hyperfunction)))
+
+(defmethod get-morphism ::hyperfunction
+  [hyperfunction [a b]]
+
+  (case [a b]
+    [0 0] (identity-hyperfunction (source-object hyperfunction))
+    [1 1] (identity-hyperfunction (target-object hyperfunction))
+    [0 1] hyperfunction))
+
+(defmethod get-set ::hyperfunction
+  [hyperfunction i]
+
+  (->PowerSet (get-object hyperfunction i)))
+
+(defmethod get-function ::hyperfunction
+  [hyperfunction i]
+
+  (to-function (get-morphism hyperfunction i)))
+
 ; Underlying relations of visualisation of hyperfunctions
-(defmethod underlying-relation Hyperfunction
+(defmethod underlying-relation ::hyperfunction
   [rel]
 
   (apply
@@ -80,7 +117,7 @@
             (rel input))))
       (source-object rel))))
 
-(defmethod visualize Hyperfunction
+(defmethod visualize ::hyperfunction
   [rel]
 
   (let [p {0 (source-object rel)
@@ -93,7 +130,7 @@
     (visualize-clustered-digraph* "LR" p v)))
 
 ; Hyperfunctions form a category Rel of sets and hyperfunctions
-(defmethod compose* Hyperfunction
+(defmethod compose* ::hyperfunction
   [a b]
 
   (Hyperfunction.
@@ -101,14 +138,6 @@
     (target-object a)
     (fn [x]
       (apply union (map a (b x))))))
-
-(defn identity-hyperfunction
-  [coll]
-
-  (Hyperfunction.
-    coll
-    coll
-    (fn [i] #{i})))
 
 ; Conversion mechanisms for hyperfunctions
 (defmulti to-hyperfunction type)
@@ -228,19 +257,19 @@
 
 ; Images as established by multimethods
 (defmethod image
-  [Hyperfunction :locus.base.logic.core.set/universal]
+  [::hyperfunction :locus.base.logic.core.set/universal]
   [func coll]
 
   (hyperfunction-set-image func coll))
 
 (defmethod inverse-image
-  [Hyperfunction :locus.base.logic.core.set/universal]
+  [::hyperfunction :locus.base.logic.core.set/universal]
   [func coll]
 
   (hyperfunction-set-inverse-image func coll))
 
 ; Adjoin inputs and outputs to hyperfunctions
-(defmethod adjoin-inputs Hyperfunction
+(defmethod adjoin-inputs ::hyperfunction
   [rel coll]
 
   (Hyperfunction.
@@ -249,7 +278,7 @@
     (fn [i]
       (rel i))))
 
-(defmethod adjoin-outputs Hyperfunction
+(defmethod adjoin-outputs ::hyperfunction
   [rel coll]
 
   (Hyperfunction.
@@ -452,11 +481,24 @@
 ; Ontology of morphisms in the allegory Rel of sets and hyperfunctions
 (defmulti hyperfunction? type)
 
-(defmethod hyperfunction? Hyperfunction
+(defmethod hyperfunction? ::hyperfunction
   [hyperfunction] true)
 
 (defmethod hyperfunction? :default
   [obj] false)
+
+; Hypertransformations are an important special case of hyperfunctions
+(defmulti hypertransformation? type)
+
+(defmethod hypertransformation? ::hypertransformation
+  [hypertransformation] true)
+
+(defmethod hypertransformation? :default
+  [obj]
+
+  (and
+    (hyperfunction? obj)
+    (equal-universals? (source-object obj) (target-object obj))))
 
 ; Special classes of hyperfunctions by rank
 (defn ^{:private true} hyperfunction-is-of-rank?
@@ -571,13 +613,6 @@
       (fn [i]
         (= (count (converse-hyperfunction-set-image rel #{i})) 1))
       (target-object rel))))
-
-(defn hypertransformation?
-  [rel]
-
-  (and
-    (hyperfunction? rel)
-    (= (source-object rel) (target-object rel))))
 
 (defn reflexive-hyperfunction?
   [rel]

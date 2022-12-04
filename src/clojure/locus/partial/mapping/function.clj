@@ -1,4 +1,4 @@
-(ns locus.mapping.partial.function
+(ns locus.partial.mapping.function
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
@@ -53,6 +53,52 @@
   [func]
 
   (inputs func))
+
+; Convert partial functions to total functions
+(defmethod to-function PartialFunction
+  [func]
+
+  (->SetFunction
+    (multiselection (source-object func) #{0 1})
+    (multiselection (target-object func) #{0 1})
+    (fn [x]
+      (if (empty? x)
+        #{}
+        (let [elem (first x)]
+          (if ((defined-domain func) elem)
+            #{(func elem)}
+            #{}))))))
+
+(defn partial-identity-function
+  [coll]
+
+  (PartialFunction. coll coll coll (fn [i] i)))
+
+; Partial functions are structure copresheaves
+(defmethod get-object PartialFunction
+  [partial-function i]
+
+  (case i
+    0 (source-object partial-function)
+    1 (target-object partial-function)))
+
+(defmethod get-morphism PartialFunction
+  [partial-function [a b]]
+
+  (case [a b]
+    [0 0] (partial-identity-function (source-object partial-function))
+    [1 1] (partial-identity-function (target-object partial-function))
+    [0 1] partial-function))
+
+(defmethod get-set PartialFunction
+  [partial-function i]
+
+  (multiselection (get-object partial-function i) #{0 1}))
+
+(defmethod get-function PartialFunction
+  [partial-function i]
+
+  (to-function (get-morphism partial-function i)))
 
 ; The two component functions of a partial function are the total component function
 ; and the inclusion function from the partial domain to the actual domain.
@@ -119,12 +165,7 @@
 
   (list (source-object func) (target-object func) (underlying-relation func)))
 
-; Category of partial functions
-(defn partial-identity-function
-  [coll]
-
-  (PartialFunction. coll coll coll (fn [i] i)))
-
+; Implementation of the category of partial functions
 (defmethod compose* ::partial-function
   [a b]
 
@@ -208,18 +249,6 @@
           (func i))
         (defined-domain func)))))
 
-; Convert partial functions to image functions
-(defmethod to-function ::partial-function
-  [^PartialFunction func]
-
-  (->ImageFunction
-    (source-object func)
-    (target-object func)
-    (fn [x]
-      (if ((defined-domain func) x)
-        #{(func x)}
-        #{}))))
-
 ; Empty partial functions have an empty defined domain
 (defn empty-partial-function
   [source target]
@@ -231,7 +260,7 @@
     (fn [x] x)))
 
 ; Relational partial functions
-; This method a set of ordered pairs into a partial function
+; This method turns a set of ordered pairs into a partial function
 (defn binary-relation-triple
   [rel]
 

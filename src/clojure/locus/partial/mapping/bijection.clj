@@ -1,4 +1,4 @@
-(ns locus.mapping.partial.bijection
+(ns locus.partial.mapping.bijection
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.sequence.core.object :refer :all]
@@ -7,7 +7,7 @@
             [locus.base.function.core.object :refer :all]
             [locus.base.function.inclusion.object :refer :all]
             [locus.base.function.image.image-function :refer :all]
-            [locus.mapping.partial.function :refer :all])
+            [locus.partial.mapping.function :refer :all])
   (:import (locus.base.function.core.object SetFunction)
            (clojure.lang PersistentArrayMap IPersistentMap)
            (locus.base.invertible.function.object InvertibleFunction)))
@@ -39,7 +39,7 @@
   (applyTo [this args]
     (clojure.lang.AFn/applyToHelper this args)))
 
-(derive PartialBijection :locus.mapping.partial.function/partial-function)
+(derive PartialBijection :locus.partial.mapping.function/partial-bijection)
 
 ; Defined domains and codomains
 (defmethod defined-domain PartialBijection
@@ -64,7 +64,7 @@
     (fn [x] x)
     (fn [x] x)))
 
-(defmethod compose* :locus.mapping.partial.function/partial-bijection
+(defmethod compose* :locus.partial.mapping.function/partial-bijection
   [a b]
 
   (let [new-domain (set

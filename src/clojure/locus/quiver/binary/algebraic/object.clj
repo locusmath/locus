@@ -9,8 +9,8 @@
             [locus.quiver.relation.binary.sr :refer :all]
             [locus.quiver.base.core.protocols :refer :all]
             [locus.quiver.binary.core.object :refer :all]
-            [locus.mapping.partial.function :refer :all]
-            [locus.mapping.partial.transformation :refer :all]))
+            [locus.partial.mapping.function :refer :all]
+            [locus.partial.mapping.transformation :refer :all]))
 
 ; An algebraic binary quiver is a presheaf F: T_{2,2} -> Sets in which the first of the two output
 ; functions of the parallel arrows in the index category T_{2,2} is injective. The fact that
@@ -65,7 +65,7 @@
 (defmethod to-algebraic-binary-quiver ABQuiver
   [^ABQuiver quiver] quiver)
 
-(defmethod to-algebraic-binary-quiver :locus.mapping.partial.function/partial-transformation
+(defmethod to-algebraic-binary-quiver :locus.partial.mapping.function/partial-transformation
   [transformation]
 
   (ABQuiver.

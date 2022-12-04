@@ -9,7 +9,7 @@
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.category.core.morphism :refer :all]
             [locus.elementary.category.concrete.concrete-category :refer :all]
-            [locus.mapping.partial.function :refer :all]
+            [locus.partial.mapping.function :refer :all]
             [locus.quiver.binary.core.object :refer :all]
             [locus.quiver.binary.core.morphism :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]

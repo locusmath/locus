@@ -1,14 +1,14 @@
-(ns locus.mapping.partial.identity
+(ns locus.partial.mapping.identity
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.function.inclusion.object :refer :all]
             [locus.base.effects.global.identity :refer :all]
-            [locus.mapping.partial.function :refer :all]
-            [locus.mapping.partial.bijection :refer :all]
-            [locus.mapping.partial.transformation :refer :all]
-            [locus.mapping.partial.permutation :refer :all])
+            [locus.partial.mapping.function :refer :all]
+            [locus.partial.mapping.bijection :refer :all]
+            [locus.partial.mapping.transformation :refer :all]
+            [locus.partial.mapping.permutation :refer :all])
   (:import (locus.base.effects.global.identity IdentityFunction)
            (locus.base.function.inclusion.object InclusionFunction)))
 
@@ -27,7 +27,7 @@
   (invoke [this arg] arg)
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
-(derive PartialIdentity :locus.mapping.partial.function/partial-permutation)
+(derive PartialIdentity :locus.partial.mapping.function/partial-bijection)
 
 (defmethod defined-domain PartialIdentity
   [^PartialIdentity partial-identity]
@@ -79,7 +79,7 @@
 
   (PartialIdentity. (inputs func) (outputs func)))
 
-(defmethod to-partial-identity :locus.mapping.partial.function/partial-transformation
+(defmethod to-partial-identity :locus.partial.mapping.function/partial-transformation
   [func]
 
   (if (not (identity-partial-function? func))

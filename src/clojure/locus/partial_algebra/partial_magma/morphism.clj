@@ -1,4 +1,4 @@
-(ns locus.nonassociative.partial-magma.morphism
+(ns locus.partial-algebra.partial-magma.morphism
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.sequence.core.object :refer :all]
@@ -16,8 +16,8 @@
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.two-quiver.core.object :refer :all]
             [locus.elementary.two-quiver.path.object :refer :all]
-            [locus.nonassociative.partial-magma.object :refer :all])
-  (:import (locus.nonassociative.partial_magma.object PartialMagma)))
+            [locus.partial-algebra.partial-magma.object :refer :all])
+  (:import (locus.partial_algebra.partial_magma.object PartialMagma)))
 
 ; A morphism in the category of partial magmas is a function f: M -> N between the underlying
 ; sets of two partial magmas such that with respect to the existence domain R of M we have

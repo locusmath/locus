@@ -13,7 +13,7 @@
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.category.core.morphism :refer :all]
             [locus.elementary.category.natural.transformation :refer :all]
-            [locus.mapping.multivalued.hyperfunction :refer :all]
+            [locus.hyper.mapping.function :refer :all]
             [locus.module.core.object :refer :all]
             [locus.module.core.morphism :refer :all]
             [locus.semimodule.core.object :refer :all]

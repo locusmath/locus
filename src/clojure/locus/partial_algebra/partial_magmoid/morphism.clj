@@ -1,4 +1,4 @@
-(ns locus.nonassociative.partial-magmoid.morphism
+(ns locus.partial-algebra.partial-magmoid.morphism
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.sequence.core.object :refer :all]
@@ -16,11 +16,11 @@
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.two-quiver.core.object :refer :all]
             [locus.elementary.two-quiver.path.object :refer :all]
-            [locus.nonassociative.partial-magma.object :refer :all]
-            [locus.nonassociative.partial-magma.morphism :refer :all]
-            [locus.nonassociative.partial-magmoid.object :refer :all])
-  (:import (locus.nonassociative.partial_magmoid.object PartialMagmoid)
-           (locus.nonassociative.partial_magma.morphism PartialMagmaMorphism)))
+            [locus.partial-algebra.partial-magma.object :refer :all]
+            [locus.partial-algebra.partial-magma.morphism :refer :all]
+            [locus.partial-algebra.partial-magmoid.object :refer :all])
+  (:import (locus.partial_algebra.partial_magmoid.object PartialMagmoid)
+           (locus.partial_algebra.partial_magma.morphism PartialMagmaMorphism)))
 
 ; A partial magmoid functor is a homomorphism of partial magmoids. It is the horizontal
 ; categorification of the concept of a homomorphism of partial magmas. A partial magmoid

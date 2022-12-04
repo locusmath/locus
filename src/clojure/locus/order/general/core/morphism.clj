@@ -16,7 +16,7 @@
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.order.general.core.object :refer :all]
             [locus.quiver.base.core.protocols :refer :all]
-            [locus.mapping.multivalued.hyperfunction :refer :all]))
+            [locus.hyper.mapping.function :refer :all]))
 
 ; Let C,D be thin categories. Then a functor f : C -> D is entirely determined by its object
 ; part. It follows that we can save memory by defining a special class for that only

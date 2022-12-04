@@ -1,4 +1,4 @@
-(ns locus.mapping.partial.transformation
+(ns locus.partial.mapping.transformation
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.effects.global.transformation :refer :all]
@@ -7,7 +7,7 @@
             [locus.base.function.image.image-function :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.base.partition.core.object :refer [restrict-partition projection]]
-            [locus.mapping.partial.function :refer :all])
+            [locus.partial.mapping.function :refer :all])
   (:import (clojure.lang IPersistentMap)
            (locus.base.effects.global.transformation Transformation)))
 
@@ -31,7 +31,7 @@
   (applyTo [this args]
     (clojure.lang.AFn/applyToHelper this args)))
 
-(derive PartialTransformation :locus.mapping.partial.function/partial-transformation)
+(derive PartialTransformation :locus.partial.mapping.function/partial-transformation)
 
 ; Defined domains of partial transformations
 (defmethod defined-domain PartialTransformation
@@ -126,7 +126,7 @@
 
   (->PartialTransformation (inputs transformation) (inputs transformation) transformation))
 
-(defmethod to-partial-transformation :locus.mapping.partial.function/partial-function
+(defmethod to-partial-transformation :locus.partial.mapping.function/partial-transformation
   [func]
 
   (let [all-values (union (source-object func) (target-object func))]
@@ -139,7 +139,7 @@
 (defmethod to-partial-transformation :default
   [func]
 
-  (to-partial-function (underlying-function func)))
+  (to-partial-transformation (underlying-function func)))
 
 ; Convert partial transformations into partial set functions
 (defmethod to-partial-function PartialTransformation

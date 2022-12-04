@@ -13,11 +13,11 @@
             [locus.elementary.semigroup.monoid.object :refer :all]
             [locus.elementary.group.core.object :refer :all]
             [locus.elementary.action.core.protocols :refer :all]
-            [locus.mapping.multivalued.hyperfunction :refer :all]
-            [locus.mapping.partial.function :refer :all]
-            [locus.mapping.partial.transformation :refer :all]
-            [locus.mapping.partial.permutation :refer :all]
-            [locus.mapping.partial.bijection :refer :all]
+            [locus.hyper.mapping.function :refer :all]
+            [locus.partial.mapping.function :refer :all]
+            [locus.partial.mapping.transformation :refer :all]
+            [locus.partial.mapping.bijection :refer :all]
+            [locus.partial.mapping.permutation :refer :all]
             [locus.quiver.base.core.protocols :refer :all]))
 
 ; Partial transformation semigroups

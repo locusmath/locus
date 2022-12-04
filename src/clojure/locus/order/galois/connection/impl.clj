@@ -16,7 +16,7 @@
             [locus.order.general.core.morphism :refer :all]
             [locus.order.general.core.isomorphism :refer :all]
             [locus.quiver.base.core.protocols :refer :all]
-            [locus.mapping.multivalued.hyperfunction :refer :all])
+            [locus.hyper.mapping.function :refer :all])
   (:import (locus.order.general.core.isomorphism PreorderIsomorphism)))
 
 ; A galois connection is a generalization of the relationship between images and inverse images

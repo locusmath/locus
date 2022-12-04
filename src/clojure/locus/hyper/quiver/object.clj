@@ -1,4 +1,4 @@
-(ns locus.hyperquiver.core.object
+(ns locus.hyper.quiver.object
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.sequence.core.object :refer :all]
@@ -8,8 +8,8 @@
             [locus.quiver.nary.core.object :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.quiver.diset.core.object :refer :all]
-            [locus.mapping.multivalued.hyperfunction :refer :all])
-  (:import (locus.mapping.multivalued.hyperfunction Hyperfunction)
+            [locus.hyper.mapping.function :refer :all])
+  (:import (locus.hyper.mapping.function Hyperfunction)
            (locus.quiver.nary.core.object NaryQuiver)
            (locus.quiver.diset.core.object Diset)
            (locus.base.function.core.object SetFunction)))
@@ -184,7 +184,7 @@
 (defmethod to-nary-hyperquiver :locus.base.logic.core.set/universal
   [coll]
 
-  (relational-nary-quiver coll))
+  (relational-nary-hyperquiver coll))
 
 ; Hyperquivers can be treated as hyperfunctions, by noting that each morphism is associated to a
 ; set of objects. This then forms a multivalued function from the set of morphisms of the

@@ -1,4 +1,4 @@
-(ns locus.nonassociative.partial-magma.object
+(ns locus.partial-algebra.partial-magma.object
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.sequence.core.object :refer :all]
@@ -14,7 +14,8 @@
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.two-quiver.core.object :refer :all]
-            [locus.elementary.two-quiver.path.object :refer :all])
+            [locus.elementary.two-quiver.path.object :refer :all]
+            [locus.partial.mapping.function :refer :all])
   (:import (locus.base.function.core.object SetFunction)
            (clojure.lang IPersistentMap)))
 
@@ -56,6 +57,19 @@
   [^PartialMagma magma]
 
   (singular-relational-path-quiver (morphisms magma) (paths magma) #{0}))
+
+; Convert a partial magma into a partial function
+(defmethod to-partial-function PartialMagma
+  [^PartialMagma magma]
+
+  (let [coll (.-coll magma)
+        rel (.-rel magma)
+        op (.-op magma)]
+    (->PartialFunction
+      rel
+      (complete-relation coll)
+      coll
+      op)))
 
 ; Create a domain quiver from a partial magma
 (defn domain-quiver

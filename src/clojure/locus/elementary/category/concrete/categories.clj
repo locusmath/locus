@@ -17,8 +17,8 @@
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.category.core.morphism :refer :all]
             [locus.elementary.category.concrete.object :refer :all]
-            [locus.mapping.partial.function :refer :all]
-            [locus.mapping.multivalued.hyperfunction :refer :all]
+            [locus.partial.mapping.function :refer :all]
+            [locus.hyper.mapping.function :refer :all]
             [locus.quiver.base.core.protocols :refer :all])
   (:import (locus.elementary.category.concrete.object ConcreteCategory)))
 

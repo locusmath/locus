@@ -3,7 +3,7 @@
            (org.apache.commons.math3.geometry.euclidean.twod Vector2D Euclidean2D)
            (org.apache.commons.math3.geometry.euclidean.oned Vector1D Euclidean1D)))
 
-; Euclidean spaces in apache commons math
+; Finite dimensional euclidean spaces in apache commons math
 (def euclidean-1d
   (Euclidean1D/getInstance))
 

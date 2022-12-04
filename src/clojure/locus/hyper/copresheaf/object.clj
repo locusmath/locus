@@ -1,22 +1,22 @@
-(ns locus.hypercopresheaf.core.functor
+(ns locus.hyper.copresheaf.object
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.sequence.core.object :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.function.image.image-function :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
             [locus.quiver.base.core.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.quiver.relation.binary.sr :refer :all]
             [locus.quiver.binary.core.object :refer :all]
             [locus.quiver.binary.core.morphism :refer :all]
-            [locus.mapping.multivalued.hyperfunction :refer :all]
+            [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.category.core.object :refer :all]
             [locus.elementary.category.core.morphism :refer :all]
             [locus.elementary.category.concrete.concrete-category :refer :all]
             [locus.elementary.topoi.copresheaf.object :refer :all]
             [locus.elementary.category.concrete.categories :refer :all]
-            [locus.hyperquiver.core.object :refer :all])
-  (:import (locus.mapping.multivalued.hyperfunction Hyperfunction)
+            [locus.hyper.mapping.function :refer :all]
+            [locus.hyper.quiver.object :refer :all])
+  (:import (locus.hyper.mapping.function Hyperfunction)
            (locus.elementary.topoi.copresheaf.object Copresheaf)
            (locus.elementary.category.core.morphism Functor)))
 
@@ -283,10 +283,3 @@
         (= (count (objects cat)) 3)
         (n-cospan-category? cat)))))
 
-(defn set-relational-triangle?
-  [functor]
-
-  (and
-    (hypercopresheaf? functor)
-    (total-order-category? (index functor))
-    (= (count (objects (index functor))) 3)))

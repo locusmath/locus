@@ -1,8 +1,8 @@
 # Locus
-A computer algebra system based upon presheaf theory.
+A specialised computer algebra system for presheaf theory.
 
 ## The geometry of memory
-Locus is based upon the idea that we can reason logically about the geometry of memory using topos theory.
+Locus is based upon the idea that we can reason logically about the geometry of memory using presheaf theory.
 
 * Memory locations: congruences in the topos Sets
 * Data dependencies: congruences in the topos Sets^(->)

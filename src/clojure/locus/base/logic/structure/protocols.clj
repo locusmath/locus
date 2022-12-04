@@ -138,6 +138,11 @@
 
 (defmulti get-function (fn [a b] (type a)))
 
+; Multimethods for structure presheaf theory
+(defmulti get-object (fn [i obj] (type i)))
+
+(defmulti get-morphism (fn [i obj] (type i)))
+
 ; Subobjects and congruences as generalized methods for dealing with all
 ; kinds of different types of data structures
 (defmulti subalgebra? (fn [a b] [(type a) (type b)]))

@@ -1,4 +1,4 @@
-(ns locus.mapping.partial.permutation
+(ns locus.partial.mapping.permutation
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.sequence.core.object :refer :all]
@@ -7,12 +7,12 @@
             [locus.base.function.core.object :refer :all]
             [locus.base.function.image.image-function :refer :all]
             [locus.base.partition.core.object :refer [partitionize-family]]
-            [locus.mapping.partial.function :refer :all]
-            [locus.mapping.partial.bijection :refer :all]
-            [locus.mapping.partial.transformation :refer :all])
-  (:import (locus.mapping.partial.transformation PartialTransformation)
+            [locus.partial.mapping.function :refer :all]
+            [locus.partial.mapping.bijection :refer :all]
+            [locus.partial.mapping.transformation :refer :all])
+  (:import (locus.partial.mapping.transformation PartialTransformation)
            (clojure.lang IPersistentMap)
-           (locus.mapping.partial.bijection PartialBijection)))
+           (locus.partial.mapping.bijection PartialBijection)))
 
 ; Partial permutations:
 ; One to one partial transformations are called partial permutations, or sometimes charts.
@@ -39,7 +39,7 @@
   (applyTo [this args]
     (clojure.lang.AFn/applyToHelper this args)))
 
-(derive PartialPermutation :locus.mapping.partial.function/partial-permutation)
+(derive PartialPermutation :locus.partial.mapping.function/partial-permutation)
 
 ; Defined domains and codomains
 (defmethod defined-domain PartialPermutation
@@ -63,7 +63,7 @@
     (fn [x] x)
     (fn [x] x)))
 
-(defmethod compose* :locus.mapping.partial.function/partial-permutation
+(defmethod compose* :locus.partial.mapping.function/partial-permutation
   [a b]
 
   (let [new-domain (set
@@ -135,7 +135,7 @@
     (.-backward func)))
 
 ; Products and coproducts of partial permutations
-(defmethod coproduct :locus.mapping.partial.function/partial-permutation
+(defmethod coproduct :locus.partial.mapping.function/partial-permutation
   [& permutations]
 
   (PartialPermutation.
@@ -147,7 +147,7 @@
     (fn [[i v]]
       (list i ((inv (nth permutations i)) v)))))
 
-(defmethod product :locus.mapping.partial.function/partial-permutation
+(defmethod product :locus.partial.mapping.function/partial-permutation
   [& permutations]
 
   (PartialPermutation.
@@ -189,7 +189,7 @@
   (applyTo [this args]
     (clojure.lang.AFn/applyToHelper this args)))
 
-(derive AtomicChart :locus.mapping.partial.function/atomic-chart)
+(derive AtomicChart :locus.partial.mapping.function/atomic-chart)
 
 (defmethod print-method AtomicChart [^AtomicChart v, ^java.io.Writer w]
   (.write w (.toString v)))

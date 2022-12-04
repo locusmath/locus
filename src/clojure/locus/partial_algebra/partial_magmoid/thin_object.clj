@@ -1,4 +1,4 @@
-(ns locus.nonassociative.partial-magmoid.thin-object
+(ns locus.partial-algebra.partial-magmoid.thin-object
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.partition.core.setpart :refer :all]
@@ -13,7 +13,7 @@
             [locus.quiver.binary.thin.object :refer :all]
             [locus.elementary.two-quiver.core.object :refer :all]
             [locus.elementary.two-quiver.path.object :refer :all]
-            [locus.nonassociative.partial-magmoid.object :refer :all])
+            [locus.partial-algebra.partial-magmoid.object :refer :all])
   (:import (locus.elementary.two_quiver.path.object PathQuiver)))
 
 ; A thin partial magmoid is an object in the category of partial magmoids that is fully

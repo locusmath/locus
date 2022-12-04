@@ -1,4 +1,4 @@
-(ns locus.nonassociative.partial-magmoid.object
+(ns locus.partial-algebra.partial-magmoid.object
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.partition.core.setpart :refer :all]
@@ -15,8 +15,8 @@
             [locus.elementary.two-quiver.core.object :refer :all]
             [locus.elementary.two-quiver.path.object :refer :all]
             [locus.elementary.semigroup.core.object :refer :all]
-            [locus.nonassociative.partial-magma.object :refer :all])
-  (:import (locus.nonassociative.partial_magma.object PartialMagma)))
+            [locus.partial-algebra.partial-magma.object :refer :all])
+  (:import (locus.partial_algebra.partial_magma.object PartialMagma)))
 
 ; A partial magmoid is any partial composition operation on a quiver. They include
 ; magmoids, semigroupoids, categories, groupoids, and others as special cases.
