@@ -9,12 +9,12 @@
             [locus.combinat.hypergraph.object :refer :all]
             [locus.combinat.incidence.incidence-structure :refer :all]
             [locus.magmoid.magma.object :refer :all]
-            [locus.algebra.pointed-set.object :refer :all]
+            [locus.sub.core.pointed-set :refer :all]
             [locus.additive.base.core.protocols :refer :all]
             [locus.additive.semiring.core.object :refer :all])
   (:import (locus.elementary.topoi.copresheaf.object Copresheaf)
            (locus.magmoid.magma.object Magma)
-           (locus.algebra.pointed_set.object PointedSet)
+           (locus.sub.core.pointed-set PointedSet)
            (locus.algebra.partial_magma.object PartialMagma)
            (locus.combinat.hypergraph.object Hypergraph)
            (locus.combinat.incidence.incidence_structure IncidenceStructure)

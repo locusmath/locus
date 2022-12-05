@@ -70,6 +70,43 @@
 
   (action-function mset m))
 
+; Apply all actions of a MSet to a collection
+(defn mset-set-image
+  [mset coll]
+
+  (apply
+    union
+    (set
+      (map
+        (fn [action]
+          (set
+            (map
+              (fn [elem]
+                (apply-action mset action elem))
+              coll)))
+        (actions mset)))))
+
+(defn mset-set-inverse-image
+  [mset coll]
+
+  (set
+    (filter
+      (fn [elem]
+        (superset? (list (mset-set-image mset #{elem}) coll)))
+      (underlying-set mset))))
+
+(defmethod image
+  [:locus.elementary.copresheaf.core.protocols/mset :locus.base.logic.core.set/universal]
+  [mset coll]
+
+  (mset-set-image mset coll))
+
+(defmethod inverse-image
+  [:locus.elementary.copresheaf.core.protocols/mset :locus.base.logic.core.set/universal]
+  [mset coll]
+
+  (mset-set-inverse-image mset coll))
+
 ; Change the monoid of an mset by using a monoid homomorphism
 (defn change-of-monoid
   [func ms]

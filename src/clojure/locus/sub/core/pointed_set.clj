@@ -1,15 +1,12 @@
-(ns locus.algebra.pointed-set.object
+(ns locus.sub.core.pointed-set
   (:require [locus.base.logic.core.set :refer :all]
             [locus.base.sequence.core.object :refer :all]
             [locus.base.logic.limit.product :refer :all]
             [locus.base.partition.core.setpart :refer :all]
             [locus.base.function.core.object :refer :all]
             [locus.base.logic.structure.protocols :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.incidence.system.family :refer :all]
-            [locus.order.lattice.core.object :refer :all])
+            [locus.base.function.inclusion.object :refer :all]
+            [locus.sub.core.object :refer :all])
   (:import (locus.base.function.core.object SetFunction)))
 
 ; Pointed sets are functional algebras so they implement IFn
@@ -27,9 +24,21 @@
   (invoke [this arg] arg)
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
-(derive PointedSet :locus.base.logic.structure.protocols/structured-set)
+(derive PointedSet :locus.sub.core.object/set-subalebra)
 
-; Conversion
+; The included elements method makes pointed sets act like subalgebras
+(defmethod included-elements PointedSet
+  [^PointedSet pointed-set]
+
+  #{(.-elem pointed-set)})
+
+; Convert pointed sets into inclusion functions
+(defmethod to-function PointedSet
+  [^PointedSet pointed-set]
+
+  (->InclusionFunction (included-elements pointed-set) (underlying-set pointed-set)))
+
+; Conversion routines
 (defmulti to-pointed-set type)
 
 (defmethod to-pointed-set PointedSet
@@ -50,23 +59,11 @@
     (apply cartesian-product pointed-sets)
     (map #(.elem %) pointed-sets)))
 
-; Subalgebra lattice of pointed sets
-(defmethod sub PointedSet
-  [pointed-set]
-
-  (->Lattice
-    (logical-interval #{(.elem pointed-set)} (underlying-set pointed-set))
-    union
-    intersection))
-
+; Restrictions of pointed sets
 (defn restrict-pointed-set
   [pointed-set coll]
 
   (PointedSet.
     coll
     (.elem pointed-set)))
-
-; Congruence lattices of pointed sets
-(defmethod con PointedSet
-  [pointed-set] (con (underlying-set pointed-set)))
 
