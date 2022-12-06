@@ -231,6 +231,19 @@
     (fn [coll]
       (set-inverse-image func coll))))
 
+; Images and inverses of sets by bijections
+(defmethod image
+  [:locus.elementary.copresheaf.core.protocols/bijection :locus.base.logic.core.set/universal]
+  [func coll]
+
+  (set-image func coll))
+
+(defmethod inverse-image
+  [:locus.elementary.copresheaf.core.protocols/bijection :locus.base.logic.core.set/universal]
+  [func coll]
+
+  (set-inverse-image func coll))
+
 ; Restriction of bijections
 (defn subbijection
   [bijection new-in new-out]
