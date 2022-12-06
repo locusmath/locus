@@ -12,9 +12,9 @@
             [locus.quiver.relation.binary.br :refer :all]
             [locus.order.lattice.core.object :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.semigroup.core.object :refer :all]
-            [locus.elementary.semigroup.monoid.object :refer :all]
-            [locus.elementary.group.core.object :refer :all]
+            [locus.algebra.semigroup.core.object :refer :all]
+            [locus.algebra.semigroup.monoid.object :refer :all]
+            [locus.algebra.group.core.object :refer :all]
             [locus.quiver.binary.core.morphism :refer :all]
             [locus.quiver.unary.core.morphism :refer :all]
             [locus.nonassociative.magma.object :refer :all])

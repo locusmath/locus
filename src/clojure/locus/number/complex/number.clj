@@ -4,11 +4,11 @@
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.quiver.base.core.protocols :refer :all]
-            [locus.elementary.semigroup.monoid.arithmetic :refer :all]
-            [locus.elementary.semigroup.core.object :refer :all]
-            [locus.elementary.semigroup.monoid.group-with-zero :refer :all]
-            [locus.elementary.semigroup.monoid.object :refer :all]
-            [locus.elementary.group.core.object :refer :all]
+            [locus.algebra.semigroup.monoid.arithmetic :refer :all]
+            [locus.algebra.semigroup.core.object :refer :all]
+            [locus.algebra.semigroup.monoid.group-with-zero :refer :all]
+            [locus.algebra.semigroup.monoid.object :refer :all]
+            [locus.algebra.group.core.object :refer :all]
             [locus.additive.base.generic.arithmetic :refer :all]
             [locus.additive.base.core.protocols :refer :all]
             [locus.additive.ring.core.object :refer :all]
@@ -16,7 +16,7 @@
             [locus.additive.semifield.core.object :refer :all]
             [locus.additive.field.core.object :refer :all])
   (:import (org.apache.commons.math3.complex Complex ComplexUtils)
-           (locus.elementary.group.core.object Group)))
+           (locus.algebra.group.core.object Group)))
 
 ; Complex numbers
 (defmethod print-method Complex [^Complex v ^java.io.Writer w]

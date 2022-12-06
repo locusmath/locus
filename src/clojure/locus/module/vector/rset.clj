@@ -3,9 +3,9 @@
             [locus.additive.ring.core.object :refer :all]
             [locus.additive.base.core.protocols :refer :all]
             [locus.additive.semiring.core.object :refer :all]
-            [locus.elementary.group.term.signed-multiset :refer :all])
+            [locus.algebra.group.term.signed-multiset :refer :all])
   (:import (locus.base.logic.core.set Multiset)
-           (locus.elementary.group.term.signed_multiset SignedMultiset)))
+           (locus.algebra.group.term.signed_multiset SignedMultiset)))
 
 ; Modules of ringed sets
 ; Ringed sets are generalizes of sets, multisets, signed sets, real valued sets,

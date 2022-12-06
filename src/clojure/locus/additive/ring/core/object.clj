@@ -5,16 +5,16 @@
             [locus.base.logic.structure.protocols :refer :all]
             [locus.quiver.base.core.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.semigroup.core.object :refer :all]
-            [locus.elementary.semigroup.monoid.object :refer :all]
-            [locus.elementary.group.core.object :refer :all]
-            [locus.elementary.semigroup.monoid.arithmetic :refer :all]
+            [locus.algebra.semigroup.core.object :refer :all]
+            [locus.algebra.semigroup.monoid.object :refer :all]
+            [locus.algebra.group.core.object :refer :all]
+            [locus.algebra.semigroup.monoid.arithmetic :refer :all]
             [locus.elementary.incidence.system.family :refer :all]
             [locus.order.lattice.core.object :refer :all]
             [locus.additive.semiring.core.object :refer :all]
             [locus.additive.base.core.protocols :refer :all])
-  (:import (locus.elementary.group.core.object Group)
-           (locus.elementary.semigroup.core.object Semigroup)
+  (:import (locus.algebra.group.core.object Group)
+           (locus.algebra.semigroup.core.object Semigroup)
            (locus.additive.semiring.core.object Semiring)))
 
 ; Rings are ringoids with a single object

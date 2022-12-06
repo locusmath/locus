@@ -10,7 +10,7 @@
             [locus.quiver.relation.binary.product :refer :all]
             [locus.quiver.binary.core.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
-            [locus.elementary.category.core.object :refer :all]))
+            [locus.algebra.category.core.object :refer :all]))
 
 ; Categories can be seen as intuitive abstractions of motion and of change. A morphism f: A -> B
 ; is a change from one point A to another point B, in either space or time. Categories are

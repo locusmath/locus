@@ -8,13 +8,13 @@
             [locus.quiver.relation.binary.sr :refer :all]
             [locus.quiver.binary.core.object :refer :all]
             [locus.quiver.binary.core.morphism :refer :all]
-            [locus.elementary.category.core.object :refer :all]
-            [locus.elementary.category.core.morphism :refer :all]
-            [locus.elementary.category.concrete.concrete-category :refer :all]
+            [locus.algebra.category.core.object :refer :all]
+            [locus.algebra.category.core.morphism :refer :all]
+            [locus.algebra.category.concrete.concrete-category :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.elementary.quiver.unital.morphism :refer :all]
             [locus.elementary.topoi.copresheaf.object :refer :all]
-            [locus.elementary.category.concrete.categories :refer :all]))
+            [locus.algebra.category.concrete.categories :refer :all]))
 
 ; A copresheaf is a set-valued functor F: C -> Sets. This concept is suitable for a great many
 ; purposes. However, quite often we would prefer instead to define functors into concrete

@@ -11,11 +11,11 @@
             [locus.additive.base.core.protocols :refer :all]
             [locus.additive.ring.core.object :refer :all]
             [locus.additive.ring.core.morphism :refer :all]
-            [locus.elementary.semigroup.monoid.arithmetic :refer :all]
-            [locus.elementary.semigroup.core.object :refer :all]
-            [locus.elementary.semigroup.monoid.group-with-zero :refer :all]
-            [locus.elementary.semigroup.monoid.object :refer :all]
-            [locus.elementary.group.core.object :refer :all])
+            [locus.algebra.semigroup.monoid.arithmetic :refer :all]
+            [locus.algebra.semigroup.core.object :refer :all]
+            [locus.algebra.semigroup.monoid.group-with-zero :refer :all]
+            [locus.algebra.semigroup.monoid.object :refer :all]
+            [locus.algebra.group.core.object :refer :all])
   (:import (locus.topology.core.object TopologicalSpace)))
 
 ; The sections of the sheaf of rings of continuous real valued functions on a topological space

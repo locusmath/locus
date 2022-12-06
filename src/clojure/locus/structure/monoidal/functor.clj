@@ -6,20 +6,20 @@
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.quiver.relation.binary.sr :refer :all]
             [locus.quiver.base.core.protocols :refer :all]
-            [locus.elementary.semigroup.core.object :refer :all]
-            [locus.elementary.semigroup.monoid.object :refer :all]
-            [locus.elementary.semigroup.monoid.morphism :refer :all]
-            [locus.elementary.category.core.object :refer :all]
-            [locus.elementary.category.core.morphism :refer :all]
-            [locus.elementary.category.concrete.concrete-category :refer :all]
+            [locus.algebra.semigroup.core.object :refer :all]
+            [locus.algebra.semigroup.monoid.object :refer :all]
+            [locus.algebra.semigroup.monoid.morphism :refer :all]
+            [locus.algebra.category.core.object :refer :all]
+            [locus.algebra.category.core.morphism :refer :all]
+            [locus.algebra.category.concrete.concrete-category :refer :all]
             [locus.quiver.binary.core.object :refer :all]
             [locus.quiver.binary.core.morphism :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.elementary.quiver.unital.morphism :refer :all]
             [locus.elementary.topoi.copresheaf.object :refer :all]
-            [locus.elementary.category.concrete.categories :refer :all])
-  (:import (locus.elementary.semigroup.monoid.object Monoid)
-           (locus.elementary.semigroup.monoid.morphism MonoidMorphism)))
+            [locus.algebra.category.concrete.categories :refer :all])
+  (:import (locus.algebra.semigroup.monoid.object Monoid)
+           (locus.algebra.semigroup.monoid.morphism MonoidMorphism)))
 
 ; A presheaf of monoids is a functor F: C -> Mon. It is a generalisation of a presheaf of abelian
 ; groups. Additionally, when we later consider presheaves of commutative unital rings it is useful

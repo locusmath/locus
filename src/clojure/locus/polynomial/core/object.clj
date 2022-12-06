@@ -8,17 +8,17 @@
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.quiver.base.core.protocols :refer :all]
             [locus.quiver.relation.binary.product :refer :all]
-            [locus.elementary.semigroup.core.object :refer :all]
-            [locus.elementary.semigroup.monoid.object :refer :all]
-            [locus.elementary.group.core.object :refer :all]
+            [locus.algebra.semigroup.core.object :refer :all]
+            [locus.algebra.semigroup.monoid.object :refer :all]
+            [locus.algebra.group.core.object :refer :all]
             [locus.additive.base.core.protocols :refer :all]
             [locus.additive.base.generic.arithmetic :refer :all]
             [locus.additive.ring.core.object :refer :all]
             [locus.additive.semiring.core.object :refer :all]
             [locus.module.vector.rset :refer :all])
-  (:import (locus.elementary.group.core.object Group)
-           (locus.elementary.semigroup.monoid.object Monoid)
-           (locus.elementary.semigroup.core.object Semigroup)))
+  (:import (locus.algebra.group.core.object Group)
+           (locus.algebra.semigroup.monoid.object Monoid)
+           (locus.algebra.semigroup.core.object Semigroup)))
 
 ; Polynomials are the most basic units of abstract algebra
 ; They should be represented as maps of multisets

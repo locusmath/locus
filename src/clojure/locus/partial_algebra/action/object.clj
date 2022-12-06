@@ -12,10 +12,10 @@
             [locus.quiver.relation.binary.product :refer :all]
             [locus.quiver.quiver.core.object :refer :all]
             [locus.quiver.base.core.protocols :refer :all]
-            [locus.elementary.semigroup.core.object :refer :all]
-            [locus.elementary.semigroup.monoid.object :refer :all]
-            [locus.elementary.semigroup.partial.object :refer :all]
-            [locus.elementary.category.core.object :refer :all]
+            [locus.algebra.semigroup.core.object :refer :all]
+            [locus.algebra.semigroup.monoid.object :refer :all]
+            [locus.algebra.semigroup.partial.object :refer :all]
+            [locus.algebra.category.core.object :refer :all]
             [locus.elementary.action.core.protocols :refer :all]
             [locus.elementary.action.global.object :refer :all]
             [locus.nonassociative.magma.object :refer :all]
@@ -28,7 +28,7 @@
             [locus.partial-algebra.partial-magma.object :refer :all]
             [locus.partial-algebra.partial-magma.morphism :refer :all])
   (:import (locus.elementary.action.global.object MSet)
-           (locus.elementary.semigroup.partial.object PartialTransformationSemigroup)))
+           (locus.algebra.semigroup.partial.object PartialTransformationSemigroup)))
 
 ; Let C be a category. Then C is associated to two different sets: its object set and its morphism
 ; set. We say that the morphism set has the structure of a partial semigroup (Arrows(C),*) in

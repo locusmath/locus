@@ -10,10 +10,10 @@
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.elementary.action.core.protocols :refer :all]
             [locus.elementary.action.global.object :refer :all]
-            [locus.elementary.semigroup.core.object :refer :all]
-            [locus.elementary.semigroup.monoid.object :refer :all]
-            [locus.elementary.group.core.object :refer :all]
-            [locus.elementary.semigroup.monoid.arithmetic :refer :all]
+            [locus.algebra.semigroup.core.object :refer :all]
+            [locus.algebra.semigroup.monoid.object :refer :all]
+            [locus.algebra.group.core.object :refer :all]
+            [locus.algebra.semigroup.monoid.arithmetic :refer :all]
             [locus.order.lattice.core.object :refer :all]
             [locus.additive.base.core.protocols :refer :all]
             [locus.additive.ring.core.morphism :refer :all]
@@ -21,7 +21,7 @@
             [locus.additive.semiring.core.object :refer :all]
             [locus.additive.semiring.core.morphism :refer :all]
             [locus.semimodule.core.utils :refer :all])
-  (:import (locus.elementary.group.core.object Group)
+  (:import (locus.algebra.group.core.object Group)
            (locus.elementary.action.global.object MSet)))
 
 ; A semimodule is like a commutative monoid with operators

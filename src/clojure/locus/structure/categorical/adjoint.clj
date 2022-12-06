@@ -5,9 +5,9 @@
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.quiver.base.core.protocols :refer :all]
             [locus.quiver.binary.core.object :refer :all]
-            [locus.elementary.category.core.object :refer :all]
-            [locus.elementary.category.core.morphism :refer :all]
-            [locus.elementary.category.concrete.categories :refer :all]))
+            [locus.algebra.category.core.object :refer :all]
+            [locus.algebra.category.core.morphism :refer :all]
+            [locus.algebra.category.concrete.categories :refer :all]))
 
 ; Morphisms in the category of adjunctions
 ; An adjunction is defined by a pair of parallel functors:

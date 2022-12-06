@@ -5,16 +5,16 @@
             [locus.base.logic.structure.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.quiver.base.core.protocols :refer :all]
-            [locus.elementary.group.core.object :refer :all]
-            [locus.elementary.semigroup.monoid.object :refer :all]
-            [locus.elementary.semigroup.core.object :refer :all]
+            [locus.algebra.group.core.object :refer :all]
+            [locus.algebra.semigroup.monoid.object :refer :all]
+            [locus.algebra.semigroup.core.object :refer :all]
             [locus.additive.base.generic.arithmetic :refer :all]
             [locus.additive.base.core.protocols :refer :all]
             [locus.additive.ring.core.object :refer :all]
             [locus.additive.semiring.core.object :refer :all])
   (:import (org.apache.commons.math3.analysis.polynomials PolynomialFunction PolynomialsUtils)
-           (locus.elementary.group.core.object Group)
-           (locus.elementary.semigroup.monoid.object Monoid)))
+           (locus.algebra.group.core.object Group)
+           (locus.algebra.semigroup.monoid.object Monoid)))
 
 ; Make apache commons math polynomial functions get pretty printed
 (defmethod print-method PolynomialFunction [^PolynomialFunction v ^java.io.Writer w]

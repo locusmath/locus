@@ -6,9 +6,9 @@
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.quiver.base.core.protocols :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
-            [locus.elementary.group.core.object :refer :all]
-            [locus.elementary.semigroup.core.object :refer :all]
-            [locus.elementary.semigroup.monoid.object :refer :all]))
+            [locus.algebra.group.core.object :refer :all]
+            [locus.algebra.semigroup.core.object :refer :all]
+            [locus.algebra.semigroup.monoid.object :refer :all]))
 
 ; Additive structures can be established on categories by enriching them over the category CMon
 ; of commutative monoids or the category Ab of commutative groups. The former produces the

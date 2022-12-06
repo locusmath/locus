@@ -11,8 +11,7 @@
             [locus.quiver.base.core.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.quiver.binary.core.object :refer :all]
-            [locus.elementary.two-quiver.core.object :refer :all]
-            [locus.elementary.category.core.object :refer :all])
+            [locus.elementary.two-quiver.core.object :refer :all])
   (:import (locus.quiver.binary.core.object Quiver)))
 
 ; Path quivers are the basis of partial magmoids, magmoids, categories and a number of other

@@ -5,7 +5,7 @@
             [locus.base.logic.structure.protocols :refer :all]
             [locus.quiver.base.core.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.semigroup.core.object :refer :all]
+            [locus.algebra.semigroup.core.object :refer :all]
             [locus.additive.base.core.protocols :refer :all]
             [locus.additive.base.generic.arithmetic :refer :all]
             [locus.additive.semiring.core.object :refer :all]))

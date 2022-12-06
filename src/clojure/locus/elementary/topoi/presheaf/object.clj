@@ -13,9 +13,9 @@
             [locus.elementary.quiver.unital.morphism :refer :all]
             [locus.order.general.core.object :refer :all]
             [locus.order.general.core.morphism :refer :all]
-            [locus.elementary.category.core.object :refer :all]
-            [locus.elementary.category.core.morphism :refer :all]
-            [locus.elementary.category.core.contravariant-functor :refer :all]
+            [locus.algebra.category.core.object :refer :all]
+            [locus.algebra.category.core.morphism :refer :all]
+            [locus.algebra.category.core.contravariant-functor :refer :all]
             [locus.elementary.topoi.copresheaf.object :refer :all])
   (:import (locus.elementary.topoi.copresheaf.object Copresheaf)))
 

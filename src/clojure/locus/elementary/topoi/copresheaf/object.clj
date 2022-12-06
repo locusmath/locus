@@ -11,14 +11,14 @@
             [locus.quiver.relation.binary.br :refer :all]
             [locus.quiver.relation.binary.sr :refer :all]
             [locus.quiver.relation.binary.product :refer :all]
-            [locus.elementary.semigroup.core.object :refer :all]
-            [locus.elementary.semigroup.monoid.object :refer :all]
-            [locus.elementary.group.core.object :refer :all]
-            [locus.elementary.category.core.object :refer :all]
-            [locus.elementary.category.core.generated-category :refer :all]
-            [locus.elementary.groupoid.core.object :refer :all]
+            [locus.algebra.semigroup.core.object :refer :all]
+            [locus.algebra.semigroup.monoid.object :refer :all]
+            [locus.algebra.group.core.object :refer :all]
+            [locus.algebra.category.core.object :refer :all]
+            [locus.algebra.category.core.generated-category :refer :all]
+            [locus.algebra.groupoid.core.object :refer :all]
             [locus.order.lattice.core.object :refer :all]
-            [locus.elementary.category.core.morphism :refer :all]
+            [locus.algebra.category.core.morphism :refer :all]
             [locus.quiver.diset.core.morphism :refer :all]
             [locus.quiver.diset.core.object :refer :all]
             [locus.elementary.bijection.core.object :refer :all]
@@ -57,7 +57,7 @@
            (locus.elementary.two_quiver.path.object PathQuiver)
            (locus.base.function.core.object SetFunction)
            (locus.elementary.triangle.core.object SetTriangle)
-           (locus.elementary.category.core.morphism Functor)
+           (locus.algebra.category.core.morphism Functor)
            (locus.order.lattice.core.object Lattice)
            (locus.elementary.galois.copresheaf.object GaloisCopresheaf)
            (locus.quiver.nary.core.object NaryQuiver)))

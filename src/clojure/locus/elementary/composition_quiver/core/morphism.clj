@@ -14,13 +14,13 @@
             [locus.quiver.ternary.core.object :refer :all]
             [locus.elementary.two-quiver.core.object :refer :all]
             [locus.elementary.two-quiver.path.object :refer :all]
-            [locus.elementary.category.core.object :refer :all]
-            [locus.elementary.semigroupoid.core.object :refer :all]
-            [locus.elementary.category.core.morphism :refer :all]
-            [locus.elementary.semigroupoid.core.morphism :refer :all]
+            [locus.algebra.category.core.object :refer :all]
+            [locus.algebra.semigroupoid.core.object :refer :all]
+            [locus.algebra.category.core.morphism :refer :all]
+            [locus.algebra.semigroupoid.core.morphism :refer :all]
             [locus.elementary.composition-quiver.core.object :refer :all])
   (:import (locus.elementary.composition_quiver.core.object CompositionQuiver)
-           (locus.elementary.category.core.morphism Functor)))
+           (locus.algebra.category.core.morphism Functor)))
 
 ; The topos of compositional quivers is a natural generalisation of the category of categories.
 ; Therefore, the morphisms of composition quivers are like functors, and we implement special

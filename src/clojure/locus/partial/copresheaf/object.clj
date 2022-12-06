@@ -9,14 +9,14 @@
             [locus.quiver.binary.core.object :refer :all]
             [locus.quiver.binary.core.morphism :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.category.core.object :refer :all]
-            [locus.elementary.category.core.morphism :refer :all]
+            [locus.algebra.category.core.object :refer :all]
+            [locus.algebra.category.core.morphism :refer :all]
             [locus.elementary.topoi.copresheaf.object :refer :all]
-            [locus.elementary.category.concrete.categories :refer :all]
+            [locus.algebra.category.concrete.categories :refer :all]
             [locus.partial.mapping.function :refer :all]
             [locus.partial.quiver.object :refer :all])
   (:import (locus.elementary.topoi.copresheaf.object Copresheaf)
-           (locus.elementary.category.core.morphism Functor)))
+           (locus.algebra.category.core.morphism Functor)))
 
 ; A functor F : C -> Sets[Part] is a functor from a category to the category of sets and partial
 ; functions. The category Sets[Part] of sets and partial functions is a concrete category,

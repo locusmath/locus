@@ -11,9 +11,9 @@
             [locus.quiver.unary.core.morphism :refer :all]
             [locus.quiver.base.core.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.semigroup.core.object :refer :all]
-            [locus.elementary.group.core.object :refer :all]
-            [locus.elementary.category.core.object :refer :all]
+            [locus.algebra.semigroup.core.object :refer :all]
+            [locus.algebra.group.core.object :refer :all]
+            [locus.algebra.category.core.object :refer :all]
             [locus.nonassociative.magma.object :refer :all]
             [locus.nonassociative.magma.morphism :refer :all]
             [locus.nonassociative.magmoid.object :refer :all])

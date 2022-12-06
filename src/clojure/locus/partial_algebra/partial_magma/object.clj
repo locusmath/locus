@@ -12,7 +12,7 @@
             [locus.quiver.relation.binary.br :refer :all]
             [locus.quiver.base.core.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.category.core.object :refer :all]
+            [locus.algebra.category.core.object :refer :all]
             [locus.elementary.two-quiver.core.object :refer :all]
             [locus.elementary.two-quiver.path.object :refer :all]
             [locus.partial.mapping.function :refer :all])

@@ -9,9 +9,9 @@
             [locus.quiver.relation.binary.sr :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.quiver.binary.core.object :refer :all]
-            [locus.elementary.semigroup.core.object :refer :all]
-            [locus.elementary.group.core.object :refer :all]
-            [locus.elementary.category.core.object :refer :all]
+            [locus.algebra.semigroup.core.object :refer :all]
+            [locus.algebra.group.core.object :refer :all]
+            [locus.algebra.category.core.object :refer :all]
             [locus.nonassociative.magma.object :refer :all])
   (:import (locus.nonassociative.magma.object Magma)))
 

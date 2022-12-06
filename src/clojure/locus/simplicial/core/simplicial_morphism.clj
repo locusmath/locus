@@ -7,7 +7,7 @@
             [locus.quiver.base.core.protocols :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.quiver.binary.core.object :refer :all]
-            [locus.elementary.category.core.object :refer :all]))
+            [locus.algebra.category.core.object :refer :all]))
 
 ; We can use the data stored in instances of the SimplicialMorphism class to
 ; construct the simplex category. The data consists of a vector with two

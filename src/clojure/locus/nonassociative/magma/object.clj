@@ -13,9 +13,9 @@
             [locus.quiver.relation.binary.sr :refer :all]
             [locus.quiver.relation.binary.br :refer :all]
             [locus.order.lattice.core.object :refer :all]
-            [locus.elementary.semigroup.core.object :refer :all]
-            [locus.elementary.semigroup.monoid.object :refer :all]
-            [locus.elementary.group.core.object :refer :all])
+            [locus.algebra.semigroup.core.object :refer :all]
+            [locus.algebra.semigroup.monoid.object :refer :all]
+            [locus.algebra.group.core.object :refer :all])
   (:import (locus.base.function.core.object SetFunction)
            (clojure.lang IPersistentMap)))
 

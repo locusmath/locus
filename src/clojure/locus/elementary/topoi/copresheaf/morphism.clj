@@ -9,9 +9,9 @@
             [locus.quiver.unary.core.morphism :refer :all]
             [locus.quiver.binary.core.object :refer :all]
             [locus.quiver.binary.core.morphism :refer :all]
-            [locus.elementary.category.core.object :refer :all]
-            [locus.elementary.category.core.morphism :refer :all]
-            [locus.elementary.category.natural.transformation :refer :all]
+            [locus.algebra.category.core.object :refer :all]
+            [locus.algebra.category.core.morphism :refer :all]
+            [locus.algebra.category.natural.transformation :refer :all]
             [locus.elementary.action.global.object :refer :all]
             [locus.elementary.topoi.copresheaf.object :refer :all]
             [locus.quiver.diset.core.morphism :refer :all])

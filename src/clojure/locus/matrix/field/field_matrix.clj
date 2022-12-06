@@ -1,8 +1,8 @@
 (ns locus.matrix.field.field-matrix
   (:refer-clojure :exclude [+ * - /])
   (:require [locus.base.logic.core.set :refer :all :exclude [add]]
-            [locus.elementary.group.core.object :refer :all]
-            [locus.elementary.semigroup.monoid.object :refer :all]
+            [locus.algebra.group.core.object :refer :all]
+            [locus.algebra.semigroup.monoid.object :refer :all]
             [locus.additive.base.core.protocols :refer :all]
             [locus.additive.base.generic.arithmetic :refer :all]
             [locus.additive.ring.core.object :refer :all]
@@ -11,8 +11,8 @@
             [locus.additive.field.core.object :refer :all])
   (:import [org.apache.commons.math3.linear FieldLUDecomposition LUDecomposition FieldMatrix RealMatrix Array2DRowRealMatrix Array2DRowFieldMatrix Array2DRowFieldMatrix FieldLUDecomposition MatrixUtils]
            [org.apache.commons.math3.complex Complex]
-           (locus.elementary.group.core.object Group)
-           (locus.elementary.semigroup.monoid.object Monoid)))
+           (locus.algebra.group.core.object Group)
+           (locus.algebra.semigroup.monoid.object Monoid)))
 
 ; Field matrices are primarily provided by the apache commons math library. In order to make
 ; interoperability with the apache commons math field matrices more accessible, we

@@ -8,7 +8,7 @@
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.quiver.binary.core.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
-            [locus.elementary.category.core.object :refer :all]
+            [locus.algebra.category.core.object :refer :all]
             [locus.simplicial.core.simplicial-morphism :refer :all]))
 
 ; Let us suppose that /_\ is the simplex category. Then its corresponding presheaf topos

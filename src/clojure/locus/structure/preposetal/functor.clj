@@ -13,11 +13,11 @@
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.elementary.quiver.unital.morphism :refer :all]
             [locus.elementary.topoi.copresheaf.object :refer :all]
-            [locus.elementary.semigroup.core.object :refer :all]
-            [locus.elementary.category.core.object :refer :all]
-            [locus.elementary.category.core.morphism :refer :all]
-            [locus.elementary.category.concrete.concrete-category :refer :all]
-            [locus.elementary.category.concrete.categories :refer :all])
+            [locus.algebra.semigroup.core.object :refer :all]
+            [locus.algebra.category.core.object :refer :all]
+            [locus.algebra.category.core.morphism :refer :all]
+            [locus.algebra.category.concrete.concrete-category :refer :all]
+            [locus.algebra.category.concrete.categories :refer :all])
   (:import (locus.order.general.core.object Preposet)
            (locus.order.general.core.morphism MonotoneMap)))
 

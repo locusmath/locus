@@ -1,13 +1,13 @@
 (ns locus.module.vector.real-set
   (:require [locus.base.logic.core.set :refer :all]
-            [locus.elementary.group.term.signed-multiset :refer :all]
+            [locus.algebra.group.term.signed-multiset :refer :all]
             [locus.additive.semiring.core.object :refer :all]
             [locus.additive.base.core.protocols :refer :all]
             [locus.additive.ring.core.object :refer :all]
             [locus.additive.field.core.object :refer :all]
             [locus.module.vector.rset :refer :all])
   (:import (locus.base.logic.core.set Multiset)
-           (locus.elementary.group.term.signed_multiset SignedMultiset)))
+           (locus.algebra.group.term.signed_multiset SignedMultiset)))
 
 (use 'clojure.walk)
 

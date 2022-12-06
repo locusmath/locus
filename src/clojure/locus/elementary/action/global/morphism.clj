@@ -8,9 +8,9 @@
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.quiver.base.core.protocols :refer :all]
             [locus.quiver.unary.core.morphism :refer :all]
-            [locus.elementary.semigroup.core.object :refer :all]
-            [locus.elementary.semigroup.core.morphism :refer :all]
-            [locus.elementary.semigroup.monoid.object :refer :all]
+            [locus.algebra.semigroup.core.object :refer :all]
+            [locus.algebra.semigroup.core.morphism :refer :all]
+            [locus.algebra.semigroup.monoid.object :refer :all]
             [locus.elementary.action.global.object :refer :all])
   (:import (locus.elementary.action.global.object MSet)))
 

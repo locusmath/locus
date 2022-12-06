@@ -17,19 +17,19 @@
             [locus.quiver.diset.core.object :refer :all]
             [locus.quiver.unary.core.morphism :refer :all]
             [locus.order.lattice.core.object :refer :all]
-            [locus.elementary.semigroup.core.object :refer :all]
-            [locus.elementary.semigroup.core.morphism :refer :all]
-            [locus.elementary.semigroup.monoid.object :refer :all]
-            [locus.elementary.semigroup.monoid.morphism :refer :all]
-            [locus.elementary.group.core.object :refer :all]
-            [locus.elementary.semigroup.monoid.end :refer :all]
+            [locus.algebra.semigroup.core.object :refer :all]
+            [locus.algebra.semigroup.core.morphism :refer :all]
+            [locus.algebra.semigroup.monoid.object :refer :all]
+            [locus.algebra.semigroup.monoid.morphism :refer :all]
+            [locus.algebra.group.core.object :refer :all]
+            [locus.algebra.semigroup.monoid.end :refer :all]
             [locus.elementary.action.core.protocols :refer :all]
-            [locus.elementary.semigroup.monoid.arithmetic :refer :all])
+            [locus.algebra.semigroup.monoid.arithmetic :refer :all])
   (:import (locus.order.lattice.core.object Lattice)
            (locus.base.effects.global.transformation Transformation)
            (locus.base.effects.global.permutation Permutation)
-           (locus.elementary.semigroup.monoid.object Monoid)
-           (locus.elementary.group.core.object Group)))
+           (locus.algebra.semigroup.monoid.object Monoid)
+           (locus.algebra.group.core.object Group)))
 
 ; The topos of monoid actions is the topos of all set valued functors
 ; arising from a given base monoid M. Then all topos theoretic properties of the

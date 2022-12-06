@@ -12,12 +12,12 @@
             [locus.quiver.binary.core.morphism :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.elementary.quiver.unital.morphism :refer :all]
-            [locus.elementary.semigroup.core.object :refer :all]
-            [locus.elementary.category.core.object :refer :all]
-            [locus.elementary.category.core.morphism :refer :all]
-            [locus.elementary.category.concrete.concrete-category :refer :all]
+            [locus.algebra.semigroup.core.object :refer :all]
+            [locus.algebra.category.core.object :refer :all]
+            [locus.algebra.category.core.morphism :refer :all]
+            [locus.algebra.category.concrete.concrete-category :refer :all]
             [locus.elementary.topoi.copresheaf.object :refer :all]
-            [locus.elementary.category.concrete.categories :refer :all]
+            [locus.algebra.category.concrete.categories :refer :all]
             [locus.structure.preposetal.functor :refer :all]
             [locus.structure.monoidal.functor :refer :all])
   (:import (locus.structure.monoidal.functor MonoidalFunctor)

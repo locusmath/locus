@@ -11,10 +11,10 @@
             [locus.quiver.relation.binary.sr :refer :all]
             [locus.quiver.relation.binary.product :refer :all]
             [locus.elementary.incidence.system.family :refer :all]
-            [locus.elementary.semigroup.core.object :refer :all]
-            [locus.elementary.semigroup.monoid.object :refer :all]
-            [locus.elementary.group.core.object :refer :all]
-            [locus.elementary.semigroup.monoid.arithmetic :refer :all]
+            [locus.algebra.semigroup.core.object :refer :all]
+            [locus.algebra.semigroup.monoid.object :refer :all]
+            [locus.algebra.group.core.object :refer :all]
+            [locus.algebra.semigroup.monoid.arithmetic :refer :all]
             [locus.order.lattice.core.object :refer :all]
             [locus.additive.base.core.protocols :refer :all]))
 

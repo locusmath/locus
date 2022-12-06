@@ -7,8 +7,8 @@
             [locus.quiver.relation.binary.sr :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
             [locus.quiver.binary.core.object :refer :all]
-            [locus.elementary.semigroup.core.object :refer :all]
-            [locus.elementary.category.core.object :refer :all]
+            [locus.algebra.semigroup.core.object :refer :all]
+            [locus.algebra.category.core.object :refer :all]
             [locus.order.general.core.object :refer :all]
             [locus.topology.core.object :refer :all]
             [locus.ordered.semigroup.object :refer :all])

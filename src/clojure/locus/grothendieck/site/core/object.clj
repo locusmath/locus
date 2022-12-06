@@ -10,7 +10,7 @@
             [locus.quiver.binary.core.object :refer :all]
             [locus.elementary.quiver.unital.object :refer :all]
             [locus.order.lattice.core.object :refer :all]
-            [locus.elementary.category.core.object :refer :all]
+            [locus.algebra.category.core.object :refer :all]
             [locus.topology.core.object :refer :all])
   (:import (locus.topology.core.object TopologicalSpace)))
 

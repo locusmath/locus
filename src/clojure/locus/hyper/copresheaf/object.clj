@@ -9,16 +9,16 @@
             [locus.quiver.binary.core.object :refer :all]
             [locus.quiver.binary.core.morphism :refer :all]
             [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.category.core.object :refer :all]
-            [locus.elementary.category.core.morphism :refer :all]
-            [locus.elementary.category.concrete.concrete-category :refer :all]
+            [locus.algebra.category.core.object :refer :all]
+            [locus.algebra.category.core.morphism :refer :all]
+            [locus.algebra.category.concrete.concrete-category :refer :all]
             [locus.elementary.topoi.copresheaf.object :refer :all]
-            [locus.elementary.category.concrete.categories :refer :all]
+            [locus.algebra.category.concrete.categories :refer :all]
             [locus.hyper.mapping.function :refer :all]
             [locus.hyper.quiver.object :refer :all])
   (:import (locus.hyper.mapping.function Hyperfunction)
            (locus.elementary.topoi.copresheaf.object Copresheaf)
-           (locus.elementary.category.core.morphism Functor)))
+           (locus.algebra.category.core.morphism Functor)))
 
 ; A functor F: C -> Rel is a structure copresheaf through the intermediary functor f: Rel -> Sets
 ; which makes Rel into a concrete category. Therefore, relational functors implement both the
