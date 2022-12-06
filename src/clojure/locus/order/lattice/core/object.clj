@@ -268,8 +268,8 @@
 
   (Lattice.
     (power-clan coll)
-    join
-    meet))
+    join-multisets
+    meet-multisets))
 
 ; We also need some means of dealing with congruences of various algebraic structures
 (defmulti con type)

@@ -22,7 +22,7 @@
   (underlying-set [this] elements)
 
   StructuredDiset
-  (first-set [this] (meet-precedence-relation elements join))
+  (first-set [this] (meet-precedence-relation elements join-multisets))
   (second-set [this] elements)
 
   StructuredQuiver

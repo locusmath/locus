@@ -292,7 +292,7 @@
    (clan? coll)
    (every?
     (fn [pair]
-      (contains? pair (apply meet pair)))
+      (contains? pair (apply meet-multisets pair)))
     (selections coll 2))))
 
 (defn sperner-clan?
@@ -302,7 +302,7 @@
    (clan? coll)
    (every?
     (fn [pair]
-      (not (contains? pair (apply meet pair))))
+      (not (contains? pair (apply meet-multisets pair))))
     (selections coll 2))))
 
 (def nullfree-chain-clan?
@@ -324,7 +324,7 @@
    (clan? coll)
    (every?
     (fn [pair]
-      (= (count (apply meet pair)) 0))
+      (= (count (apply meet-multisets pair)) 0))
     (selections coll 2))))
 
 (defn linear-clan?
@@ -334,7 +334,7 @@
    (clan? coll)
    (every? 
     (fn [pair]
-      (<= (count (apply meet pair)) 1))
+      (<= (count (apply meet-multisets pair)) 1))
     (selections coll 2))))
 
 (def partition-clan?
@@ -446,7 +446,7 @@
 
   (every?
    (fn [pair]
-     (<= (multiset-order (apply meet pair)) 1))
+     (<= (multiset-order (apply meet-multisets pair)) 1))
    (selections coll 2)))
 
 ; Moore families associated with multisets
@@ -511,9 +511,9 @@
 ; Power clan
 (def power-clan?
   (moore-family
-   multiset?
-   (fn [i]
-     (power-clan (apply join i)))))
+    multiset?
+    (fn [i]
+     (power-clan (apply join-multisets i)))))
 
 ; Subsemilattices and sublattices of multisets
 (def multiset-union-closed?
@@ -522,7 +522,7 @@
    (fn [coll]
      (set
       (map
-       (partial apply join)
+       (partial apply join-multisets)
        (disj (power-set coll) #{}))))))
 
 (def multiset-intersection-closed?
@@ -531,7 +531,7 @@
    (fn [coll]
      (set
       (map
-       (partial apply meet)
+       (partial apply meet-multisets)
        (disj (power-set coll) #{}))))))
 
 (def multiset-extrema-closed?
@@ -778,8 +778,8 @@
     (fn [i]
       (let [coll (subdimembers family i)]
         (apply
-         join
-         (map
+          join-multisets
+          (map
           (fn [i]
             (irreducible-representation family i))
           coll))))
@@ -800,9 +800,9 @@
 (defn mcl
   [clan arg]
 
-  (let [i (meet
-           arg
-           (apply join clan))]
+  (let [i (meet-multisets
+            arg
+            (apply join-multisets clan))]
     (if (contains? clan i)
       i
       (first

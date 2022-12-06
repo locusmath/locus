@@ -503,7 +503,7 @@
       (repeat (count coll) n))))
 
 ; Lattice operations on multisets
-(defn join
+(defn join-multisets
   ([] (Multiset. {}))
   ([a] a)
   ([a b]
@@ -517,9 +517,9 @@
              (max (multiplicity a key)
                   (multiplicity b key)))
            new-keys)))))
-  ([a b & more] (reduce join (join a b) more)))
+  ([a b & more] (reduce join-multisets (join-multisets a b) more)))
 
-(defn meet
+(defn meet-multisets
   ([] (Multiset. {}))
   ([a] a)
   ([a b]
@@ -533,7 +533,7 @@
              (min (multiplicity a key)
                   (multiplicity b key)))
            new-keys)))))
-  ([a b & more] (reduce meet (meet a b) more)))
+  ([a b & more] (reduce meet-multisets (meet-multisets a b) more)))
 
 ; Algebraic combinational operations
 (defn add
@@ -670,8 +670,8 @@
                    (<= (multiplicity a key) (multiplicity b key)))
                  (support a)))))
     :arities #{2}
-    :join join
-    :meet meet
+    :join join-multisets
+    :meet meet-multisets
     :query (fn [arg]
              (case [(count (first arg)) (count (second arg))]
                [1 0] (let [[[coll] []] arg]
@@ -1996,7 +1996,7 @@
 (defn multiset-distance
   [a b]
 
-  (let [common-meet (meet a b)]
+  (let [common-meet (meet-multisets a b)]
     (+ (count (multiset-difference a common-meet))
        (count (multiset-difference b common-meet)))))
 
