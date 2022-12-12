@@ -1,25 +1,25 @@
 (ns locus.algebra.semigroup.monoid.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.partition.core.object :refer [projection]]
-            [locus.base.partition.core.setpart :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.quiver.diset.core.object :refer :all]
-            [locus.quiver.unary.core.morphism :refer :all]
-            [locus.elementary.bijection.core.object :refer :all]
-            [locus.elementary.bijection.core.morphism :refer :all]
-            [locus.quiver.diset.core.morphism :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.con.core.object :refer [projection]]
+            [locus.con.core.setpart :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.set.quiver.diset.core.object :refer :all]
+            [locus.set.quiver.unary.core.morphism :refer :all]
+            [locus.set.copresheaf.bijection.core.object :refer :all]
+            [locus.set.copresheaf.bijection.core.morphism :refer :all]
+            [locus.set.quiver.diset.core.morphism :refer :all]
             [locus.order.lattice.core.object :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.elementary.quiver.unital.object :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.copresheaf.quiver.unital.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
-            [locus.quiver.base.core.protocols :refer :all])
+            [locus.set.quiver.structure.core.protocols :refer :all])
   (:import (locus.order.lattice.core.object Lattice)
-           (locus.base.function.core.object SetFunction)
+           (locus.set.mapping.general.core.object SetFunction)
            (locus.algebra.semigroup.core.object Semigroup)))
 
 ; Monoids are single object concrete categories. As we often encounter subsets of
@@ -60,7 +60,7 @@
     (clojure.lang.AFn/applyToHelper this args)))
 
 ; Tagging monoids as semigroupoids
-(derive Monoid :locus.elementary.copresheaf.core.protocols/monoid)
+(derive Monoid :locus.set.copresheaf.structure.core.protocols/monoid)
 
 ; Convert semigroups to monoids
 (defmulti to-monoid type)
@@ -125,7 +125,7 @@
   #{(.id sgrp)})
 
 ; Product operation for monoids
-(defmethod product :locus.elementary.copresheaf.core.protocols/monoid
+(defmethod product :locus.set.copresheaf.structure.core.protocols/monoid
   [& monoids]
 
   (Monoid.
@@ -134,7 +134,7 @@
     (map identity-element monoids)))
 
 ; Subalgebra lattices of monoids
-(defmethod sub :locus.elementary.copresheaf.core.protocols/monoid
+(defmethod sub :locus.set.copresheaf.structure.core.protocols/monoid
   [monoid]
 
   (Lattice.
@@ -151,7 +151,7 @@
     (.id m)))
 
 ; Congruence lattices of monoids
-(defmethod con :locus.elementary.copresheaf.core.protocols/monoid
+(defmethod con :locus.set.copresheaf.structure.core.protocols/monoid
   [monoid]
 
   (con (->Semigroup (underlying-set monoid) (.op monoid))))
@@ -181,7 +181,7 @@
     (list 0 0)))
 
 ; Get the dual of a monoid
-(defmethod dual :locus.elementary.copresheaf.core.protocols/monoid
+(defmethod dual :locus.set.copresheaf.structure.core.protocols/monoid
   [semigroup]
 
   (Monoid.

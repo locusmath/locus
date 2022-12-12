@@ -1,13 +1,13 @@
 (ns locus.topology.core.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.quiver.relation.binary.br :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.quiver.relation.binary.vertexset :refer :all]
-            [locus.elementary.incidence.system.family :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.quiver.relation.binary.br :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.quiver.relation.binary.vertexset :refer :all]
+            [locus.set.copresheaf.incidence.system.family :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
             [locus.order.general.core.object :refer :all]
             [locus.order.lattice.core.object :refer :all]
             [locus.order.lattice.total.object :refer :all]
@@ -29,7 +29,7 @@
   ConcreteObject
   (underlying-set [this] points))
 
-(derive ::topology :locus.base.logic.structure.protocols/structured-set)
+(derive ::topology :locus.set.logic.structure.protocols/structured-set)
 (derive TopologicalSpace ::topology)
 
 ; The adjoint relationship between order and topology
@@ -71,7 +71,7 @@
     (fn [open]
       (open-set-of-metric? metric open))))
 
-(defmethod topology :locus.elementary.copresheaf.core.protocols/thin-category
+(defmethod topology :locus.set.copresheaf.structure.core.protocols/thin-category
   [poset]
 
   (alexandrov-topology poset))

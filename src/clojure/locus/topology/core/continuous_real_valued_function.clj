@@ -1,10 +1,10 @@
 (ns locus.topology.core.continuous-real-valued-function
   (:refer-clojure :exclude [+ - * /])
-  (:require [locus.base.logic.core.set :refer :all :exclude [add]]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
+  (:require [locus.set.logic.core.set :refer :all :exclude [add]]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
             [locus.topology.core.object :refer :all]
             [locus.topology.core.morphism :refer :all]
             [locus.additive.base.generic.arithmetic :refer :all]

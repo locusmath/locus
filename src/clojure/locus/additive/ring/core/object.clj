@@ -1,15 +1,15 @@
 (ns locus.additive.ring.core.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
             [locus.algebra.group.core.object :refer :all]
             [locus.algebra.semigroup.monoid.arithmetic :refer :all]
-            [locus.elementary.incidence.system.family :refer :all]
+            [locus.set.copresheaf.incidence.system.family :refer :all]
             [locus.order.lattice.core.object :refer :all]
             [locus.additive.semiring.core.object :refer :all]
             [locus.additive.base.core.protocols :refer :all])
@@ -43,8 +43,8 @@
 
 ; Generalized constructor for rings
 ; A ring should be constructed from an additive group and a multiplicative semigroup
-(defmethod make-ring [:locus.elementary.copresheaf.core.protocols/group,
-                      :locus.elementary.copresheaf.core.protocols/semigroup]
+(defmethod make-ring [:locus.set.copresheaf.structure.core.protocols/group,
+                      :locus.set.copresheaf.structure.core.protocols/semigroup]
   [a b]
 
   (Ring.

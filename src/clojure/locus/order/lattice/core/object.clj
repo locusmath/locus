@@ -1,21 +1,21 @@
 (ns locus.order.lattice.core.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.partition.core.setpart :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.relation.binary.br :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.elementary.quiver.unital.object :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.con.core.setpart :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.relation.binary.br :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.copresheaf.quiver.unital.object :refer :all]
             [locus.order.general.core.object :refer :all]
-            [locus.quiver.base.core.protocols :refer :all])
-  (:import (locus.base.function.core.object SetFunction)
-           (locus.base.logic.core.set Multiset)
-           (locus.quiver.relation.binary.sr SeqableRelation)
-           (locus.quiver.binary.core.object Quiver)))
+            [locus.set.quiver.structure.core.protocols :refer :all])
+  (:import (locus.set.mapping.general.core.object SetFunction)
+           (locus.set.logic.core.set Multiset)
+           (locus.set.quiver.relation.binary.sr SeqableRelation)
+           (locus.set.quiver.binary.core.object Quiver)))
 
 ; A lattice is a thin category C containing all binary products and coproducts.
 ; The coproducts are joins and the products are meets.
@@ -52,11 +52,11 @@
   (invoke [this [[a b] [c d]]] (list c b))
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
-(derive Lattice :locus.elementary.copresheaf.core.protocols/lattice)
+(derive Lattice :locus.set.copresheaf.structure.core.protocols/lattice)
 
 
 ; Ontology of lattices as categories
-(derive Lattice :locus.elementary.copresheaf.core.protocols/lattice)
+(derive Lattice :locus.set.copresheaf.structure.core.protocols/lattice)
 
 ; We need some special way of getting the underlying relation of lattice
 (defmethod underlying-relation Lattice
@@ -175,7 +175,7 @@
               (map #(nth % i) colls)))
           (range l))))))
 
-(defmethod product :locus.elementary.copresheaf.core.protocols/lattice
+(defmethod product :locus.set.copresheaf.structure.core.protocols/lattice
   [& args]
 
   (apply lattice-product args))
@@ -292,7 +292,7 @@
     meet-set-partitions))
 
 ; Subalgebras and congruences in the topos Sets^(->)
-(defmethod sub :locus.base.logic.structure.protocols/set-function
+(defmethod sub :locus.set.logic.structure.protocols/set-function
   [func]
 
   (Lattice.
@@ -300,7 +300,7 @@
     join-set-pairs
     meet-set-pairs))
 
-(defmethod con :locus.base.logic.structure.protocols/set-function
+(defmethod con :locus.set.logic.structure.protocols/set-function
   [func]
 
   (Lattice.

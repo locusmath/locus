@@ -1,14 +1,14 @@
 (ns locus.nonassociative.magmoid.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.group.core.object :refer :all]
             [locus.algebra.category.core.object :refer :all]
@@ -35,7 +35,7 @@
   (invoke [this arg] (op arg))
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
-(derive Magmoid :locus.elementary.copresheaf.core.protocols/magmoid)
+(derive Magmoid :locus.set.copresheaf.structure.core.protocols/magmoid)
 
 ; Visualisation of magmoids
 (defmethod visualize Magmoid
@@ -55,7 +55,7 @@
     (.-op magma)))
 
 ; Products and coproducts of magmoids
-(defmethod coproduct :locus.elementary.copresheaf.core.protocols/magmoid
+(defmethod coproduct :locus.set.copresheaf.structure.core.protocols/magmoid
   [& magmoids]
 
   (->Magmoid
@@ -65,7 +65,7 @@
         (let [c (nth magmoids i)]
           (list i (c (list v w))))))))
 
-(defmethod product :locus.elementary.copresheaf.core.protocols/magmoid
+(defmethod product :locus.set.copresheaf.structure.core.protocols/magmoid
   [& magmoids]
 
   (->Magmoid
@@ -76,7 +76,7 @@
           (c (list (nth morphisms1 i) (nth morphisms2 i))))
         magmoids))))
 
-(defmethod dual :locus.elementary.copresheaf.core.protocols/magmoid
+(defmethod dual :locus.set.copresheaf.structure.core.protocols/magmoid
   [magmoid]
 
   (->Magmoid (dual (underlying-quiver magmoid)) (comp magmoid reverse)))

@@ -1,22 +1,22 @@
 (ns locus.nonassociative.magma.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.partition.core.setpart :refer :all]
-            [locus.base.partition.core.object :refer [projection]]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
-            [locus.quiver.binary.core.object :refer  :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.quiver.relation.binary.br :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.con.core.setpart :refer :all]
+            [locus.con.core.object :refer [projection]]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.set.quiver.binary.core.object :refer  :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.quiver.relation.binary.br :refer :all]
             [locus.order.lattice.core.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
             [locus.algebra.group.core.object :refer :all])
-  (:import (locus.base.function.core.object SetFunction)
+  (:import (locus.set.mapping.general.core.object SetFunction)
            (clojure.lang IPersistentMap)))
 
 ; Let S be a set then a magma on S is simply a function of the form
@@ -46,12 +46,12 @@
   (invoke [this arg] (op arg))
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
-(derive Magma :locus.elementary.copresheaf.core.protocols/magma)
+(derive Magma :locus.set.copresheaf.structure.core.protocols/magma)
 
 ; Convert certain objects into magmas
 (defmulti to-magma type)
 
-(defmethod to-magma :locus.elementary.copresheaf.core.protocols/semigroup
+(defmethod to-magma :locus.set.copresheaf.structure.core.protocols/semigroup
   [semigroup]
 
   (Magma. (underlying-set semigroup) (fn [pair] (semigroup pair))))
@@ -188,16 +188,16 @@
 ; Magmas as special types of magmoids with a single element
 (defmulti magma? type)
 
-(defmethod magma? :locus.elementary.copresheaf.core.protocols/magma
+(defmethod magma? :locus.set.copresheaf.structure.core.protocols/magma
   [magma] true)
 
-(defmethod magma? :locus.elementary.copresheaf.core.protocols/magmoid
+(defmethod magma? :locus.set.copresheaf.structure.core.protocols/magmoid
   [magmoid] (= (count (objects magmoid)) 1))
 
 ; Unital magmas include monoids as a special case
 (defmulti unital-magma? type)
 
-(defmethod unital-magma? :locus.elementary.copresheaf.core.protocols/monoid
+(defmethod unital-magma? :locus.set.copresheaf.structure.core.protocols/monoid
   [monoid] true)
 
 (defmethod unital-magma? :default

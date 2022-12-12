@@ -1,5 +1,5 @@
 (ns locus.calculus.finite.dq
-  (:require [locus.base.logic.core.set :refer :all]))
+  (:require [locus.set.logic.core.set :refer :all]))
 
 ; Compute the difference quotient without using limits
 ; The derivative of a function is then simply the limit of this difference quotient

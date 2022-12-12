@@ -1,30 +1,30 @@
 (ns locus.algebra.group.core.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.logic.numeric.natural :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.partition.core.setpart :refer :all]
-            [locus.base.partition.core.object :refer [projection]]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.incidence.system.family :refer :all]
-            [locus.quiver.relation.binary.br :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.quiver.unary.core.morphism :refer :all]
-            [locus.quiver.diset.core.object :refer :all]
-            [locus.elementary.bijection.core.object :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.logic.numeric.natural :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.con.core.setpart :refer :all]
+            [locus.con.core.object :refer [projection]]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.copresheaf.incidence.system.family :refer :all]
+            [locus.set.quiver.relation.binary.br :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.set.quiver.unary.core.morphism :refer :all]
+            [locus.set.quiver.diset.core.object :refer :all]
+            [locus.set.copresheaf.bijection.core.object :refer :all]
             [locus.order.lattice.core.object :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.elementary.quiver.unital.object :refer :all]
-            [locus.elementary.quiver.permutable.object :refer :all]
-            [locus.elementary.quiver.dependency.object :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.copresheaf.quiver.unital.object :refer :all]
+            [locus.set.copresheaf.quiver.permutable.object :refer :all]
+            [locus.set.copresheaf.quiver.dependency.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
-            [locus.quiver.base.core.protocols :refer :all])
+            [locus.set.quiver.structure.core.protocols :refer :all])
   (:import (locus.order.lattice.core.object Lattice)
-           (locus.base.function.core.object SetFunction)
+           (locus.set.mapping.general.core.object SetFunction)
            (locus.algebra.semigroup.monoid.object Monoid)
            (locus.algebra.semigroup.core.object Semigroup)))
 
@@ -71,7 +71,7 @@
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
 ; Tagging groups
-(derive Group :locus.elementary.copresheaf.core.protocols/group)
+(derive Group :locus.set.copresheaf.structure.core.protocols/group)
 
 ; A special method for inverting elements of groups
 (defmethod invert-element Group
@@ -191,7 +191,7 @@
 
 ; Product operation
 ; The product of two groups is a group again
-(defmethod product :locus.elementary.copresheaf.core.protocols/group
+(defmethod product :locus.set.copresheaf.structure.core.protocols/group
   [& monoids]
 
   (Group.
@@ -250,7 +250,7 @@
 
   (minimal-members (nontrivial-subgroups group)))
 
-(defmethod sub :locus.elementary.copresheaf.core.protocols/group
+(defmethod sub :locus.set.copresheaf.structure.core.protocols/group
   [group]
 
   (Lattice.
@@ -268,7 +268,7 @@
     (.inv group)))
 
 ; Compute the dual of a group
-(defmethod dual :locus.elementary.copresheaf.core.protocols/group
+(defmethod dual :locus.set.copresheaf.structure.core.protocols/group
   [group]
 
   (Group.
@@ -359,7 +359,7 @@
 
   (maximal-members (proper-normal-subgroups group)))
 
-(defmethod con :locus.elementary.copresheaf.core.protocols/group
+(defmethod con :locus.set.copresheaf.structure.core.protocols/group
   [group]
 
   (Lattice.

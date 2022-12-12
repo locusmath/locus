@@ -1,30 +1,30 @@
 (ns locus.algebra.groupoid.core.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.partition.core.setpart :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.con.core.setpart :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.group.core.object :refer :all]
             [locus.order.lattice.core.object :refer :all]
             [locus.algebra.category.core.object :refer :all]
             [locus.order.general.symmetric.object :refer :all]
-            [locus.elementary.quiver.unital.object :refer :all]
-            [locus.elementary.quiver.permutable.object :refer :all]
-            [locus.elementary.quiver.dependency.object :refer :all]
-            [locus.elementary.quiver.dependency.thin-object :refer :all]
-            [locus.elementary.bijection.core.object :refer :all]
-            [locus.quiver.base.core.protocols :refer :all])
+            [locus.set.copresheaf.quiver.unital.object :refer :all]
+            [locus.set.copresheaf.quiver.permutable.object :refer :all]
+            [locus.set.copresheaf.quiver.dependency.object :refer :all]
+            [locus.set.copresheaf.quiver.dependency.thin-object :refer :all]
+            [locus.set.copresheaf.bijection.core.object :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all])
   (:import (locus.algebra.group.core.object Group)
            (locus.algebra.category.core.object Category)
            (locus.order.general.symmetric.object Setoid)
-           (locus.elementary.quiver.dependency.object DependencyQuiver)
-           (locus.elementary.quiver.dependency.thin_object ThinDependencyQuiver)))
+           (locus.set.copresheaf.quiver.dependency.object DependencyQuiver)
+           (locus.set.copresheaf.quiver.dependency.thin_object ThinDependencyQuiver)))
 
 ; A category C has isomorphisms for every object. A groupoid is a category C for which each
 ; morphism is an isomorphism, meaning that if f: A -> B is a morphism there always exists
@@ -64,7 +64,7 @@
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
 ; The position of groupoids within the type hierarchy
-(derive Groupoid :locus.elementary.copresheaf.core.protocols/groupoid)
+(derive Groupoid :locus.set.copresheaf.structure.core.protocols/groupoid)
 
 ; Underlying relations and related notions
 (defmethod underlying-relation Groupoid
@@ -121,7 +121,7 @@
         edges (underlying-relation setoid)]
     (thin-groupoid vertices edges)))
 
-(defmethod to-groupoid :locus.base.logic.core.set/universal
+(defmethod to-groupoid :locus.set.logic.core.set/universal
   [rel]
 
   (thin-groupoid rel))
@@ -167,13 +167,13 @@
         (let [c (nth groupoids i)]
           (list i (c (list v w))))))))
 
-(defmethod coproduct :locus.elementary.copresheaf.core.protocols/group
+(defmethod coproduct :locus.set.copresheaf.structure.core.protocols/group
   [& groups]
 
   (apply coproduct (map to-groupoid groups)))
 
 ; Opposite categories of groupoids
-(defmethod dual :locus.elementary.copresheaf.core.protocols/groupoid
+(defmethod dual :locus.set.copresheaf.structure.core.protocols/groupoid
   [groupoid]
 
   (->Groupoid
@@ -183,7 +183,7 @@
 ; Get underlying groupoids of categories
 (defmulti underlying-groupoid type)
 
-(defmethod underlying-groupoid :locus.elementary.copresheaf.core.protocols/category
+(defmethod underlying-groupoid :locus.set.copresheaf.structure.core.protocols/category
   [category]
 
   (->Groupoid

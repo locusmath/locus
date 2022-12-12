@@ -1,20 +1,20 @@
 (ns locus.algebra.groupoid.core.morphism
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.unary.core.morphism :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.quiver.binary.core.morphism :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.unary.core.morphism :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.quiver.binary.core.morphism :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
             [locus.algebra.group.core.morphism :refer :all]
             [locus.algebra.group.core.object :refer :all]
             [locus.algebra.category.core.object :refer :all]
             [locus.algebra.groupoid.core.object :refer :all]
-            [locus.quiver.base.core.protocols :refer :all])
-  (:import (locus.base.function.core.object SetFunction)
+            [locus.set.quiver.structure.core.protocols :refer :all])
+  (:import (locus.set.mapping.general.core.object SetFunction)
            (locus.algebra.groupoid.core.object Groupoid)))
 
 ; Morphisms in the category of groupoids
@@ -37,7 +37,7 @@
       (underlying-function (target-object this))
       morphism-function)))
 
-(derive GroupoidFunctor :locus.elementary.copresheaf.core.protocols/groupoid-functor)
+(derive GroupoidFunctor :locus.set.copresheaf.structure.core.protocols/groupoid-functor)
 
 ; Composition and identities in the category of groupoids
 (defmethod compose* GroupoidFunctor

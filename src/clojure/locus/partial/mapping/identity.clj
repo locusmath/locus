@@ -1,16 +1,16 @@
 (ns locus.partial.mapping.identity
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.function.inclusion.object :refer :all]
-            [locus.base.effects.global.identity :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.mapping.function.inclusion.object :refer :all]
+            [locus.set.mapping.effects.global.identity :refer :all]
             [locus.partial.mapping.function :refer :all]
             [locus.partial.mapping.bijection :refer :all]
             [locus.partial.mapping.transformation :refer :all]
             [locus.partial.mapping.permutation :refer :all])
-  (:import (locus.base.effects.global.identity IdentityFunction)
-           (locus.base.function.inclusion.object InclusionFunction)))
+  (:import (locus.set.mapping.effects.global.identity IdentityFunction)
+           (locus.set.mapping.function.inclusion.object InclusionFunction)))
 
 ; A partial identity is an idempotent partial permutation. Partial identities commute, and since
 ; they are idempotent they together form a semilattice. This semilattice is essentially the
@@ -63,7 +63,7 @@
 (defmethod to-partial-identity PartialIdentity
   [partial-identity] partial-identity)
 
-(defmethod to-partial-identity :locus.base.logic.core.set/universal
+(defmethod to-partial-identity :locus.set.logic.core.set/universal
   [coll]
 
   (PartialIdentity. coll coll))

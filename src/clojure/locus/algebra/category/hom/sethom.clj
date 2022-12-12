@@ -1,15 +1,15 @@
 (ns locus.algebra.category.hom.sethom
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.base.partition.core.setpart :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.quiver.base.core.protocols :refer :all])
-  (:import [locus.base.logic.core.set SeqableUniversal]
-           [locus.base.function.core.object SetFunction]))
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.con.core.setpart :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all])
+  (:import [locus.set.logic.core.set SeqableUniversal]
+           [locus.set.mapping.general.core.object SetFunction]))
 
 ; This file supports the enumeration of hom classes in the topos of Sets.
 ; These consist of various classes of functions between two sets, and in particular

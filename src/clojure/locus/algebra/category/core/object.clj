@@ -1,30 +1,30 @@
 (ns locus.algebra.category.core.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.quiver.relation.binary.br :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.quiver.relation.binary.vertices :refer :all]
-            [locus.base.partition.core.setpart :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.set.quiver.relation.binary.br :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.quiver.relation.binary.vertices :refer :all]
+            [locus.con.core.setpart :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
             [locus.order.general.core.object :refer :all]
             [locus.order.general.symmetric.object :refer :all]
             [locus.order.general.skeletal.object :refer :all]
-            [locus.quiver.diset.core.object :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.quiver.binary.thin.object :refer :all]
-            [locus.elementary.quiver.unital.thin-object :refer :all]
-            [locus.elementary.quiver.unital.object :refer :all]
+            [locus.set.quiver.diset.core.object :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.quiver.binary.thin.object :refer :all]
+            [locus.set.copresheaf.quiver.unital.thin-object :refer :all]
+            [locus.set.copresheaf.quiver.unital.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
             [locus.algebra.group.core.object :refer :all]
             [locus.order.lattice.core.object :refer :all]
-            [locus.quiver.base.core.protocols :refer :all])
+            [locus.set.quiver.structure.core.protocols :refer :all])
   (:import (locus.order.lattice.core.object Lattice)
-           (locus.elementary.quiver.unital.object UnitalQuiver)
+           (locus.set.copresheaf.quiver.unital.object UnitalQuiver)
            (locus.order.general.core.object Preposet)
            (locus.order.general.symmetric.object Setoid)
            (locus.order.general.skeletal.object Poset)
@@ -72,22 +72,22 @@
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
 ; Categories are semigroupoids with identity
-(derive Category :locus.elementary.copresheaf.core.protocols/category)
+(derive Category :locus.set.copresheaf.structure.core.protocols/category)
 
 ; Underlying relation
-(defmethod underlying-multirelation :locus.elementary.copresheaf.core.protocols/category
+(defmethod underlying-multirelation :locus.set.copresheaf.structure.core.protocols/category
   [cat] (underlying-multirelation (underlying-unital-quiver cat)))
 
-(defmethod underlying-relation :locus.elementary.copresheaf.core.protocols/category
+(defmethod underlying-relation :locus.set.copresheaf.structure.core.protocols/category
   [cat] (underlying-relation (underlying-unital-quiver cat)))
 
 (defn underlying-preposet
   [cat] (Preposet. (second-set cat) (underlying-relation cat)))
 
-(defmethod visualize :locus.elementary.copresheaf.core.protocols/category
+(defmethod visualize :locus.set.copresheaf.structure.core.protocols/category
   [cat] (visualize (underlying-unital-quiver cat)))
 
-(defmethod visualize :locus.elementary.copresheaf.core.protocols/semigroupoid
+(defmethod visualize :locus.set.copresheaf.structure.core.protocols/semigroupoid
   [semigroupoid] (visualize (underlying-quiver semigroupoid)))
 
 ; Special support for thin categories
@@ -116,12 +116,12 @@
 (defmethod to-category Category
   [category] category)
 
-(defmethod to-category :locus.elementary.copresheaf.core.protocols/monoid
+(defmethod to-category :locus.set.copresheaf.structure.core.protocols/monoid
   [monoid]
 
   (->Category (underlying-unital-quiver monoid) monoid))
 
-(defmethod to-category :locus.elementary.copresheaf.core.protocols/semigroup
+(defmethod to-category :locus.set.copresheaf.structure.core.protocols/semigroup
   [semigroup]
 
   (let [monoid (to-monoid (adjoin-identity semigroup))]
@@ -154,7 +154,7 @@
 
   (thin-category (second-set lattice) (first-set lattice)))
 
-(defmethod to-category :locus.base.logic.core.set/universal
+(defmethod to-category :locus.set.logic.core.set/universal
   [rel] (thin-category (set rel)))
 
 ; The topos of sets
@@ -294,21 +294,21 @@
         (let [c (nth categories i)]
           (list i (c (list v w))))))))
 
-(defmethod product :locus.elementary.copresheaf.core.protocols/category
+(defmethod product :locus.set.copresheaf.structure.core.protocols/category
   [& categories] (apply category-product categories))
 
-(defmethod coproduct :locus.elementary.copresheaf.core.protocols/category
+(defmethod coproduct :locus.set.copresheaf.structure.core.protocols/category
   [& categories] (apply category-coproduct categories))
 
 ; The coproduct of monoids
 ; The coproduct of monoids can be computed by converting each of the individual
 ; monoids into categories and computing the coproduct from that.
-(defmethod coproduct :locus.elementary.copresheaf.core.protocols/monoid
+(defmethod coproduct :locus.set.copresheaf.structure.core.protocols/monoid
   [& monoids]
 
   (apply coproduct (map to-category monoids)))
 
-(defmethod dual :locus.elementary.copresheaf.core.protocols/category
+(defmethod dual :locus.set.copresheaf.structure.core.protocols/category
   [cat]
 
   (Category.
@@ -408,7 +408,7 @@
         all-morphisms (union new-morphisms composite-morphisms identities)]
     [all-morphisms all-objects]))
 
-(defmethod sub :locus.elementary.copresheaf.core.protocols/category
+(defmethod sub :locus.set.copresheaf.structure.core.protocols/category
   [category]
 
   (Lattice.
@@ -719,7 +719,7 @@
                 (conj found-pairs [a b])))))))))
 
 ; Ontology of thin categories
-(defmethod thin-category? :locus.elementary.copresheaf.core.protocols/semigroupoid
+(defmethod thin-category? :locus.set.copresheaf.structure.core.protocols/semigroupoid
   [x]
 
   (and
@@ -734,7 +734,7 @@
     (<= (count (weak-connectivity (underlying-relation category))) 1)))
 
 ; Ontology of thin groupoids
-(defmethod thin-groupoid? :locus.elementary.copresheaf.core.protocols/semigroupoid
+(defmethod thin-groupoid? :locus.set.copresheaf.structure.core.protocols/semigroupoid
   [x]
 
   (and
@@ -934,7 +934,7 @@
     (category? category)
     (posetal-quiver? (underlying-quiver category))))
 
-(defmethod lattice? :locus.elementary.copresheaf.core.protocols/semigroupoid
+(defmethod lattice? :locus.set.copresheaf.structure.core.protocols/semigroupoid
   [x]
 
   (and
@@ -942,7 +942,7 @@
     (lattice-relation? (underlying-relation x))))
 
 ; Endomorphism only categories
-(defmethod monoid? :locus.elementary.copresheaf.core.protocols/monoid
+(defmethod monoid? :locus.set.copresheaf.structure.core.protocols/monoid
   [x]
 
   (= (count (objects x)) 1))
@@ -1084,11 +1084,11 @@
     (antisymmetric? (underlying-relation category))))
 
 ; Special classes of categories
-(defmethod groupoid? :locus.elementary.copresheaf.core.protocols/semigroupoid
+(defmethod groupoid? :locus.set.copresheaf.structure.core.protocols/semigroupoid
   [category]
 
   (or
-    (isa? (type category) :locus.elementary.copresheaf.core.protocols/groupoid)
+    (isa? (type category) :locus.set.copresheaf.structure.core.protocols/groupoid)
     (and
       (category? category)
       (every?

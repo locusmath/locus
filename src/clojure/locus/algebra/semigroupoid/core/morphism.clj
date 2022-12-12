@@ -1,12 +1,12 @@
 (ns locus.algebra.semigroupoid.core.morphism
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.unary.core.morphism :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.quiver.binary.core.morphism :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.unary.core.morphism :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.quiver.binary.core.morphism :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
             [locus.algebra.semigroup.monoid.morphism :refer :all]
@@ -14,8 +14,8 @@
             [locus.order.lattice.core.morphism :refer :all]
             [locus.algebra.category.core.object :refer :all]
             [locus.algebra.semigroupoid.core.object :refer :all]
-            [locus.quiver.base.core.protocols :refer :all])
-  (:import (locus.base.function.core.object SetFunction)
+            [locus.set.quiver.structure.core.protocols :refer :all])
+  (:import (locus.set.mapping.general.core.object SetFunction)
            (locus.algebra.semigroupoid.core.object Semigroupoid)))
 
 ; A functor is a morphism of categories that preserves composition, the
@@ -39,7 +39,7 @@
       morphism-function)))
 
 ; The position of semifunctors in the type hierarchy
-(derive Semifunctor :locus.elementary.copresheaf.core.protocols/semifunctor)
+(derive Semifunctor :locus.set.copresheaf.structure.core.protocols/semifunctor)
 
 ; Composition functions
 (defmethod compose* Semifunctor

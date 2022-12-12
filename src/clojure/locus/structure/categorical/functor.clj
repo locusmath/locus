@@ -1,28 +1,28 @@
 (ns locus.structure.categorical.functor
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
             [locus.order.general.core.object :refer :all]
             [locus.order.general.core.morphism :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.quiver.binary.core.morphism :refer :all]
-            [locus.elementary.quiver.unital.object :refer :all]
-            [locus.elementary.quiver.unital.morphism :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.quiver.binary.core.morphism :refer :all]
+            [locus.set.copresheaf.quiver.unital.object :refer :all]
+            [locus.set.copresheaf.quiver.unital.morphism :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.category.core.object :refer :all]
             [locus.algebra.category.core.morphism :refer :all]
             [locus.algebra.category.concrete.concrete-category :refer :all]
-            [locus.elementary.topoi.copresheaf.object :refer :all]
+            [locus.set.copresheaf.topoi.copresheaf.object :refer :all]
             [locus.algebra.category.concrete.categories :refer :all]
             [locus.structure.preposetal.functor :refer :all]
             [locus.structure.monoidal.functor :refer :all])
   (:import (locus.structure.monoidal.functor MonoidalFunctor)
            (locus.structure.preposetal.functor PreposetalFunctor)
-           (locus.elementary.topoi.copresheaf.object Copresheaf)))
+           (locus.set.copresheaf.topoi.copresheaf.object Copresheaf)))
 
 ; A presheaf of categories is a functor F: C -> Cat, which means that it is a functor valued in categories.
 ; It is a presheaf in the sense that Cat is a concrete category whose elements are structured sets consisting
@@ -38,7 +38,7 @@
   (first-function [this] morphism-function)
   (second-function [this] object-function))
 
-(derive CategoricalFunctor :locus.elementary.copresheaf.core.protocols/structure-copresheaf)
+(derive CategoricalFunctor :locus.set.copresheaf.structure.core.protocols/structure-copresheaf)
 
 ; Get objects and morphisms associated to category valued functors
 (defmethod get-object CategoricalFunctor
@@ -89,7 +89,7 @@
 ; Conversion routines to convert things into category valued functors
 (defmulti to-categorical-functor type)
 
-(defmethod to-categorical-functor :locus.elementary.copresheaf.core.protocols/category
+(defmethod to-categorical-functor :locus.set.copresheaf.structure.core.protocols/category
   [category]
 
   (->CategoricalFunctor
@@ -97,7 +97,7 @@
     (constantly category)
     (constantly (identity-morphism category))))
 
-(defmethod to-categorical-functor :locus.elementary.copresheaf.core.protocols/functor
+(defmethod to-categorical-functor :locus.set.copresheaf.structure.core.protocols/functor
   [functor]
 
   (->CategoricalFunctor

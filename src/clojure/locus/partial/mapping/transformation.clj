@@ -1,15 +1,15 @@
 (ns locus.partial.mapping.transformation
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.effects.global.transformation :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.function.image.image-function :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.base.partition.core.object :refer [restrict-partition projection]]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.mapping.effects.global.transformation :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.mapping.function.image.image-function :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.con.core.object :refer [restrict-partition projection]]
             [locus.partial.mapping.function :refer :all])
   (:import (clojure.lang IPersistentMap)
-           (locus.base.effects.global.transformation Transformation)))
+           (locus.set.mapping.effects.global.transformation Transformation)))
 
 ; Partial transformations are partial unary-algebras. As a consequence, they can be handled topos
 ; theoretically as part of the topos theoretic framework of universal partial algebra. In
@@ -108,10 +108,10 @@
       (fn [i]
         (get coll i)))))
 
-(defmethod to-partial-transformation :locus.base.logic.core.set/universal
+(defmethod to-partial-transformation :locus.set.logic.core.set/universal
   [coll] (relational-partial-transformation coll))
 
-(defmethod to-partial-transformation :locus.base.logic.structure.protocols/set-function
+(defmethod to-partial-transformation :locus.set.logic.structure.protocols/set-function
   [func]
 
   (let [all-values (union (inputs func) (outputs func))]
@@ -121,7 +121,7 @@
       (fn [x]
         (func x)))))
 
-(defmethod to-partial-transformation :locus.base.logic.structure.protocols/transformation
+(defmethod to-partial-transformation :locus.set.logic.structure.protocols/transformation
   [transformation]
 
   (->PartialTransformation (inputs transformation) (inputs transformation) transformation))

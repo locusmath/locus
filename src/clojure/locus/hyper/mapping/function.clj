@@ -1,14 +1,14 @@
 (ns locus.hyper.mapping.function
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.function.image.image-function :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.invertible.function.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.base.partition.core.object :refer [projection]])
-  (:import (locus.base.function.core.object SetFunction)
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.mapping.function.image.image-function :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.mapping.invertible.function.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.con.core.object :refer [projection]])
+  (:import (locus.set.mapping.general.core.object SetFunction)
            (clojure.lang IPersistentMap)
-           (locus.base.function.image.image_function ImageFunction)))
+           (locus.set.mapping.function.image.image_function ImageFunction)))
 
 ; Hyperfunctions:
 ; The category Rel of sets and relations does not form an elementary topos. As a consequence,
@@ -56,7 +56,7 @@
   (applyTo [this args]
     (clojure.lang.AFn/applyToHelper this args)))
 
-(derive ::hyperfunction :locus.base.logic.structure.protocols/structured-function)
+(derive ::hyperfunction :locus.set.logic.structure.protocols/structured-function)
 (derive ::hypertransformation ::hyperfunction)
 
 ; Convert hyperfunctions into set functions
@@ -145,7 +145,7 @@
 (defmethod to-hyperfunction Hyperfunction
   [rel] rel)
 
-(defmethod to-hyperfunction :locus.base.logic.core.set/universal
+(defmethod to-hyperfunction :locus.set.logic.core.set/universal
   [rel]
 
   (Hyperfunction.
@@ -156,7 +156,7 @@
                  :when (= a x)]
              b)))))
 
-(defmethod to-hyperfunction :locus.base.logic.structure.protocols/set-function
+(defmethod to-hyperfunction :locus.set.logic.structure.protocols/set-function
   [func]
 
   (Hyperfunction.
@@ -257,13 +257,13 @@
 
 ; Images as established by multimethods
 (defmethod image
-  [::hyperfunction :locus.base.logic.core.set/universal]
+  [::hyperfunction :locus.set.logic.core.set/universal]
   [func coll]
 
   (hyperfunction-set-image func coll))
 
 (defmethod inverse-image
-  [::hyperfunction :locus.base.logic.core.set/universal]
+  [::hyperfunction :locus.set.logic.core.set/universal]
   [func coll]
 
   (hyperfunction-set-inverse-image func coll))

@@ -1,18 +1,18 @@
 (ns locus.graphics.core.alt
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
-            [locus.quiver.relation.binary.br :refer :all]
-            [locus.elementary.bijection.core.object :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.set.quiver.relation.binary.br :refer :all]
+            [locus.set.copresheaf.bijection.core.object :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
             [locus.algebra.category.core.object :refer :all]
             [locus.algebra.category.core.morphism :refer :all]
-            [locus.elementary.topoi.copresheaf.object :refer :all]
+            [locus.set.copresheaf.topoi.copresheaf.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
-            [locus.elementary.action.global.object :refer :all])
+            [locus.set.action.global.object :refer :all])
   (:import (javafx.scene Group Scene)
            (javafx.scene.layout Pane)
            (javafx.application Platform)

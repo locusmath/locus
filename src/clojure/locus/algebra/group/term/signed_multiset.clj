@@ -1,8 +1,8 @@
 (ns locus.algebra.group.term.signed-multiset
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.numeric.natural :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]))
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.numeric.natural :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]))
 
 ; Let G be a free abelian group over a set of generators S. Then the elements of the free abelian group
 ; are naturally all associated with a signed multiplicity, where the sign denotes rather or not

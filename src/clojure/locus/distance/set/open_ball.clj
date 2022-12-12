@@ -1,11 +1,11 @@
 (ns locus.distance.set.open-ball
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
             [locus.distance.lawvere.metric :refer :all]))
 
 ; Let M be a metric space, and x a point of M then we define the open ball

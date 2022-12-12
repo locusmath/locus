@@ -1,17 +1,17 @@
 (ns locus.algebra.semigroup.numerical.numerical-monoid
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.numeric.ap :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.numeric.ap :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
             [locus.order.lattice.core.object :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.elementary.quiver.unital.object :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.copresheaf.quiver.unital.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]))
+            [locus.set.quiver.structure.core.protocols :refer :all]))
 
 ; Let (N,+) be the monoid consisting of all natural numbers under addition. Then
 ; a numerical monoid is simply an additive submonoid of this monoid, in particular
@@ -51,7 +51,7 @@
   (invoke [this [a b]] (+ a b))
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
-(derive NumericalMonoid :locus.elementary.copresheaf.core.protocols/monoid)
+(derive NumericalMonoid :locus.set.copresheaf.structure.core.protocols/monoid)
 
 ; Restore the morphic generating set of the numerical monoid
 (defmethod morphic-gens NumericalMonoid

@@ -1,18 +1,18 @@
 (ns locus.order.lattice.total.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.relation.binary.br :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.elementary.quiver.unital.object :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.relation.binary.br :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.copresheaf.quiver.unital.object :refer :all]
             [locus.order.general.core.object :refer :all]
             [locus.order.lattice.core.object :refer :all]
-            [locus.quiver.base.core.protocols :refer :all])
-  (:import (locus.quiver.binary.core.object Quiver)))
+            [locus.set.quiver.structure.core.protocols :refer :all])
+  (:import (locus.set.quiver.binary.core.object Quiver)))
 
 ; Let X be a thin category, then X is a total order provided that for each
 ; x,y in X we have that either x <= y or y <= x. The key role of total orders
@@ -67,7 +67,7 @@
   (invoke [this [[a b] [c d]]] (list c b))
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
-(derive TotallyOrderedSet :locus.elementary.copresheaf.core.protocols/lattice)
+(derive TotallyOrderedSet :locus.set.copresheaf.structure.core.protocols/lattice)
 
 ; Underlying relations
 (defmethod underlying-relation TotallyOrderedSet

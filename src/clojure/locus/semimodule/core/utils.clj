@@ -1,5 +1,5 @@
 (ns locus.semimodule.core.utils
-  (:require [locus.base.logic.core.set :refer :all]))
+  (:require [locus.set.logic.core.set :refer :all]))
 
 ; The make shift global hierarchy of linear algebraic data types
 ; With this generic methods can be defined that are applicable to both

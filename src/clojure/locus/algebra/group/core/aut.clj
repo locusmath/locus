@@ -1,14 +1,14 @@
 (ns locus.algebra.group.core.aut
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.function.core.util :refer :all]
-            [locus.elementary.bijection.core.object :refer :all]
-            [locus.quiver.unary.core.morphism :refer :all]
-            [locus.elementary.bijection.core.morphism :refer :all]
-            [locus.quiver.diset.core.object :refer :all]
-            [locus.quiver.diset.core.morphism :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.mapping.general.core.util :refer :all]
+            [locus.set.copresheaf.bijection.core.object :refer :all]
+            [locus.set.quiver.unary.core.morphism :refer :all]
+            [locus.set.copresheaf.bijection.core.morphism :refer :all]
+            [locus.set.quiver.diset.core.object :refer :all]
+            [locus.set.quiver.diset.core.morphism :refer :all]
             [locus.algebra.category.hom.sethom :refer :all]
             [locus.algebra.category.hom.bhom :refer :all]
             [locus.algebra.category.hom.dhom :refer :all]
@@ -16,10 +16,10 @@
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
             [locus.algebra.group.core.object :refer :all]
-            [locus.quiver.base.core.protocols :refer :all])
-  (:import (locus.base.function.core.object SetFunction)
-           (locus.quiver.diset.core.object Diset)
-           (locus.elementary.bijection.core.object Bijection)))
+            [locus.set.quiver.structure.core.protocols :refer :all])
+  (:import (locus.set.mapping.general.core.object SetFunction)
+           (locus.set.quiver.diset.core.object Diset)
+           (locus.set.copresheaf.bijection.core.object Bijection)))
 
 ; Let C be a category, then the set of all isomorphisms of C forms a wide subcategory called
 ; the underlying groupoid of C. It follows that every category has an underlying groupoid.
@@ -42,7 +42,7 @@
 ; Computation of automorphism groups by a multimethod
 (defmulti aut type)
 
-(defmethod aut :locus.base.logic.core.set/universal
+(defmethod aut :locus.set.logic.core.set/universal
   [coll]
 
   (set-automorphism-group coll))

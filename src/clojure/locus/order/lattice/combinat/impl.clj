@@ -1,18 +1,18 @@
 (ns locus.order.lattice.combinat.impl
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.logic.numeric.nms :refer :all]
-            [locus.base.logic.numeric.sig :refer :all]
-            [locus.base.partition.core.setpart :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.relation.binary.br :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.elementary.incidence.signatures.nf :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.logic.numeric.nms :refer :all]
+            [locus.set.logic.numeric.sig :refer :all]
+            [locus.con.core.setpart :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.relation.binary.br :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.set.copresheaf.incidence.signatures.nf :refer :all]
             [locus.order.lattice.core.object :refer :all]
-            [locus.quiver.base.core.protocols :refer :all])
+            [locus.set.quiver.structure.core.protocols :refer :all])
   (:import (locus.order.lattice.core.object Lattice)))
 
 ; Intervals lattice

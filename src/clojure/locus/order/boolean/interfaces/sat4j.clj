@@ -1,7 +1,7 @@
 (ns locus.order.boolean.interfaces.sat4j
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
             [locus.order.boolean.formula.core :refer :all])
   (:import [org.sat4j.minisat SolverFactory]
            [org.sat4j.core VecInt]

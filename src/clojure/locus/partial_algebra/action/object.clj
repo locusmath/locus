@@ -1,23 +1,23 @@
 (ns locus.partial-algebra.action.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.partition.core.setpart :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.effects.global.permutation :refer :all]
-            [locus.base.effects.global.transformation :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.relation.binary.br :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.quiver.quiver.core.object :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.con.core.setpart :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.mapping.effects.global.permutation :refer :all]
+            [locus.set.mapping.effects.global.transformation :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.relation.binary.br :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.set.quiver.quiver.core.object :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
             [locus.algebra.semigroup.partial.object :refer :all]
             [locus.algebra.category.core.object :refer :all]
-            [locus.elementary.action.core.protocols :refer :all]
-            [locus.elementary.action.global.object :refer :all]
+            [locus.set.action.core.protocols :refer :all]
+            [locus.set.action.global.object :refer :all]
             [locus.nonassociative.magma.object :refer :all]
             [locus.nonassociative.magmoid.object :refer :all]
             [locus.partial.mapping.function :refer :all]
@@ -27,7 +27,7 @@
             [locus.partial-algebra.partial-magma.object :refer :all]
             [locus.partial-algebra.partial-magma.object :refer :all]
             [locus.partial-algebra.partial-magma.morphism :refer :all])
-  (:import (locus.elementary.action.global.object MSet)
+  (:import (locus.set.action.global.object MSet)
            (locus.algebra.semigroup.partial.object PartialTransformationSemigroup)))
 
 ; Let C be a category. Then C is associated to two different sets: its object set and its morphism
@@ -60,7 +60,7 @@
   (apply-action [this elem arg]
     ((action elem) arg)))
 
-(derive PSet :locus.base.logic.structure.protocols/structured-set)
+(derive PSet :locus.set.logic.structure.protocols/structured-set)
 
 ; Generalized conversion routines for actions on sets in partial algebra
 (defmulti to-pset type)
@@ -103,7 +103,7 @@
         (source-element magmoid morphism)
         (target-element magmoid morphism)))))
 
-(defmethod to-pset :locus.elementary.copresheaf.core.protocols/partial-magmoid
+(defmethod to-pset :locus.set.copresheaf.structure.core.protocols/partial-magmoid
   [magmoid] (morphic-action-on-objects magmoid))
 
 ; Get a partial transformation action

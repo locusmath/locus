@@ -1,19 +1,19 @@
 (ns locus.algebra.category.hom.dhom
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.base.partition.core.setpart :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.con.core.setpart :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
             [locus.algebra.category.hom.sethom :refer :all]
-            [locus.quiver.diset.core.object :refer :all]
-            [locus.quiver.diset.core.morphism :refer :all]
-            [locus.quiver.base.core.protocols :refer :all])
-  (:import [locus.quiver.diset.core.object Diset]
-           [locus.quiver.diset.core.morphism Difunction]
-           (locus.base.logic.core.set SeqableUniversal)))
+            [locus.set.quiver.diset.core.object :refer :all]
+            [locus.set.quiver.diset.core.morphism :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all])
+  (:import [locus.set.quiver.diset.core.object Diset]
+           [locus.set.quiver.diset.core.morphism Difunction]
+           (locus.set.logic.core.set SeqableUniversal)))
 
 ; This file supports the creation of hom classes in the topos Sets^2.
 ; These hom classes are simply defined by doubling up hom classes in Sets.

@@ -1,12 +1,12 @@
 (ns locus.graphics.signature.sv
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.base.logic.numeric.young-diagram :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all])
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.logic.numeric.young-diagram :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all])
   (:import [java.awt.image BufferedImage]
            [javax.swing JFrame JLabel ImageIcon]
-           (locus.base.logic.numeric.young_diagram YoungDiagram)))
+           (locus.set.logic.numeric.young_diagram YoungDiagram)))
 
 ; An additive partition is also equivalently a Young diagram, and there is a customary
 ; way of visualizing such diagrams. This file exists to create graphical visualisations

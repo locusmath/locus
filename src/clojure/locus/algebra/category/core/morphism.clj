@@ -1,16 +1,16 @@
 (ns locus.algebra.category.core.morphism
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.quiver.unary.core.morphism :refer :all]
-            [locus.quiver.diset.core.morphism :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.quiver.binary.core.morphism :refer :all]
-            [locus.elementary.quiver.unital.object :refer :all]
-            [locus.elementary.quiver.unital.morphism :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.quiver.unary.core.morphism :refer :all]
+            [locus.set.quiver.diset.core.morphism :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.quiver.binary.core.morphism :refer :all]
+            [locus.set.copresheaf.quiver.unital.object :refer :all]
+            [locus.set.copresheaf.quiver.unital.morphism :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
             [locus.algebra.semigroup.monoid.morphism :refer :all]
@@ -19,9 +19,9 @@
             [locus.algebra.category.core.object :refer :all]
             [locus.order.general.core.object :refer :all]
             [locus.order.general.core.morphism :refer :all]
-            [locus.quiver.base.core.protocols :refer :all])
+            [locus.set.quiver.structure.core.protocols :refer :all])
   (:import (locus.order.lattice.core.morphism LatticeMorphism)
-           (locus.base.function.core.object SetFunction)
+           (locus.set.mapping.general.core.object SetFunction)
            (locus.algebra.semigroup.monoid.morphism MonoidMorphism)
            (locus.order.general.core.morphism MonotoneMap)))
 
@@ -46,14 +46,14 @@
       morphism-function)))
 
 ; The position of functors within the type hierarchy
-(derive Functor :locus.elementary.copresheaf.core.protocols/functor)
+(derive Functor :locus.set.copresheaf.structure.core.protocols/functor)
 
 ; Index categories for functors
 (defmethod index Functor
   [functor] (source-object functor))
 
 ; Composition and identities in the category of categories
-(defmethod compose* :locus.elementary.copresheaf.core.protocols/functor
+(defmethod compose* :locus.set.copresheaf.structure.core.protocols/functor
   [^Functor f ^Functor g]
 
   (Functor.
@@ -62,7 +62,7 @@
     (comp (.morphism_function f) (.morphism_function g))
     (comp (.object_function f) (.object_function g))))
 
-(defmethod identity-morphism :locus.elementary.copresheaf.core.protocols/category
+(defmethod identity-morphism :locus.set.copresheaf.structure.core.protocols/category
   [category]
 
   (Functor. category category identity identity))

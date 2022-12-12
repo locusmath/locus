@@ -1,6 +1,6 @@
 (ns locus.transcendental.functions.special
   (:refer-clojure :exclude [+ * - /])
-  (:require [locus.base.logic.core.set :refer :all :exclude [add]]
+  (:require [locus.set.logic.core.set :refer :all :exclude [add]]
             [locus.additive.base.generic.arithmetic :refer :all]
             [locus.transcendental.functions.rings :refer :all])
   (:import [org.apache.commons.math3.special Gamma Erf Beta BesselJ]

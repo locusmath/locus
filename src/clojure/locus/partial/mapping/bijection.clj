@@ -1,16 +1,16 @@
 (ns locus.partial.mapping.bijection
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.invertible.function.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.function.inclusion.object :refer :all]
-            [locus.base.function.image.image-function :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.set.mapping.invertible.function.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.mapping.function.inclusion.object :refer :all]
+            [locus.set.mapping.function.image.image-function :refer :all]
             [locus.partial.mapping.function :refer :all])
-  (:import (locus.base.function.core.object SetFunction)
+  (:import (locus.set.mapping.general.core.object SetFunction)
            (clojure.lang PersistentArrayMap IPersistentMap)
-           (locus.base.invertible.function.object InvertibleFunction)))
+           (locus.set.mapping.invertible.function.object InvertibleFunction)))
 
 ; The category of sets and partial bijections is a subcategory of the category
 ; of partial functions, which itself can be itself be considered to be a subcategory
@@ -118,7 +118,7 @@
 (defmethod to-partial-bijection PartialBijection
   [^PartialBijection partial-bijection] partial-bijection)
 
-(defmethod to-partial-bijection :locus.base.logic.core.set/universal
+(defmethod to-partial-bijection :locus.set.logic.core.set/universal
   [coll] (relational-partial-bijection coll))
 
 (defmethod to-partial-bijection IPersistentMap
@@ -142,7 +142,7 @@
     (.-forward func)
     (.-backward func)))
 
-(defmethod to-partial-bijection :locus.base.logic.structure.protocols/inclusion-function
+(defmethod to-partial-bijection :locus.set.logic.structure.protocols/inclusion-function
   [func]
 
   (let [a (inputs func)

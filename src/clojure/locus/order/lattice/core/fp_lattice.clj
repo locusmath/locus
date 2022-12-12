@@ -1,13 +1,13 @@
 (ns locus.order.lattice.core.fp-lattice
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
             [locus.order.lattice.core.object :refer :all]
             [locus.order.lattice.term.lattice-term :refer :all]
             [locus.order.lattice.term.lattice-equation :refer :all]
             [locus.order.lattice.term.lattice-equation-system :refer :all]
-            [locus.quiver.base.core.protocols :refer :all])
+            [locus.set.quiver.structure.core.protocols :refer :all])
   (:import (locus.order.lattice.core.object Lattice)))
 
 ; Finitely presented lattices
@@ -17,7 +17,7 @@
 ; algebra that are defined by systems of equations.
 (deftype FPLattice [gens relations])
 
-(derive FPLattice :locus.elementary.copresheaf.core.protocols/lattice)
+(derive FPLattice :locus.set.copresheaf.structure.core.protocols/lattice)
 
 ; Lattice theoretic generating sets
 (defmulti lattice-generators type)

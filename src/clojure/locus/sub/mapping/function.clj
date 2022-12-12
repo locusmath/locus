@@ -1,13 +1,14 @@
 (ns locus.sub.mapping.function
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.partition.core.setpart :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.function.inclusion.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.sub.core.object :refer :all])
-  (:import (locus.base.function.core.object SetFunction)))
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.con.core.setpart :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.mapping.function.inclusion.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.sub.core.object :refer :all]
+            [dorothy.core :as dot])
+  (:import (locus.set.mapping.general.core.object SetFunction)))
 
 ; A subfunction of a function f: A -> B is a homomorphism of unary relations, or subsets in A
 ; and B. So in other words, for subsets like S of A and T of B then this means that the f(S)
@@ -28,7 +29,7 @@
   (applyTo [this args]
     (clojure.lang.AFn/applyToHelper this args)))
 
-(derive SetSubfunction :locus.base.logic.structure.protocols/structured-function)
+(derive SetSubfunction :locus.set.logic.structure.protocols/structured-function)
 
 ; Included inputs and outputs
 (defn included-inputs
@@ -36,10 +37,20 @@
 
   (included-elements (source-object func)))
 
+(defn excluded-inputs
+  [func]
+
+  (excluded-elements (source-object func)))
+
 (defn included-outputs
   [func]
 
   (included-elements (target-object func)))
+
+(defn excluded-outputs
+  [func]
+
+  (excluded-elements (target-object func)))
 
 (defn included-transition
   [func]
@@ -54,6 +65,35 @@
     (set-subalgebra a (inputs func))
     (set-subalgebra b (outputs func))
     func))
+
+; Every function is naturally associated to a surjective interior
+(defn surjective-set-subfunction
+  [func]
+
+  (->SetSubfunction
+    (full-set-subalgebra (inputs func))
+    (set-subalgebra (function-image func) (outputs func))
+    func))
+
+; Given a subfunction f: A -> B defined by (S,T) the surjective component of (S,T) is created by the
+; intersection of T with the function image of f.
+(defn set-subfunction-surjective-interior
+  [set-subfunction]
+
+  (let [func (underlying-function set-subfunction)]
+    (->SetSubfunction
+     (source-object set-subfunction)
+     (set-subalgebra
+       (intersection (included-outputs set-subfunction) (function-image func))
+       (outputs set-subfunction))
+     func)))
+
+; Get the function induced by a set subfunction
+(defmethod get-subobject SetSubfunction
+  [set-subfunction]
+
+  (let [func (underlying-function set-subfunction)]
+    (subfunction func (included-inputs set-subfunction) (included-outputs set-subfunction))))
 
 ; Conversion routines
 (defmulti to-set-subfunction type)
@@ -96,3 +136,50 @@
   [obj]
 
   (= (type obj) SetSubfunction))
+
+; Visualise subfunctions as graphviz diagrams
+(defmethod visualize SetSubfunction
+  [func]
+
+  (let [in-seq (vec (seq (inputs func)))
+        out-seq (vec (seq (outputs func)))
+        in-count (count in-seq)
+        highlighting-style {:style     "filled"
+                            :fillcolor "lightgreen"}
+        create-node (fn [highlighted? node-name node-label]
+                      [(.toString node-name)
+                       (merge
+                         {:label (.toString node-label)}
+                         (if highlighted?
+                           highlighting-style
+                           {}))])
+        in-cluster [(dot/subgraph
+                      :cluster_0
+                      [{}
+                       (map-indexed
+                         (fn [i in-element]
+                           (create-node
+                             (contains? (included-inputs func) in-element)
+                             i
+                             in-element))
+                         in-seq)])]
+        out-cluster [(dot/subgraph
+                       :cluster_1
+                       [{}
+                        (map-indexed
+                          (fn [i out-element]
+                            (create-node
+                              (contains? (included-outputs func) out-element)
+                              (+ i in-count)
+                              out-element))
+                          out-seq)])]]
+    (output-graph!
+      (dot/dot
+       (dot/digraph
+         [{:rankdir "LR"}
+          in-cluster
+          out-cluster
+          (map-indexed
+            (fn [i in-element]
+              [(.toString i) (.toString (+ in-count (.indexOf out-seq (func in-element))))])
+            in-seq)])))))

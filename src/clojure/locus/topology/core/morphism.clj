@@ -1,9 +1,9 @@
 (ns locus.topology.core.morphism
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
             [locus.topology.core.object :refer :all]
             [locus.order.general.core.object :refer :all]
             [locus.order.general.core.morphism :refer :all])
@@ -66,14 +66,14 @@
       input-opens)))
 
 (defmethod image
-  [:locus.base.logic.structure.protocols/set-function
+  [:locus.set.logic.structure.protocols/set-function
    :locus.grothendieck.topology.core.object/topology]
   [func topology]
 
   (topological-image func topology))
 
 (defmethod inverse-image
-  [:locus.base.logic.structure.protocols/set-function
+  [:locus.set.logic.structure.protocols/set-function
    :locus.grothendieck.topology.core.object/topology]
   [func topology]
 

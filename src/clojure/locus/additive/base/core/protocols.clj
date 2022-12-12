@@ -1,11 +1,11 @@
 (ns locus.additive.base.core.protocols
   (:refer-clojure :exclude [/ + - *])
-  (:require [locus.base.logic.core.set :refer :all :exclude [add]]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
-            [locus.elementary.quiver.unital.object :refer :all]
+  (:require [locus.set.logic.core.set :refer :all :exclude [add]]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.set.copresheaf.quiver.unital.object :refer :all]
             [locus.algebra.group.core.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]))
@@ -17,7 +17,7 @@
 ; categorification of a semiring, and the later is the horizontal categorification of a ring.
 
 ; Ontology of rings and semirings
-(derive ::semiring :locus.base.logic.structure.protocols/structured-set)
+(derive ::semiring :locus.set.logic.structure.protocols/structured-set)
 (derive ::ring ::semiring)
 
 (derive ::skew-semifield ::semiring)
@@ -25,7 +25,7 @@
 (derive ::skew-field ::ring)
 
 ; Ontology of the horizontal categorification of rings and semirings
-(derive ::semiringoid :locus.elementary.copresheaf.core.protocols/semigroupoid)
+(derive ::semiringoid :locus.set.copresheaf.structure.core.protocols/semigroupoid)
 (derive ::ringoid ::semiringoid)
 (derive ::abelian-category ::ringoid)
 

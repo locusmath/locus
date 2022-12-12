@@ -1,10 +1,10 @@
 (ns locus.module.vector.rset
-  (:require [locus.base.logic.core.set :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
             [locus.additive.ring.core.object :refer :all]
             [locus.additive.base.core.protocols :refer :all]
             [locus.additive.semiring.core.object :refer :all]
             [locus.algebra.group.term.signed-multiset :refer :all])
-  (:import (locus.base.logic.core.set Multiset)
+  (:import (locus.set.logic.core.set Multiset)
            (locus.algebra.group.term.signed_multiset SignedMultiset)))
 
 ; Modules of ringed sets

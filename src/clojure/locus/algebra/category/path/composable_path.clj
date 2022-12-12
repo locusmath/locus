@@ -1,14 +1,14 @@
 (ns locus.algebra.category.path.composable-path
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.diset.core.object :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.diset.core.object :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
             [locus.algebra.category.core.object :refer :all]
             [locus.algebra.category.core.morphism :refer :all]
             [locus.algebra.category.element.object :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]))
+            [locus.set.quiver.structure.core.protocols :refer :all]))
 
 ; A composable path in a category is a pair of morphisms g : A -> B and f : B -> C
 ; such that the composition f*g exists. In the copresheaf formulation of categories,

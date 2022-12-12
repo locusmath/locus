@@ -1,19 +1,19 @@
 (ns locus.algebra.category.core.generated-category
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.partition.core.setpart :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.quiver.relation.binary.br :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.quiver.relation.binary.vertices :refer :all]
-            [locus.quiver.diset.core.object :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.quiver.binary.thin.object :refer :all]
-            [locus.elementary.quiver.unital.object :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.con.core.setpart :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.set.quiver.relation.binary.br :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.quiver.relation.binary.vertices :refer :all]
+            [locus.set.quiver.diset.core.object :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.quiver.binary.thin.object :refer :all]
+            [locus.set.copresheaf.quiver.unital.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
             [locus.algebra.group.core.object :refer :all]
@@ -22,7 +22,7 @@
             [locus.order.general.core.object :refer :all]
             [locus.order.general.skeletal.object :refer :all]
             [locus.order.general.symmetric.object :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]))
+            [locus.set.quiver.structure.core.protocols :refer :all]))
 
 ; A generated category is a category with a specifically specified morphic generating set.
 ; This is useful because it allows us to specify the data of a category, without having
@@ -52,7 +52,7 @@
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
 ; Generated categories are part of the ontology of categories
-(derive GeneratedCategory :locus.elementary.copresheaf.core.protocols/category)
+(derive GeneratedCategory :locus.set.copresheaf.structure.core.protocols/category)
 
 ; Define a method that integrates the generated category class into our overall system
 ; for dealing with morphic generating sets of categories

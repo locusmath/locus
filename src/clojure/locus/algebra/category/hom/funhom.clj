@@ -1,17 +1,17 @@
 (ns locus.algebra.category.hom.funhom
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.base.partition.core.setpart :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.unary.core.morphism :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.con.core.setpart :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.unary.core.morphism :refer :all]
             [locus.algebra.category.hom.sethom :refer :all]
-            [locus.quiver.base.core.protocols :refer :all])
-  (:import [locus.base.function.core.object SetFunction]
-           (locus.quiver.unary.core.morphism Diamond)))
+            [locus.set.quiver.structure.core.protocols :refer :all])
+  (:import [locus.set.mapping.general.core.object SetFunction]
+           (locus.set.quiver.unary.core.morphism Diamond)))
 
 ; Let Sets^(->) be the topos of functions. Suppose that we have an ordered
 ; pair of functions (f,g). Then the hom class of (f,g) consists of all

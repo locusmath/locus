@@ -1,6 +1,6 @@
 ;(ns locus.graphics.chart.infographics
-;  (:require [locus.base.logic.core.set :refer :all]
-;            [locus.base.logic.numeric.natural :refer :all])
+;  (:require [locus.set.logic.core.set :refer :all]
+;            [locus.set.logic.numeric.natural :refer :all])
 ;  (:import (org.jfree.data.general DefaultPieDataset)
 ;           (org.jfree.chart ChartFactory ChartPanel)
 ;           (org.jfree.chart.ui ApplicationFrame)

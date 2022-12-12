@@ -1,13 +1,13 @@
 (ns locus.partial.mapping.function
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.function.inclusion.object :refer :all]
-            [locus.base.function.image.image-function :refer :all])
-  (:import (locus.base.function.core.object SetFunction)
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.mapping.function.inclusion.object :refer :all]
+            [locus.set.mapping.function.image.image-function :refer :all])
+  (:import (locus.set.mapping.general.core.object SetFunction)
            (clojure.lang PersistentArrayMap IPersistentMap)
-           (locus.base.function.inclusion.object InclusionFunction)))
+           (locus.set.mapping.function.inclusion.object InclusionFunction)))
 
 ; Partial functions form a concrete category PF of sets and partial functions
 ; between them. The category of partial functions can be considered to be
@@ -33,7 +33,7 @@
     (clojure.lang.AFn/applyToHelper this args)))
 
 ; Ontology of derivations
-(derive ::partial-function :locus.base.logic.structure.protocols/structured-function)
+(derive ::partial-function :locus.set.logic.structure.protocols/structured-function)
 (derive ::partial-transformation ::partial-function)
 (derive ::partial-bijection ::partial-function)
 (derive ::partial-permutation ::partial-transformation)
@@ -49,7 +49,7 @@
 
   (.-domain x))
 
-(defmethod defined-domain :locus.base.logic.structure.protocols/set-function
+(defmethod defined-domain :locus.set.logic.structure.protocols/set-function
   [func]
 
   (inputs func))
@@ -202,13 +202,13 @@
       (source-object partial-function))))
 
 (defmethod image
-  [::partial-function :locus.base.logic.core.set/universal]
+  [::partial-function :locus.set.logic.core.set/universal]
   [func coll]
 
   (partial-function-set-image func coll))
 
 (defmethod inverse-image
-  [::partial-function :locus.base.logic.core.set/universal]
+  [::partial-function :locus.set.logic.core.set/universal]
   [func coll]
 
   (partial-function-set-inverse-image func coll))
@@ -301,10 +301,10 @@
         out (set (vals coll))]
     (PartialFunction. in in out coll)))
 
-(defmethod to-partial-function :locus.base.logic.core.set/universal
+(defmethod to-partial-function :locus.set.logic.core.set/universal
   [coll] (relational-partial-function coll))
 
-(defmethod to-partial-function :locus.base.logic.structure.protocols/set-function
+(defmethod to-partial-function :locus.set.logic.structure.protocols/set-function
   [func]
 
   (PartialFunction.

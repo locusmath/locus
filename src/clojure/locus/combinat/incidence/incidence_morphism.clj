@@ -1,17 +1,17 @@
 (ns locus.combinat.incidence.incidence-morphism
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.incidence.system.family :refer :all]
-            [locus.elementary.incidence.system.multifamily :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
-            [locus.quiver.relation.binary.br :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.copresheaf.incidence.system.family :refer :all]
+            [locus.set.copresheaf.incidence.system.multifamily :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.set.quiver.relation.binary.br :refer :all]
             [locus.combinat.hypergraph.object :refer :all]
             [locus.combinat.hypergraph.morphism :refer :all]
             [locus.combinat.incidence.incidence-structure :refer :all])
-  (:import (locus.base.function.core.object SetFunction)
+  (:import (locus.set.mapping.general.core.object SetFunction)
            (locus.combinat.hypergraph.morphism HypergraphMorphism)
            (locus.combinat.incidence.incidence_structure IncidenceStructure)))
 

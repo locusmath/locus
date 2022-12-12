@@ -1,9 +1,9 @@
 (ns locus.additive.ring.ideal.object
   (:refer-clojure :exclude [+ * - /])
-  (:require [locus.base.logic.core.set :refer :all :exclude [add]]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
+  (:require [locus.set.logic.core.set :refer :all :exclude [add]]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
             [locus.additive.semiring.core.object :refer :all]

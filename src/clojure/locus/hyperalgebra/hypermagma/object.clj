@@ -1,10 +1,10 @@
 (ns locus.hyperalgebra.hypermagma.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.invertible.function.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.mapping.invertible.function.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
             [locus.hyper.mapping.function :refer :all]
             [locus.nonassociative.magma.object :refer :all])
   (:import (locus.nonassociative.magma.object Magma)))
@@ -24,7 +24,7 @@
   (invoke [this arg] (func arg))
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
-(derive Hypermagma :locus.base.logic.structure.protocols/structured-set)
+(derive Hypermagma :locus.set.logic.structure.protocols/structured-set)
 
 ; Conversion mechanisms for internalising hypermagmas into the concrete category Rel
 (defmethod to-hyperfunction Hypermagma

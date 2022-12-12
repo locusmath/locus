@@ -1,6 +1,6 @@
 (ns locus.probability.distribution.probability-distribution
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.numeric.natural :refer :all])
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.numeric.natural :refer :all])
   (:import [org.apache.commons.math3.distribution EnumeratedIntegerDistribution GeometricDistribution HypergeometricDistribution ZipfDistribution PascalDistribution UniformIntegerDistribution NormalDistribution UniformRealDistribution LogNormalDistribution ChiSquaredDistribution BinomialDistribution]))
 
 ; Create probability distributions using apache commons math

@@ -1,12 +1,12 @@
 (ns locus.ordered.semigroup.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.quiver.relation.binary.sr :refer [complete-relation]]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer [complete-relation]]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.category.core.object :refer :all]
             [locus.order.general.core.object :refer :all]))
@@ -40,7 +40,7 @@
   (invoke [this obj] (op obj))
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
-(derive PreorderedSemigroup :locus.elementary.copresheaf.core.protocols/semigroup)
+(derive PreorderedSemigroup :locus.set.copresheaf.structure.core.protocols/semigroup)
 
 ; Breakdown of preordered semigroups
 (defmethod underlying-semigroup PreorderedSemigroup

@@ -1,22 +1,22 @@
 (ns locus.partial-algebra.partial-magma.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.partition.core.setpart :refer :all]
-            [locus.base.partition.core.object :refer [projection]]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.quiver.relation.binary.br :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.con.core.setpart :refer :all]
+            [locus.con.core.object :refer [projection]]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.quiver.relation.binary.br :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
             [locus.algebra.category.core.object :refer :all]
-            [locus.elementary.two-quiver.core.object :refer :all]
-            [locus.elementary.two-quiver.path.object :refer :all]
+            [locus.set.tree.two-quiver.core.object :refer :all]
+            [locus.set.tree.two-quiver.path.object :refer :all]
             [locus.partial.mapping.function :refer :all])
-  (:import (locus.base.function.core.object SetFunction)
+  (:import (locus.set.mapping.general.core.object SetFunction)
            (clojure.lang IPersistentMap)))
 
 ; A partial magma is a copresheaf in the topos of ternary quivers. Its morphism set is the set
@@ -45,7 +45,7 @@
   (invoke [this arg] (op arg))
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
-(derive PartialMagma :locus.elementary.copresheaf.core.protocols/partial-magma)
+(derive PartialMagma :locus.set.copresheaf.structure.core.protocols/partial-magma)
 
 ; Path quivers of partial magmas
 (defmethod paths PartialMagma
@@ -244,10 +244,10 @@
 ; Ontology of partial magmas
 (defmulti partial-magma? type)
 
-(defmethod partial-magma? :locus.elementary.copresheaf.core.protocols/partial-magma
+(defmethod partial-magma? :locus.set.copresheaf.structure.core.protocols/partial-magma
   [obj] true)
 
-(defmethod partial-magma? :locus.elementary.copresheaf.core.protocols/partial-magmoid
+(defmethod partial-magma? :locus.set.copresheaf.structure.core.protocols/partial-magmoid
   [obj]
 
   (= (count (objects obj)) 1))

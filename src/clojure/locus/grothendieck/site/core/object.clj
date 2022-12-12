@@ -1,14 +1,14 @@
 (ns locus.grothendieck.site.core.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
-            [locus.quiver.relation.binary.br :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.elementary.quiver.unital.object :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.set.quiver.relation.binary.br :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.copresheaf.quiver.unital.object :refer :all]
             [locus.order.lattice.core.object :refer :all]
             [locus.algebra.category.core.object :refer :all]
             [locus.topology.core.object :refer :all])
@@ -41,7 +41,7 @@
   (invoke [this arg] (func arg))
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
-(derive Site :locus.elementary.copresheaf.core.protocols/structured-category)
+(derive Site :locus.set.copresheaf.structure.core.protocols/structured-category)
 
 (defmethod to-category Site
   [^Site site]

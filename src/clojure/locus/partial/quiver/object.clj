@@ -1,12 +1,12 @@
 (ns locus.partial.quiver.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.quiver.nary.core.object :refer :all]
-            [locus.quiver.diset.core.object :refer :all]
-            [locus.base.function.core.object :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.set.quiver.nary.core.object :refer :all]
+            [locus.set.quiver.diset.core.object :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
             [locus.partial.mapping.function :refer :all]))
 
 ; A partial nary quiver is a structure copresheaf F: T_{2,n} -> Sets_{Part} which targets
@@ -19,7 +19,7 @@
   (first-set [this] edges)
   (second-set [this] vertices))
 
-(derive PartialNaryQuiver :locus.elementary.copresheaf.core.protocols/structure-copresheaf)
+(derive PartialNaryQuiver :locus.set.copresheaf.structure.core.protocols/structure-copresheaf)
 
 ; Get the arity of a partial nary quiver
 (defmulti partial-quiver-arity type)
@@ -79,7 +79,7 @@
 (defmethod to-partial-nary-quiver PartialNaryQuiver
   [quiver] quiver)
 
-(defmethod to-partial-nary-quiver :locus.quiver.base.core.protocols/diset
+(defmethod to-partial-nary-quiver :locus.set.quiver.structure.core.protocols/diset
   [diset]
 
   (->PartialNaryQuiver
@@ -97,7 +97,7 @@
     (constantly func)
     1))
 
-(defmethod to-partial-nary-quiver :locus.base.logic.structure.protocols/set-function
+(defmethod to-partial-nary-quiver :locus.set.logic.structure.protocols/set-function
   [func]
 
   (->PartialNaryQuiver
@@ -128,13 +128,13 @@
       (morphisms quiver))))
 
 (defmethod image
-  [PartialNaryQuiver :locus.base.logic.core.set/universal]
+  [PartialNaryQuiver :locus.set.logic.core.set/universal]
   [quiver coll]
 
   (partial-nary-quiver-set-image quiver coll))
 
 (defmethod inverse-image
-  [PartialNaryQuiver :locus.base.logic.core.set/universal]
+  [PartialNaryQuiver :locus.set.logic.core.set/universal]
   [quiver coll]
 
   (partial-nary-quiver-set-inverse-image quiver coll))

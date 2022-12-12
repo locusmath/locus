@@ -1,9 +1,9 @@
 (ns locus.matrix.combinatorics.incidence-matrix
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.elementary.incidence.system.family :refer :all]
-            [locus.elementary.incidence.system.multifamily :refer :all]
-            [locus.elementary.incidence.system.clan :refer :all]
-            [locus.elementary.incidence.system.multiclan :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.copresheaf.incidence.system.family :refer :all]
+            [locus.set.copresheaf.incidence.system.multifamily :refer :all]
+            [locus.set.copresheaf.incidence.system.clan :refer :all]
+            [locus.set.copresheaf.incidence.system.multiclan :refer :all]
             [locus.additive.semiring.core.object :refer :all]
             [locus.combinat.hypergraph.object :refer :all]
             [locus.combinat.incidence.incidence-structure :refer :all])

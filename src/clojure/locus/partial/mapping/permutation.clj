@@ -1,12 +1,12 @@
 (ns locus.partial.mapping.permutation
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.effects.local.permutation :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.function.image.image-function :refer :all]
-            [locus.base.partition.core.object :refer [partitionize-family]]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.set.mapping.effects.local.permutation :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.mapping.function.image.image-function :refer :all]
+            [locus.con.core.object :refer [partitionize-family]]
             [locus.partial.mapping.function :refer :all]
             [locus.partial.mapping.bijection :refer :all]
             [locus.partial.mapping.transformation :refer :all])
@@ -100,7 +100,7 @@
 (defmethod to-partial-permutation PartialPermutation
   [func] func)
 
-(defmethod to-partial-permutation :locus.base.logic.core.set/universal
+(defmethod to-partial-permutation :locus.set.logic.core.set/universal
   [coll] (relational-partial-transformation coll))
 
 (defmethod to-partial-permutation IPersistentMap
@@ -118,7 +118,7 @@
         coll
         (into {} (map (comp vec reverse) coll))))))
 
-(defmethod to-partial-permutation :locus.base.logic.structure.protocols/permutation
+(defmethod to-partial-permutation :locus.set.logic.structure.protocols/permutation
   [permutation]
 
   (let [coll (outputs permutation)]

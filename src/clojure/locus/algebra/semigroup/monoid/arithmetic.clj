@@ -1,16 +1,16 @@
 (ns locus.algebra.semigroup.monoid.arithmetic
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.logic.numeric.natural :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.logic.numeric.natural :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
             [locus.algebra.group.core.object :refer :all]
             [locus.algebra.semigroup.monoid.group-with-zero :refer :all]
-            [locus.quiver.base.core.protocols :refer :all])
+            [locus.set.quiver.structure.core.protocols :refer :all])
   (:import (locus.algebra.semigroup.monoid.object Monoid)
            (locus.algebra.group.core.object Group)
            (locus.algebra.semigroup.core.object Semigroup)

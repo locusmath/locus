@@ -1,5 +1,5 @@
 (ns locus.graphics.latex.view
-  (:require [locus.base.logic.core.set :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
             [locus.additive.ring.core.object :refer :all]
             [locus.polynomial.core.object :refer :all]
             [locus.variety.affine.impl :refer :all]

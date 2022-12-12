@@ -1,14 +1,14 @@
 (ns locus.combinat.hypergraph.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.quiver.relation.binary.br :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
-            [locus.elementary.incidence.system.family :refer :all]
-            [locus.elementary.incidence.system.multifamily :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]))
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.set.quiver.relation.binary.br :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.set.copresheaf.incidence.system.family :refer :all]
+            [locus.set.copresheaf.incidence.system.multifamily :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]))
 
 ; Hypergraphs are simple incidence structures
 ; In this sense, we can consider a hypergraph to be defined by a set of triples
@@ -21,7 +21,7 @@
   ConcreteObject
   (underlying-set [this] vertices))
 
-(derive Hypergraph :locus.base.logic.structure.protocols/structured-set)
+(derive Hypergraph :locus.set.logic.structure.protocols/structured-set)
 
 (defn edge-set
   [hypergraph]

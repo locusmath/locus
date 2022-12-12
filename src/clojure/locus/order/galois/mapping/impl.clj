@@ -1,22 +1,22 @@
 (ns locus.order.galois.mapping.impl
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.partition.core.setpart :refer :all]
-            [locus.base.partition.core.object :refer [projection]]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.quiver.relation.binary.br :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.quiver.relation.binary.vertices :refer :all]
-            [locus.quiver.relation.binary.vertexset :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.elementary.quiver.unital.object :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.con.core.setpart :refer :all]
+            [locus.con.core.object :refer [projection]]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.set.quiver.relation.binary.br :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.quiver.relation.binary.vertices :refer :all]
+            [locus.set.quiver.relation.binary.vertexset :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.copresheaf.quiver.unital.object :refer :all]
             [locus.order.general.core.object :refer :all]
             [locus.order.general.core.morphism :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]))
+            [locus.set.quiver.structure.core.protocols :refer :all]))
 
 ; Let F: A -> B and G: B -> A together be a Galois connection of preorders. Then the lower
 ; adjoint of this  Galois connection is a residuated mapping and the upper adjoint is a
@@ -42,7 +42,7 @@
   (invoke [this arg] (func arg))
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
-(derive ResiduatedMapping :locus.elementary.copresheaf.core.protocols/monotone-map)
+(derive ResiduatedMapping :locus.set.copresheaf.structure.core.protocols/monotone-map)
 
 (defmulti to-residuated-mapping type)
 
@@ -73,7 +73,7 @@
   (invoke [this arg] (func arg))
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
-(derive CoresiduatedMapping :locus.elementary.copresheaf.core.protocols/monotone-map)
+(derive CoresiduatedMapping :locus.set.copresheaf.structure.core.protocols/monotone-map)
 
 (defmulti to-coresiduated-mapping type)
 

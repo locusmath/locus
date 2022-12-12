@@ -1,10 +1,10 @@
 (ns locus.number.sequence.all
   (:refer-clojure :exclude [+ - * /])
-  (:require [locus.base.logic.core.set :refer :all :exclude [add]]
-            [locus.base.logic.numeric.natural :refer [factors]]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
+  (:require [locus.set.logic.core.set :refer :all :exclude [add]]
+            [locus.set.logic.numeric.natural :refer [factors]]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
             [locus.additive.base.generic.arithmetic :refer :all]
             [locus.additive.base.core.protocols :refer :all]
             [locus.additive.ring.core.object :refer :all]
@@ -333,7 +333,7 @@
 (def nth-factorial
   (NumberSequence.
     (fn [n]
-      (locus.base.logic.core.set/factorial n))))
+      (locus.set.logic.core.set/factorial n))))
 
 ; The sum of divisors function
 (def sum-of-divisors

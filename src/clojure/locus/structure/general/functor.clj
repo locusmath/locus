@@ -1,19 +1,19 @@
 (ns locus.structure.general.functor
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.quiver.binary.core.morphism :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.quiver.binary.core.morphism :refer :all]
             [locus.algebra.category.core.object :refer :all]
             [locus.algebra.category.core.morphism :refer :all]
             [locus.algebra.category.concrete.concrete-category :refer :all]
-            [locus.elementary.quiver.unital.object :refer :all]
-            [locus.elementary.quiver.unital.morphism :refer :all]
-            [locus.elementary.topoi.copresheaf.object :refer :all]
+            [locus.set.copresheaf.quiver.unital.object :refer :all]
+            [locus.set.copresheaf.quiver.unital.morphism :refer :all]
+            [locus.set.copresheaf.topoi.copresheaf.object :refer :all]
             [locus.algebra.category.concrete.categories :refer :all]))
 
 ; A copresheaf is a set-valued functor F: C -> Sets. This concept is suitable for a great many
@@ -33,7 +33,7 @@
   (first-function [this] morphism-function)
   (second-function [this] object-function))
 
-(derive StructureCopresheaf :locus.elementary.copresheaf.core.protocols/structure-copresheaf)
+(derive StructureCopresheaf :locus.set.copresheaf.structure.core.protocols/structure-copresheaf)
 
 ; Structure copresheaves have underlying functors
 (defmethod get-object StructureCopresheaf
@@ -80,7 +80,7 @@
 ; Ontology of structure copresheaves
 (defmulti structure-copresheaf? type)
 
-(defmethod structure-copresheaf? :locus.elementary.copresheaf.core.protocols/structure-copresheaf
+(defmethod structure-copresheaf? :locus.set.copresheaf.structure.core.protocols/structure-copresheaf
   [copresheaf] true)
 
 (defmethod structure-copresheaf? :default

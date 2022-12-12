@@ -1,21 +1,21 @@
 (ns locus.partial.copresheaf.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.function.image.image-function :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.quiver.binary.core.morphism :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.mapping.function.image.image-function :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.quiver.binary.core.morphism :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
             [locus.algebra.category.core.object :refer :all]
             [locus.algebra.category.core.morphism :refer :all]
-            [locus.elementary.topoi.copresheaf.object :refer :all]
+            [locus.set.copresheaf.topoi.copresheaf.object :refer :all]
             [locus.algebra.category.concrete.categories :refer :all]
             [locus.partial.mapping.function :refer :all]
             [locus.partial.quiver.object :refer :all])
-  (:import (locus.elementary.topoi.copresheaf.object Copresheaf)
+  (:import (locus.set.copresheaf.topoi.copresheaf.object Copresheaf)
            (locus.algebra.category.core.morphism Functor)))
 
 ; A functor F : C -> Sets[Part] is a functor from a category to the category of sets and partial
@@ -33,7 +33,7 @@
   (first-function [this] morphism-function)
   (second-function [this] object-function))
 
-(derive PartialCopresheaf :locus.elementary.copresheaf.core.protocols/structure-copresheaf)
+(derive PartialCopresheaf :locus.set.copresheaf.structure.core.protocols/structure-copresheaf)
 
 ; Implementing these multimethods integrates partial copresheaves into the structure presheaf framework
 (defmethod get-object PartialCopresheaf
@@ -66,7 +66,7 @@
 (defmethod to-partial-copresheaf PartialCopresheaf
   [functor] functor)
 
-(defmethod to-partial-copresheaf :locus.base.logic.core.set/universal
+(defmethod to-partial-copresheaf :locus.set.logic.core.set/universal
   [coll]
 
   (PartialCopresheaf

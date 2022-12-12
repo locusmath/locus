@@ -1,20 +1,20 @@
 (ns locus.partial-algebra.partial-magmoid.thin-object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.partition.core.setpart :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.quiver.relation.binary.br :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.quiver.binary.thin.object :refer :all]
-            [locus.elementary.two-quiver.core.object :refer :all]
-            [locus.elementary.two-quiver.path.object :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.con.core.setpart :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.set.quiver.relation.binary.br :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.quiver.binary.thin.object :refer :all]
+            [locus.set.tree.two-quiver.core.object :refer :all]
+            [locus.set.tree.two-quiver.path.object :refer :all]
             [locus.partial-algebra.partial-magmoid.object :refer :all])
-  (:import (locus.elementary.two_quiver.path.object PathQuiver)))
+  (:import (locus.set.copresheaf.two_quiver.path.object PathQuiver)))
 
 ; A thin partial magmoid is an object in the category of partial magmoids that is fully
 ; determined by its underlying path quiver. So the functor from the category of partial
@@ -39,7 +39,7 @@
     (list c b))
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
-(derive ThinPartialMagmoid :locus.elementary.copresheaf.core.protocols/thin-partial-magmoid)
+(derive ThinPartialMagmoid :locus.set.copresheaf.structure.core.protocols/thin-partial-magmoid)
 
 ; Paths of a thin partial magmoid
 (defmethod paths ThinPartialMagmoid

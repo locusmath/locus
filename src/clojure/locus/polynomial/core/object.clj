@@ -1,13 +1,13 @@
 (ns locus.polynomial.core.object
   (:refer-clojure :exclude [+ - * /])
-  (:require [locus.base.logic.core.set :refer :all :exclude [add]]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
+  (:require [locus.set.logic.core.set :refer :all :exclude [add]]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
             [locus.algebra.group.core.object :refer :all]
@@ -96,7 +96,7 @@
                                       [i2 v2] (first (seq data2))]
                                   (Polynomial.
                                     ring
-                                    {(locus.base.logic.core.set/add i1 i2) (mul (list v1 v2))})))
+                                    {(locus.set.logic.core.set/add i1 i2) (mul (list v1 v2))})))
                               (cartesian-product
                                 (set (monomials polynomial1))
                                 (set (monomials polynomial2))))]

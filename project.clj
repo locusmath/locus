@@ -1,4 +1,4 @@
-(defproject locus "1.5-SNAPSHOT"
+(defproject locus "1.5.2-SNAPSHOT"
   :description "A specialized computer algebra system for presheaf theory."
   :license {:name "Apache License"
             :url "https://www.apache.org/licenses/LICENSE-2.0"}
@@ -22,7 +22,7 @@
                  [dorothy "0.0.7"]
                  [org.scilab.forge/jlatexmath "1.0.7"]]
 
-  :main locus.algebra.category.core.object
+  :main locus.graph.core.object
 
   :source-paths ["src/clojure"]
   :java-source-paths ["src/java"]

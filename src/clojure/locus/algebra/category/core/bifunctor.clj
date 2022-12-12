@@ -1,20 +1,20 @@
 (ns locus.algebra.category.core.bifunctor
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.quiver.unary.core.morphism :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.quiver.binary.core.morphism :refer :all]
-            [locus.elementary.quiver.unital.object :refer :all]
-            [locus.elementary.quiver.unital.morphism :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.quiver.unary.core.morphism :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.quiver.binary.core.morphism :refer :all]
+            [locus.set.copresheaf.quiver.unital.object :refer :all]
+            [locus.set.copresheaf.quiver.unital.morphism :refer :all]
             [locus.order.general.core.object :refer :all]
             [locus.order.general.core.morphism :refer :all]
             [locus.algebra.category.core.object :refer :all]
             [locus.algebra.category.core.morphism :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]))
+            [locus.set.quiver.structure.core.protocols :refer :all]))
 
 ; A bifunctor is any functor F : C x D -> E.
 (deftype Bifunctor [first-source second-source target morphism-function object-function]
@@ -28,7 +28,7 @@
   (first-function [this] morphism-function)
   (second-function [this] object-function))
 
-(derive Bifunctor :locus.elementary.copresheaf.core.protocols/functor)
+(derive Bifunctor :locus.set.copresheaf.structure.core.protocols/functor)
 
 ; Bifunctors can be treated like functors, so they have underlying objects and morphisms
 (defmethod get-object Bifunctor

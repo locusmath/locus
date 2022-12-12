@@ -1,23 +1,23 @@
 (ns locus.algebra.semigroupoid.core.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.partition.core.setpart :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.quiver.binary.thin.object :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.con.core.setpart :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.quiver.binary.thin.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.order.lattice.core.object :refer :all]
             [locus.algebra.category.core.object :refer :all]
-            [locus.quiver.base.core.protocols :refer :all])
+            [locus.set.quiver.structure.core.protocols :refer :all])
   (:import (locus.algebra.semigroup.core.object Semigroup)
            (locus.algebra.category.core.object Category)
            (locus.order.lattice.core.object Lattice)
-           (locus.quiver.binary.thin.object ThinQuiver)))
+           (locus.set.quiver.binary.thin.object ThinQuiver)))
 
 ; A semigroupoid is a presheaf in the topos of compositional quivers. Its underlying quiver
 ; does not need to be a quiver with identity. It shares membership in this topos with
@@ -47,7 +47,7 @@
 
 ; Semigroupoid identification and testing which semigroupoids
 ; are actually valid categories
-(derive Semigroupoid :locus.elementary.copresheaf.core.protocols/semigroupoid)
+(derive Semigroupoid :locus.set.copresheaf.structure.core.protocols/semigroupoid)
 
 ; Special tests for categories as semigroupoids
 (defn identity-morphism-element?
@@ -146,7 +146,7 @@
 
   (thin-semigroupoid (objects lattice) (morphisms lattice)))
 
-(defmethod to-semigroupoid :locus.base.logic.core.set/universal
+(defmethod to-semigroupoid :locus.set.logic.core.set/universal
   [rel]
 
   (thin-semigroupoid rel))
@@ -163,13 +163,13 @@
       {})))
 
 ; Adjoin a composition operation to a quiver
-(defmethod adjoin-composition :locus.quiver.base.core.protocols/quiver
+(defmethod adjoin-composition :locus.set.quiver.structure.core.protocols/quiver
   [quiv f]
 
   (->Semigroupoid quiv f))
 
 ; Products and coproducts in the category of semigroupoids
-(defmethod coproduct :locus.elementary.copresheaf.core.protocols/semigroupoid
+(defmethod coproduct :locus.set.copresheaf.structure.core.protocols/semigroupoid
   [& semigroupoids]
 
   (->Semigroupoid
@@ -179,7 +179,7 @@
         (let [c (nth semigroupoids i)]
           (list i (c (list v w))))))))
 
-(defmethod product :locus.elementary.copresheaf.core.protocols/semigroupoid
+(defmethod product :locus.set.copresheaf.structure.core.protocols/semigroupoid
   [& semigroupoids]
 
   (->Semigroupoid
@@ -190,13 +190,13 @@
           (c (list (nth morphisms1 i) (nth morphisms2 i))))
         semigroupoids))))
 
-(defmethod coproduct :locus.elementary.copresheaf.core.protocols/semigroup
+(defmethod coproduct :locus.set.copresheaf.structure.core.protocols/semigroup
   [& semigroups]
 
   (apply coproduct (map to-semigroupoid semigroups)))
 
 ; Duals of semigroupoids
-(defmethod dual :locus.elementary.copresheaf.core.protocols/semigroupoid
+(defmethod dual :locus.set.copresheaf.structure.core.protocols/semigroupoid
   [semigroupoid]
 
   (->Semigroupoid (dual (underlying-quiver semigroupoid)) (comp semigroupoid reverse)))
@@ -268,7 +268,7 @@
       (quiver-congruences (underlying-quiver semigroupoid)))))
 
 ; Special classes of semigroupoids
-(defmethod thin-semigroupoid? :locus.elementary.copresheaf.core.protocols/semigroupoid
+(defmethod thin-semigroupoid? :locus.set.copresheaf.structure.core.protocols/semigroupoid
   [semigroupoid]
 
   (thin-quiver? (underlying-quiver semigroupoid)))

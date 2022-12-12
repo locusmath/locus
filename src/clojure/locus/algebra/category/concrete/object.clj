@@ -1,18 +1,18 @@
 (ns locus.algebra.category.concrete.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.base.partition.core.setpart :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.elementary.quiver.unital.object :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.con.core.setpart :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.copresheaf.quiver.unital.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
             [locus.algebra.group.core.object :refer :all]
             [locus.algebra.semigroup.transformation.transformation-monoid :refer :all]
             [locus.algebra.group.permutation.permutation-group :refer :all]
             [locus.algebra.category.core.object :refer :all]
-            [locus.quiver.base.core.protocols :refer :all])
+            [locus.set.quiver.structure.core.protocols :refer :all])
   (:import (locus.algebra.semigroup.transformation.transformation_monoid TransformationMonoid)
            (locus.algebra.group.permutation.permutation_group PermutationGroup)))
 
@@ -50,7 +50,7 @@
   (morphism-to-function [this morphism]
     (morphism-function morphism)))
 
-(derive ConcreteCategory :locus.elementary.copresheaf.core.protocols/concrete-category)
+(derive ConcreteCategory :locus.set.copresheaf.structure.core.protocols/concrete-category)
 
 ; Extend a category with a faithful functor to the topos of sets
 (defn extend-category

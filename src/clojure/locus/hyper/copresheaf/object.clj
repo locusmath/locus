@@ -1,23 +1,23 @@
 (ns locus.hyper.copresheaf.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.function.image.image-function :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.quiver.binary.core.morphism :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.mapping.function.image.image-function :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.quiver.binary.core.morphism :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
             [locus.algebra.category.core.object :refer :all]
             [locus.algebra.category.core.morphism :refer :all]
             [locus.algebra.category.concrete.concrete-category :refer :all]
-            [locus.elementary.topoi.copresheaf.object :refer :all]
+            [locus.set.copresheaf.topoi.copresheaf.object :refer :all]
             [locus.algebra.category.concrete.categories :refer :all]
             [locus.hyper.mapping.function :refer :all]
             [locus.hyper.quiver.object :refer :all])
   (:import (locus.hyper.mapping.function Hyperfunction)
-           (locus.elementary.topoi.copresheaf.object Copresheaf)
+           (locus.set.copresheaf.topoi.copresheaf.object Copresheaf)
            (locus.algebra.category.core.morphism Functor)))
 
 ; A functor F: C -> Rel is a structure copresheaf through the intermediary functor f: Rel -> Sets
@@ -33,7 +33,7 @@
   (first-function [this] morphism-function)
   (second-function [this] object-function))
 
-(derive Hypercopresheaf :locus.elementary.copresheaf.core.protocols/structure-copresheaf)
+(derive Hypercopresheaf :locus.set.copresheaf.structure.core.protocols/structure-copresheaf)
 
 ; Get the objects and morphisms of relational functors
 (defmethod get-morphism Hypercopresheaf
@@ -71,7 +71,7 @@
 (defmethod to-hypercopresheaf Hypercopresheaf
   [functor] functor)
 
-(defmethod to-hypercopresheaf :locus.base.logic.core.set/universal
+(defmethod to-hypercopresheaf :locus.set.logic.core.set/universal
   [coll]
 
   (Hypercopresheaf.

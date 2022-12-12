@@ -1,18 +1,18 @@
 (ns locus.hyper.quiver.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.quiver.nary.core.object :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.quiver.diset.core.object :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.set.quiver.nary.core.object :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.quiver.diset.core.object :refer :all]
             [locus.hyper.mapping.function :refer :all])
   (:import (locus.hyper.mapping.function Hyperfunction)
-           (locus.quiver.nary.core.object NaryQuiver)
-           (locus.quiver.diset.core.object Diset)
-           (locus.base.function.core.object SetFunction)))
+           (locus.set.quiver.nary.core.object NaryQuiver)
+           (locus.set.quiver.diset.core.object Diset)
+           (locus.set.mapping.general.core.object SetFunction)))
 
 ; A hyperquiver is a functor from F: T_{2,n} -> Rel from the parallel arrows category T_{2,n} to
 ; the concrete category of sets and multivalued functions. Hyperquivers are one of the most
@@ -31,7 +31,7 @@
   (first-set [this] edges)
   (second-set [this] vertices))
 
-(derive NaryHyperquiver :locus.elementary.copresheaf.core.protocols/structure-copresheaf)
+(derive NaryHyperquiver :locus.set.copresheaf.structure.core.protocols/structure-copresheaf)
 
 ; Compute the arities of hyperquivers
 (defmulti hyperquiver-arity type)
@@ -181,7 +181,7 @@
       #{(nth-component edge i)})
     (quiver-arity quiver)))
 
-(defmethod to-nary-hyperquiver :locus.base.logic.core.set/universal
+(defmethod to-nary-hyperquiver :locus.set.logic.core.set/universal
   [coll]
 
   (relational-nary-hyperquiver coll))
@@ -213,7 +213,7 @@
 
   (set (morphism-components quiver morphism)))
 
-(defmethod to-hyperfunction :locus.quiver.base.core.protocols/nary-quiver
+(defmethod to-hyperfunction :locus.set.quiver.structure.core.protocols/nary-quiver
   [quiver]
 
   (->Hyperfunction
@@ -245,13 +245,13 @@
       (morphisms hyperquiver))))
 
 (defmethod image
-  [NaryHyperquiver :locus.base.logic.core.set/universal]
+  [NaryHyperquiver :locus.set.logic.core.set/universal]
   [hyperquiver coll]
 
   (nary-hyperquiver-set-image hyperquiver coll))
 
 (defmethod inverse-image
-  [NaryHyperquiver :locus.base.logic.core.set/universal]
+  [NaryHyperquiver :locus.set.logic.core.set/universal]
   [hyperquiver coll]
 
   (nary-hyperquiver-set-inverse-image hyperquiver coll))

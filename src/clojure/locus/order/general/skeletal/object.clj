@@ -1,20 +1,20 @@
 (ns locus.order.general.skeletal.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.partition.core.setpart :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.quiver.relation.binary.br :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.quiver.relation.binary.vertexset :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.elementary.quiver.unital.object :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.con.core.setpart :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.set.quiver.relation.binary.br :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.quiver.relation.binary.vertexset :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.copresheaf.quiver.unital.object :refer :all]
             [locus.order.general.core.object :refer :all]
-            [locus.quiver.base.core.protocols :refer :all])
-  (:import (locus.quiver.binary.core.object Quiver)))
+            [locus.set.quiver.structure.core.protocols :refer :all])
+  (:import (locus.set.quiver.binary.core.object Quiver)))
 
 ; In our categorical framework, a Poset is simply a skeletal thin category. Although most of the
 ; details of Posets are described by thin categories, some multimethods behave differently
@@ -51,7 +51,7 @@
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
 ; Classification of posets
-(derive Poset :locus.elementary.copresheaf.core.protocols/thin-skeletal-category)
+(derive Poset :locus.set.copresheaf.structure.core.protocols/thin-skeletal-category)
 
 ; Underlying relation and visualize multimethods
 (defmethod underlying-relation Poset

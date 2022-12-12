@@ -1,19 +1,19 @@
 (ns locus.partial-algebra.partial-magmoid.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.partition.core.setpart :refer :all]
-            [locus.base.partition.core.object :refer [projection]]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.quiver.relation.binary.br :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.quiver.binary.thin.object :refer :all]
-            [locus.elementary.two-quiver.core.object :refer :all]
-            [locus.elementary.two-quiver.path.object :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.con.core.setpart :refer :all]
+            [locus.con.core.object :refer [projection]]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.set.quiver.relation.binary.br :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.quiver.binary.thin.object :refer :all]
+            [locus.set.tree.two-quiver.core.object :refer :all]
+            [locus.set.tree.two-quiver.path.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.partial-algebra.partial-magma.object :refer :all])
   (:import (locus.partial_algebra.partial_magma.object PartialMagma)))
@@ -40,7 +40,7 @@
   (invoke [this arg] (op arg))
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
-(derive PartialMagmoid :locus.elementary.copresheaf.core.protocols/partial-magmoid)
+(derive PartialMagmoid :locus.set.copresheaf.structure.core.protocols/partial-magmoid)
 
 ; An accessor function for the underlying path set of a partial magmoid
 (defmethod paths PartialMagmoid
@@ -62,7 +62,7 @@
     (target-fn magmoid)))
 
 ; A magmoid is a partial magmoid with a full underlying compositional path quiver
-(defmethod magmoid? :locus.elementary.copresheaf.core.protocols/partial-magmoid
+(defmethod magmoid? :locus.set.copresheaf.structure.core.protocols/partial-magmoid
   [magmoid]
 
   (let [paths (paths magmoid)]
@@ -71,7 +71,7 @@
        (paths pair))
      (composability-relation magmoid))))
 
-(defmethod thin-partial-magmoid? :locus.elementary.copresheaf.core.protocols/partial-magmoid
+(defmethod thin-partial-magmoid? :locus.set.copresheaf.structure.core.protocols/partial-magmoid
   [magmoid]
 
   (thin-quiver? (underlying-quiver magmoid)))

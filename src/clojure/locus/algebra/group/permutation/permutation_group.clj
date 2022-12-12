@@ -1,28 +1,28 @@
 (ns locus.algebra.group.permutation.permutation-group
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.effects.global.permutation :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.quiver.relation.binary.br :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.mapping.effects.global.permutation :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.set.quiver.relation.binary.br :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
             [locus.algebra.group.core.object :refer :all]
-            [locus.elementary.action.global.object :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.elementary.quiver.dependency.object :refer :all]
-            [locus.elementary.quiver.unital.object :refer :all]
-            [locus.elementary.quiver.permutable.object :refer :all]
+            [locus.set.action.global.object :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.copresheaf.quiver.dependency.object :refer :all]
+            [locus.set.copresheaf.quiver.unital.object :refer :all]
+            [locus.set.copresheaf.quiver.permutable.object :refer :all]
             [locus.algebra.group.core.morphism :refer :all]
             [locus.algebra.group.core.aut :refer :all]
             [locus.algebra.category.hom.sethom :refer :all]
-            [locus.quiver.base.core.protocols :refer :all])
-  (:import (locus.base.effects.global.permutation Permutation)
-           (locus.base.function.core.object SetFunction)
+            [locus.set.quiver.structure.core.protocols :refer :all])
+  (:import (locus.set.mapping.effects.global.permutation Permutation)
+           (locus.set.mapping.general.core.object SetFunction)
            (locus.algebra.group.core.morphism GroupMorphism)))
 
 ; Let G be a concrete category containing only one object for which each morphism is an isomorphism. Then
@@ -75,7 +75,7 @@
   (morphism-to-function [this morphism] (SetFunction. coll coll (fn [x] (action morphism x)))))
 
 ; Permutation groups are both groups and concrete categories
-(derive PermutationGroup :locus.elementary.copresheaf.core.protocols/concrete-group)
+(derive PermutationGroup :locus.set.copresheaf.structure.core.protocols/concrete-group)
 
 ; Parts of permutation groups
 (defmethod identity-elements PermutationGroup

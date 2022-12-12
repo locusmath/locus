@@ -1,43 +1,43 @@
 (ns locus.graphics.core.quiver
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
             [locus.order.lattice.core.object :refer :all]
             [locus.order.general.skeletal.object :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.quiver.relation.binary.br :refer :all]
-            [locus.quiver.unary.core.morphism :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.quiver.diset.core.object :refer :all]
-            [locus.elementary.incidence.system.family :refer :all]
-            [locus.elementary.incidence.system.clan :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.quiver.relation.binary.br :refer :all]
+            [locus.set.quiver.unary.core.morphism :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.quiver.diset.core.object :refer :all]
+            [locus.set.copresheaf.incidence.system.family :refer :all]
+            [locus.set.copresheaf.incidence.system.clan :refer :all]
             [locus.algebra.category.core.morphism :refer :all]
-            [locus.elementary.topoi.copresheaf.object :refer :all]
-            [locus.elementary.dependency.core.object :refer :all]
-            [locus.elementary.dependency.nset.object :refer :all]
-            [locus.elementary.dependency.nfunction.object :refer :all]
-            [locus.elementary.bijection.core.object :refer :all]
-            [locus.elementary.action.global.object :refer :all]
+            [locus.set.copresheaf.topoi.copresheaf.object :refer :all]
+            [locus.set.copresheaf.dependency.core.object :refer :all]
+            [locus.set.copresheaf.dependency.nset.object :refer :all]
+            [locus.set.copresheaf.dependency.nfunction.object :refer :all]
+            [locus.set.copresheaf.bijection.core.object :refer :all]
+            [locus.set.action.global.object :refer :all]
             [locus.algebra.category.core.object :refer :all]
             [locus.algebra.category.core.generated-category :refer :all]
             [locus.algebra.groupoid.core.object :refer :all]
             [locus.algebra.group.core.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
-            [locus.elementary.quiver.dependency.object :refer :all]
-            [locus.elementary.quiver.permutable.object :refer :all]
-            [locus.elementary.quiver.unital.object :refer :all]
-            [locus.elementary.incidence.core.object :refer :all]
-            [locus.elementary.triangle.core.object :refer :all]
+            [locus.set.copresheaf.quiver.dependency.object :refer :all]
+            [locus.set.copresheaf.quiver.permutable.object :refer :all]
+            [locus.set.copresheaf.quiver.unital.object :refer :all]
+            [locus.set.copresheaf.incidence.core.object :refer :all]
+            [locus.set.tree.triangle.core.object :refer :all]
 
-    ;[locus.elementary.topoi.copresheaf.algebraic :refer :all]
+    ;[locus.set.copresheaf.topoi.copresheaf.algebraic :refer :all]
             )
   (:import (javax.swing JFrame JLabel ImageIcon JPanel JButton JList JScrollPane JSplitPane SwingConstants CellRendererPane ListCellRenderer UIManager)
            (java.awt GridLayout Color Dimension FlowLayout RenderingHints BasicStroke Toolkit Image)
            (javax.swing.event ListSelectionListener)
            (java.awt.event MouseAdapter ComponentEvent MouseEvent ComponentAdapter)
-           (locus.elementary.topoi.copresheaf.object Copresheaf)
-           (locus.quiver.unary.core.morphism Diamond)
+           (locus.set.copresheaf.topoi.copresheaf.object Copresheaf)
+           (locus.set.quiver.unary.core.morphism Diamond)
            (java.util ArrayList)
            (java.awt.image BufferedImage)
            (java.awt.geom GeneralPath)

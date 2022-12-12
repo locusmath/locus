@@ -1,20 +1,20 @@
 (ns locus.algebra.category.core.contravariant-functor
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.quiver.unary.core.morphism :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.quiver.binary.core.morphism :refer :all]
-            [locus.elementary.quiver.unital.object :refer :all]
-            [locus.elementary.quiver.unital.morphism :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.quiver.unary.core.morphism :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.quiver.binary.core.morphism :refer :all]
+            [locus.set.copresheaf.quiver.unital.object :refer :all]
+            [locus.set.copresheaf.quiver.unital.morphism :refer :all]
             [locus.order.general.core.object :refer :all]
             [locus.order.general.core.morphism :refer :all]
             [locus.algebra.category.core.object :refer :all]
             [locus.algebra.category.core.morphism :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]))
+            [locus.set.quiver.structure.core.protocols :refer :all]))
 
 ; A contravariant functor F: C -> D is a functor F: C^{op} -> D.
 (deftype ContravariantFunctor [source target morphism-function object-function]
@@ -27,7 +27,7 @@
   (second-function [this] object-function))
 
 ; Contravariant functors are still functors
-(derive ContravariantFunctor :locus.elementary.copresheaf.core.protocols/functor)
+(derive ContravariantFunctor :locus.set.copresheaf.structure.core.protocols/functor)
 
 ; Contravariant functors use the dual of their input category for a source index
 (defmethod index ContravariantFunctor
@@ -56,7 +56,7 @@
 
 (defmulti to-contravariant-functor type)
 
-(defmethod to-contravariant-functor :locus.elementary.copresheaf.core.protocols/functor
+(defmethod to-contravariant-functor :locus.set.copresheaf.structure.core.protocols/functor
   [functor]
 
   (->ContravariantFunctor
@@ -66,7 +66,7 @@
     (second-function functor)))
 
 ; Dualizing between covariant and contravariant functors
-(defmethod dual :locus.elementary.copresheaf.core.protocols/functor
+(defmethod dual :locus.set.copresheaf.structure.core.protocols/functor
   [functor] (to-contravariant-functor functor))
 
 (defmethod dual ContravariantFunctor

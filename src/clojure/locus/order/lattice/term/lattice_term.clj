@@ -1,17 +1,17 @@
 (ns locus.order.lattice.term.lattice-term
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.base.partition.core.setpart :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.con.core.setpart :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
             [locus.order.general.core.object :refer :all]
             [locus.order.lattice.core.object :refer :all]
             [locus.order.lattice.core.morphism :refer :all]
             [locus.order.lattice.element.object :refer :all]
-            [locus.quiver.base.core.protocols :refer :all])
+            [locus.set.quiver.structure.core.protocols :refer :all])
   (:import (locus.order.lattice.core.object Lattice)))
 
 ; Lattices are fundamental objects of category theory, as they are thin categories containing all

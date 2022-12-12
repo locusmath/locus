@@ -1,9 +1,9 @@
 (ns locus.additive.semifield.core.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
             [locus.algebra.semigroup.monoid.arithmetic :refer :all]
@@ -33,8 +33,8 @@
 
 ; Constructors for semifields
 ; A semifield should be constructed by a semigroup and a group with zero
-(defmethod make-ring [:locus.elementary.copresheaf.core.protocols/semigroup,
-                      :locus.elementary.copresheaf.core.protocols/group-with-zero]
+(defmethod make-ring [:locus.set.copresheaf.structure.core.protocols/semigroup,
+                      :locus.set.copresheaf.structure.core.protocols/group-with-zero]
   [a b]
 
   (SkewSemifield (underlying-set a) a b))

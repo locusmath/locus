@@ -1,23 +1,23 @@
 (ns locus.algebra.category.arrow.morphism
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.unary.core.morphism :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.unary.core.morphism :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.group.core.object :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.elementary.quiver.unital.object :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.copresheaf.quiver.unital.object :refer :all]
             [locus.algebra.category.element.object :refer :all]
             [locus.algebra.category.core.object :refer :all]
             [locus.algebra.category.core.morphism :refer :all]
             [locus.algebra.category.natural.transformation :refer :all]
             [locus.algebra.category.concrete.categories :refer :all]
-            [locus.quiver.base.core.protocols :refer :all])
+            [locus.set.quiver.structure.core.protocols :refer :all])
   (:import (locus.algebra.category.core.object Category)
            (locus.algebra.category.element.object CategoryMorphism)
-           (locus.quiver.unary.core.morphism Diamond)
-           (locus.base.function.core.object SetFunction)))
+           (locus.set.quiver.unary.core.morphism Diamond)
+           (locus.set.mapping.general.core.object SetFunction)))
 
 ; Let C be a category. Then its arrow category Arr(C), can be formed by defining the
 ; functor category [T_2,C] in the category of categories. The slice categories

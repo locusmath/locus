@@ -1,6 +1,6 @@
 (ns locus.matrix.field.field-matrix
   (:refer-clojure :exclude [+ * - /])
-  (:require [locus.base.logic.core.set :refer :all :exclude [add]]
+  (:require [locus.set.logic.core.set :refer :all :exclude [add]]
             [locus.algebra.group.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
             [locus.additive.base.core.protocols :refer :all]

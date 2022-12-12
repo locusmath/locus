@@ -1,6 +1,6 @@
 (ns locus.additive.base.generic.arithmetic
   (:refer-clojure :exclude [/ + - *])
-  (:require [locus.base.logic.core.set :refer :all :exclude [add]]))
+  (:require [locus.set.logic.core.set :refer :all :exclude [add]]))
 
 ; Generic versions of ring operations
 (defmulti add (fn [a b] [(type a) (type b)]))

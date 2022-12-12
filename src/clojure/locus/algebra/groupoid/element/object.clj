@@ -1,15 +1,15 @@
 (ns locus.algebra.groupoid.element.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.elementary.quiver.permutable.object :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.copresheaf.quiver.permutable.object :refer :all]
             [locus.algebra.category.core.object :refer :all]
             [locus.algebra.category.element.object :refer :all]
             [locus.algebra.category.core.morphism :refer :all]
             [locus.algebra.groupoid.core.object :refer :all]
-            [locus.quiver.base.core.protocols :refer :all])
+            [locus.set.quiver.structure.core.protocols :refer :all])
   (:import (locus.algebra.category.element.object CategoryObject)
            (locus.algebra.groupoid.core.object Groupoid)))
 
@@ -38,9 +38,9 @@
   (inv [this]
     (GroupoidMorphism. groupoid (invert-morphism groupoid morphism))))
 
-(derive GroupoidMorphism :locus.base.logic.structure.protocols/element)
+(derive GroupoidMorphism :locus.set.logic.structure.protocols/element)
 
-(defmethod wrap :locus.elementary.copresheaf.core.protocols/groupoid
+(defmethod wrap :locus.set.copresheaf.structure.core.protocols/groupoid
   [groupoid [i v]]
 
   (cond

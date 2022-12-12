@@ -1,13 +1,13 @@
 (ns locus.simplicial.core.simplex-category
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
             [locus.order.lattice.core.object :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.elementary.quiver.unital.object :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.copresheaf.quiver.unital.object :refer :all]
             [locus.algebra.category.core.object :refer :all]
             [locus.simplicial.core.simplicial-morphism :refer :all]))
 
@@ -49,7 +49,7 @@
   (toString [this] "Δ")
   (equals [this x] (instance? SimplexCategory x)))
 
-(derive SimplexCategory :locus.elementary.copresheaf.core.protocols/concrete-category)
+(derive SimplexCategory :locus.set.copresheaf.structure.core.protocols/concrete-category)
 
 (defmethod print-method SimplexCategory [^SimplexCategory v, ^java.io.Writer w]
   (.write w (.toString v)))
@@ -90,7 +90,7 @@
   (toString [this] "Δ*")
   (equals [this x] (instance? CosimplexCategory x)))
 
-(derive CosimplexCategory :locus.elementary.copresheaf.core.protocols/concrete-category)
+(derive CosimplexCategory :locus.set.copresheaf.structure.core.protocols/concrete-category)
 
 (defmethod print-method CosimplexCategory [^CosimplexCategory v, ^java.io.Writer w]
   (.write w (.toString v)))

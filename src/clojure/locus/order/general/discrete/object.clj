@@ -1,19 +1,19 @@
 (ns locus.order.general.discrete.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.partition.core.setpart :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.quiver.relation.binary.br :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.elementary.quiver.unital.object :refer :all]
-            [locus.elementary.quiver.permutable.object :refer :all]
-            [locus.elementary.quiver.dependency.object :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.con.core.setpart :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.set.quiver.relation.binary.br :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.copresheaf.quiver.unital.object :refer :all]
+            [locus.set.copresheaf.quiver.permutable.object :refer :all]
+            [locus.set.copresheaf.quiver.dependency.object :refer :all]
             [locus.order.general.core.object :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]))
+            [locus.set.quiver.structure.core.protocols :refer :all]))
 
 ; A discrete category is a way of representing each set as a category. In this way, there exists
 ; an embedding functor F: Sets -> Cat that embeds the topos of Sets into the category of all
@@ -53,7 +53,7 @@
   (invoke [this [[a b] [c d]]] (list c b))
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
-(derive DiscretePoset :locus.elementary.copresheaf.core.protocols/thin-skeletal-category)
+(derive DiscretePoset :locus.set.copresheaf.structure.core.protocols/thin-skeletal-category)
 
 ; Generalized conversion routines so that we can treat sets like they are discrete categories
 (defmulti to-discrete-category type)
@@ -61,7 +61,7 @@
 (defmethod to-discrete-category DiscretePoset
   [poset] poset)
 
-(defmethod to-discrete-category :locus.base.logic.core.set/universal
+(defmethod to-discrete-category :locus.set.logic.core.set/universal
   [coll]
 
   (->DiscretePoset coll))

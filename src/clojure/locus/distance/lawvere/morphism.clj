@@ -1,15 +1,15 @@
 (ns locus.distance.lawvere.morphism
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
             [locus.algebra.category.core.object :refer :all]
             [locus.algebra.category.core.morphism :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.quiver.binary.core.morphism :refer :all])
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.quiver.binary.core.morphism :refer :all])
   (:import (locus.distance.lawvere.metric LawvereMetric)))
 
 ; Morphisms in the category of metric spaces
@@ -35,7 +35,7 @@
   (invoke [this arg] (func arg))
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
-(derive ShortMap :locus.base.logic.structure.protocols/structured-function)
+(derive ShortMap :locus.set.logic.structure.protocols/structured-function)
 
 ; Identities and composition in the category Top
 (defmethod identity-morphism LawvereMetric

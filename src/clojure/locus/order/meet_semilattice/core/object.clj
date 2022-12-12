@@ -1,17 +1,17 @@
 (ns locus.order.meet-semilattice.core.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.partition.core.setpart :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.relation.binary.br :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.elementary.quiver.unital.object :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.con.core.setpart :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.relation.binary.br :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.copresheaf.quiver.unital.object :refer :all]
             [locus.order.general.core.object :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]))
+            [locus.set.quiver.structure.core.protocols :refer :all]))
 
 ; A meet semilattice is a category having all binary products
 (deftype MeetSemilattice [elements meet]
@@ -43,7 +43,7 @@
   (invoke [this [[a b] [c d]]] (list c b))
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
-(derive MeetSemilattice :locus.elementary.copresheaf.core.protocols/thin-skeletal-category)
+(derive MeetSemilattice :locus.set.copresheaf.structure.core.protocols/thin-skeletal-category)
 
 ; Underlying relations of meet semilattices
 (defmethod underlying-relation MeetSemilattice
@@ -63,7 +63,7 @@
 (defmethod to-meet-semilattice MeetSemilattice
   [^MeetSemilattice semilattice] semilattice)
 
-(defmethod to-meet-semilattice :locus.base.logic.core.set/universal
+(defmethod to-meet-semilattice :locus.set.logic.core.set/universal
   [coll] (relational-meet-semilattice coll))
 
 ; Products of join semilattices are again join semilattices

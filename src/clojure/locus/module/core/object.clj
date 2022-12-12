@@ -1,11 +1,11 @@
 (ns locus.module.core.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.action.core.protocols :refer :all]
-            [locus.elementary.action.global.object :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.action.core.protocols :refer :all]
+            [locus.set.action.global.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
             [locus.algebra.group.core.object :refer :all]
@@ -14,7 +14,7 @@
             [locus.additive.semiring.core.object :refer :all]
             [locus.additive.ring.core.object :refer :all]
             [locus.semimodule.core.utils :refer :all])
-  (:import (locus.elementary.action.global.object MSet)))
+  (:import (locus.set.action.global.object MSet)))
 
 ; A module is like a group with operators
 (deftype Module
@@ -28,7 +28,7 @@
   (action-domain [this elem] (underlying-set semigroup))
   (apply-action [this elem arg] (scale elem arg)))
 
-(derive Module :locus.base.logic.structure.protocols/structured-set)
+(derive Module :locus.set.logic.structure.protocols/structured-set)
 
 (defmethod additive-semigroup Module
   [^Module module] (.semigroup module))
@@ -50,7 +50,7 @@
 (defmethod to-module Module
   [module] module)
 
-(defmethod to-module :locus.elementary.copresheaf.core.protocols/group
+(defmethod to-module :locus.set.copresheaf.structure.core.protocols/group
   [group]
 
   (Module.

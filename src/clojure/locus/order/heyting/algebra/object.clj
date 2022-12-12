@@ -1,16 +1,16 @@
 (ns locus.order.heyting.algebra.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.relation.binary.br :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.elementary.quiver.unital.object :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.relation.binary.br :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.copresheaf.quiver.unital.object :refer :all]
             [locus.order.lattice.core.object :refer :all]
             [locus.order.boolean.algebra.object :refer :all]
             [locus.order.general.core.object :refer :all]
-            [locus.quiver.base.core.protocols :refer :all])
+            [locus.set.quiver.structure.core.protocols :refer :all])
   (:import (locus.order.lattice.core.object Lattice)
            (locus.order.boolean.algebra.object BooleanAlgebra)))
 
@@ -53,7 +53,7 @@
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
 ; Heyting algebras are lattices
-(derive HeytingAlgebra :locus.elementary.copresheaf.core.protocols/lattice)
+(derive HeytingAlgebra :locus.set.copresheaf.structure.core.protocols/lattice)
 
 ; Underlying relations of heyting algebras
 (defmethod underlying-relation HeytingAlgebra

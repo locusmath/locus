@@ -1,15 +1,15 @@
 (ns locus.algebra.category.hom.ghom
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.base.partition.core.setpart :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.con.core.setpart :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
             [locus.algebra.category.core.object :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]))
+            [locus.set.quiver.structure.core.protocols :refer :all]))
 
 ; The hom class of objects of a category
 (deftype HomClass [category a b]
@@ -33,7 +33,7 @@
   (toString [this]
     (str "Hom class of morphisms from " a " to " b)))
 
-(derive HomClass :locus.base.logic.core.set/universal)
+(derive HomClass :locus.set.logic.core.set/universal)
 
 (defmethod print-method HomClass [^HomClass v, ^java.io.Writer w]
   (.write w (.toString v)))

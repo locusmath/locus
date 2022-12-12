@@ -1,15 +1,15 @@
 (ns locus.semimodule.core.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.partition.core.setpart :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.quiver.base.core.protocols :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.action.core.protocols :refer :all]
-            [locus.elementary.action.global.object :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.con.core.setpart :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.action.core.protocols :refer :all]
+            [locus.set.action.global.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
             [locus.algebra.group.core.object :refer :all]
@@ -22,7 +22,7 @@
             [locus.additive.semiring.core.morphism :refer :all]
             [locus.semimodule.core.utils :refer :all])
   (:import (locus.algebra.group.core.object Group)
-           (locus.elementary.action.global.object MSet)))
+           (locus.set.action.global.object MSet)))
 
 ; A semimodule is like a commutative monoid with operators
 (deftype Semimodule
@@ -36,7 +36,7 @@
   (action-domain [this elem] (underlying-set semigroup))
   (apply-action [this elem arg] (scale elem arg)))
 
-(derive Semimodule :locus.base.logic.structure.protocols/structured-set)
+(derive Semimodule :locus.set.logic.structure.protocols/structured-set)
 
 ; Functorially map a semimodule to the category of commutative monoids
 (defmethod additive-semigroup Semimodule
@@ -65,7 +65,7 @@
 (defmethod to-semimodule Semimodule
   [semimodule] semimodule)
 
-(defmethod to-semimodule :locus.elementary.copresheaf.core.protocols/monoid
+(defmethod to-semimodule :locus.set.copresheaf.structure.core.protocols/monoid
   [monoid]
 
   (Semimodule.

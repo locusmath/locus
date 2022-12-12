@@ -1,18 +1,18 @@
 (ns locus.order.general.core.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.partition.core.setpart :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.quiver.relation.binary.br :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.elementary.quiver.unital.object :refer :all]
-            [locus.quiver.base.core.protocols :refer :all])
-  (:import (locus.quiver.binary.core.object Quiver)))
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.con.core.setpart :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.set.quiver.relation.binary.br :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.copresheaf.quiver.unital.object :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all])
+  (:import (locus.set.quiver.binary.core.object Quiver)))
 
 ; Preorders are the basic objects of order theory. Preorders can be seen from two different
 ; perspectives (1) preorders can be seen to be a special type of category, called a thin
@@ -67,7 +67,7 @@
   (invoke [this [[a b] [c d]]] (list c b))
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
-(derive Preposet :locus.elementary.copresheaf.core.protocols/thin-category)
+(derive Preposet :locus.set.copresheaf.structure.core.protocols/thin-category)
 
 ; Underlying relations
 (defmethod underlying-relation Preposet
@@ -79,12 +79,12 @@
   [this] (underlying-relation this))
 
 ; Visualizations for preorders and partial orders
-(defmethod visualize :locus.elementary.copresheaf.core.protocols/thin-category
+(defmethod visualize :locus.set.copresheaf.structure.core.protocols/thin-category
   [this]
 
   (visualize (underlying-relation this)))
 
-(defmethod visualize :locus.elementary.copresheaf.core.protocols/thin-skeletal-category
+(defmethod visualize :locus.set.copresheaf.structure.core.protocols/thin-skeletal-category
   [this]
 
   (visualize (covering-relation (underlying-relation this))))
@@ -137,7 +137,7 @@
     (objects quiv)
     (underlying-relation quiv)))
 
-(defmethod to-preposet :locus.elementary.copresheaf.core.protocols/thin-category
+(defmethod to-preposet :locus.set.copresheaf.structure.core.protocols/thin-category
   [category]
 
   (->Preposet
@@ -150,14 +150,14 @@
   (relational-preposet rel))
 
 ; We also need special routines for
-(defmethod product :locus.elementary.copresheaf.core.protocols/thin-category
+(defmethod product :locus.set.copresheaf.structure.core.protocols/thin-category
   [& args]
 
   (Preposet.
     (apply cartesian-product (map underlying-set args))
     (apply product-relation (map underlying-relation args))))
 
-(defmethod coproduct :locus.elementary.copresheaf.core.protocols/thin-category
+(defmethod coproduct :locus.set.copresheaf.structure.core.protocols/thin-category
   [& args]
 
   (Preposet.

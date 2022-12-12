@@ -1,23 +1,23 @@
 (ns locus.algebra.semigroup.core.object
-  (:require [locus.base.logic.core.set :refer :all]
-            [locus.base.logic.limit.product :refer :all]
-            [locus.base.sequence.core.object :refer :all]
-            [locus.base.partition.core.object :refer [projection]]
-            [locus.base.partition.core.setpart :refer :all]
-            [locus.base.logic.structure.protocols :refer :all]
-            [locus.base.function.core.object :refer :all]
-            [locus.elementary.copresheaf.core.protocols :refer :all]
-            [locus.elementary.incidence.system.family :refer :all]
-            [locus.quiver.relation.binary.br :refer :all]
-            [locus.quiver.relation.binary.sr :refer :all]
-            [locus.quiver.relation.binary.product :refer :all]
-            [locus.quiver.relation.binary.vertexset :refer :all]
+  (:require [locus.set.logic.core.set :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.logic.sequence.object :refer :all]
+            [locus.con.core.object :refer [projection]]
+            [locus.con.core.setpart :refer :all]
+            [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.copresheaf.incidence.system.family :refer :all]
+            [locus.set.quiver.relation.binary.br :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.set.quiver.relation.binary.vertexset :refer :all]
             [locus.order.lattice.core.object :refer :all]
-            [locus.quiver.binary.core.object :refer :all]
-            [locus.quiver.base.core.protocols :refer :all])
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all])
   (:import (locus.order.lattice.core.object Lattice)
            (java.util Optional)
-           (locus.base.function.core.object SetFunction)))
+           (locus.set.mapping.general.core.object SetFunction)))
 
 ; A semigroup is simply a semigroupoid with a single object. We further define
 ; semigroups to be structured sets by defining a functor to Sets as well
@@ -248,14 +248,14 @@
         inverses))))
 
 ; Classification of semigroups
-(derive Semigroup :locus.elementary.copresheaf.core.protocols/semigroup)
+(derive Semigroup :locus.set.copresheaf.structure.core.protocols/semigroup)
 
 (defmulti semigroup? type)
 
-(defmethod semigroup? :locus.elementary.copresheaf.core.protocols/semigroup
+(defmethod semigroup? :locus.set.copresheaf.structure.core.protocols/semigroup
   [x] true)
 
-(defmethod semigroup? :locus.elementary.copresheaf.core.protocols/semigroupoid
+(defmethod semigroup? :locus.set.copresheaf.structure.core.protocols/semigroupoid
   [x] (= (count (objects x)) 1))
 
 (defmethod semigroup? :default
@@ -264,7 +264,7 @@
 ; Classification of monoids
 (defmulti intrinsic-monoid? type)
 
-(defmethod intrinsic-monoid? :locus.elementary.copresheaf.core.protocols/monoid
+(defmethod intrinsic-monoid? :locus.set.copresheaf.structure.core.protocols/monoid
   [x] true)
 
 (defmethod intrinsic-monoid? :default
@@ -272,10 +272,10 @@
 
 (defmulti monoid? type)
 
-(defmethod monoid? :locus.elementary.copresheaf.core.protocols/monoid
+(defmethod monoid? :locus.set.copresheaf.structure.core.protocols/monoid
   [x] true)
 
-(defmethod monoid? :locus.elementary.copresheaf.core.protocols/semigroupoid
+(defmethod monoid? :locus.set.copresheaf.structure.core.protocols/semigroupoid
   [x]
 
   (and
@@ -285,7 +285,7 @@
 (defmethod monoid? :default
   [x] false)
 
-(defmethod category? :locus.elementary.copresheaf.core.protocols/semigroup
+(defmethod category? :locus.set.copresheaf.structure.core.protocols/semigroup
   [semigroup] (not (empty? (identity-elements semigroup))))
 
 ; Special classes of semigroups
@@ -382,7 +382,7 @@
 ; Test for groups
 (defmulti intrinsic-group? type)
 
-(defmethod intrinsic-group? :locus.elementary.copresheaf.core.protocols/group
+(defmethod intrinsic-group? :locus.set.copresheaf.structure.core.protocols/group
   [x] true)
 
 (defmethod intrinsic-group? :default
@@ -390,10 +390,10 @@
 
 (defmulti group? type)
 
-(defmethod group? :locus.elementary.copresheaf.core.protocols/group
+(defmethod group? :locus.set.copresheaf.structure.core.protocols/group
   [x] true)
 
-(defmethod group? :locus.elementary.copresheaf.core.protocols/semigroupoid
+(defmethod group? :locus.set.copresheaf.structure.core.protocols/semigroupoid
   [obj]
 
   (and
@@ -466,7 +466,7 @@
       ((.meet lattice) a b))))
 
 ; Get the dual of a semigroup
-(defmethod dual :locus.elementary.copresheaf.core.protocols/semigroup
+(defmethod dual :locus.set.copresheaf.structure.core.protocols/semigroup
   [semigroup]
 
   (Semigroup.
@@ -491,7 +491,7 @@
     (apply cartesian-product (map underlying-set semigroups))
     (apply semigroup-product-function semigroups)))
 
-(defmethod product :locus.elementary.copresheaf.core.protocols/semigroup
+(defmethod product :locus.set.copresheaf.structure.core.protocols/semigroup
   [& args]
 
   (apply semigroup-product args))
@@ -561,7 +561,7 @@
           current-elements
           (recur (union current-elements (set next-elements))))))))
 
-(defmethod sub :locus.elementary.copresheaf.core.protocols/semigroup
+(defmethod sub :locus.set.copresheaf.structure.core.protocols/semigroup
   [semigroup]
 
   (Lattice.
@@ -599,7 +599,7 @@
       (semigroup-congruence? semigroup partition))
     (set-partitions (set (underlying-set semigroup)))))
 
-(defmethod con :locus.elementary.copresheaf.core.protocols/semigroup
+(defmethod con :locus.set.copresheaf.structure.core.protocols/semigroup
   [semigroup]
 
   (Lattice.
@@ -1188,7 +1188,7 @@
 
 (defmulti group-with-zero? type)
 
-(defmethod group-with-zero? :locus.elementary.copresheaf.core.protocols/group-with-zero
+(defmethod group-with-zero? :locus.set.copresheaf.structure.core.protocols/group-with-zero
   [group-with-zero] true)
 
 (defmethod group-with-zero? :default
