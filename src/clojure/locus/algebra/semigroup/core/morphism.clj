@@ -6,6 +6,7 @@
             [locus.set.copresheaf.structure.core.protocols :refer :all]
             [locus.set.quiver.relation.binary.product :refer :all]
             [locus.set.quiver.unary.core.morphism :refer :all]
+            [locus.algebra.commutative.semigroup.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.order.lattice.core.object :refer :all]
             [locus.order.lattice.core.morphism :refer :all]
@@ -120,7 +121,7 @@
     (target-object a)
     (comp (.func a) (.func b))))
 
-(defmethod identity-morphism Semigroup
+(defmethod identity-morphism :locus.set.copresheaf.structure.core.protocols/semigroup
   [semigroup]
 
   (SemigroupMorphism. semigroup semigroup identity))

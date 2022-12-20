@@ -9,18 +9,19 @@
             [locus.set.quiver.relation.binary.product :refer :all]
             [locus.set.quiver.relation.binary.br :refer :all]
             [locus.set.quiver.relation.binary.sr :refer :all]
-            [locus.algebra.semigroup.core.object :refer :all]
-            [locus.algebra.semigroup.monoid.object :refer :all]
-            [locus.algebra.group.core.object :refer :all]
             [locus.set.action.global.object :refer :all]
             [locus.set.quiver.binary.core.object :refer :all]
             [locus.set.copresheaf.quiver.dependency.object :refer :all]
             [locus.set.copresheaf.quiver.unital.object :refer :all]
             [locus.set.copresheaf.quiver.permutable.object :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.algebra.commutative.semigroup.object :refer :all]
+            [locus.algebra.semigroup.core.object :refer :all]
+            [locus.algebra.semigroup.monoid.object :refer :all]
+            [locus.algebra.group.core.object :refer :all]
             [locus.algebra.group.core.morphism :refer :all]
             [locus.algebra.group.core.aut :refer :all]
-            [locus.algebra.category.hom.sethom :refer :all]
-            [locus.set.quiver.structure.core.protocols :refer :all])
+            [locus.algebra.category.hom.sethom :refer :all])
   (:import (locus.set.mapping.effects.global.permutation Permutation)
            (locus.set.mapping.general.core.object SetFunction)
            (locus.algebra.group.core.morphism GroupMorphism)))

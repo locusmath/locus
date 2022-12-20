@@ -1278,7 +1278,11 @@
              (and
                (natural-number? a)
                (natural-number? b)
-               (zero? (mod b a)))))
+               (or
+                 (zero? b)
+                 (and
+                   (not (zero? a))
+                   (zero? (mod b a)))))))
     :arities #{2}
     :join lcm
     :meet gcd

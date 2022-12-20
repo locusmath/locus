@@ -6,6 +6,7 @@
             [locus.set.logic.structure.protocols :refer :all]
             [locus.set.copresheaf.structure.core.protocols :refer :all]
             [locus.set.quiver.unary.core.morphism :refer :all]
+            [locus.algebra.commutative.semigroup.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.core.morphism :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]

@@ -6,6 +6,7 @@
             [locus.set.copresheaf.structure.core.protocols :refer :all]
             [locus.set.action.core.protocols :refer :all]
             [locus.set.action.global.object :refer :all]
+            [locus.algebra.commutative.semigroup.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
             [locus.algebra.group.core.object :refer :all]

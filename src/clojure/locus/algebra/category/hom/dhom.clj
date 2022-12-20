@@ -3,14 +3,14 @@
             [locus.set.logic.sequence.object :refer :all]
             [locus.set.logic.limit.product :refer :all]
             [locus.set.quiver.relation.binary.product :refer :all]
-            [locus.con.core.setpart :refer :all]
             [locus.set.mapping.general.core.object :refer :all]
             [locus.set.logic.structure.protocols :refer :all]
             [locus.set.copresheaf.structure.core.protocols :refer :all]
-            [locus.algebra.category.hom.sethom :refer :all]
             [locus.set.quiver.diset.core.object :refer :all]
             [locus.set.quiver.diset.core.morphism :refer :all]
-            [locus.set.quiver.structure.core.protocols :refer :all])
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.con.core.setpart :refer :all]
+            [locus.algebra.category.hom.sethom :refer :all])
   (:import [locus.set.quiver.diset.core.object Diset]
            [locus.set.quiver.diset.core.morphism Difunction]
            (locus.set.logic.core.set SeqableUniversal)))

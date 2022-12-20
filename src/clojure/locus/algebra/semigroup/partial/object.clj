@@ -9,16 +9,17 @@
             [locus.set.copresheaf.structure.core.protocols :refer :all]
             [locus.set.mapping.general.core.object :refer :all]
             [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.action.core.protocols :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.algebra.commutative.semigroup.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
             [locus.algebra.group.core.object :refer :all]
-            [locus.set.action.core.protocols :refer :all]
             [locus.hyper.mapping.function :refer :all]
             [locus.partial.mapping.function :refer :all]
             [locus.partial.mapping.transformation :refer :all]
             [locus.partial.mapping.bijection :refer :all]
-            [locus.partial.mapping.permutation :refer :all]
-            [locus.set.quiver.structure.core.protocols :refer :all]))
+            [locus.partial.mapping.permutation :refer :all]))
 
 ; Partial transformation semigroups
 (deftype PartialTransformationSemigroup [semigroup coll func]

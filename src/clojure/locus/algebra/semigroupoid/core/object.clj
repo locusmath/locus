@@ -10,6 +10,7 @@
             [locus.set.quiver.relation.binary.sr :refer :all]
             [locus.set.quiver.binary.core.object :refer :all]
             [locus.set.quiver.binary.thin.object :refer :all]
+            [locus.algebra.commutative.semigroup.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.order.lattice.core.object :refer :all]
             [locus.algebra.category.core.object :refer :all]

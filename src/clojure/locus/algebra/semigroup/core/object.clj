@@ -14,10 +14,12 @@
             [locus.set.quiver.relation.binary.vertexset :refer :all]
             [locus.order.lattice.core.object :refer :all]
             [locus.set.quiver.binary.core.object :refer :all]
-            [locus.set.quiver.structure.core.protocols :refer :all])
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.algebra.commutative.semigroup.object :refer :all])
   (:import (locus.order.lattice.core.object Lattice)
            (java.util Optional)
-           (locus.set.mapping.general.core.object SetFunction)))
+           (locus.set.mapping.general.core.object SetFunction)
+           (locus.algebra.commutative.semigroup.object CommutativeSemigroup)))
 
 ; A semigroup is simply a semigroupoid with a single object. We further define
 ; semigroups to be structured sets by defining a functor to Sets as well
@@ -48,6 +50,8 @@
   (invoke [this obj] (op obj))
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
+(derive Semigroup :locus.set.copresheaf.structure.core.protocols/semigroup)
+
 ; To semigroup conversion
 (defmulti to-semigroup type)
 
@@ -56,128 +60,47 @@
 
   (Semigroup. (outputs func) func))
 
+(defmethod to-semigroup CommutativeSemigroup
+  [^CommutativeSemigroup semigroup]
+
+  (->Semigroup (.-elems semigroup) (.-op semigroup)))
+
 (defmethod to-semigroup Semigroup
   [semigroup] semigroup)
 
-; A useful utility function for semigroups
-(defn apply-semigroup
-  [func coll]
-
-  (if (= (count coll) 1)
-    (first coll)
-    (reduce
-      (fn [a b]
-        (func (list a b)))
-      coll)))
-
-; Identities
-(defmulti identity-elements type)
-
-(defmethod identity-elements :default
-  [sgrp]
-
-  (filter
-    (fn [elem]
-      (every?
-        (fn [i]
-          (= i (sgrp (list i elem)) (sgrp (list elem i))))
-        (morphisms sgrp)))
-    (morphisms sgrp)))
-
-(defn optional-identity
-  [semigroup]
-
-  (let [identities (identity-elements semigroup)]
-    (if (empty? identities)
-      (Optional/empty)
-      (Optional/of (first identities)))))
-
-(defn identity-element
-  [monoid]
-
-  (first (identity-elements monoid)))
-
-; Zero elements
-(defn zero-element?
-  [semigroup zero-element]
+; Noncommutative theory of zero elements
+(defn right-zero-element?
+  [semigroup z]
 
   (every?
-    (fn [i]
-      (= zero-element
-         (semigroup (list i zero-element))
-         (semigroup (list zero-element i))))
+    (fn [x]
+      (= (semigroup (list x z)) z))
     (morphisms semigroup)))
 
-(defmulti zero-elements type)
+(defn left-zero-element?
+  [semigroup z]
 
-(defmethod zero-elements :default
-  [semigroup]
+  (every?
+    (fn [x]
+      (= (semigroup (list z x)) z))
+    (morphisms semigroup)))
 
-  (set
-    (filter
-      (fn [zero-element]
-        (zero-element? semigroup zero-element))
-      (morphisms semigroup))))
+; Noncommutative theory of identity elements
+(defn right-identity-element?
+  [semigroup e]
 
-(defn zero-element
-  [semigroup]
+  (every?
+    (fn [x]
+      (= (semigroup (list x e)) x))
+    (morphisms semigroup)))
 
-  (first (zero-elements semigroup)))
+(defn left-identity-element?
+  [semigroup e]
 
-; Unit elements
-(defn find-element-inverses
-  [semigroup identity-element elem]
-
-  (filter
-    (fn [i]
-      (and
-        (= (semigroup (list i elem)) identity-element)
-        (= (semigroup (list elem i)) identity-element)))
-    (underlying-set semigroup)))
-
-(defmulti invert-element (fn [a b] (type a)))
-
-(defmethod invert-element :default
-  [semigroup x]
-
-  (first (find-element-inverses semigroup (identity-element semigroup) x)))
-
-(defn unit-element?
-  ([semigroup x]
-   (let [identities (identity-elements semigroup)]
-     (and
-       (not (empty? identities))
-       (unit-element? semigroup (first identities) x))))
-
-  ([semigroup identity-element x]
-   (not
-     (empty?
-       (find-element-inverses semigroup identity-element x)))))
-
-(defn unit-elements
-  ([semigroup]
-   (let [identities (identity-elements semigroup)]
-     (if (empty? identities)
-       #{}
-       (let [identity (first identities)]
-         (unit-elements semigroup identity)))))
-
-  ([semigroup identity]
-   (set
-     (filter
-       (fn [i]
-         (unit-element? semigroup identity i))
-       (underlying-set semigroup)))))
-
-; Idempotent elements
-(defn idempotents
-  [semigroup]
-
-  (set
-    (filter
-      (fn [i]
-        (= i (semigroup (list i i))))
-      (underlying-set semigroup))))
+  (every?
+    (fn [x]
+      (= (semigroup (list e x)) x))
+    (morphisms semigroup)))
 
 ; Central elements
 (defn central-element?
@@ -197,6 +120,110 @@
       (fn [i]
         (central-element? semigroup i))
       (underlying-set semigroup))))
+
+(defn commuting-clique?
+  [semigroup coll]
+
+  (every?
+    (fn [pair]
+      (let [[a b] (seq pair)]
+        (= (semigroup (list a b))
+           (semigroup (list b a)))))
+    (selections coll 2)))
+
+; Get the commuting graph of a semigroup
+(defn com
+  [semigroup]
+
+  (union
+    (unary-family (underlying-set semigroup))
+    (set
+      (filter
+        (fn [pair]
+          (let [[a b] (seq pair)]
+            (= (semigroup (list a b))
+               (semigroup (list b a)))))
+        (selections (underlying-set semigroup) 2)))))
+
+(defn commutativity-preorder
+  [semigroup]
+
+  (logical-preorder
+    (fn [x]
+      (set
+        (filter
+          (fn [y]
+            (= (semigroup (list x y))
+               (semigroup (list y x))))
+          (underlying-set semigroup))))
+    (underlying-set semigroup)))
+
+(def maximal-commuting-cliques
+  (comp maximal-cliques com))
+
+; Centralizers
+(defn element-centralizer
+  [semigroup x]
+
+  (set
+    (filter
+      (fn [i]
+        (= (semigroup (list i x))
+           (semigroup (list x i))))
+      (underlying-set semigroup))))
+
+(defn set-centralizer
+  [semigroup coll]
+
+  (set
+    (filter
+      (fn [i]
+        (every?
+          (fn [x]
+            (= (semigroup (list i x))
+               (semigroup (list x i))))
+          coll))
+      (underlying-set semigroup))))
+
+(defn commuting-degree
+  [semigroup x]
+
+  (count (element-centralizer semigroup x)))
+
+(defn commutative-principal-filter
+  [semigroup x]
+
+  (principal-filter (commutativity-preorder semigroup) x))
+
+(defn commutativity-principal-filters
+  [semigroup]
+
+  (principal-filters (commutativity-preorder semigroup)))
+
+; Compute the inverses of elements of a semigroup
+(defn find-element-inverses
+  [semigroup identity-element elem]
+
+  (filter
+    (fn [i]
+      (= identity-element
+         (semigroup (list i elem))
+         (semigroup (list elem i))))
+    (underlying-set semigroup)))
+
+(defmethod inverse-elements :default
+  [semigroup elem]
+
+  (let [identities (identity-elements semigroup)]
+    (if (empty? identities)
+      '()
+      (let [identity-element (first identities)]
+        (find-element-inverses semigroup identity-element elem)))))
+
+(defmethod invert-element :default
+  [semigroup x]
+
+  (first (find-element-inverses semigroup (identity-element semigroup) x)))
 
 ; Inverses and pseudoinverses are distinguished from inverses in the sense of
 ; a monoid by the fact that they emerge from semigroup theory.
@@ -246,224 +273,6 @@
              (semigroup (list f g))
              g))
         inverses))))
-
-; Classification of semigroups
-(derive Semigroup :locus.set.copresheaf.structure.core.protocols/semigroup)
-
-(defmulti semigroup? type)
-
-(defmethod semigroup? :locus.set.copresheaf.structure.core.protocols/semigroup
-  [x] true)
-
-(defmethod semigroup? :locus.set.copresheaf.structure.core.protocols/semigroupoid
-  [x] (= (count (objects x)) 1))
-
-(defmethod semigroup? :default
-  [x] false)
-
-; Classification of monoids
-(defmulti intrinsic-monoid? type)
-
-(defmethod intrinsic-monoid? :locus.set.copresheaf.structure.core.protocols/monoid
-  [x] true)
-
-(defmethod intrinsic-monoid? :default
-  [x] false)
-
-(defmulti monoid? type)
-
-(defmethod monoid? :locus.set.copresheaf.structure.core.protocols/monoid
-  [x] true)
-
-(defmethod monoid? :locus.set.copresheaf.structure.core.protocols/semigroupoid
-  [x]
-
-  (and
-    (= (count (objects x)) 1)
-    (not (empty? (identity-elements x)))))
-
-(defmethod monoid? :default
-  [x] false)
-
-(defmethod category? :locus.set.copresheaf.structure.core.protocols/semigroup
-  [semigroup] (not (empty? (identity-elements semigroup))))
-
-; Special classes of semigroups
-(defn skeletal-monoid?
-  [monoid]
-
-  (and
-    (monoid? monoid)
-    (= (count (unit-elements monoid)) 1)))
-
-(defn band?
-  [structure]
-
-  (and
-    (semigroup? structure)
-    (every?
-      (fn [i]
-        (= (structure (list i i)) i))
-      (underlying-set structure))))
-
-(defn commuting-clique?
-  [semigroup coll]
-
-  (every?
-    (fn [pair]
-      (let [[a b] (seq pair)]
-        (= (semigroup (list a b))
-           (semigroup (list b a)))))
-    (selections coll 2)))
-
-(defn commutative-semigroup?
-  [structure]
-
-  (and
-    (semigroup? structure)
-    (commuting-clique? structure (underlying-set structure))))
-
-(def semilattice?
-  (intersection
-    band?
-    commutative-semigroup?))
-
-(defn idempotent-commutative-semigroup?
-  [semigroup]
-
-  (commuting-clique? semigroup (idempotents semigroup)))
-
-(defn idempotent-central-semigroup?
-  [semigroup]
-
-  (every?
-    (fn [idempotent]
-      (central-element? semigroup idempotent))
-    (idempotents semigroup)))
-
-; Special types of rectangular bands
-(defn rectangular-band?
-  [structure]
-
-  (and
-    (semigroup? structure)
-    (every?
-      (fn [pair]
-        (not= (structure pair)
-              (structure (reverse pair))))
-      (cartesian-power (underlying-set structure) 2))))
-
-(defn left-zero-semigroup?
-  [semigroup]
-
-  (and
-    (semigroup? semigroup)
-    (every?
-      (fn [[x y]]
-        (= (semigroup (list x y)) x))
-      (cartesian-power (underlying-set semigroup) 2))))
-
-(defn right-zero-semigroup?
-  [semigroup]
-
-  (and
-    (semigroup? semigroup)
-    (every?
-      (fn [[x y]]
-        (= (semigroup (list x y)) y))
-      (cartesian-power (underlying-set semigroup) 2))))
-
-(defn null-semigroup?
-  [semigroup]
-
-  (equal-seq?
-    (map semigroup (cartesian-power (morphisms semigroup) 2))))
-
-; Test for groups
-(defmulti intrinsic-group? type)
-
-(defmethod intrinsic-group? :locus.set.copresheaf.structure.core.protocols/group
-  [x] true)
-
-(defmethod intrinsic-group? :default
-  [obj] false)
-
-(defmulti group? type)
-
-(defmethod group? :locus.set.copresheaf.structure.core.protocols/group
-  [x] true)
-
-(defmethod group? :locus.set.copresheaf.structure.core.protocols/semigroupoid
-  [obj]
-
-  (and
-    (semigroup? obj)
-    (let [identities (identity-elements obj)]
-      (and
-        (not (empty? identities))
-        (let [identity (first identities)]
-          (every?
-            (fn [elem]
-              (unit-element? obj identity elem))
-            (underlying-set obj)))))))
-
-(defmethod group? :default
-  [x] false)
-
-; Tests for commutativity
-(def commutative-group?
-  (intersection
-    commutative-semigroup?
-    group?))
-
-(def commutative-monoid?
-  (intersection
-    commutative-semigroup?
-    monoid?))
-
-; Semigroups with zero
-(defn semigroup-with-zero?
-  [semigroup]
-
-  (not (empty? (zero-elements semigroup))))
-
-(def monoid-with-zero?
-  (intersection
-    semigroup-with-zero?
-    monoid?))
-
-(def commutative-semigroup-with-zero?
-  (intersection
-    semigroup-with-zero?
-    commutative-semigroup?))
-
-(def commutative-monoid-with-zero?
-  (intersection
-    monoid-with-zero?
-    commutative-semigroup?))
-
-; We need some way to keep tracking of the size of a semigroup
-(defn semigroup-size
-  [semigroup]
-
-  (count (underlying-set semigroup)))
-
-; We can get the join and meet semigroups of a lattice
-(defn join-semilattice
-  [lattice]
-
-  (Semigroup.
-    (underlying-set lattice)
-    (fn [[a b]]
-      ((.join lattice) a b))))
-
-(defn meet-semilattice
-  [lattice]
-
-  (Semigroup.
-    (underlying-set lattice)
-    (fn [[a b]]
-      ((.meet lattice) a b))))
 
 ; Get the dual of a semigroup
 (defmethod dual :locus.set.copresheaf.structure.core.protocols/semigroup
@@ -619,6 +428,16 @@
     (fn [[c1 c2]]
       (projection partition (semigroup (list (first c1) (first c2)))))))
 
+; Commutative subsemigroups
+(defn commutative-subsemigroups
+  [semigroup]
+
+  (set
+    (filter
+      (fn [coll]
+        (subsemigroup? semigroup coll))
+      (cl subclass-closed? (com semigroup)))))
+
 ; Construction of composition semigroups of categories and semigroupoids
 ; This is part of the semigroup theoretic methods of category theory
 (defn composition-semigroup
@@ -653,13 +472,6 @@
         indices))))
 
 ; Constructors for common classes of semigroups
-(defn null-semigroup
-  [n]
-
-  (Semigroup.
-    (->Upto n)
-    (fn [[a b]] 0)))
-
 (defn left-zero-semigroup
   [n]
 
@@ -735,25 +547,6 @@
   (Semigroup.
     (->PowerSet (underlying-set semigroup))
     (fn [[coll1 coll2]] (compose-subsets semigroup coll1 coll2))))
-
-; Monogenic semigroups
-(defn monogenic-simplification
-  [index period n]
-
-  (let [initial-segment-size index]
-    (if (< n initial-segment-size)
-      n
-      (let [adjusted-index (- n initial-segment-size)
-            period-remainder (mod adjusted-index period)]
-        (+ initial-segment-size period-remainder)))))
-
-(defn monogenic-semigroup
-  [index period]
-
-  (Semigroup.
-    (->RangeSet 1 (+ index period))
-    (fn [[a b]]
-      (monogenic-simplification index period (+ a b)))))
 
 ; Fundamental examples
 (def r2
@@ -864,6 +657,12 @@
 
   (join-set-partitions (lrelation semigroup) (rrelation semigroup)))
 
+; Fallback on the Green's J preorder when a natural preordering is not inherently defined
+(defmethod natural-preorder :default
+  [semigroup]
+
+  (jpreorder semigroup))
+
 ; Ideal families
 (defn two-sided-ideals
   [semigroup]
@@ -919,6 +718,346 @@
   (quotient-semigroup
     semigroup
     (rees-semigroup-congruence semigroup ideal)))
+
+; The zero divisor graph of semigroup theory provides a fundamental
+; interface to the idea of composition semigroups of semigroupoids.
+(defn zero-divisor-graph
+  [semigroup]
+
+  (let [zeros (zero-elements semigroup)]
+    (if (empty? zeros)
+      #{}
+      (let [z (first zeros)]
+        (set
+          (filter
+            (fn [pair]
+              (= (semigroup pair) z))
+            (cartesian-power (underlying-set semigroup) 2)))))))
+
+; Let S be a semigroup then we can always adjoin a zero to the semigroups to that the zero
+; element is greater than all other elements in the Green's J preorder.
+(defmethod adjoin-zero :default
+  [semigroup]
+
+  (Semigroup.
+    (cartesian-coproduct #{0} (underlying-set semigroup))
+    (fn [[[i v] [j w]]]
+      (cond
+        (zero? i) (list 0 0)
+        (zero? j) (list 0 0)
+        :else (list 1 (semigroup (list v w)))))))
+
+; The spectrum of a semigroup
+(defn prime-subsemigroup?
+  [semigroup coll]
+
+  (and
+    (subsemigroup? semigroup coll)
+    (subsemigroup? semigroup (difference (underlying-set semigroup) coll))))
+
+(defn semigroup-prime-ideal?
+  [semigroup coll]
+
+  (and
+    (two-sided-ideal? semigroup coll)
+    (subsemigroup? semigroup (difference (underlying-set semigroup) coll))))
+
+(defn semigroup-spectrum
+  [semigroup]
+
+  (set
+    (filter
+      (fn [coll]
+        (subsemigroup? semigroup (difference (underlying-set semigroup) coll)))
+      (two-sided-ideals semigroup))))
+
+; Get the principal subsemigroup
+(defn semigroup-element-iterates
+  [semigroup starting-element]
+
+  (loop [current-element starting-element
+         seen-elements #{}]
+    (if (contains? seen-elements current-element)
+      seen-elements
+      (recur
+        (semigroup (list current-element starting-element))
+        (conj seen-elements current-element)))))
+
+; Nilpotent elements
+(defn nilpotent-element?
+  [semigroup elem]
+
+  (let [z (first (zero-elements semigroup))]
+    (and
+      (not (nil? z))
+      (contains? (semigroup-element-iterates semigroup elem) z))))
+
+(defn nilpotent-elements
+  [semigroup]
+
+  (let [z (first (zero-elements semigroup))]
+    (when (not (nil? z))
+      (set
+        (filter
+          (fn [i]
+            (contains? (semigroup-element-iterates semigroup i) z))
+          (underlying-set semigroup))))))
+
+; The iteration preorder of a semigroup
+(defn iteration-preorder
+  [semigroup]
+
+  (transpose
+    (logical-preorder
+      (fn [elem]
+        (semigroup-element-iterates semigroup elem))
+      (underlying-set semigroup))))
+
+(defn semigroup-element-roots
+  [semigroup elem]
+
+  (set
+    (filter
+      (fn [i]
+        (contains? (semigroup-element-iterates semigroup i) elem))
+      (underlying-set semigroup))))
+
+(defn radical-subsemigroup?
+  [semigroup coll]
+
+  (let [rel (iteration-preorder semigroup)]
+    (and
+      (subsemigroup? semigroup coll)
+      (ideal-vertex-set? rel coll))))
+
+(defn semigroup-radical-ideal?
+  [semigroup coll]
+
+  (let [rel (iteration-preorder semigroup)]
+    (and
+      (two-sided-ideal? semigroup coll)
+      (ideal-vertex-set? rel coll))))
+
+(defn semigroup-radical-ideals
+  [semigroup]
+
+  (let [rel (iteration-preorder semigroup)]
+    (filter
+      (fn [i]
+        (ideal-vertex-set? rel i))
+      (two-sided-ideals semigroup))))
+
+; Create a semigroup by a table
+(defn semigroup-by-table
+  [coll]
+
+  (let [n (count coll)]
+    (Semigroup.
+      (->Upto n)
+      (fn [[i j]]
+        (nth (nth coll i) j)))))
+
+; Classification of semigroups
+(derive Semigroup :locus.set.copresheaf.structure.core.protocols/semigroup)
+
+(defmulti semigroup? type)
+
+(defmethod semigroup? :locus.set.copresheaf.structure.core.protocols/semigroup
+  [x] true)
+
+(defmethod semigroup? :locus.set.copresheaf.structure.core.protocols/semigroupoid
+  [x] (= (count (objects x)) 1))
+
+(defmethod semigroup? :default
+  [x] false)
+
+; Classification of monoids
+(defmulti intrinsic-monoid? type)
+
+(defmethod intrinsic-monoid? :locus.set.copresheaf.structure.core.protocols/monoid
+  [x] true)
+
+(defmethod intrinsic-monoid? :default
+  [x] false)
+
+(defmulti monoid? type)
+
+(defmethod monoid? :locus.set.copresheaf.structure.core.protocols/monoid
+  [x] true)
+
+(defmethod monoid? :locus.set.copresheaf.structure.core.protocols/semigroupoid
+  [x]
+
+  (and
+    (= (count (objects x)) 1)
+    (not (empty? (identity-elements x)))))
+
+(defmethod monoid? :default
+  [x] false)
+
+(defmethod category? :locus.set.copresheaf.structure.core.protocols/semigroup
+  [semigroup] (not (empty? (identity-elements semigroup))))
+
+; Special classes of semigroups and monoids
+(defn skeletal-monoid?
+  [monoid]
+
+  (and
+    (monoid? monoid)
+    (= (count (unit-elements monoid)) 1)))
+
+(defn band?
+  [structure]
+
+  (and
+    (semigroup? structure)
+    (every?
+      (fn [i]
+        (= (structure (list i i)) i))
+      (underlying-set structure))))
+
+(defn unital-band?
+  [structure]
+
+  (and
+    (monoid? structure)
+    (band? structure)))
+
+; Generalisations of commutativity on the set of idempotents
+(defn idempotent-commutative-semigroup?
+  [semigroup]
+
+  (commuting-clique? semigroup (idempotents semigroup)))
+
+(defn idempotent-central-semigroup?
+  [semigroup]
+
+  (every?
+    (fn [idempotent]
+      (central-element? semigroup idempotent))
+    (idempotents semigroup)))
+
+; Special types of rectangular bands
+(defn rectangular-band?
+  [structure]
+
+  (and
+    (semigroup? structure)
+    (every?
+      (fn [pair]
+        (not= (structure pair)
+              (structure (reverse pair))))
+      (cartesian-power (underlying-set structure) 2))))
+
+(defn left-zero-semigroup?
+  [semigroup]
+
+  (and
+    (semigroup? semigroup)
+    (every?
+      (fn [[x y]]
+        (= (semigroup (list x y)) x))
+      (cartesian-power (underlying-set semigroup) 2))))
+
+(defn right-zero-semigroup?
+  [semigroup]
+
+  (and
+    (semigroup? semigroup)
+    (every?
+      (fn [[x y]]
+        (= (semigroup (list x y)) y))
+      (cartesian-power (underlying-set semigroup) 2))))
+
+; Test for groups
+(defmulti intrinsic-group? type)
+
+(defmethod intrinsic-group? :locus.set.copresheaf.structure.core.protocols/group
+  [x] true)
+
+(defmethod intrinsic-group? :default
+  [obj] false)
+
+(defmulti group? type)
+
+(defmethod group? :locus.set.copresheaf.structure.core.protocols/group
+  [x] true)
+
+(defmethod group? :locus.set.copresheaf.structure.core.protocols/semigroupoid
+  [obj]
+
+  (and
+    (semigroup? obj)
+    (let [identities (identity-elements obj)]
+      (and
+        (not (empty? identities))
+        (let [identity (first identities)]
+          (every?
+            (fn [elem]
+              (unit-element? obj identity elem))
+            (underlying-set obj)))))))
+
+(defmethod group? :default
+  [x] false)
+
+; Semigroups with zero
+(defn semigroup-with-zero?
+  [semigroup]
+
+  (and
+    (semigroup? semigroup)
+    (not (empty? (zero-elements semigroup)))))
+
+(def monoid-with-zero?
+  (intersection
+    semigroup-with-zero?
+    monoid?))
+
+(defmulti group-with-zero? type)
+
+(defmethod group-with-zero? :locus.set.copresheaf.structure.core.protocols/group-with-zero
+  [group-with-zero] true)
+
+(defmethod group-with-zero? :default
+  [semigroup]
+
+  (and
+    (semigroup-with-zero? semigroup)
+    (group?
+      (restrict-semigroup
+        semigroup
+        (difference
+          (set (morphisms semigroup))
+          (zero-elements semigroup))))))
+
+; Checks for commutativity
+(defmethod commutative-semigroup? :default
+  [semigroup]
+
+  (and
+    (semigroup? semigroup)
+    (commuting-clique? semigroup (morphisms semigroup))))
+
+(defmethod commutative-monoid? :default
+  [semigroup]
+
+  (and
+    (monoid? semigroup)
+    (commuting-clique? semigroup (morphisms semigroup))))
+
+(defmethod commutative-group? :default
+  [semigroup]
+
+  (and
+    (group? semigroup)
+    (commuting-clique? semigroup (morphisms semigroup))))
+
+(defmethod commutative-group-with-zero? :default
+  [semigroup]
+
+  (and
+    (group-with-zero? semigroup)
+    (commuting-clique? semigroup (morphisms semigroup))))
 
 ; Special classes of semigroups
 (defn jtrivial?
@@ -989,139 +1128,23 @@
 
   (subsemigroup? semigroup (idempotents semigroup)))
 
-; Get the commuting graph of a semigroup
-(defn com
-  [semigroup]
-
-  (union
-    (unary-family (underlying-set semigroup))
-    (set
-      (filter
-        (fn [pair]
-          (let [[a b] (seq pair)]
-            (= (semigroup (list a b))
-               (semigroup (list b a)))))
-        (selections (underlying-set semigroup) 2)))))
-
-(defn commutativity-preorder
-  [semigroup]
-
-  (logical-preorder
-    (fn [x]
-      (set
-        (filter
-          (fn [y]
-            (= (semigroup (list x y))
-               (semigroup (list y x))))
-          (underlying-set semigroup))))
-    (underlying-set semigroup)))
-
-(def maximal-commuting-cliques
-  (comp maximal-cliques com))
-
-; Centralizers
-(defn element-centralizer
-  [semigroup x]
-
-  (set
-    (filter
-      (fn [i]
-        (= (semigroup (list i x))
-           (semigroup (list x i))))
-      (underlying-set semigroup))))
-
-(defn set-centralizer
-  [semigroup coll]
-
-  (set
-    (filter
-      (fn [i]
-        (every?
-          (fn [x]
-            (= (semigroup (list i x))
-               (semigroup (list x i))))
-          coll))
-      (underlying-set semigroup))))
-
-(defn commuting-degree
-  [semigroup x]
-
-  (count (element-centralizer semigroup x)))
-
-(defn commutative-subsemigroups
-  [semigroup]
-
-  (set
-    (filter
-      (fn [coll]
-        (subsemigroup? semigroup coll))
-      (cl subclass-closed? (com semigroup)))))
-
-(defn commutative-principal-filter
-  [semigroup x]
-
-  (principal-filter (commutativity-preorder semigroup) x))
-
-(defn commutativity-principal-filters
-  [semigroup]
-
-  (principal-filters (commutativity-preorder semigroup)))
-
-; The zero divisor graph of semigroup theory provides a fundamental
-; interface to the idea of composition semigroups of semigroupoids.
-(defn zero-divisor-graph
-  [semigroup]
-
-  (let [zeros (zero-elements semigroup)]
-    (if (empty? zeros)
-      #{}
-      (let [z (first zeros)]
-        (set
-          (filter
-            (fn [pair]
-              (= (semigroup pair) z))
-            (cartesian-power (underlying-set semigroup) 2)))))))
-
-
-(defmulti adjoin-zero type)
-
-(defmethod adjoin-zero :default
-  [semigroup]
-
-  (Semigroup.
-    (cartesian-coproduct #{0} (underlying-set semigroup))
-    (fn [[[i v] [j w]]]
-      (cond
-        (zero? i) (list 0 0)
-        (zero? j) (list 0 0)
-        :else (list 1 (semigroup (list v w)))))))
-
 (defn semigroup-with-adjoined-zero?
   [semigroup]
 
   (and
-    (semigroup-with-zero? semigroup)
-    (let [z (first (zero-elements semigroup))]
-      (every?
-        (fn [[a b]]
-          (not= (semigroup (list a b)) z))
-        (cartesian-power (disj (underlying-set semigroup) z) 2)))))
+    (semigroup? semigroup)
+    (let [zeros (zero-elements semigroup)]
+      (and
+        (not (empty? zeros))
+        (let [zero-element (first zeros)]
+          (adjoined-element? semigroup zero-element))))))
 
 (def monoid-with-adjoined-zero?
   (intersection
     semigroup-with-adjoined-zero?
     monoid?))
 
-(def commutative-semigroup-with-adjoined-zero?
-  (intersection
-    semigroup-with-adjoined-zero?
-    commutative-semigroup?))
-
-(def commutative-monoid-with-adjoined-zero?
-  (intersection
-    monoid-with-adjoined-zero?
-    commutative-semigroup?))
-
+; Zero simple semigroups are used in the Rees quotient factor theory of semigroups
 (defn zero-simple-semigroup?
   [semigroup]
 
@@ -1176,37 +1199,10 @@
     regular-semigroup?
     idempotent-central-semigroup?))
 
-(def commutative-clifford-semigroup?
-  (intersection
-    regular-semigroup?
-    commutative-semigroup?))
-
 (def brandt-semigroup?
   (intersection
     zero-simple-semigroup?
     inverse-semigroup?))
-
-(defmulti group-with-zero? type)
-
-(defmethod group-with-zero? :locus.set.copresheaf.structure.core.protocols/group-with-zero
-  [group-with-zero] true)
-
-(defmethod group-with-zero? :default
-  [semigroup]
-
-  (and
-    (semigroup-with-zero? semigroup)
-    (group?
-      (restrict-semigroup
-        semigroup
-        (difference
-          (set (morphisms semigroup))
-          (zero-elements semigroup))))))
-
-(def commutative-group-with-zero?
-  (intersection
-    group-with-zero?
-    commutative-semigroup?))
 
 (defn completely-regular-semigroup?
   [semigroup]
@@ -1242,42 +1238,13 @@
     (= (rrelation semigroup) (lrelation semigroup))
     (commutative-semigroup? (semigroup-condensation semigroup))))
 
-; The spectrum of a semigroup
-(defn prime-subsemigroup?
-  [semigroup coll]
+; Commutative clifford semigroups
+(def commutative-clifford-semigroup?
+  (intersection
+    regular-semigroup?
+    commutative-semigroup?))
 
-  (and
-    (subsemigroup? semigroup coll)
-    (subsemigroup? semigroup (difference (underlying-set semigroup) coll))))
-
-(defn semigroup-prime-ideal?
-  [semigroup coll]
-
-  (and
-    (two-sided-ideal? semigroup coll)
-    (subsemigroup? semigroup (difference (underlying-set semigroup) coll))))
-
-(defn semigroup-spectrum
-  [semigroup]
-
-  (set
-    (filter
-      (fn [coll]
-        (subsemigroup? semigroup (difference (underlying-set semigroup) coll)))
-      (two-sided-ideals semigroup))))
-
-; Get the principal subsemigroup
-(defn semigroup-element-iterates
-  [semigroup starting-element]
-
-  (loop [current-element starting-element
-         seen-elements #{}]
-    (if (contains? seen-elements current-element)
-      seen-elements
-      (recur
-        (semigroup (list current-element starting-element))
-        (conj seen-elements current-element)))))
-
+; Monogenic semigroups
 (defn monogenic-semigroup?
   [semigroup]
 
@@ -1295,26 +1262,7 @@
     group?
     monogenic-semigroup?))
 
-; Nilpotent semigroups
-(defn nilpotent-element?
-  [semigroup elem]
-
-  (let [z (first (zero-elements semigroup))]
-    (and
-      (not (nil? z))
-      (contains? (semigroup-element-iterates semigroup elem) z))))
-
-(defn nilpotent-elements
-  [semigroup]
-
-  (let [z (first (zero-elements semigroup))]
-    (when (not (nil? z))
-      (set
-        (filter
-          (fn [i]
-            (contains? (semigroup-element-iterates semigroup i) z))
-          (underlying-set semigroup))))))
-
+; Nilpotent semigroups theory
 (defn nilpotent-semigroup?
   [semigroup]
 
@@ -1347,67 +1295,7 @@
     (commutative-semigroup-with-zero? semigroup)
     (<= (count (nilpotent-elements semigroup)) 1)))
 
-; The iteration preorder of a semigroup
-(defn iteration-preorder
-  [semigroup]
-
-  (transpose
-    (logical-preorder
-      (fn [elem]
-        (semigroup-element-iterates semigroup elem))
-      (underlying-set semigroup))))
-
-(defn semigroup-element-roots
-  [semigroup elem]
-
-  (set
-    (filter
-      (fn [i]
-        (contains? (semigroup-element-iterates semigroup i) elem))
-      (underlying-set semigroup))))
-
-(defn radical-subsemigroup?
-  [semigroup coll]
-
-  (let [rel (iteration-preorder semigroup)]
-    (and
-      (subsemigroup? semigroup coll)
-      (ideal-vertex-set? rel coll))))
-
-(defn semigroup-radical-ideal?
-  [semigroup coll]
-
-  (let [rel (iteration-preorder semigroup)]
-    (and
-      (two-sided-ideal? semigroup coll)
-      (ideal-vertex-set? rel coll))))
-
-(defn semigroup-radical-ideals
-  [semigroup]
-
-  (let [rel (iteration-preorder semigroup)]
-    (filter
-      (fn [i]
-        (ideal-vertex-set? rel i))
-      (two-sided-ideals semigroup))))
-
-; A constructor for a basic class of commutative aperiodic semigroups
-(defn height-two-tree-ordered-semigroup
-  [n m]
-
-  (Semigroup.
-    (->Upto (inc (+ n m)))
-    (fn [[a b]]
-      (if (= a b)
-        (if (<= b n) b 0)
-        0))))
-
-; Special classes of semigroups
-(def commutative-jtrivial-semigroup?
-  (intersection
-    commutative-semigroup?
-    jtrivial?))
-
+; Subtotal bands are precisely the semigroups in which all subsets are subsemigroups
 (defn subtotal-band?
   [semigroup]
 
@@ -1418,13 +1306,7 @@
         (subsemigroup? semigroup coll))
       (power-set (underlying-set semigroup)))))
 
-(defn total-order-semilattice?
-  [semigroup]
-
-  (and
-    (semilattice? semigroup)
-    (total-order? (jpreorder semigroup))))
-
+; Classification of semigroups by their ordering relations
 (defn totally-ordered-semigroup?
   [semigroup]
 
@@ -1440,31 +1322,21 @@
     (semigroup? semigroup)
     (total-preorder? (jpreorder semigroup))))
 
-(def totally-ordered-commutative-semigroup?
-  (intersection
-    totally-ordered-semigroup?
-    commutative-semigroup?))
-
-(def totally-preordered-commutative-semigroup?
-  (intersection
-    totally-preordered-semigroup?
-    commutative-semigroup?))
-
-(defn height-two-tree-ordered-semigroup?
+(defn totally-ordered-monoid?
   [semigroup]
 
   (and
-    (semigroup? semigroup)
-    (jtrivial? semigroup)
-    (height-two? (jpreorder semigroup))))
+    (monoid? semigroup)
+    (total-order? (jpreorder semigroup))))
 
-(defn height-two-semilattice?
+(defn totally-preordered-monoid?
   [semigroup]
 
   (and
-    (semilattice? semigroup)
-    (height-two? (jpreorder semigroup))))
+    (monoid? semigroup)
+    (total-preorder? (jpreorder semigroup))))
 
+; Special types of semigroups by their idempotents
 (defn semiband?
   [semigroup]
 
@@ -1478,11 +1350,7 @@
 
   (= (count (idempotents semigroup)) 1))
 
-(def commutative-unipotent-semigroup?
-  (intersection
-    commutative-semigroup?
-    unipotent-semigroup?))
-
+; Congruence free semigroups have no non-trivial congruences
 (defn congruence-free-semigroup?
   [semigroup]
 
@@ -1490,6 +1358,7 @@
     (semigroup? semigroup)
     (<= (count (enumerate-semigroup-congruences semigroup)) 2)))
 
+; Surjective semigroups are those in which each element is produced by some product
 (defn surjective-semigroup?
   [semigroup]
 
@@ -1523,13 +1392,3 @@
     (fn [e]
       (inverse-semigroup? (idempotent-wrapper-semigroup semigroup e)))
     (idempotents semigroup)))
-
-; Create a semigroup by a table
-(defn semigroup-by-table
-  [coll]
-
-  (let [n (count coll)]
-    (Semigroup.
-      (->Upto n)
-      (fn [[i j]]
-        (nth (nth coll i) j)))))

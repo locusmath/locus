@@ -55,6 +55,14 @@
 (derive ::group ::monoid)
 (derive ::group-with-zero ::monoid)
 
+(derive ::commutative-semigroup ::semigroup)
+(derive ::commutative-monoid ::monoid)
+(derive ::commutative-monoid ::commutative-semigroup)
+(derive ::commutative-group ::group)
+(derive ::commutative-group ::commutative-monoid)
+(derive ::commutative-group-with-zero ::group-with-zero)
+(derive ::commutative-group-with-zero ::commutative-monoid)
+
 (derive ::thin-semigroupoid ::semigroupoid)
 (derive ::thin-category ::thin-semigroupoid)
 (derive ::thin-category ::category)
@@ -330,3 +338,21 @@
 
 (defmethod quiver-height :locus.set.quiver.structure.core.protocols/nary-quiver
   [quiver] 2)
+
+; Display tables
+(defmethod display-table ::partial-magmoid
+  [magmoid]
+
+  (display-table (underlying-function magmoid)))
+
+; Algebraic preorders for naturally preordered algebraic structures
+(defmulti natural-preorder type)
+
+; Identity elements and zero elements of semigroups
+(defmulti identity-elements type)
+
+(defmulti zero-elements type)
+
+(defmulti adjoin-zero type)
+
+(defmulti adjoin-identity type)

@@ -1,87 +1,90 @@
-(ns locus.algebra.semigroup.monoid.arithmetic
+(ns locus.algebra.commutative.monoid.arithmetic
   (:require [locus.set.logic.core.set :refer :all]
             [locus.set.logic.limit.product :refer :all]
             [locus.set.logic.numeric.natural :refer :all]
             [locus.set.logic.structure.protocols :refer :all]
             [locus.set.copresheaf.structure.core.protocols :refer :all]
             [locus.set.quiver.relation.binary.product :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.algebra.commutative.semigroup.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
-            [locus.set.quiver.binary.core.object :refer :all]
             [locus.algebra.group.core.object :refer :all]
             [locus.algebra.semigroup.monoid.group-with-zero :refer :all]
-            [locus.set.quiver.structure.core.protocols :refer :all])
-  (:import (locus.algebra.semigroup.monoid.object Monoid)
-           (locus.algebra.group.core.object Group)
-           (locus.algebra.semigroup.core.object Semigroup)
-           (locus.algebra.semigroup.monoid.group_with_zero GroupWithZero)))
+            [locus.algebra.commutative.monoid.object :refer :all]
+            [locus.algebra.commutative.monoid.group-with-zero :refer :all]
+            [locus.algebra.abelian.group.object :refer :all])
+  (:import (locus.algebra.commutative.semigroup.object CommutativeSemigroup)
+           (locus.algebra.commutative.monoid.object CommutativeMonoid)))
 
-; This file consists of a wide variety of semigroups that are of use in
-; ring theory and related fields. In particular, we implement a number of
-; additive and multiplicative semigroups of rings and semirings.
-
-; Special semigroups
+; The unique infinite monogenic commutative semigroup
 (def positive-integer-addition
-  (Semigroup.
+  (CommutativeSemigroup.
     positive-integer?
+    (fn [[a b]]
+      (<= a b))
     (fn [[a b]]
       (+ a b))))
 
+; The free commutative monoid on an infinite set of generators
 (def positive-integer-multiplication
-  (Monoid.
+  (CommutativeMonoid.
     positive-integer?
+    (fn [[a b]]
+      (divides? (list a b)))
     (fn [[a b]] (* a b))
     1))
 
-; Maximum and minimum monoids
+; Total order semilattices
 (defn max-monoid
   [n]
 
-  (Monoid.
+  (CommutativeMonoid.
     (->Upto n)
+    (fn [[a b]]
+      (<= a b))
     (fn [[a b]] (max a b))
     0))
 
 (defn min-monoid
   [n]
 
-  (Monoid.
+  (CommutativeMonoid.
     (->Upto n)
-    (fn [[a b]] (min a b))
+    (fn [[a b]]
+      (<= b a))
+    (fn [[a b]]
+      (min a b))
     (dec n)))
 
+; Power set semilattices
 (defn power-set-union-monoid
   [coll]
 
-  (->Monoid (->PowerSet coll) (fn [[a b]] (union a b)) #{}))
+  (->CommutativeMonoid
+    (->PowerSet coll)
+    superset?
+    (fn [[a b]]
+      (union a b))
+    #{}))
 
 (defn power-set-intersection-monoid
   [coll]
 
-  (->Monoid (->PowerSet coll) (fn [[a b]] (intersection a b)) coll))
-
-; Composition of morphism subsets
-(defn compose-sets-of-morphisms
-  [category m1 m2]
-
-  (set
-    (for [[a b] (cartesian-product m1 m2)
-          :when (composable-elements? category a b)]
-      (category [a b]))))
-
-(defn semigroup-of-sets-of-morphisms
-  [category]
-
-  (->Semigroup
-    (->PowerSet (morphisms category))
+  (->CommutativeMonoid
+    (->PowerSet coll)
     (fn [[a b]]
-      (compose-sets-of-morphisms category a b))))
+      (superset? (list b a)))
+    (fn [[a b]]
+      (intersection a b))
+    coll))
 
 ; Modular arithmetic semigroups
 (defn modular-addition
   [n]
 
-  (Group.
+  (->CommutativeGroup
     (->Upto n)
     (fn [[a b]]
       (mod (+ a b) n))
@@ -94,51 +97,71 @@
 (defn modular-multiplication
   [n]
 
-  (Monoid.
+  (CommutativeMonoid.
     (->Upto n)
+    (fn [[a b]]
+      (not
+        (every?
+          (fn [i]
+            (not= (mod (* a i) n) b))
+          (range n))))
     (fn [[a b]]
       (mod (* a b) n))
     1))
+
 
 ; Addition and multiplication monoids of essential semirings
 ; These include nn,zz,qq, and qt the most basic examples
 ; of semirings, rings, fields, and semifields
 (def natural-multiplication
-  (Monoid.
+  (CommutativeMonoid.
     natural-number?
-    (fn [[a b]] (* a b))
+    (fn [[a b]]
+      (divides? (list a b)))
+    (fn [[a b]]
+      (* a b))
     1))
 
 (def natural-addition
-  (Monoid.
+  (CommutativeMonoid.
     natural-number?
-    (fn [[a b]] (+ a b))
+    (fn [[a b]]
+      (<= a b))
+    (fn [[a b]]
+      (+ a b))
     0))
 
 (def integer-addition
-  (Group.
+  (CommutativeGroup.
     integer?
-    (fn [[a b]] (+ a b))
+    (fn [[a b]]
+      (+ a b))
     0
     (fn [x]
       (- x))))
 
 (def integer-multiplication
-  (Monoid.
+  (CommutativeMonoid.
     integer?
-    (fn [[a b]] (* a b))
+    (fn [[a b]]
+      (divides?
+        (list
+          (int (abs a))
+          (int (abs b)))))
+    (fn [[a b]]
+      (* a b))
     1))
 
 ; Arithmetical semigroups of semifields
 (def rational-addition
-  (Group.
+  (->CommutativeGroup
     rational?
     (fn [[a b]] (+ a b))
     0
     (fn [x] (- x))))
 
 (def rational-multiplication
-  (GroupWithZero.
+  (->CommutativeGroupWithZero
     rational?
     (fn [[a b]] (* a b))
     1
@@ -147,17 +170,18 @@
     0))
 
 (def nonnegative-rational-addition
-  (Monoid.
+  (CommutativeMonoid.
     nonnegative-rational-number?
+    (fn [[a b]]
+      (<= a b))
     (fn [[a b]] (+ a b))
     0))
 
 (def nonnegative-rational-multiplication
-  (GroupWithZero.
+  (->CommutativeGroupWithZero
     nonnegative-rational-number?
     (fn [[a b]] (* a b))
     1
     (fn [i]
       (if (zero? i) i (/ i)))
     0))
-

@@ -16,8 +16,9 @@
             [locus.order.lattice.core.object :refer :all]
             [locus.set.quiver.binary.core.object :refer :all]
             [locus.set.copresheaf.quiver.unital.object :refer :all]
-            [locus.algebra.semigroup.core.object :refer :all]
-            [locus.set.quiver.structure.core.protocols :refer :all])
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.algebra.commutative.semigroup.object :refer :all]
+            [locus.algebra.semigroup.core.object :refer :all])
   (:import (locus.order.lattice.core.object Lattice)
            (locus.set.mapping.general.core.object SetFunction)
            (locus.algebra.semigroup.core.object Semigroup)))
@@ -111,12 +112,32 @@
 ; Group with zero
 (defmulti group-with-zero (fn [coll func one inv zero] (type coll)))
 
+; Make a trivial monoid with only a single element elem
+(defn make-trivial-monoid
+  [elem]
+
+  (Monoid.
+    #{elem}
+    (fn [[a b]]
+      elem)
+    elem))
+
 ; The simple example of a trivial monoid
 (def trivial-monoid
+  (make-trivial-monoid 0))
+
+; A monoid for the concatenation of strings
+(defn as-concatenation-monoid
+  [coll]
+
   (Monoid.
-    #{0}
-    {[0 0] 0}
-    0))
+    coll
+    (fn [[a b]]
+      (str a b))
+    ""))
+
+(def string-concatenation-monoid
+  (as-concatenation-monoid string?))
 
 ; This makes getting the identity element of a monoid easier
 (defmethod identity-elements Monoid
@@ -166,7 +187,7 @@
     (projection partition (first (identity-elements monoid)))))
 
 ; Adjoin an identity to a semigroup to a get a monoid
-(defn adjoin-identity
+(defmethod adjoin-identity :default
   [semigroup]
 
   (Monoid.
@@ -190,18 +211,23 @@
       (semigroup (reverse arg)))
     (identity-element semigroup)))
 
-; A monoid for the concatenation of strings
-(defn as-concatenation-monoid
-  [coll]
+; Composition of morphism subsets
+(defn compose-sets-of-morphisms
+  [category m1 m2]
 
-  (Monoid.
-    coll
+  (set
+    (for [[a b] (cartesian-product m1 m2)
+          :when (composable-elements? category a b)]
+      (category [a b]))))
+
+(defn semigroup-of-sets-of-morphisms
+  [category]
+
+  (->Semigroup
+    (->PowerSet (morphisms category))
     (fn [[a b]]
-      (str a b))
-    ""))
+      (compose-sets-of-morphisms category a b))))
 
-(def string-concatenation-monoid
-  (as-concatenation-monoid string?))
 
 
 

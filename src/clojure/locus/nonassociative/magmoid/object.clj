@@ -9,6 +9,7 @@
             [locus.set.quiver.relation.binary.sr :refer :all]
             [locus.set.copresheaf.structure.core.protocols :refer :all]
             [locus.set.quiver.binary.core.object :refer :all]
+            [locus.algebra.commutative.semigroup.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.group.core.object :refer :all]
             [locus.algebra.category.core.object :refer :all]

@@ -5,13 +5,14 @@
             [locus.set.copresheaf.structure.core.protocols :refer :all]
             [locus.set.quiver.relation.binary.product :refer :all]
             [locus.set.quiver.diset.core.morphism :refer :all]
-            [locus.algebra.semigroup.core.object :refer :all]
-            [locus.algebra.semigroup.core.morphism :refer :all]
-            [locus.algebra.semigroup.monoid.object :refer :all]
             [locus.set.copresheaf.quiver.unital.object :refer :all]
             [locus.set.copresheaf.quiver.unital.morphism :refer :all]
             [locus.set.quiver.unary.core.morphism :refer :all]
-            [locus.set.quiver.structure.core.protocols :refer :all])
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.algebra.commutative.semigroup.object :refer :all]
+            [locus.algebra.semigroup.core.object :refer :all]
+            [locus.algebra.semigroup.core.morphism :refer :all]
+            [locus.algebra.semigroup.monoid.object :refer :all])
   (:import [locus.set.mapping.general.core.object SetFunction]
            [locus.set.quiver.unary.core.morphism Diamond]
            (locus.algebra.semigroup.monoid.object Monoid)))

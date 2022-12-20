@@ -7,6 +7,7 @@
             [locus.set.quiver.relation.binary.product :refer :all]
             [locus.set.quiver.relation.binary.br :refer :all]
             [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.algebra.commutative.semigroup.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
             [locus.set.quiver.binary.core.object :refer :all]
@@ -50,7 +51,7 @@
 
 (derive GroupWithZero :locus.set.copresheaf.structure.core.protocols/group-with-zero)
 
-(defmethod invert-element :locus.set.copresheaf.structure.core.protocols/group-with-zero
+(defmethod invert-element GroupWithZero
   [^GroupWithZero group, x]
 
   ((.inv group) x))
@@ -60,6 +61,21 @@
 
 (defmethod zero-elements GroupWithZero
   [^GroupWithZero group] #{(.zero group)})
+
+(defmethod group-of-units GroupWithZero
+  [^GroupWithZero group]
+
+  (Group.
+    (disj (underlying-set group) (.-zero group))
+    (.op group)
+    (.id group)
+    (.inv group)))
+
+; Create groups with zero
+(defmethod group-with-zero :default
+  [coll func one inv zero]
+
+  (GroupWithZero. coll func one inv zero))
 
 (defmethod adjoin-zero :locus.set.copresheaf.structure.core.protocols/group
   [group]
@@ -78,20 +94,7 @@
         (list 1 (invert-element group v))))
     (list 0 0)))
 
-(defmethod group-with-zero :default
-  [coll func one inv zero]
-
-  (GroupWithZero. coll func one inv zero))
-
-(defmethod group-of-units GroupWithZero
-  [^GroupWithZero group]
-
-  (Group.
-    (difference (underlying-set group) (zero-elements group))
-    (.op group)
-    (.id group)
-    (.inv group)))
-
+; Subalgebra lattices for commutative groups with zero
 (defmethod sub GroupWithZero
   [^GroupWithZero semigroup]
 

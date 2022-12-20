@@ -13,6 +13,7 @@
             [locus.set.copresheaf.quiver.unital.object :refer :all]
             [locus.set.copresheaf.quiver.unital.morphism :refer :all]
             [locus.set.copresheaf.topoi.copresheaf.object :refer :all]
+            [locus.algebra.commutative.semigroup.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.category.core.object :refer :all]
             [locus.algebra.category.core.morphism :refer :all]

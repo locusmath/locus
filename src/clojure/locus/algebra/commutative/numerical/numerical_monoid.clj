@@ -1,4 +1,4 @@
-(ns locus.algebra.semigroup.numerical.numerical-monoid
+(ns locus.algebra.commutative.numerical.numerical-monoid
   (:require [locus.set.logic.core.set :refer :all]
             [locus.set.logic.numeric.ap :refer :all]
             [locus.set.mapping.general.core.object :refer :all]
@@ -9,9 +9,11 @@
             [locus.order.lattice.core.object :refer :all]
             [locus.set.quiver.binary.core.object :refer :all]
             [locus.set.copresheaf.quiver.unital.object :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.algebra.commutative.semigroup.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
-            [locus.set.quiver.structure.core.protocols :refer :all]))
+            [locus.algebra.commutative.monoid.object :refer :all]))
 
 ; Let (N,+) be the monoid consisting of all natural numbers under addition. Then
 ; a numerical monoid is simply an additive submonoid of this monoid, in particular
@@ -51,7 +53,11 @@
   (invoke [this [a b]] (+ a b))
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
-(derive NumericalMonoid :locus.set.copresheaf.structure.core.protocols/monoid)
+(derive NumericalMonoid :locus.set.copresheaf.structure.core.protocols/commutative-monoid)
+
+; Identity elements of numerical monoids
+(defmethod identity-elements NumericalMonoid
+  [^NumericalMonoid monoid] #{0})
 
 ; Restore the morphic generating set of the numerical monoid
 (defmethod morphic-gens NumericalMonoid
@@ -68,3 +74,26 @@
     (fn [[a b]]
       (+ a b))
     0))
+
+; Every numerical monoid has a natural preorder associated to it which can be computed so that
+; given any a, b we have that a is less then b provided that the difference a-b is an element
+; in the numerical monoid.
+(defmethod natural-preorder NumericalMonoid
+  [^NumericalMonoid monoid]
+
+  (let [coll (underlying-set monoid)]
+    (fn [[a b]]
+     (let [diff (- b a)]
+       (or
+         (zero? diff)
+         (and
+           (not (neg? diff))
+           (coll diff)))))))
+
+; Let N be a numerical monoid. Then N is a commutative J-trivial semigroup. It follows that the
+; condensation of N is nothing more than N itself, because its condensation congruence is
+; trivial. Therefore, when implementing the condensation multimethod for numerical semigroups
+; we can simply return the argument back to the caller. The same is true for any other
+; class of commutative J-trivial semigroups.
+(defmethod natural-condensation NumericalMonoid
+  [^NumericalMonoid monoid] monoid)

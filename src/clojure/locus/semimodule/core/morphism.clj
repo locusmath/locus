@@ -7,6 +7,7 @@
             [locus.set.action.core.protocols :refer :all]
             [locus.set.action.global.object :refer :all]
             [locus.set.action.global.morphism :refer :all]
+            [locus.algebra.commutative.semigroup.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
             [locus.algebra.semigroup.monoid.morphism :refer :all]

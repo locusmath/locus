@@ -13,6 +13,7 @@
             [locus.algebra.category.hom.bhom :refer :all]
             [locus.algebra.category.hom.dhom :refer :all]
             [locus.algebra.category.hom.funhom :refer :all]
+            [locus.algebra.commutative.semigroup.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
             [locus.algebra.group.core.object :refer :all]

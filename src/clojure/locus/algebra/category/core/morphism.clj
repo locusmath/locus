@@ -11,6 +11,7 @@
             [locus.set.quiver.binary.core.morphism :refer :all]
             [locus.set.copresheaf.quiver.unital.object :refer :all]
             [locus.set.copresheaf.quiver.unital.morphism :refer :all]
+            [locus.algebra.commutative.semigroup.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
             [locus.algebra.semigroup.monoid.morphism :refer :all]

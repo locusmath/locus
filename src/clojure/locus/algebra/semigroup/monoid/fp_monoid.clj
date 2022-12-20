@@ -9,8 +9,9 @@
             [locus.order.lattice.core.object :refer :all]
             [locus.set.quiver.binary.core.object :refer :all]
             [locus.set.copresheaf.quiver.unital.object :refer :all]
-            [locus.algebra.semigroup.core.object :refer :all]
-            [locus.set.quiver.structure.core.protocols :refer :all]))
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.algebra.commutative.semigroup.object :refer :all]
+            [locus.algebra.semigroup.core.object :refer :all]))
 
 ; Finitely presented monoids
 ; A finitely presented monoid is the combination of a set of generators, and

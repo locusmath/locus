@@ -418,6 +418,21 @@
             (list part))))
       p)))
 
+; Get the index of a containing set for an element
+(defn index-of-container?
+  [ordered-family x]
+
+  (loop [colls ordered-family
+         current-index 0]
+    (if (empty? colls)
+      -1
+      (let [coll (first colls)]
+        (if (contains? coll x)
+          current-index
+          (recur
+            (rest colls)
+            (inc current-index)))))))
+
 ; The family of all partitions of a set
 (deftype BellSet [coll]
   clojure.lang.Seqable

@@ -23,6 +23,7 @@
             [locus.algebra.category.core.generated-category :refer :all]
             [locus.algebra.groupoid.core.object :refer :all]
             [locus.algebra.group.core.object :refer :all]
+            [locus.algebra.commutative.semigroup.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.set.copresheaf.quiver.dependency.object :refer :all]
             [locus.set.copresheaf.quiver.permutable.object :refer :all]

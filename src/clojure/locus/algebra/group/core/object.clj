@@ -20,6 +20,7 @@
             [locus.set.copresheaf.quiver.unital.object :refer :all]
             [locus.set.copresheaf.quiver.permutable.object :refer :all]
             [locus.set.copresheaf.quiver.dependency.object :refer :all]
+            [locus.algebra.commutative.semigroup.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
             [locus.set.quiver.structure.core.protocols :refer :all])
@@ -36,7 +37,6 @@
   ConcreteObject
   (underlying-set [this] elems)
 
-  ; Semigroups are semigroupoids and so they are structured quivers
   StructuredDiset
   (first-set [this] elems)
   (second-set [this] #{0})
@@ -52,16 +52,12 @@
   (identity-morphism-of [this obj] id)
 
   StructuredPermutableQuiver
-  (invert-morphism [this x]
-    (inv x))
-  (underlying-permutable-quiver [this]
-    (singular-permutable-quiver elems 0 inv))
+  (invert-morphism [this x] (inv x))
+  (underlying-permutable-quiver [this] (singular-permutable-quiver elems 0 inv))
 
   StructuredDependencyQuiver
-  (underlying-dependency-quiver [this]
-    (singular-dependency-quiver elems 0 id inv))
+  (underlying-dependency-quiver [this] (singular-dependency-quiver elems 0 id inv))
 
-  ; Every semigroup is a function
   ConcreteMorphism
   (inputs [this] (complete-relation elems))
   (outputs [this] elems)
@@ -123,14 +119,14 @@
   (to-group (semigroup-by-table coll)))
 
 ; Get the inverse bijection associated with a group
-(defmethod inverse-function Group
+(defmethod inverse-function :locus.set.copresheaf.structure.core.protocols/group
   [^Group group]
 
   (->SetFunction
     (underlying-set group)
     (underlying-set group)
     (fn [elem]
-      ((.inv group) elem))))
+      (invert-element group elem))))
 
 ; Cyclic groups
 (defn cyclic-group

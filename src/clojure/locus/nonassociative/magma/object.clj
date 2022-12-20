@@ -13,6 +13,7 @@
             [locus.set.quiver.relation.binary.sr :refer :all]
             [locus.set.quiver.relation.binary.br :refer :all]
             [locus.order.lattice.core.object :refer :all]
+            [locus.algebra.commutative.semigroup.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
             [locus.algebra.group.core.object :refer :all])

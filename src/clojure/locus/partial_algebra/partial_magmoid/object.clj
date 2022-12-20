@@ -14,6 +14,7 @@
             [locus.set.quiver.binary.thin.object :refer :all]
             [locus.set.tree.two-quiver.core.object :refer :all]
             [locus.set.tree.two-quiver.path.object :refer :all]
+            [locus.algebra.commutative.semigroup.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.partial-algebra.partial-magma.object :refer :all])
   (:import (locus.partial_algebra.partial_magma.object PartialMagma)))

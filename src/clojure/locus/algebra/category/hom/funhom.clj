@@ -3,13 +3,13 @@
             [locus.set.logic.sequence.object :refer :all]
             [locus.set.logic.limit.product :refer :all]
             [locus.set.quiver.relation.binary.product :refer :all]
-            [locus.con.core.setpart :refer :all]
             [locus.set.mapping.general.core.object :refer :all]
             [locus.set.logic.structure.protocols :refer :all]
             [locus.set.copresheaf.structure.core.protocols :refer :all]
             [locus.set.quiver.unary.core.morphism :refer :all]
-            [locus.algebra.category.hom.sethom :refer :all]
-            [locus.set.quiver.structure.core.protocols :refer :all])
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.con.core.setpart :refer :all]
+            [locus.algebra.category.hom.sethom :refer :all])
   (:import [locus.set.mapping.general.core.object SetFunction]
            (locus.set.quiver.unary.core.morphism Diamond)))
 

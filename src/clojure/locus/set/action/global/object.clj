@@ -17,6 +17,7 @@
             [locus.set.quiver.diset.core.object :refer :all]
             [locus.set.quiver.unary.core.morphism :refer :all]
             [locus.order.lattice.core.object :refer :all]
+            [locus.algebra.commutative.semigroup.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.core.morphism :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
@@ -24,7 +25,7 @@
             [locus.algebra.group.core.object :refer :all]
             [locus.algebra.semigroup.monoid.end :refer :all]
             [locus.set.action.core.protocols :refer :all]
-            [locus.algebra.semigroup.monoid.arithmetic :refer :all])
+            [locus.algebra.commutative.monoid.arithmetic :refer :all])
   (:import (locus.order.lattice.core.object Lattice)
            (locus.set.mapping.effects.global.transformation Transformation)
            (locus.set.mapping.effects.global.permutation Permutation)

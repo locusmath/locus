@@ -1,8 +1,8 @@
 (ns locus.algebra.group.term.signed-list
   (:require [locus.set.logic.core.set :refer :all]
             [locus.set.logic.structure.protocols :refer :all]
-            [locus.algebra.group.term.signed-multiset :refer :all]
-            [locus.set.quiver.structure.core.protocols :refer :all]))
+            [locus.set.quiver.structure.core.protocols :refer :all]
+            [locus.algebra.group.term.signed-multiset :refer :all]))
 
 ; Let G be a free group over a set of generators S, then we say that the elements of G
 ; are lists of elements of S that also can include the data of signs which describe
