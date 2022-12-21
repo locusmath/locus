@@ -4,8 +4,8 @@
             [locus.set.logic.structure.protocols :refer :all]
             [locus.con.core.object :refer :all]
             [locus.con.core.setpart :refer :all])
-  (:import [locus.set.logic.core.set SeqableUniversal]
-           (clojure.lang IPersistentMap IPersistentVector)
+  (:import [locus.set.logic.core.set SeqableUniversal Multiset]
+           (clojure.lang IPersistentMap IPersistentVector IPersistentList)
            (locus.set.logic.limit.product CartesianCoproduct)
            (locus.con.core.object CoproductPartition)))
 
@@ -85,11 +85,6 @@
 
 (derive SetFunction :locus.set.logic.structure.protocols/set-function)
 
-(defn identity-function
-  [a]
-
-  (SetFunction. a a identity))
-
 (defmethod visualize :locus.set.logic.structure.protocols/structured-function
   [func]
 
@@ -114,6 +109,14 @@
       (vec (concat in-seq out-seq)))))
 
 ; Get the sets and functions associated with a set function
+(defn identity-function
+  [a]
+
+  (SetFunction. a a identity))
+
+(defmethod identity-morphism :locus.set.logic.core.set/universal
+  [coll] (identity-function coll))
+
 (defmethod get-set :locus.set.logic.structure.protocols/set-function
   [f x]
 
@@ -135,13 +138,7 @@
 (defmethod get-function :locus.set.logic.core.set/universal
   [coll [a b]] (case [a b] [0 0] (identity-function coll)))
 
-; Underlying function of a concrete morphism
-(defn underlying-function
-  [func]
-
-  (SetFunction. (inputs func) (outputs func) func))
-
-; This is an interface between maps and functions
+; Specific conversion routines
 (defn mapfn
   [coll]
 
@@ -150,13 +147,14 @@
     (set (vals coll))
     coll))
 
-(defn fnmap
-  [func]
+(defn vector-to-function
+  [vec]
 
-  (let [coll (seq (inputs func))]
-    (zipmap
-      coll
-      (map func coll))))
+  (->SetFunction
+    (->Upto (count vec))
+    (set vec)
+    (fn [i]
+      (nth vec i))))
 
 (defn relation-to-function
   [coll]
@@ -172,16 +170,12 @@
                 :when (= a x)]
             b))))))
 
-(defn vector-to-function
-  [vec]
+(defn underlying-function
+  [func]
 
-  (->SetFunction
-    (->Upto (count vec))
-    (set vec)
-    (fn [i]
-      (nth vec i))))
+  (SetFunction. (inputs func) (outputs func) func))
 
-; Generalized conversions
+; General conversion routines
 (defmulti to-function type)
 
 (defmethod to-function :locus.set.logic.structure.protocols/set-function
@@ -199,17 +193,7 @@
 (defmethod to-function :default
   [func] (underlying-function func))
 
-; Underlying relations of functions and related structures
-(defmethod underlying-relation :locus.set.logic.structure.protocols/structured-function
-  [func]
-
-  (set
-    (map
-      (fn [i]
-        (list i (func i)))
-      (inputs func))))
-
-; Composition and identities in the topos Sets of sets and functions
+; Composition in the topos Sets of sets and functions
 ; This is the most familiar composition operation in mathematics.
 (defn compose-functions
   ([f] f)
@@ -222,9 +206,6 @@
 
 (defmethod compose* :locus.set.logic.structure.protocols/set-function
   [a b] (compose-functions a b))
-
-(defmethod identity-morphism :locus.set.logic.core.set/universal
-  [coll] (identity-function coll))
 
 ; The images and inverse images of functions are one of the basic
 ; computations we can perform with them
@@ -296,17 +277,23 @@
   (->SetPartition
     (partition-inverse-image func (equivalence-classes partition))))
 
-; The generalized kernel of a function
-(defn kernel
-  [func]
+(defmethod image
+  [:locus.set.logic.structure.protocols/set-function Multiset]
+  [func coll]
 
-  (->FunctionalPartition (inputs func) func))
+  (umap func coll))
 
-; The image and the kernel are fundamental invariants of a function
+; The function image of a function is the set image of its domain
 (defn function-image
   [func]
 
   (set (map func (inputs func))))
+
+; The kernel of a function is the partition image of the minimal partition of its codomain
+(defn kernel
+  [func]
+
+  (->FunctionalPartition (inputs func) func))
 
 (defn function-kernel
   [func]
@@ -315,6 +302,7 @@
     (fn [a b] (= (func a) (func b)))
     (inputs func)))
 
+; Epi mono factorisations in the topos of functions
 (defn kernel-image-factorisation
   [func]
 
@@ -390,6 +378,25 @@
 
   (fiber func (func x)))
 
+; Underlying relations of set functions
+(defmethod underlying-relation :locus.set.logic.structure.protocols/structured-function
+  [func]
+
+  (set
+    (map
+      (fn [i]
+        (list i (func i)))
+      (inputs func))))
+
+; Underlying maps of set functions
+(defn underlying-map
+  [func]
+
+  (let [coll (seq (inputs func))]
+    (zipmap
+      coll
+      (map func coll))))
+
 ; Functions can be treated as special types of ordered triples
 (defn underlying-transition
   [morphism]
@@ -399,7 +406,7 @@
 (defn function-triple
   [f]
 
-  (list (inputs f) (outputs f) (fnmap f)))
+  (list (inputs f) (outputs f) (underlying-map f)))
 
 ; Projection functions and inclusion functions
 (defn inclusion-function
@@ -469,6 +476,55 @@
   [func]
 
   (- (count (outputs func)) (count (function-image func))))
+
+; Adjoin inputs and outputs to a mapping
+(defmulti adjoin-inputs (fn [a b] (type a)))
+
+(defmulti adjoin-outputs (fn [a b] (type a)))
+
+(defmethod adjoin-outputs :locus.set.logic.structure.protocols/set-function
+  [func coll]
+
+  (SetFunction.
+    (inputs func)
+    (union (outputs func) coll)
+    func))
+
+(defn funassoc
+  [func & items]
+
+  (let [coll (apply hash-map items)
+        key-set (set (keys coll))
+        val-set (set (vals coll))]
+    (->SetFunction
+      (union (inputs func) key-set)
+      (union (outputs func) val-set)
+      (fn [i]
+        (if (contains? key-set i)
+          (get coll i)
+          (func i))))))
+
+(defn merge-functions
+  ([] (SetFunction. #{} #{} (constantly nil)))
+  ([a] a)
+  ([a b]
+   (let [a-keys (inputs a)
+         b-keys (inputs b)]
+     (->SetFunction
+      (union a-keys b-keys)
+      (union (outputs a) (outputs b))
+      (fn [i]
+        (if (contains? b-keys i)
+          (b i)
+          (a i))))))
+  ([a b & args]
+   (reduce merge-functions (merge-functions a b) args)))
+
+; Limits and colimits in the topos of copresheaves
+; Several limits and colimits of copresheaves are so fundamental that they have their own names and
+; special implementations. These include equalizers, coequalizers, product, coproducts, and their
+; variants like fiber products and fiber coproducts. All limits and colimits of copresheaves can be
+; formed from equalizers, coequalizers, products, and coproducts.
 
 ; Equalizers are limits of a parallel arrow diagram
 (defn equalizer
@@ -569,34 +625,6 @@
         (fn [x]
           (projection fiber-coproduct-object (list 1 x)))))))
 
-; An evaluation arrow as a set function
-(defn in-hom-class?
-  [func a b]
-
-  (and
-    (equal-universals? (inputs func) a)
-    (equal-universals? (outputs func) b)))
-
-(defn internal-set-hom
-  [a b]
-
-  (->Universal
-    (fn [func]
-      (and
-        (isa? (type func) :locus.set.logic.structure.protocols/set-function)
-        (in-hom-class? func a b)))))
-
-(defn set-ev
-  [a b]
-
-  (->SetFunction
-    (->CartesianProduct
-      [(internal-set-hom a b)
-       a])
-    b
-    (fn [[func x]]
-      (func x))))
-
 ; Product and coproduct of functions
 (defn function-product
   [& functions]
@@ -629,6 +657,39 @@
 
   (apply function-coproduct args))
 
+; A topos like Sets is identified by the fact that it has all limits and colimits for all
+; diagrams. In addition to this, it must have internal homs and evaluation morphisms so that
+; it is a closed category. To complete this implementation of the fundamental topos Sets
+; we implement an internal hom for it.
+
+; An evaluation arrow as a set function
+(defn in-hom-class?
+  [func a b]
+
+  (and
+    (equal-universals? (inputs func) a)
+    (equal-universals? (outputs func) b)))
+
+(defn internal-set-hom
+  [a b]
+
+  (->Universal
+    (fn [func]
+      (and
+        (isa? (type func) :locus.set.logic.structure.protocols/set-function)
+        (in-hom-class? func a b)))))
+
+(defn set-ev
+  [a b]
+
+  (->SetFunction
+    (->CartesianProduct
+      [(internal-set-hom a b)
+       a])
+    b
+    (fn [[func x]]
+      (func x))))
+
 ; The subobject classifier in the topos of sets
 (defn subset-character
   [a b]
@@ -638,19 +699,6 @@
     #{false true}
     (fn [i]
       (contains? a i))))
-
-; Adjoin inputs and outputs to a mapping
-(defmulti adjoin-inputs (fn [a b] (type a)))
-
-(defmulti adjoin-outputs (fn [a b] (type a)))
-
-(defmethod adjoin-outputs :locus.set.logic.structure.protocols/set-function
-  [func coll]
-
-  (SetFunction.
-    (inputs func)
-    (union (outputs func) coll)
-    func))
 
 ; Special restriction methods for functions
 (defn restrict-function
@@ -667,6 +715,38 @@
   (SetFunction.
     (inputs func)
     coll
+    func))
+
+(defn remove-function-input
+  [func x]
+
+  (SetFunction.
+    (disj (inputs func) x)
+    (outputs func)
+    func))
+
+(defn remove-function-output
+  [func x]
+
+  (SetFunction.
+    (disj (outputs func) x)
+    (outputs func)
+    func))
+
+(defn remove-function-inputs
+  [func coll]
+
+  (SetFunction.
+    (difference (inputs func) coll)
+    (outputs func)
+    func))
+
+(defn remove-function-outputs
+  [func coll]
+
+  (SetFunction.
+    (difference (outputs func) coll)
+    (outputs func)
     func))
 
 ; Testing for subalgebras
@@ -773,6 +853,27 @@
       (subfunction func i o))
     (enumerate-subalgebras func)))
 
+; Closure and interior of subalgebras
+(defn subalgebra-closure
+  [func in-set out-set]
+
+  [in-set (union out-set (set-image func in-set))])
+
+(defn subalgebra-interior
+  [func in-set out-set]
+
+  [(intersection in-set (set-inverse-image func out-set)) out-set])
+
+; Heyting algebra structure on subobjects of functions
+(defn subfunction-implication
+  [func [u1 u2] [v1 v2]]
+
+  (let [cu1 (difference (inputs func) u1)
+        cu2 (difference (outputs func) u2)
+        a (union cu1 v1)
+        b (union cu2 v2)]
+    (subalgebra-interior func a b)))
+
 ; We now need something to deal with the enumeration of all
 ; possible subalgebras of a  given function.
 (defn preceding-subalgebra?
@@ -780,11 +881,6 @@
 
   (and (superset? (list a c))
        (superset? (list b d))))
-
-(defn subalgebra-closure
-  [func in-set out-set]
-
-  [in-set (union out-set (set-image func in-set))])
 
 (defn parent-subalgebras
   [func in-set out-set]
@@ -1070,6 +1166,27 @@
         (inputs func)))
     #{(outputs func)}))
 
+; Check if elements are contained in the input or output set
+(defn contains-input?
+  [func x]
+
+  (contains? (inputs func) x))
+
+(defn contains-output?
+  [func x]
+
+  (contains? (outputs func) x))
+
+(defn contains-inputs?
+  [func coll]
+
+  (superset? (list coll (inputs func))))
+
+(defn contains-outputs?
+  [func coll]
+
+  (superset? (list coll (outputs func))))
+
 ; Ontology of relations
 ; Functions may be related to one another by a number of different relations including
 ; equality and ordering.
@@ -1094,6 +1211,17 @@
       (fn [i]
         (= (a i) (b i)))
       (inputs a))))
+
+(defn glueable-functions?
+  [a b]
+
+  (and
+    (equal-universals? (inputs a) (inputs b))
+    (equal-universals? (outputs a) (outputs b))
+    (every?
+      (fn [i]
+        (= (a i) (b i)))
+      (intersection (inputs a) (inputs b)))))
 
 (def superfunction?
   (assoc (->Universal
@@ -1320,5 +1448,3 @@
   [f g]
 
   (not= (fiber-cardinalities f) (fiber-cardinalities g)))
-
-
