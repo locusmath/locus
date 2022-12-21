@@ -246,7 +246,7 @@
     (identity-element? category (category (list a b)))
     (identity-element? category (category (list b a)))))
 
-(defn inverse-elements
+(defmethod inverse-elements :locus.set.copresheaf.structure.core.protocols/category
   [category a]
 
   (filter
