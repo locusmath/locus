@@ -1,31 +1,41 @@
 # Locus
 A specialised computer algebra system for presheaf theory.
 
-## The geometry of memory
-Locus is based upon the idea that we can reason logically about the geometry of memory using presheaf theory.
+## Geometry of memory
+Memory locations and their relations are abstractly modeled using presheaf congruences. 
 
-* Memory locations: congruences in the topos Sets
-* Data dependencies: congruences in the topos Sets^(->)
+* Memory locations: congruences in Sets
+* Data dependencies: congruences in Sets^(->)
 
-Memory locations and data dependencies are presheaf congruences. This motivates our idea that computation should be modeled using presheaf theory.
+## Presheaf constructions
+Classical mathematics defined a number of constructions on sets. We can start by generalizing these to presheaves.
 
-## Visualisation of presheaves
-A typical presheaf over a partial order can be displayed using Graphviz clusters. Each cluster of nodes represents a set of the copresheaf and the arrows between them represent generating functions. These generalize the box and arrow diagrams typically used for displaying functions.
+| Sets               | Presheaves               |
+|--------------------|--------------------------|
+| Subsets            | Subobjects               |
+| Partitions         | Congruences              |
+| Ordered sets       | Presheaves of posets     |
+| Topological spaces | Presheaves of topologies |
+| Rings              | Presheaves of rings      |
+| Structured sets    | Structure presheaves     |
 
-<img width="500" style="border:1px solid black;" src="https://i.ibb.co/gFW1y3P/triangle.png">
+The point is to determine as much as possible what constructions look like on presheaves instead of sets. So an example of this is that we can take the lattice of preorders previously defined on sets, and now define a lattice of preorders for any presheaf whose objects are presheaves of preorders. This applies to most structures which have presheaf generalisations.
 
-Copresheaves in the topos Sets^(1,2) are used in the topos theory of hypegraphs. Any hypergraph or finite set system produces a corresponding span copresheaf.
+Topos theory allows us to generalized several constructions from sets to presheaves. Set predicates correspond to subobject classifiers. Limits and colimits of sets can be generalized to presheaves. Structures on sets can be generalized to structures on presheaves, or to internal structures in a presheaf topos.
 
-<img width="500" style="border:1px solid black;" src="https://i.ibb.co/1GL27JV/span.png">
+## Presheaf visualisations
+Locus can visualize presheaves of sets in one of two ways. The first is all at once using Graphivz clusters like below.
 
-This method of visualisation works best for copresheaves over partial orders. Otherwise, a JavaFX based graphical user interface is provided to handle the visualisation of copresheaves over finitely generated categories. It displays an interactive quiver that opens up a set or function diagram when you click on its objects or morphisms.
+<img width="300" style="border:1px solid black;" src="https://i.ibb.co/gFW1y3P/triangle.png">
 
-<img width="700" alt="nje" style="border:1px solid black;" src="https://i.ibb.co/ygn314S/Screenshot-20220724-150704.png">
+This works well for presheaves over partial orders. The category of elements, and its object preorder can be visualized for such simple presheaves. The second way they can be visualized is with the JavaFX viewer which lets you look at the functions of the presheaf one at a time:
 
-The same technique used in the copresheaf viewer can be used to view globular sets, which associate arbitrary quivers to the hom classes in a directed graph, instead of functions. So alternative mechanisms of visualisations are available for globular sets, which are another important class of presheaf encountered in topos theory.
+<img width="500" alt="nje" style="border:1px solid black;" src="https://i.ibb.co/ygn314S/Screenshot-20220724-150704.png">
+
+Separate visualisation routines are available for different types of presheaves of structures. Presheaves of unary relations are visualised by highlighting all elements in each unary relation a different color. Presheaves of setoids are visualised by using nested graphviz clusters.
 
 ## Features
-Locus is based upon the idea of organizing mathematical theories using presheaf theory. Locus enables computations in presheaf theory.
+Locus is based upon the idea of organizing computation using presheaf theory. 
 
 * support for presheaves over preorders: including the functional dependencies of relations, sets, functions, disets, bijections, difunctions, dibijections, nsets, nfunctions, nbijections, triangles, spans, cospans, diamonds, gems, chains, ditriangles, cubes, trijections, multijections, and so on.
 * presheaves over monoids: MSets, GSets, and related structures.
@@ -33,7 +43,7 @@ Locus is based upon the idea of organizing mathematical theories using presheaf 
 * support for presheaves over product categories: bicopresheaves, tricopresheaves, the hom functor, etc. Support for presheaves over coproduct categories and the construction of such presheaves by direct sum of simpler presheaves.
 * support for a broad variety of presheaves over general categories: quivers, permutable quivers, unital quivers, dependency quivers, ternary quivers, higher arity quivers, functional quivers, compositional quivers, two quivers, n-quivers, path quivers, globular sets, simplicial sets, and presheaves over arbitrary categories.
 * support for presheaves over sites: sheaves as a special case in presheaf theory
-* functional dataflow analysis using congruence lattices of copresheaves
+* support for modeling subalgebras using presheaves of unary relations and congruences using presheaves of setoids
 * support for structure presheaves using functors over concrete categories: presheaves of monoids, presheaves of preorders, presheaves of categories, presheaves of rings, etc
 * presheaf based approaches to higher structures using globular and simplicial sets
 * presheaf based mechanisms for reasoning about the functional dependencies of relations
@@ -44,7 +54,7 @@ Locus is based upon the idea of organizing mathematical theories using presheaf 
 * the hyperarithmetic of additive partitions
 * interfaces with apache commons math
 
-## Documentation 
+## Documentation
 A user manual is provided in the documentation folder. It describes our original research into the topos theoretic foundations of computation and their implementation. A revised and updated version of the user manual will be developed soon.
 
 ## Authors
@@ -56,7 +66,7 @@ Apache license version 2.0
 Copyright © 2022 John Bernier
 
 ## Version
-1.5.4 release
+1.5.5 release
 
 ## Contributing
 Contributions are welcome.

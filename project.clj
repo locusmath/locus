@@ -1,4 +1,4 @@
-(defproject locus "1.5.4-SNAPSHOT"
+(defproject locus "1.5.5-SNAPSHOT"
   :description "A specialized computer algebra system for presheaf theory."
   :license {:name "Apache License"
             :url "https://www.apache.org/licenses/LICENSE-2.0"}
