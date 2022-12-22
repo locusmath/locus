@@ -21,7 +21,7 @@ Classical mathematics defined a number of constructions on sets. We can start by
 
 The point is to determine as much as possible what constructions look like on presheaves instead of sets. So an example of this is that we can take the lattice of preorders previously defined on sets, and now define a lattice of preorders for any presheaf whose objects are presheaves of preorders. This applies to most structures which have presheaf generalisations.
 
-Topos theory allows us to generalized several constructions from sets to presheaves. Set predicates correspond to subobject classifiers. Limits and colimits of sets can be generalized to presheaves. Structures on sets can be generalized to structures on presheaves, or to internal structures in a presheaf topos.
+Topos theory allows us to generalize several constructions from sets to presheaves. Set predicates correspond to subobject classifiers. Limits and colimits of sets can be generalized to presheaves. Structures on sets can be generalized to structures on presheaves, or to internal structures in a presheaf topos.
 
 ## Presheaf visualisations
 Locus can visualize presheaves of sets in one of two ways. The first is all at once using Graphivz clusters like below.
