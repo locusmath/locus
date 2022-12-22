@@ -15,8 +15,7 @@
             [locus.set.quiver.binary.core.object :refer :all]
             [locus.set.copresheaf.quiver.unital.object :refer :all]
             [locus.order.general.core.object :refer :all]
-            [locus.set.quiver.structure.core.protocols :refer :all]
-            [locus.hyper.mapping.function :refer :all]))
+            [locus.set.quiver.structure.core.protocols :refer :all]))
 
 ; Let C,D be thin categories. Then a functor f : C -> D is entirely determined by its object
 ; part. It follows that we can save memory by defining a special class for that only
@@ -169,23 +168,24 @@
     (fn [coll]
       (set-inverse-image func coll))))
 
-(defn hyperfunction-monotone-map
-  [func]
+(comment
+ (defn hyperfunction-monotone-map
+   [func]
 
-  (->MonotoneMap
-    (power-set-poset (source-object func))
-    (power-set-poset (target-object func))
-    (fn [coll]
-      (hyperfunction-set-image func coll))))
+   (->MonotoneMap
+     (power-set-poset (source-object func))
+     (power-set-poset (target-object func))
+     (fn [coll]
+       (hyperfunction-set-image func coll))))
 
-(defn inverse-hyperfunction-monotone-map
-  [func]
+ (defn inverse-hyperfunction-monotone-map
+   [func]
 
-  (->MonotoneMap
-    (power-set-poset (source-object func))
-    (power-set-poset (target-object func))
-    (fn [coll]
-      (hyperfunction-set-inverse-image func coll))))
+   (->MonotoneMap
+     (power-set-poset (source-object func))
+     (power-set-poset (target-object func))
+     (fn [coll]
+       (hyperfunction-set-inverse-image func coll)))))
 
 ; Reflect principal ideals and filters in order to better understand residuated mappings, and their
 ; category which is equivalent to the category of adjoints of preorders
@@ -201,17 +201,6 @@
   (let [target-relation (underlying-relation (target-object monotone-map))]
     (set-inverse-image monotone-map (principal-filter target-relation x))))
 
-; The category Ord is a locally ordered category, in which two monotone maps are comparable
-; to one another in the pointwise ordering.
-(defn componentwise-stronger-monotone-map?
-  [f g]
-
-  (let [rel (underlying-relation (target-object f))]
-    (every?
-     (fn [i]
-       (rel (list (f i) (g i))))
-     (inputs f))))
-
 ; Stronger monotone maps are simply the ones that have larger preorders on their input and outputs
 (defn stronger-monotone-map?
   [f g]
@@ -219,11 +208,14 @@
   (and
     (equal-functions? (underlying-function f) (underlying-function g))
     (superset?
-      (list (underlying-relation (source-object f)) (underlying-relation (source-object g))))
+      (list
+        (underlying-relation (source-object f))
+        (underlying-relation (source-object g))))
     (superset?
-      (list (underlying-relation (target-object f)) (underlying-relation (target-object g))))))
+      (list
+        (underlying-relation (target-object f))
+        (underlying-relation (target-object g))))))
 
-; Join or meet preorders of monotone maps with the same underlying-functions
 (defn join-monotone-maps
   [& maps]
 
@@ -244,10 +236,46 @@
       (fn [i]
         (f i)))))
 
-; Monotone maps are functors of thin categories
-; Therefore, they can be added to our ontology of functors and semifunctors.
+; The category Ord is a locally ordered category, in which two monotone maps are comparable
+; to one another in the pointwise ordering.
 (defmulti monotone-map? type)
 
+(defn order-hom
+  [a b]
+
+  (->Universal
+    (fn [morphism]
+      (and
+        (monotone-map? morphism)
+        (= a (source-object morphism))
+        (= b (target-object morphism))))))
+
+(defn componentwise-stronger-monotone-map?
+  [f g]
+
+  (let [rel (underlying-relation (target-object f))]
+    (every?
+      (fn [i]
+        (rel (list (f i) (g i))))
+      (inputs f))))
+
+(defn hom-preorder-of-monotone-maps
+  [a b]
+
+  (->Preposet
+    (order-hom a b)
+    (fn [[a b]]
+      (componentwise-stronger-monotone-map? a b))))
+
+(defmethod submorphism?
+  [:locus.set.copresheaf.structure.core.protocols/monotone-map
+   :locus.set.copresheaf.structure.core.protocols/monotone-map]
+  [func func]
+
+  (componentwise-stronger-monotone-map? func func))
+
+; Monotone maps are functors of thin categories
+; Therefore, they can be added to our ontology of functors and semifunctors.
 (defmethod monotone-map? :locus.set.copresheaf.structure.core.protocols/monotone-map
   [monotone-map] true)
 

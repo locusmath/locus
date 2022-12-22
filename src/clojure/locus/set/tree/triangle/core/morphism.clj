@@ -69,10 +69,10 @@
 (defn triangle-morphism-component-function
   [triangle n]
 
-  (case n
-    '(0 0) (triangle-source-function triangle)
-    '(0) (triangle-middle-function triangle)
-    '() (triangle-target-function triangle)))
+  (cond
+    (= n '(0 0)) (triangle-source-function triangle)
+    (= n '(0)) (triangle-middle-function triangle)
+    (= n '()) (triangle-target-function triangle)))
 
 ; Components of morphisms of triangles
 (defmethod get-set TriangleMorphism

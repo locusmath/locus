@@ -35,10 +35,10 @@
         id (tag elem)
         val (member elem)
         new-id (inc id)
-        new-val (case id
-                  '(0 0) ((prefunction triangle) val)
-                  '(0) ((postfunction triangle) val)
-                  '() val)]
+        new-val (cond
+                  (= id '(0 0)) ((prefunction triangle) val)
+                  (= id '(0)) ((postfunction triangle) val)
+                  (= id '()) val)]
     (->TriangleElement triangle new-id new-val)))
 
 ; Ontology of triangle elements

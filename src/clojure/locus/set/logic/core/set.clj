@@ -278,6 +278,12 @@
     ([a b] (difference (union a b) (intersection a b)))
     ([a b & more] (reduce symmetric-difference (symmetric-difference a b) more))))
 
+; Subset implication operation
+(defn subset-implication
+  [coll a b]
+
+  (union (difference coll a) b))
+
 ; The dimembers of a family of sets are all the members of members of the family
 (defmulti dimembers type)
 

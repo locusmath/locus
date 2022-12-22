@@ -308,6 +308,13 @@
 ; The paths of a category include all elements of its composition domain
 (defmulti paths type)
 
+; Methods for locally ordered quivers and categories
+(defmulti submorphism? (fn [a b] [(type a) (type b)]))
+
+(defmulti meet-morphisms (fn [a b] [(type a) (type b)]))
+
+(defmulti join-morphisms (fn [a b] [(type a) (type b)]))
+
 ; Display tables of semigroups, magmas, partial magmas, groups, categories, semicategories,
 ; groupoids, magmoids, or any other table like algebraic structure.
 (defmulti display-table type)

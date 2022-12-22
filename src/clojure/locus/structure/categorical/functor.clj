@@ -19,10 +19,10 @@
             [locus.algebra.category.concrete.concrete-category :refer :all]
             [locus.set.copresheaf.topoi.copresheaf.object :refer :all]
             [locus.algebra.category.concrete.categories :refer :all]
-            [locus.structure.preposetal.functor :refer :all]
-            [locus.structure.monoidal.functor :refer :all])
+            [locus.structure.monoidal.functor :refer :all]
+            [locus.po.copresheaf.object :refer :all])
   (:import (locus.structure.monoidal.functor MonoidalFunctor)
-           (locus.structure.preposetal.functor PreposetalFunctor)
+           (locus.po.copresheaf.object PreorderedCopresheaf)
            (locus.set.copresheaf.topoi.copresheaf.object Copresheaf)))
 
 ; A presheaf of categories is a functor F: C -> Cat, which means that it is a functor valued in categories.
@@ -121,8 +121,8 @@
     (.-object_function functor)
     (.-morphism_function functor)))
 
-(defmethod to-categorical-functor PreposetalFunctor
-  [^PreposetalFunctor functor]
+(defmethod to-categorical-functor PreorderedCopresheaf
+  [^PreorderedCopresheaf functor]
 
   (->CategoricalFunctor
     (.-index functor)

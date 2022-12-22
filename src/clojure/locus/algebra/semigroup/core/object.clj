@@ -895,9 +895,6 @@
 (defmethod monoid? :default
   [x] false)
 
-(defmethod category? :locus.set.copresheaf.structure.core.protocols/semigroup
-  [semigroup] (not (empty? (identity-elements semigroup))))
-
 ; Special classes of semigroups and monoids
 (defn skeletal-monoid?
   [monoid]

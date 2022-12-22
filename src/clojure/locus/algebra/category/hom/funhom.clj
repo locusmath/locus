@@ -157,22 +157,6 @@
 ; We need to get all subfunctions of a given function in the topos of 
 ; functions with a given isomorphism type, in order to enumerate the
 ; elements of hom classes of the mono subcategory.
-(defn remove-function-output
-  [func x]
-
-  (subfunction
-   func
-   (difference (inputs func) (fiber func x))
-   (disj (outputs func) x)))
-
-(defn remove-function-outputs
-  [func coll]
-
-  (subfunction
-   func
-   (difference (inputs func) (set-inverse-image func coll))
-   (difference (outputs func) coll)))
-
 (defn restricted-codomain-selections
   [func sig]
 

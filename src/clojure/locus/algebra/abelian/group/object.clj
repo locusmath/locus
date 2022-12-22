@@ -89,7 +89,7 @@
 (defmethod product CommutativeGroup
   [& groups]
 
-  (CommutativeGroup
+  (CommutativeGroup.
     (apply cartesian-product (map underlying-set groups))
     (apply semigroup-product-function groups)
     (map identity-element groups)

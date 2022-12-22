@@ -12,7 +12,6 @@
             [locus.set.quiver.structure.core.protocols :refer :all]
             [locus.algebra.commutative.semigroup.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
-            [locus.algebra.commutative.monoid.arithmetic :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
             [locus.algebra.commutative.monoid.object :refer :all]
             [locus.algebra.group.core.object :refer :all]
@@ -79,6 +78,3 @@
       (if (= b zero-element)
         true
         (not= a zero-element)))))
-
-(defmethod natural-condensation CommutativeGroupWithZero
-  [^CommutativeGroupWithZero semigroup] (min-monoid 2))

@@ -73,10 +73,10 @@
 (defn cospan-morphism-component-function
   [cospan x]
 
-  (case x
-    '(0) (first-cospan-source-function cospan)
-    '(1) (second-cospan-source-function cospan)
-    '() (cospan-target-function cospan)))
+  (cond
+    (= x '(0)) (first-cospan-source-function cospan)
+    (= x '(1)) (second-cospan-source-function cospan)
+    (= x '()) (cospan-target-function cospan)))
 
 ; Components of cospans
 (defmethod get-set MorphismOfCospans

@@ -16,7 +16,8 @@
             [locus.algebra.commutative.monoid.group-with-zero :refer :all]
             [locus.algebra.abelian.group.object :refer :all])
   (:import (locus.algebra.commutative.semigroup.object CommutativeSemigroup)
-           (locus.algebra.commutative.monoid.object CommutativeMonoid)))
+           (locus.algebra.commutative.monoid.object CommutativeMonoid)
+           (locus.algebra.abelian.group.object CommutativeGroup)))
 
 ; The unique infinite monogenic commutative semigroup
 (def positive-integer-addition
@@ -108,7 +109,6 @@
     (fn [[a b]]
       (mod (* a b) n))
     1))
-
 
 ; Addition and multiplication monoids of essential semirings
 ; These include nn,zz,qq, and qt the most basic examples

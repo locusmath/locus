@@ -701,6 +701,11 @@
       (contains? a i))))
 
 ; Special restriction methods for functions
+(defn subfunction
+  [func new-in new-out]
+
+  (SetFunction. new-in new-out func))
+
 (defn restrict-function
   [func coll]
 
@@ -725,14 +730,6 @@
     (outputs func)
     func))
 
-(defn remove-function-output
-  [func x]
-
-  (SetFunction.
-    (disj (outputs func) x)
-    (outputs func)
-    func))
-
 (defn remove-function-inputs
   [func coll]
 
@@ -741,13 +738,21 @@
     (outputs func)
     func))
 
+(defn remove-function-output
+  [func x]
+
+  (subfunction
+    func
+    (difference (inputs func) (fiber func x))
+    (disj (outputs func) x)))
+
 (defn remove-function-outputs
   [func coll]
 
-  (SetFunction.
-    (difference (outputs func) coll)
-    (outputs func)
-    func))
+  (subfunction
+    func
+    (difference (inputs func) (set-inverse-image func coll))
+    (difference (outputs func) coll)))
 
 ; Testing for subalgebras
 (defn subfunction?
@@ -785,11 +790,6 @@
       (subfunction? func first-elements second-elements))))
 
 ; Getting subobjects of functions
-(defn subfunction
-  [func new-in new-out]
-
-  (SetFunction. new-in new-out func))
-
 (defmethod substructure
   [:locus.set.logic.structure.protocols/set-function
    CartesianCoproduct]

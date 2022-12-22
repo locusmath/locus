@@ -107,6 +107,33 @@
       (get-morphism mset i))
     (actions mset)))
 
+; Images and inverse images for partial msets
+(defn partial-mset-set-image
+  [partial-mset coll]
+
+  (let [partial-functions (partial-transformations-list partial-mset)]
+    (apply
+      union
+      (map
+        (fn [partial-function]
+          (partial-function-set-image partial-function coll))
+        partial-functions))))
+
+(defn partial-mset-inverse-image
+  [partial-mset coll]
+
+  (set
+    (filter
+      (fn [i]
+        (superset? (list (partial-mset-set-image partial-mset #{i}) coll)))
+      (underlying-set partial-mset))))
+
+(defmethod image
+  [PartialMSet :locus.set.logic.core.set/universal]
+  [partial-mset coll]
+
+  (partial-mset-set-image partial-mset coll))
+
 ; Ontology of partial msets
 (defn partial-mset?
   [obj]

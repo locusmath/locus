@@ -18,9 +18,9 @@
             [locus.algebra.category.core.object :refer :all]
             [locus.algebra.category.core.morphism :refer :all]
             [locus.algebra.category.concrete.object :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
             [locus.partial.mapping.function :refer :all]
-            [locus.hyper.mapping.function :refer :all]
-            [locus.set.quiver.structure.core.protocols :refer :all])
+            [locus.hyper.mapping.function :refer :all])
   (:import (locus.algebra.category.concrete.object ConcreteCategory)))
 
 ; The category of partial functions is a concrete category
