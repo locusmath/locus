@@ -2,7 +2,7 @@
 <module type="JAVA_MODULE" version="4">
   <component name="BuildSystem">
     <option name="buildSystemId" value="LEININGEN" />
-    <option name="displayName" value="locus:1.5.4-SNAPSHOT" />
+    <option name="displayName" value="locus:1.5.5-SNAPSHOT" />
   </component>
   <component name="NewModuleRootManager">
     <output url="file://$MODULE_DIR$/target/default/classes" />

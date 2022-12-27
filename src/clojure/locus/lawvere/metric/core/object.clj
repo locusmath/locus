@@ -1,4 +1,4 @@
-(ns locus.distance.lawvere.metric
+(ns locus.lawvere.metric.core.object
   (:require [locus.set.logic.core.set :refer :all]
             [locus.set.logic.limit.product :refer :all]
             [locus.set.logic.structure.protocols :refer :all]

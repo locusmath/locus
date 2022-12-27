@@ -1,4 +1,4 @@
-(ns locus.distance.lawvere.morphism
+(ns locus.lawvere.metric.core.morphism
   (:require [locus.set.logic.core.set :refer :all]
             [locus.set.logic.limit.product :refer :all]
             [locus.set.mapping.general.core.object :refer :all]
@@ -9,8 +9,9 @@
             [locus.set.quiver.relation.binary.product :refer :all]
             [locus.set.quiver.structure.core.protocols :refer :all]
             [locus.set.quiver.binary.core.object :refer :all]
-            [locus.set.quiver.binary.core.morphism :refer :all])
-  (:import (locus.distance.lawvere.metric LawvereMetric)))
+            [locus.set.quiver.binary.core.morphism :refer :all]
+            [locus.lawvere.metric.core.object :refer :all])
+  (:import (locus.lawvere.metric.core.object LawvereMetric)))
 
 ; Morphisms in the category of metric spaces
 ; Specifically if X and Y are metric spaces then f: X -> Y is a short map

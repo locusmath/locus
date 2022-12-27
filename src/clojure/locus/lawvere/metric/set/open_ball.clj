@@ -1,4 +1,4 @@
-(ns locus.distance.set.open-ball
+(ns locus.lawvere.metric.set.open-ball
   (:require [locus.set.logic.core.set :refer :all]
             [locus.set.logic.limit.product :refer :all]
             [locus.set.mapping.general.core.object :refer :all]
@@ -6,7 +6,7 @@
             [locus.set.quiver.relation.binary.product :refer :all]
             [locus.set.quiver.structure.core.protocols :refer :all]
             [locus.set.copresheaf.structure.core.protocols :refer :all]
-            [locus.distance.lawvere.metric :refer :all]))
+            [locus.lawvere.metric.core.object :refer :all]))
 
 ; Let M be a metric space, and x a point of M then we define the open ball
 ; M(x,r) to be the set of all elements that are a distance less then the

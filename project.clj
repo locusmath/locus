@@ -22,7 +22,7 @@
                  [dorothy "0.0.7"]
                  [org.scilab.forge/jlatexmath "1.0.7"]]
 
-  :main locus.algebra.category.core.object
+  :main locus.lawvere.metric.core.morphism
 
   :source-paths ["src/clojure"]
   :java-source-paths ["src/java"]

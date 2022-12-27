@@ -1,4 +1,4 @@
-(ns locus.distance.set.open-set
+(ns locus.lawvere.metric.set.open-set
   (:require [locus.set.logic.core.set :refer :all]
             [locus.set.logic.limit.product :refer :all]
             [locus.set.logic.structure.protocols :refer :all]
@@ -6,8 +6,8 @@
             [locus.set.quiver.relation.binary.product :refer :all]
             [locus.set.quiver.structure.core.protocols :refer :all]
             [locus.set.copresheaf.structure.core.protocols :refer :all]
-            [locus.distance.lawvere.metric :refer :all]
-            [locus.distance.set.open-ball :refer :all]))
+            [locus.lawvere.metric.core.object :refer :all]
+            [locus.lawvere.metric.set.open-ball :refer :all]))
 
 ; We can construct an open set in the metric topology of a metric space, by
 ; defining some kind of collection of open balls. This class handles the data
