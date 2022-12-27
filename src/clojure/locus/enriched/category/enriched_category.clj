@@ -14,10 +14,10 @@
             [locus.algebra.category.core.morphism :refer :all]
             [locus.algebra.category.natural.transformation :refer :all]
             [locus.hyper.mapping.function :refer :all]
-            [locus.module.core.object :refer :all]
-            [locus.module.core.morphism :refer :all]
-            [locus.semimodule.core.object :refer :all]
-            [locus.semimodule.core.morphism :refer :all]))
+            [locus.ab.module.object :refer :all]
+            [locus.ab.module.morphism :refer :all]
+            [locus.cmon.semimodule.object :refer :all]
+            [locus.cmon.semimodule.morphism :refer :all]))
 
 ; Enriched category
 ; This is an ordinary category with a special bivariate hom function. The overriden

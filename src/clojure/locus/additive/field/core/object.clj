@@ -4,6 +4,9 @@
             [locus.set.logic.structure.protocols :refer :all]
             [locus.set.quiver.structure.core.protocols :refer :all]
             [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.copresheaf.quiver.unital.object :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
             [locus.algebra.commutative.semigroup.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
@@ -21,10 +24,39 @@
 ; of an integral domain such as a quotient domain of a prime ideal.
 (deftype SkewField [elems add mul]
   ConcreteObject
-  (underlying-set [this] elems))
+  (underlying-set [this] elems)
+
+  StructuredDiset
+  (first-set [this] elems)
+  (second-set [this] #{0})
+
+  StructuredQuiver
+  (underlying-quiver [this] (singular-quiver elems 0))
+  (source-fn [this] (constantly 0))
+  (target-fn [this] (constantly 0))
+  (transition [this obj] (list 0 0))
+
+  ConcreteMorphism
+  (inputs [this] (complete-relation elems))
+  (outputs [this] elems)
+
+  clojure.lang.IFn
+  (invoke [this obj] (mul obj))
+  (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
 (derive SkewField :locus.additive.base.core.protocols/skew-field)
 
+; Underlying multirelations for skew fields as ringoids
+(defmethod underlying-multirelation SkewField
+  [^SkewField field] (underlying-multirelation (underlying-quiver field)))
+
+(defmethod underlying-relation SkewField
+  [^SkewField field] (underlying-relation field))
+
+(defmethod visualize SkewField
+  [^SkewField field] (visualize (underlying-quiver field)))
+
+; Additive and multiplicative components for skew fields
 (defmethod additive-semigroup SkewField
   [^SkewField field]
 

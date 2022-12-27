@@ -1,4 +1,4 @@
-(ns locus.module.vector.real-vector
+(ns locus.ab.vector.real-vector
   (:import (org.apache.commons.math3.linear ArrayRealVector)))
 
 ; Vectors over the real numbers are provided by the apache commons math library

@@ -12,7 +12,7 @@
             [locus.additive.base.core.protocols :refer :all]
             [locus.additive.ring.core.object :refer :all]
             [locus.additive.semiring.core.object :refer :all]
-            [locus.module.vector.rset :refer :all]))
+            [locus.ab.vector.rset :refer :all]))
 
 ; We need to construct the formal laurent series ring R((X)) of a ring, because
 ; this produces the field of fractions of the power series ring of a field. A formal laurent

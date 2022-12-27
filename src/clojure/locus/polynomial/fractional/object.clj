@@ -13,7 +13,7 @@
             [locus.additive.base.generic.arithmetic :refer :all]
             [locus.additive.ring.core.object :refer :all]
             [locus.additive.semiring.core.object :refer :all]
-            [locus.module.vector.rset :refer :all]
+            [locus.ab.vector.rset :refer :all]
             [locus.polynomial.core.object :refer :all])
   (:import (locus.polynomial.core.object Polynomial)))
 

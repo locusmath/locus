@@ -11,26 +11,86 @@
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]))
 
-; Additive structures can be established on categories by enriching them over the category CMon
-; of commutative monoids or the category Ab of commutative groups. The former produces the
-; category of semiringoids and the later produces the category of ringoids. Both of them
-; can be understood in the context of horizontal categorification. The former is the horizontal
-; categorification of a semiring, and the later is the horizontal categorification of a ring.
+; Categories are sets of morphisms between objects where the morphisms are equipped with a
+; multiplication operation *. As a consequence, it is always possible to multiply two
+; morphisms of a category, but that is only half of the story. In the larger context of
+; semirings, ringoids, and similar structures equipped with an addition operation +
+; it is possible to both add and multiply the morphisms of such enriched categories.
+; So we say that rings are ringods with a single object and semirings are semiringoids
+; with a single object.
 
-; Ontology of rings and semirings
-(derive ::semiring :locus.set.logic.structure.protocols/structured-set)
-(derive ::ring ::semiring)
-
-(derive ::skew-semifield ::semiring)
-(derive ::skew-field ::ring)
-(derive ::skew-field ::ring)
-
-; Ontology of the horizontal categorification of rings and semirings
 (derive ::semiringoid :locus.set.copresheaf.structure.core.protocols/semigroupoid)
 (derive ::ringoid ::semiringoid)
 (derive ::abelian-category ::ringoid)
+(derive ::semiring ::semiringoid)
+(derive ::ring ::semiring)
+(derive ::skew-semifield ::semiring)
+(derive ::skew-field ::skew-semifield)
+(derive ::skew-field ::ring)
 
-; Predicates for rings, semirings, fields, and semifields
+; Rings and semirings are constructed from the combination of two different semigroups: an addition
+; semigroup and a multiplication semigroup. It is useful for us to be able to access either of
+; these two semigroups individually. We can do that now by using the additive-semigroup and
+; multiplicative-semigroup methods.
+
+(defmulti additive-semigroup type)
+
+(defmulti multiplicative-semigroup type)
+
+; Make a ring from a pair of semigroups by determining what the type
+; of the semigroups is. This uses a pair of types in order to dispatch,
+; so that it can be used to support rings, semirings, fields,
+; and semifields as different types of abstractions of arithmetic.
+
+(defmulti make-ring (fn [a b] [(type a) (type b)]))
+
+; A semiring is like a category with a single object. So in the same way that a category
+; has an accepted notion of a dual category, determined by reversing the order of multiplication
+; there is also a corresponding notion of a dual of a ring or semiring determined
+; by reversing the order of multiplication, while keeping the addition operation intact.
+; In other words, this is the dual of ringoids. For a commutative ring or semiring the dual
+; operation should have no effect.
+
+(defmethod dual ::semiring
+  [semiring]
+
+  (make-ring
+    (additive-semigroup semiring)
+    (dual (multiplicative-semigroup semiring))))
+
+; Rings and semirings are algebras that are defined by collections of set functions.
+(def addition-function
+  (comp underlying-function additive-semigroup))
+
+(def additive-identity-function
+  (comp identity-element-function additive-semigroup))
+
+(def additive-inverse-function
+  (comp inverse-function additive-semigroup))
+
+(def multiplication-function
+  (comp underlying-function multiplicative-semigroup))
+
+(def multiplicative-identity-function
+  (comp identity-element-function multiplicative-semigroup))
+
+; Endomorphism algebras
+; A semimodule is associated to an endomorphism semiring, and a module
+; is associated to an endomorphism ring
+(defmulti endomorphism-algebra type)
+
+; Predicates for ringoids and semiringoids
+(defmulti semiringoid? type)
+
+(defmethod semiringoid? :default
+  [x] (isa? (type x) ::semiringoid))
+
+(defmulti ringoid? type)
+
+(defmethod ringoid? :default
+  [x] (isa? (type x) ::ringoid))
+
+; Predicates for single object ringoids and semiringoids
 (defmulti semiring? type)
 
 (defmethod semiring? :default
@@ -53,58 +113,6 @@
 
 (defmethod skew-semifield? :default
   [x] (isa? (type x) ::skew-semifield))
-
-; Predicates for horizontal categorification of rings and semirings
-(defmulti semiringoid? type)
-
-(defmethod semiringoid? :default
-  [x] (isa? (type x) ::semiringoid))
-
-(defmulti ringoid? type)
-
-(defmethod ringoid? :default
-  [x] (isa? (type x) ::ringoid))
-
-; Rings and semirings are like combinations of semigroups
-(defmulti additive-semigroup type)
-
-(defmulti multiplicative-semigroup type)
-
-; Make a ring from a pair of semigroups by determining what the type
-; of the semigroups is. This uses a pair of types in order to dispatch,
-; so that it can be used to support rings, semirings, fields,
-; and semifields as different types of abstractions of arithmetic.
-(defmulti make-ring (fn [a b] [(type a) (type b)]))
-
-; A semiring is like a category with a single object. So in the same way that a category
-; has an accepted notion of a dual category, determined by reversing the order of multiplication
-; there is also a corresponding notion of a dual of a ring or semiring determined
-; by reversing the order of multiplication, while keeping the addition operation in tact.
-; In other words, this is the dual of ringoids. For a commutative ring or semiring the dual
-; operation should have no effect.
-(defmethod dual ::semiring
-  [semiring]
-
-  (make-ring
-    (additive-semigroup semiring)
-    (dual (multiplicative-semigroup semiring))))
-
-; Rings and semirings are algebras that are defined
-; by collections of set functions.
-(def addition-function
-  (comp underlying-function additive-semigroup))
-
-(def additive-identity-function
-  (comp identity-element-function additive-semigroup))
-
-(def additive-inverse-function
-  (comp inverse-function additive-semigroup))
-
-(def multiplication-function
-  (comp underlying-function multiplicative-semigroup))
-
-(def multiplicative-identity-function
-  (comp identity-element-function multiplicative-semigroup))
 
 ; Testing for the presence of additive inverses is possible in the
 ; special cases where in there are rings described as semirings

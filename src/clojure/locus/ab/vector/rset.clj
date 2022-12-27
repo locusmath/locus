@@ -1,4 +1,4 @@
-(ns locus.module.vector.rset
+(ns locus.ab.vector.rset
   (:require [locus.set.logic.core.set :refer :all]
             [locus.additive.ring.core.object :refer :all]
             [locus.additive.base.core.protocols :refer :all]

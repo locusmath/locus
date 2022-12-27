@@ -51,6 +51,24 @@
 
 (derive MonoidMorphism :locus.set.copresheaf.structure.core.protocols/monoid-homomorphism)
 
+; Constructors for monoid homomorphisms
+(defn monoid-homomorphism
+  [source target func]
+
+  (->MonoidMorphism
+    source
+    target
+    func))
+
+(defn monoid-endomorphism
+  [monoid func]
+
+  (->MonoidMorphism
+    monoid
+    monoid
+    func))
+
+; Ontology of monoid homomorphisms
 (defn monoid-homomorphism?
   [func]
 

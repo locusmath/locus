@@ -1,4 +1,4 @@
-(ns locus.module.core.morphism
+(ns locus.ab.module.morphism
   (:require [locus.set.logic.core.set :refer :all]
             [locus.set.mapping.general.core.object :refer :all]
             [locus.set.logic.structure.protocols :refer :all]
@@ -19,12 +19,13 @@
             [locus.additive.ring.core.morphism :refer :all]
             [locus.additive.semiring.core.object :refer :all]
             [locus.additive.semiring.core.morphism :refer :all]
-            [locus.module.core.object :refer :all]
-            [locus.semimodule.core.object :refer :all]
-            [locus.semimodule.core.utils :refer :all])
-  (:import (locus.module.core.object Module)))
+            [locus.ab.module.object :refer :all])
+  (:import (locus.ab.module.object Module)))
 
-; Morphisms in categories of semimodules
+; Let R be a ring then a homomorphism of R-modules M and N is a mapping between the underlying
+; sets of the two modules that preserves addition, negation, zero, and scalar multiplication.
+; These R-module homomorphisms form a category mod(R) for any ring R which forms a ringoid
+; and an abelian category.
 (deftype ModuleMorphism [source target func]
   AbstractMorphism
   (source-object [this] source)
@@ -38,7 +39,7 @@
   (invoke [this arg] (func arg))
   (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
-; Identities and composition in categories of semimodules
+; Identities and composition in categories of modules
 (defmethod identity-morphism Module
   [semimodule]
 
@@ -133,7 +134,7 @@
          (fn [i]
            (apply-action module action i)))))))
 
-; Determine which category a module homomorphism belongs in
+; Determine which category a module homomorphism belongs in.
 (defn module-homomorphism-ring-classifier
   [ring]
 

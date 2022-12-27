@@ -1,4 +1,4 @@
-(ns locus.module.core.object
+(ns locus.ab.module.object
   (:require [locus.set.logic.core.set :refer :all]
             [locus.set.mapping.general.core.object :refer :all]
             [locus.set.logic.structure.protocols :refer :all]
@@ -14,10 +14,17 @@
             [locus.additive.base.core.protocols :refer :all]
             [locus.additive.semiring.core.object :refer :all]
             [locus.additive.ring.core.object :refer :all]
-            [locus.semimodule.core.utils :refer :all])
+            [locus.algebra.group.core.morphism :refer :all])
   (:import (locus.set.action.global.object MSet)))
 
-; A module is like a group with operators
+; Let Ab the category of abelian groups with functors between them. Then Ab is a concrete cartesian
+; monoidal category. As a concrete cartesian monoidal category, it is possible to form enriched
+; copresheaves over it. This theory has two aspects (1) the formation of Ab-enriched categories
+; which are essentially the horizontal categorification of rings and (2) the theory of copresheaves
+; of abelian groups. Then by combining these two we can get Ab-enriched copresheaves of abelian
+; groups of which modules are an example. In particular, we define a module to be a presheaf
+; of abelian groups over a ring.
+
 (deftype Module
   [ring semigroup scale]
 
@@ -31,9 +38,32 @@
 
 (derive Module :locus.set.logic.structure.protocols/structured-set)
 
+; Modules as structure copresheaves
+(defmethod index Module
+  [^Module module] (.-ring module))
+
+(defmethod get-object Module
+  [^Module module, x] (.-semigroup module))
+
+(defmethod get-morphism Module
+  [^Module module, action]
+
+  (group-endomorphism
+    (.-semigroup module)
+    (fn [x]
+      (apply-action module action x))))
+
+(defmethod get-set Module
+  [^Module module, x] (morphisms (get-object module x)))
+
+(defmethod get-function Module
+  [^Module module, x] (underlying-function (get-morphism module x)))
+
+; Modules have a single underlying group object associated to them
 (defmethod additive-semigroup Module
   [^Module module] (.semigroup module))
 
+; Convert modules into various objects
 (defmethod to-mset Module
   [^Module module]
 
@@ -42,14 +72,11 @@
     (underlying-set module)
     (.scale module)))
 
-; Ontology of modules
-(derive Module :locus.semimodule.core.utils/module)
-
-; Conversion of objects to modules
+; Convert various objects into modules
 (defmulti to-module type)
 
 (defmethod to-module Module
-  [module] module)
+  [^Module module] module)
 
 (defmethod to-module :locus.set.copresheaf.structure.core.protocols/group
   [group]
@@ -60,7 +87,7 @@
     (fn [n x]
       (iterate-group-element group x n))))
 
-; Self induced modules of rings
+; Self-induced modules of rings
 (defn self-induced-module
   [ring]
 
@@ -111,4 +138,3 @@
   [module]
 
   (= (type module) Module))
-

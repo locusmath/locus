@@ -1,4 +1,4 @@
-(ns locus.semimodule.core.object
+(ns locus.cmon.semimodule.object
   (:require [locus.set.logic.core.set :refer :all]
             [locus.set.logic.sequence.object :refer :all]
             [locus.set.logic.limit.product :refer :all]
@@ -21,7 +21,7 @@
             [locus.additive.ring.core.object :refer :all]
             [locus.additive.semiring.core.object :refer :all]
             [locus.additive.semiring.core.morphism :refer :all]
-            [locus.semimodule.core.utils :refer :all])
+            [locus.algebra.semigroup.monoid.morphism :refer :all])
   (:import (locus.algebra.group.core.object Group)
            (locus.set.action.global.object MSet)))
 
@@ -39,6 +39,27 @@
 
 (derive Semimodule :locus.set.logic.structure.protocols/structured-set)
 
+; Semimodules as structure copresheaves of commutative monoids
+(defmethod index Semimodule
+  [^Semimodule module] (.-ring module))
+
+(defmethod get-object Semimodule
+  [^Semimodule module, x] (.-semigroup module))
+
+(defmethod get-morphism Semimodule
+  [^Semimodule module, action]
+
+  (monoid-endomorphism
+    (.-semigroup module)
+    (fn [x]
+      (apply-action module action x))))
+
+(defmethod get-set Semimodule
+  [^Semimodule module, x] (underlying-set (get-object module x)))
+
+(defmethod get-function Semimodule
+  [^Semimodule module, action] (underlying-function (get-morphism module action)))
+
 ; Functorially map a semimodule to the category of commutative monoids
 (defmethod additive-semigroup Semimodule
   [^Semimodule module] (.semigroup module))
@@ -51,14 +72,6 @@
     (multiplicative-semigroup (.ring semimodule))
     (underlying-set semimodule)
     (.scale semimodule)))
-
-; Ontology of semimodules and modules
-(derive Semimodule :locus.semimodule.core.utils/semimodule)
-
-(defmethod module? :locus.semimodule.core.utils/semimodule
-  [semimodule]
-
-  (group? (additive-semigroup semimodule)))
 
 ; General conversion routines to convert things into semimodules
 (defmulti to-semimodule type)
@@ -75,7 +88,7 @@
     (fn [n x]
       (iterate-monoid-element monoid x n))))
 
-; Self induced semimodules of semirings
+; Self-induced semimodules of semirings
 (defn self-induced-semimodule
   [semiring]
 
@@ -109,9 +122,3 @@
     (subsemimodules semimodule)
     union
     intersection))
-
-
-
-
-
-

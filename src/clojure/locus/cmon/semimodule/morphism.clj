@@ -1,4 +1,4 @@
-(ns locus.semimodule.core.morphism
+(ns locus.cmon.semimodule.morphism
   (:require [locus.set.logic.core.set :refer :all]
             [locus.set.mapping.general.core.object :refer :all]
             [locus.set.logic.structure.protocols :refer :all]
@@ -19,8 +19,7 @@
             [locus.additive.ring.core.morphism :refer :all]
             [locus.additive.semiring.core.object :refer :all]
             [locus.additive.semiring.core.morphism :refer :all]
-            [locus.semimodule.core.object :refer :all]
-            [locus.semimodule.core.utils :refer :all]))
+            [locus.cmon.semimodule.object :refer :all]))
 
 ; Morphisms in categories of semimodules
 (deftype SemimoduleMorphism [source target func]

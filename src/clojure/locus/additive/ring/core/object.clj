@@ -5,6 +5,9 @@
             [locus.set.logic.structure.protocols :refer :all]
             [locus.set.quiver.structure.core.protocols :refer :all]
             [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.quiver.relation.binary.sr :refer :all]
+            [locus.set.copresheaf.quiver.unital.object :refer :all]
             [locus.algebra.commutative.semigroup.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.monoid.object :refer :all]
@@ -26,12 +29,42 @@
 ; can be enabled. As structured groups, rings satisfy Langrange's theorem so that all
 ; subrings including ideals are of a cardinality that divides the cardinality of the ring.
 ; This is another heuristic we can use for rings that is not applicable to semirings.
+
 (deftype Ring [elems add mul]
   ConcreteObject
-  (underlying-set [this] elems))
+  (underlying-set [this] elems)
+
+  StructuredDiset
+  (first-set [this] elems)
+  (second-set [this] #{0})
+
+  StructuredQuiver
+  (underlying-quiver [this] (singular-quiver elems 0))
+  (source-fn [this] (constantly 0))
+  (target-fn [this] (constantly 0))
+  (transition [this obj] (list 0 0))
+
+  ConcreteMorphism
+  (inputs [this] (complete-relation elems))
+  (outputs [this] elems)
+
+  clojure.lang.IFn
+  (invoke [this obj] (mul obj))
+  (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
 (derive Ring :locus.additive.base.core.protocols/ring)
 
+; Underlying multirelations of rings
+(defmethod underlying-multirelation Ring
+  [^Ring ring] (underlying-multirelation (underlying-quiver ring)))
+
+(defmethod underlying-relation Ring
+  [^Ring ring] (set (underlying-multirelation ring)))
+
+(defmethod visualize Ring
+  [^Ring ring] (visualize (underlying-quiver ring)))
+
+; Additive and multiplicative semigroups of rings
 (defmethod additive-semigroup Ring
   [^Ring ring]
 
@@ -266,5 +299,3 @@
         coll
         (fn [[a b]]
           (compose-subsets mul a b))))))
-
-

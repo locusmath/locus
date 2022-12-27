@@ -12,7 +12,7 @@
             [locus.additive.base.core.protocols :refer :all]
             [locus.additive.ring.core.object :refer :all]
             [locus.additive.semiring.core.object :refer :all]
-            [locus.module.vector.rset :refer :all]
+            [locus.ab.vector.rset :refer :all]
             [locus.polynomial.core.object :refer :all]))
 
 ; Let R be a ring, then R[[X]] is its power series ring. In order to construct this

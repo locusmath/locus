@@ -39,13 +39,12 @@
 
 (derive PartialMSet :locus.set.logic.structure.protocols/structured-set)
 
-; Index categories for partial monoid actions
+; Methods for treating partial monoid actions as structure copresheaves
 (defmethod index PartialMSet
   [^PartialMSet mset]
 
   (.-monoid mset))
 
-; Partial monoid actions as structure copresheaves
 (defmethod get-object PartialMSet
   [^PartialMSet mset, x]
 
@@ -76,7 +75,7 @@
   [mset]
 
   (let [coll (underlying-set mset)]
-    (->MSet
+    (->PartialMSet
      (index mset)
      coll
      (fn [a]
@@ -133,6 +132,12 @@
   [partial-mset coll]
 
   (partial-mset-set-image partial-mset coll))
+
+(defmethod inverse-image
+  [PartialMSet :locus.set.logic.core.set/universal]
+  [partial-mset coll]
+
+  (partial-mset-inverse-image partial-mset coll))
 
 ; Ontology of partial msets
 (defn partial-mset?

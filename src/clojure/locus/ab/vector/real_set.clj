@@ -1,11 +1,11 @@
-(ns locus.module.vector.real-set
+(ns locus.ab.vector.real-set
   (:require [locus.set.logic.core.set :refer :all]
             [locus.algebra.group.term.signed-multiset :refer :all]
             [locus.additive.semiring.core.object :refer :all]
             [locus.additive.base.core.protocols :refer :all]
             [locus.additive.ring.core.object :refer :all]
             [locus.additive.field.core.object :refer :all]
-            [locus.module.vector.rset :refer :all])
+            [locus.ab.vector.rset :refer :all])
   (:import (locus.set.logic.core.set Multiset)
            (locus.algebra.group.term.signed_multiset SignedMultiset)))
 

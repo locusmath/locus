@@ -17,7 +17,7 @@
             [locus.additive.base.core.protocols :refer :all]
             [locus.additive.base.generic.arithmetic :refer :all]
             [locus.additive.semiring.core.object :refer :all]
-            [locus.module.vector.rset :refer :all])
+            [locus.ab.vector.rset :refer :all])
   (:import (locus.algebra.semigroup.monoid.object Monoid)
            (locus.algebra.semigroup.core.object Semigroup)
            (locus.algebra.group.core.object Group))

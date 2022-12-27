@@ -12,7 +12,7 @@
             [locus.additive.base.core.protocols :refer :all]
             [locus.additive.ring.core.object :refer :all]
             [locus.additive.semiring.core.object :refer :all]
-            [locus.module.vector.rset :refer :all])
+            [locus.ab.vector.rset :refer :all])
   (:import (org.apache.commons.math3.analysis UnivariateFunction BivariateFunction TrivariateFunction)
            (org.apache.commons.math3.analysis.function Exp)))
 

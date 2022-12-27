@@ -6,6 +6,8 @@
             [locus.set.mapping.general.core.object :refer :all]
             [locus.set.logic.structure.protocols :refer :all]
             [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.copresheaf.quiver.unital.object :refer :all]
             [locus.set.quiver.structure.core.protocols :refer :all]
             [locus.set.quiver.relation.binary.br :refer :all]
             [locus.set.quiver.relation.binary.sr :refer :all]
@@ -19,8 +21,8 @@
             [locus.order.lattice.core.object :refer :all]
             [locus.additive.base.core.protocols :refer :all]))
 
-; Semirings are like semiringoids with a single object
-; In other words, they are like CMon-enriched categories with a single object. They are the
+; Semirings are semiringoids with a single object
+; In other words, they are CMon-enriched categories with a single object. They are the
 ; most general elements of our additive ontology of arithmetically enriched categories and
 ; semigroupoids. Semirings are distinguished by how they combine associative and distributive
 ; laws into a single structure. Rings, fields, and semifields are special cases determined
@@ -29,10 +31,39 @@
 
 (deftype Semiring [elems add mul]
   ConcreteObject
-  (underlying-set [this] elems))
+  (underlying-set [this] elems)
+
+  StructuredDiset
+  (first-set [this] elems)
+  (second-set [this] #{0})
+
+  StructuredQuiver
+  (underlying-quiver [this] (singular-quiver elems 0))
+  (source-fn [this] (constantly 0))
+  (target-fn [this] (constantly 0))
+  (transition [this obj] (list 0 0))
+
+  ConcreteMorphism
+  (inputs [this] (complete-relation elems))
+  (outputs [this] elems)
+
+  clojure.lang.IFn
+  (invoke [this obj] (mul obj))
+  (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
 (derive Semiring :locus.additive.base.core.protocols/semiring)
 
+; Underlying relations and multirelations for semirings
+(defmethod underlying-multirelation Semiring
+  [^Semiring semiring] (underlying-multirelation (underlying-quiver semiring)))
+
+(defmethod underlying-relation Semiring
+  [^Semiring semiring] (set (underlying-multirelation semiring)))
+
+(defmethod visualize Semiring
+  [^Semiring semiring] (visualize (underlying-quiver semiring)))
+
+; Get the additive or multiplicative semigroups of a semiring
 (defmethod additive-semigroup Semiring
   [^Semiring semiring]
 
@@ -51,6 +82,138 @@
   [a b]
 
   (Semiring. (underlying-set a) a b))
+
+; The fundamental semiring
+(def nn
+  (make-ring natural-addition natural-multiplication))
+
+; Total order semirings
+(defn total-order-semiring
+  [n]
+
+  (make-ring
+    (max-monoid n)
+    (min-monoid n)))
+
+(def t2
+  (total-order-semiring 2))
+
+(def t3
+  (total-order-semiring 3))
+
+(def t4
+  (total-order-semiring 4))
+
+; Distributive lattice semirings
+(defn distributive-lattice->semiring
+  [lattice]
+
+  (make-ring
+    (to-monoid (join-semilattice lattice))
+    (meet-semilattice lattice)))
+
+(defn power-set-semiring
+  [coll]
+
+  (let [elems (->PowerSet coll)]
+    (->Semiring
+      elems
+      (->Monoid elems (fn [[a b]] (union a b)) #{})
+      (->Monoid elems (fn [[a b]] (intersection a b)) coll))))
+
+(defn family-semiring
+  [family]
+
+  (make-ring
+    (->Monoid
+      family
+      (fn [[a b]] (union a b))
+      (first (minimal-members family)))
+    (->Semigroup family (fn [[a b]] (intersection a b)))))
+
+; Semiring theoretic methods of category theory
+(defn semiring-of-morphism-systems
+  [semigroupoid]
+
+  (let [coll (morphisms semigroupoid)]
+    (make-ring
+      (power-set-union-monoid coll)
+      (semigroup-of-sets-of-morphisms coll))))
+
+; Products of semirings
+(defmethod product Semiring
+  [& semirings]
+
+  (->Semiring
+    (apply product (map underlying-set semirings))
+    (apply product (map additive-semigroup semirings))
+    (apply product (map multiplicative-semigroup semirings))))
+
+; Subsemirings
+(defn subsemiring?
+  [semiring coll]
+
+  (and
+    (identity-preserving-subsemigroup? (additive-semigroup semiring) coll)
+    (subsemigroup? (multiplicative-semigroup semiring) coll)))
+
+(defn subsemirings
+  [semiring]
+
+  (set
+    (filter
+      (fn [coll]
+        (subsemiring? semiring coll))
+      (power-set (underlying-set semiring)))))
+
+(defmethod sub Semiring
+  [semiring]
+
+  (->Lattice
+    (subsemirings semiring)
+    union
+    intersection))
+
+(defn restrict-semiring
+  [semiring coll]
+
+  (Semiring.
+    coll
+    (restrict-semigroup (additive-semigroup semiring) coll)
+    (restrict-semigroup (multiplicative-semigroup semiring) coll)))
+
+; Semiring congruences
+(defn semiring-congruence?
+  [semiring partition]
+
+  (and
+    (semigroup-congruence? (additive-semigroup semiring) partition)
+    (semigroup-congruence? (multiplicative-semigroup semiring) partition)))
+
+(defn semiring-congruences
+  [semiring]
+
+  (set
+    (filter
+      (fn [partition]
+        (semiring-congruence? semiring partition))
+      (set-partitions (set (underlying-set semiring))))))
+
+(defmethod con Semiring
+  [semiring]
+
+  (->Lattice
+    (semiring-congruences semiring)
+    join-set-partitions
+    meet-set-partitions))
+
+(defn quotient-semiring
+  [semiring partition]
+
+  (Semiring.
+    partition
+    (quotient-semigroup semiring partition)
+    (quotient-semigroup semiring partition)))
 
 ; Ontology of semirings
 ; Classification of rings and semirings based upon the properties of their
@@ -237,135 +400,3 @@
   (and
     (semiring? ring)
     (monoid? (multiplicative-semigroup ring))))
-
-; The fundamental semiring
-(def nn
-  (make-ring natural-addition natural-multiplication))
-
-; Total order semirings
-(defn total-order-semiring
-  [n]
-
-  (make-ring
-    (max-monoid n)
-    (min-monoid n)))
-
-(def t2
-  (total-order-semiring 2))
-
-(def t3
-  (total-order-semiring 3))
-
-(def t4
-  (total-order-semiring 4))
-
-; Distributive lattice semirings
-(defn distributive-lattice->semiring
-  [lattice]
-
-  (make-ring
-    (to-monoid (join-semilattice lattice))
-    (meet-semilattice lattice)))
-
-(defn power-set-semiring
-  [coll]
-
-  (let [elems (->PowerSet coll)]
-    (->Semiring
-      elems
-      (->Monoid elems (fn [[a b]] (union a b)) #{})
-      (->Monoid elems (fn [[a b]] (intersection a b)) coll))))
-
-(defn family-semiring
-  [family]
-
-  (make-ring
-    (->Monoid
-      family
-      (fn [[a b]] (union a b))
-      (first (minimal-members family)))
-    (->Semigroup family (fn [[a b]] (intersection a b)))))
-
-; Semiring theoretic methods of category theory
-(defn semiring-of-morphism-systems
-  [semigroupoid]
-
-  (let [coll (morphisms semigroupoid)]
-    (make-ring
-      (power-set-union-monoid coll)
-      (semigroup-of-sets-of-morphisms coll))))
-
-; Products of semirings
-(defmethod product Semiring
-  [& semirings]
-
-  (->Semiring
-    (apply product (map underlying-set semirings))
-    (apply product (map additive-semigroup semirings))
-    (apply product (map multiplicative-semigroup semirings))))
-
-; Subsemirings
-(defn subsemiring?
-  [semiring coll]
-
-  (and
-    (identity-preserving-subsemigroup? (additive-semigroup semiring) coll)
-    (subsemigroup? (multiplicative-semigroup semiring) coll)))
-
-(defn subsemirings
-  [semiring]
-
-  (set
-    (filter
-      (fn [coll]
-        (subsemiring? semiring coll))
-      (power-set (underlying-set semiring)))))
-
-(defmethod sub Semiring
-  [semiring]
-
-  (->Lattice
-    (subsemirings semiring)
-    union
-    intersection))
-
-(defn restrict-semiring
-  [semiring coll]
-
-  (Semiring.
-    coll
-    (restrict-semigroup (additive-semigroup semiring) coll)
-    (restrict-semigroup (multiplicative-semigroup semiring) coll)))
-
-; Semiring congruences
-(defn semiring-congruence?
-  [semiring partition]
-
-  (and
-    (semigroup-congruence? (additive-semigroup semiring) partition)
-    (semigroup-congruence? (multiplicative-semigroup semiring) partition)))
-
-(defn semiring-congruences
-  [semiring]
-
-  (set
-    (filter
-      (fn [partition]
-        (semiring-congruence? semiring partition))
-      (set-partitions (set (underlying-set semiring))))))
-
-(defmethod con Semiring
-  [semiring]
-
-  (->Lattice
-    (semiring-congruences semiring)
-    join-set-partitions
-    meet-set-partitions))
-
-(defn quotient-semiring
-  [semiring partition]
-
-  (Semiring.
-    partition
-    (quotient-semigroup semiring partition)
-    (quotient-semigroup semiring partition)))

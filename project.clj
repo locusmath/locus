@@ -1,4 +1,4 @@
-(defproject locus "1.5.5-SNAPSHOT"
+(defproject locus "1.5.6-SNAPSHOT"
   :description "A specialized computer algebra system for presheaf theory."
   :license {:name "Apache License"
             :url "https://www.apache.org/licenses/LICENSE-2.0"}
@@ -22,7 +22,7 @@
                  [dorothy "0.0.7"]
                  [org.scilab.forge/jlatexmath "1.0.7"]]
 
-  :main locus.lawvere.metric.core.morphism
+  :main locus.set.mapping.function.core.object
 
   :source-paths ["src/clojure"]
   :java-source-paths ["src/java"]

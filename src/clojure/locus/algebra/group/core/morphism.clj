@@ -48,16 +48,22 @@
 
 (derive GroupMorphism :locus.set.copresheaf.structure.core.protocols/group-homomorphism)
 
-; Ontology
-(defn group-homomorphism?
-  [func]
+; Constructors for group homomorphisms
+(defn group-homomorphism
+  [source target func]
 
-  (or
-    (= (type func) GroupMorphism)
-    (and
-      (functor? func)
-      (group? (source-object func))
-      (group? (target-object func)))))
+  (->GroupMorphism
+    source
+    target
+    func))
+
+(defn group-endomorphism
+  [group func]
+
+  (->GroupMorphism
+    group
+    group
+    func))
 
 ; Get the morphism of functions of the inverse functions of two
 ; groups induced by a group homomorphism
@@ -103,4 +109,15 @@
   (restrict-group
     (target-object morphism)
     (function-image morphism)))
+
+; Ontology
+(defn group-homomorphism?
+  [func]
+
+  (or
+    (= (type func) GroupMorphism)
+    (and
+      (functor? func)
+      (group? (source-object func))
+      (group? (target-object func)))))
 

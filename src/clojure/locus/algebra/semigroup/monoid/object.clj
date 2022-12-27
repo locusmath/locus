@@ -55,10 +55,8 @@
   (outputs [this] elems)
 
   clojure.lang.IFn
-  (invoke [this obj]
-    (op obj))
-  (applyTo [this args]
-    (clojure.lang.AFn/applyToHelper this args)))
+  (invoke [this obj] (op obj))
+  (applyTo [this args] (clojure.lang.AFn/applyToHelper this args)))
 
 ; Tagging monoids as semigroupoids
 (derive Monoid :locus.set.copresheaf.structure.core.protocols/monoid)
