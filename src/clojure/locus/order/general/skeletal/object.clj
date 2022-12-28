@@ -59,6 +59,9 @@
 
   (->SeqableRelation (.-coll this) (.-rel this) {}))
 
+(defmethod visualize Poset
+  [^Poset poset] (visualize (.-rel poset)))
+
 ; Relational posets
 (defn relational-poset
   [rel]

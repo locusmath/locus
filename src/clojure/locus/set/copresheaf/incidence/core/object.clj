@@ -631,6 +631,17 @@
     identity
     identity))
 
+; A singleton span can be created by a pair of three values or an ordered triple
+(defn singleton-span
+  [a b c]
+
+  (->Span
+    #{a}
+    #{b}
+    #{c}
+    (constantly b)
+    (constantly c)))
+
 ; Product span
 ; A product span is created by getting the pair of projection functions
 ; from the product and using them as edge and vertex functions.

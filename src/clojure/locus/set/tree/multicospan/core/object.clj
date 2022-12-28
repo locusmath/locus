@@ -52,7 +52,9 @@
 (defn constant-multicospan
   [coll n]
 
-  (Multicospan. coll (repeat n (identity-function coll))))
+  (Multicospan.
+    coll
+    (repeat n (identity-function coll))))
 
 (defn singleton-multicospan
   [& elems]
@@ -129,9 +131,9 @@
     (nth-multicospan-source multicospan (first i))))
 
 (defmethod get-function Multicospan
-  [^Multicospan multicospan, [source path]]
+  [^Multicospan multicospan, [source target]]
 
-  (if (empty? path)
+  (if (= source target)
     (identity-function (get-set multicospan source))
     (let [i (first source)]
       (nth-multicospan-function multicospan i))))
@@ -145,14 +147,14 @@
      (apply coproduct (map multicospan-target multicospans))
      (vec
        (map
-         (fn [i]
-           (apply
-             coproduct
-             (map
-               (fn [multicospan]
-                 (nth-multicospan-function multicospan i))
-               multicospans)))
-         (range n))))))
+        (fn [i]
+          (apply
+            coproduct
+            (map
+              (fn [multicospan]
+                (nth-multicospan-function multicospan i))
+              multicospans)))
+        (range n))))))
 
 (defmethod product Multicospan
   [& multicospans]
@@ -162,14 +164,14 @@
       (apply product (map multicospan-target multicospans))
       (vec
         (map
-          (fn [i]
-            (apply
-              product
-              (map
-                (fn [multicospan]
-                  (nth-multicospan-function multicospan i))
-                multicospans)))
-          (range n))))))
+         (fn [i]
+           (apply
+             product
+             (map
+               (fn [multicospan]
+                 (nth-multicospan-function multicospan i))
+               multicospans)))
+         (range n))))))
 
 ; Visualisation of multicospans
 (defmethod visualize Multicospan

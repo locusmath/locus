@@ -72,10 +72,10 @@
 
   (cond
     (= i '(() ())) (identity-function (cospan-target cospan))
-    (= i '((0) ())) (identity-function (first-cospan-source cospan))
-    (= i '((1) ())) (identity-function (second-cospan-source cospan))
-    (= i '((0) (0))) (first-cospan-function cospan)
-    (= i '((1) (0))) (second-cospan-function cospan)))
+    (= i '((0) (0))) (identity-function (first-cospan-source cospan))
+    (= i '((1) (1))) (identity-function (second-cospan-source cospan))
+    (= i '((0) ())) (first-cospan-function cospan)
+    (= i '((1) ())) (second-cospan-function cospan)))
 
 ; Create a cospan copresheaf from a pair of functions
 (defn cospan

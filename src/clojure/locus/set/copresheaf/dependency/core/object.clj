@@ -33,7 +33,9 @@
             [locus.set.tree.cospan.core.morphism :refer :all]
             [locus.set.copresheaf.cube.core.object :refer :all]
             [locus.set.tree.chain.core.morphism :refer :all]
-            [locus.set.copresheaf.indexed.family.object :refer :all])
+            [locus.set.copresheaf.indexed.family.object :refer :all]
+            [locus.set.tree.multicospan.core.object :refer :all]
+            [locus.set.copresheaf.multispan.core.object :refer :all])
   (:import (locus.set.copresheaf.bijection.core.object Bijection)
            (locus.set.quiver.diset.core.morphism Difunction)
            (locus.set.tree.triangle.core.object SetTriangle)
@@ -53,7 +55,9 @@
            (locus.set.tree.chain.core.morphism ChainMorphism)
            (locus.set.mapping.general.core.object SetFunction)
            (locus.set.copresheaf.indexed.family.object IndexedFamily)
-           (locus.order.general.discrete.object DiscretePoset)))
+           (locus.order.general.discrete.object DiscretePoset)
+           (locus.set.tree.multicospan.core.object Multicospan)
+           (locus.set.copresheaf.multispan.core.object Multispan)))
 
 ; Copresheaves over preorders Sets^P
 ; These are generalisations of functional dependencies of relations.
@@ -115,11 +119,39 @@
   (relational-poset
     (weak-order [#{0} #{1 2}])))
 
+(defmethod index Multispan
+  [multispan]
+
+  (let [n (multispan-type multispan)]
+    (relational-poset
+      (if (zero? n)
+        (weak-order [#{0}])
+        (weak-order
+          [#{0}
+           (set (range 1 (inc n)))])))))
+
 (defmethod index Cospan
   [cospan]
 
   (relational-poset
-    (weak-order [#{0 1} #{2}])))
+    (weak-order
+      ['#{(0) (1)}
+       '#{()}])))
+
+(defmethod index Multicospan
+  [multicospan]
+
+  (let [n (multicospan-type multicospan)]
+    (relational-poset
+      (if (zero? n)
+       (weak-order [#{'()}])
+       (weak-order
+         [(set
+            (map
+              (fn [i]
+                (list i))
+              (range n)))
+          '#{()}])))))
 
 (defmethod index Difunction
   [difunction]
