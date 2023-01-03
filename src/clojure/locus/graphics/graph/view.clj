@@ -43,7 +43,7 @@
 
   (map
     (fn [i]
-      [(.toString i) {:label "", :style "filled", :fillcolor "cadetblue1"}])
+      [(.toString i) {:label "", :style "filled", :fillcolor "white"}])
     coll))
 
 (defn unlabeled-edges
@@ -88,4 +88,23 @@
 
 
   (-> (dot/dot (unlabeled-graph (set (range (.order graph))) (set (.edgeLocations graph)))) show!))
+
+(defn visualize-unlabeled-graph!
+  [edges]
+
+  (output-graph!
+    (dot/dot
+      (unlabeled-graph
+        (apply union (map set edges))
+        edges))))
+
+(defn visualize-unlabeled-digraph!
+  [edges]
+
+  (output-graph!
+    (dot/dot
+      (unlabeled-digraph
+        (apply union (map set edges))
+        edges))))
+
 

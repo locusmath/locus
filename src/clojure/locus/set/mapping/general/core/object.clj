@@ -999,15 +999,22 @@
 (defn all-congruences
   [func]
 
-  (set
-    (mapcat
-      (fn [in-partition]
-        (let [current-image-partition (partition-image func in-partition)]
-          (map
-            (fn [out-partition]
-              (list in-partition out-partition))
-            (set-partition-coarsifications current-image-partition))))
-      (enumerate-set-partitions (inputs func)))))
+  (let [non-image-singletons (set
+                               (map
+                                 (fn [i]
+                                   #{i})
+                                 (difference (outputs func) (function-image func))))]
+    (set
+     (mapcat
+       (fn [in-partition]
+         (let [current-image-partition (union
+                                         non-image-singletons
+                                         (partition-image func in-partition))]
+           (map
+             (fn [out-partition]
+               (list in-partition out-partition))
+             (set-partition-coarsifications current-image-partition))))
+       (enumerate-set-partitions (inputs func))))))
 
 (defn function-quotients
   [func]
