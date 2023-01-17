@@ -630,8 +630,8 @@
   [& functions]
 
   (SetFunction.
-    (apply cartesian-product (map inputs functions))
-    (apply cartesian-product (map outputs functions))
+    (set (map seq (apply cartesian-product (map inputs functions))))
+    (set (map seq (apply cartesian-product (map outputs functions))))
     (fn [coll]
       (map-indexed
         (fn [i v]

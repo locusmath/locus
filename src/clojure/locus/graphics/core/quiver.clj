@@ -5,6 +5,7 @@
             [locus.order.lattice.core.object :refer :all]
             [locus.order.general.skeletal.object :refer :all]
             [locus.set.copresheaf.structure.core.protocols :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
             [locus.set.quiver.relation.binary.sr :refer :all]
             [locus.set.quiver.relation.binary.br :refer :all]
             [locus.set.quiver.unary.core.morphism :refer :all]

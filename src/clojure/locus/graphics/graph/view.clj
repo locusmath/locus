@@ -5,7 +5,9 @@
             [locus.set.logic.structure.protocols :refer :all]
             [locus.set.quiver.structure.core.protocols :refer :all]
             [locus.set.copresheaf.structure.core.protocols :refer :all]
-            [locus.set.quiver.binary.core.object :refer :all])
+            [locus.set.quiver.binary.core.object :refer :all]
+            [locus.set.logic.limit.product :refer :all]
+            [locus.set.quiver.unary.core.morphism :refer :all])
   (:import (locus.graph.base DenseDigraph IDigraph IGraph DenseGraph)
            (locus.graph.factories BasicGraphFactory BasicDigraphFactory)))
 
