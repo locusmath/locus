@@ -1,5 +1,5 @@
 (defproject locus "1.5.6-SNAPSHOT"
-  :description "A specialized computer algebra system for presheaf theory."
+  :description "A specialized computer algebra system for topos theory."
   :license {:name "Apache License"
             :url "https://www.apache.org/licenses/LICENSE-2.0"}
 

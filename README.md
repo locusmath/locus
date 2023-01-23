@@ -1,11 +1,5 @@
 # Locus
-A specialised computer algebra system for presheaf theory.
-
-## Geometry of memory
-Memory locations and their relations are abstractly modeled using presheaf congruences. 
-
-* Memory locations: congruences in Sets
-* Data dependencies: congruences in Sets^(->)
+A specialised computer algebra system for topos theory.
 
 ## Presheaf constructions
 Classical mathematics defined a number of constructions on sets. We can start by generalizing these to presheaves.
