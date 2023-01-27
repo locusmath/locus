@@ -23,10 +23,11 @@
       (map
         (fn [i]
           (let [current-coordinate (func i)]
-            (map-indexed
-              (fn [first-index second-index]
-                (nth (nth sorted-colls first-index) second-index))
-              current-coordinate)))
+            (seq
+              (map-indexed
+               (fn [first-index second-index]
+                 (nth (nth sorted-colls first-index) second-index))
+               current-coordinate))))
         (range (apply * coll-counts))))))
 
 (defn cartesian-product-classifier

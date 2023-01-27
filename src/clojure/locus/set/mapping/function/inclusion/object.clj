@@ -2,7 +2,9 @@
   (:require [locus.set.logic.core.set :refer :all]
             [locus.set.logic.limit.product :refer :all]
             [locus.set.logic.structure.protocols :refer :all]
-            [locus.set.mapping.general.core.object :refer :all]))
+            [locus.set.mapping.general.core.object :refer :all]
+            [locus.sub.core.object :refer :all])
+  (:import (locus.sub.core.object SetSubalgebra)))
 
 ; Inclusion functions
 ; Let A be a subset of B, then A and B together induce an inclusion function f: A to B whose
@@ -50,6 +52,11 @@
 
   (InclusionFunction. #{} coll))
 
+(defn complete-inclusion-function
+  [coll]
+
+  (InclusionFunction. coll coll))
+
 ; Complementation
 (defmulti complement-inclusion-function type)
 
@@ -81,3 +88,14 @@
   (InclusionFunction.
     (apply coproduct (map inputs functions))
     (apply coproduct (map outputs functions))))
+
+; Conversions between inclusion functions and set subalgebras are possible
+(defmethod to-function SetSubalgebra
+  [set-subalgebra]
+
+  (->InclusionFunction (included-elements set-subalgebra) (underlying-set set-subalgebra)))
+
+(defmethod to-set-subalgebra :locus.set.logic.structure.protocols/inclusion-function
+  [func]
+
+  (SetSubalgebra. (inputs func) (outputs func)))

@@ -2,7 +2,11 @@
   (:require [locus.set.logic.core.set :refer :all]
             [locus.set.logic.limit.product :refer :all]
             [locus.set.logic.structure.protocols :refer :all]
+            [locus.sub.core.object :refer :all]
             [dorothy.core :as dot]))
+
+; Quotient objects in the topos Sets of sets and functions. These are the congruences of
+; sets with no additional algebraic structure.
 
 ; Ontology of set partitions
 (derive ::set-partition :locus.set.logic.structure.protocols/structured-set)
@@ -10,9 +14,7 @@
 (derive ::functional-partition ::relational-partition)
 (derive ::familial-partition ::set-partition)
 
-; Multimethods for dealing with set partitions
-(defmulti equivalence-classes type)
-
+; Equality tests for members of set partitions
 (defmulti equal? (fn [p a b] (type p)))
 
 (defn different?
@@ -20,7 +22,10 @@
 
   (not (equal? p a b)))
 
-; The number of equivalence classes of a set partition
+; Get the equivalence classes of a set partition
+(defmulti equivalence-classes type)
+
+; Count the number of equivalence classes of a set partition
 (defn number-of-equivalence-classes
   [partition]
 
@@ -47,6 +52,14 @@
   [partition]
 
   (underlying-relation partition))
+
+; Convert a set partition into an internal relation
+(defmethod to-set-subalgebra ::set-partition
+  [set-partition]
+
+  (set-subalgebra
+    (underlying-relation set-partition)
+    (->CartesianPower (underlying-set set-partition) 2)))
 
 ; Projection functions
 (defn projection
@@ -347,8 +360,4 @@
            (create-clustered-equivalence-relation-digraph*
              "cluster1"
              (create-labeling-by-set-partition (equivalence-classes partition)))])))))
-
-
-
-
 

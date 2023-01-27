@@ -2,6 +2,7 @@
   (:require [locus.set.logic.core.set :refer :all]
             [locus.set.logic.limit.product :refer :all]
             [locus.set.logic.structure.protocols :refer :all]
+            [locus.sub.core.object :refer :all]
             [locus.con.core.object :refer :all]
             [locus.con.core.setpart :refer :all])
   (:import [locus.set.logic.core.set SeqableUniversal Multiset]
@@ -282,6 +283,23 @@
   [func coll]
 
   (umap func coll))
+
+; Images and inverse images for set subalgebras
+(defmethod image
+  [:locus.set.logic.structure.protocols/set-function :locus.sub.core.object/set-subalebra]
+  [func coll]
+
+  (->SetSubalgebra
+    (set-image func (included-elements coll))
+    (outputs func)))
+
+(defmethod inverse-image
+  [:locus.set.logic.structure.protocols/set-function :locus.sub.core.object/set-subalebra]
+  [func coll]
+
+  (->SetSubalgebra
+    (set-inverse-image func (included-elements coll))
+    (inputs func)))
 
 ; The function image of a function is the set image of its domain
 (defn function-image

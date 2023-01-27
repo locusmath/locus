@@ -2,15 +2,12 @@
   (:require [locus.set.logic.core.set :refer :all]
             [locus.set.logic.sequence.object :refer :all]
             [locus.set.logic.limit.product :refer :all]
-            [locus.con.core.setpart :refer :all]
-            [locus.set.mapping.general.core.object :refer :all]
-            [locus.set.mapping.function.inclusion.object :refer :all]
             [locus.set.logic.structure.protocols :refer :all]
-            [dorothy.core :as dot])
-  (:import (locus.set.mapping.general.core.object SetFunction)))
+            [dorothy.core :as dot]))
 
-; Objects in the category of sets with unary relations on them. Given a set S a unary relation R
-; on S is equivalent to a subset of S.
+; Set subalgebras are subobjects in the topos Sets. They can equivalently be considered to be a
+; special type of copresheaf of unary relations. We implement them with a special data type,
+; overloaded images and inverse images on them, and use the logical connectives of Sets on them.
 (deftype SetSubalgebra [coll parent]
   ConcreteObject
   (underlying-set [this] parent))
@@ -38,23 +35,15 @@
   (SetSubalgebra. a b))
 
 ; Empty and full set subalgebras
-(defn full-set-subalgebra
+(defn make-complete-set-subalgebra
   [coll]
 
   (SetSubalgebra. coll coll))
 
-(defn empty-set-subalgebra
+(defn make-empty-set-subalgebra
   [coll]
 
   (SetSubalgebra. #{} coll))
-
-; Subalgebras form a category that admits complementation on objects
-(defn complement-set-subalgebra
-  [coll]
-
-  (->SetSubalgebra
-    (difference (underlying-set coll) (included-elements coll))
-    (underlying-set coll)))
 
 ; Get subobject for a presheaf of unary relations
 (defmulti get-subobject type)
@@ -64,27 +53,16 @@
 
   (included-elements coll))
 
-; Conversion routines to turn subsets into inclusion functions
-(defmethod to-function SetSubalgebra
-  [set-subalgebra]
-
-  (->InclusionFunction (included-elements set-subalgebra) (underlying-set set-subalgebra)))
-
 ; Conversion routines for set subalgebras
 (defmulti to-set-subalgebra type)
 
 (defmethod to-set-subalgebra SetSubalgebra
   [^SetSubalgebra subalgebra] subalgebra)
 
-(defmethod to-set-subalgebra :locus.set.logic.structure.protocols/inclusion-function
-  [func]
-
-  (SetSubalgebra. (inputs func) (outputs func)))
-
 (defmethod to-set-subalgebra :locus.set.logic.core.set/universal
   [coll]
 
-  (full-set-subalgebra coll))
+  (SetSubalgebra. coll coll))
 
 ; Product and coproducts of set subalgebras
 (defmethod product ::set-subalebra
@@ -101,22 +79,38 @@
     (apply coproduct (map included-elements sets))
     (apply coproduct (map underlying-set sets))))
 
-; Images and inverse images for set subalgebras
-(defmethod image
-  [:locus.set.logic.structure.protocols/set-function ::set-subalebra]
-  [func coll]
+; Logical operators on set subalgebras
+(defn complement-set-subalgebra
+  [coll]
 
   (->SetSubalgebra
-    (set-image func (included-elements coll))
-    (outputs func)))
+    (difference (underlying-set coll) (included-elements coll))
+    (underlying-set coll)))
 
-(defmethod inverse-image
-  [:locus.set.logic.structure.protocols/set-function ::set-subalebra]
-  [func coll]
+(defn empty-set-subalgebra
+  [coll]
 
-  (->SetSubalgebra
-    (set-inverse-image func (included-elements coll))
-    (inputs func)))
+  (make-empty-set-subalgebra (underlying-set coll)))
+
+(defn complete-set-subalgebra
+  [coll]
+
+  (make-complete-set-subalgebra (underlying-set coll)))
+
+; Join and meet of subobjects of sets
+(defn join-set-subalgebras
+  [& set-subalgebras]
+
+  (SetSubalgebra.
+    (apply union (map included-elements set-subalgebras))
+    (apply union (map underlying-set set-subalgebras))))
+
+(defn meet-set-subalgebras
+  [& set-subalgebras]
+
+  (SetSubalgebra.
+    (apply intersection (map included-elements set-subalgebras))
+    (apply intersection (map underlying-set set-subalgebras))))
 
 ; Ontology of set subalgebras
 (defmulti set-subalgebra? type)
@@ -134,7 +128,7 @@
     (set-subalgebra? obj)
     (empty? (included-elements obj))))
 
-(defn full-set-subalgebra?
+(defn complete-set-subalgebra?
   [obj]
 
   (and
@@ -154,17 +148,16 @@
 
   (output-graph!
     (dot/dot
-     (dot/digraph
-       [(dot/subgraph
-          :cluster_0
-          [{}
-           (concat
-             (map
-               (fn [included-element]
-                 [(.toString included-element)])
-               (included-elements coll))
-             (map
-               (fn [excluded-element]
-                 [(.toString excluded-element) {:style "filled", :fillcolor "lightgreen"}])
-               (excluded-elements coll)))])]))))
-
+      (dot/digraph
+        [(dot/subgraph
+           :cluster_0
+           [{}
+            (concat
+              (map
+                (fn [included-element]
+                  [(.toString included-element) {:style "filled", :fillcolor "lightgreen"}])
+                (included-elements coll))
+              (map
+                (fn [excluded-element]
+                  [(.toString excluded-element)])
+                (excluded-elements coll)))])]))))
