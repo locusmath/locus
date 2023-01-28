@@ -71,7 +71,7 @@
   [func]
 
   (->SetSubfunction
-    (full-set-subalgebra (inputs func))
+    (make-complete-set-subalgebra (inputs func))
     (set-subalgebra (function-image func) (outputs func))
     func))
 
@@ -105,8 +105,8 @@
   [func]
 
   (->SetSubfunction
-    (full-set-subalgebra (inputs func))
-    (full-set-subalgebra (outputs func))
+    (make-complete-set-subalgebra (inputs func))
+    (make-complete-set-subalgebra (outputs func))
     func))
 
 ; Subalgebras have all products and coproducts
