@@ -5,12 +5,12 @@
             [locus.set.quiver.relation.binary.product :refer :all]
             [locus.set.quiver.relation.binary.br :refer :all]
             [locus.set.quiver.relation.binary.sr :refer :all]
-            [locus.con.core.setpart :refer :all]
             [locus.set.logic.structure.protocols :refer :all]
             [locus.set.quiver.structure.core.protocols :refer :all]
             [locus.set.mapping.general.core.object :refer :all]
             [locus.set.mapping.general.core.util :refer :all]
-            [locus.set.mapping.effects.global.identity :refer :all])
+            [locus.set.mapping.effects.global.identity :refer :all]
+            [locus.con.core.setpart :refer :all])
   (:import (locus.set.mapping.effects.global.identity IdentityFunction)
            (locus.set.mapping.general.core.object SetFunction)))
 

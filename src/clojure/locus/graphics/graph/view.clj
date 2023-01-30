@@ -108,5 +108,3 @@
       (unlabeled-digraph
         (apply union (map set edges))
         edges))))
-
-

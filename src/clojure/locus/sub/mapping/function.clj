@@ -31,16 +31,31 @@
 
 (derive SetSubfunction :locus.set.logic.structure.protocols/structured-function)
 
-; Included inputs and outputs
+; The five main set parts of a subobject in the Sierpinski topos
 (defn included-inputs
   [func]
 
   (included-elements (source-object func)))
 
-(defn excluded-inputs
+(defn absent-inputs
   [func]
 
-  (excluded-elements (source-object func)))
+  (let [possible-outputs (set (included-elements (target-object func)))]
+    (set
+      (filter
+        (fn [i]
+          (contains? possible-outputs (func i)))
+        (excluded-elements (source-object func))))))
+
+(defn negative-inputs
+  [func]
+
+  (let [possible-outputs (set (included-elements (target-object func)))]
+    (set
+      (filter
+        (fn [i]
+          (not (contains? possible-outputs (func i))))
+        (underlying-set (source-object func))))))
 
 (defn included-outputs
   [func]
@@ -52,10 +67,143 @@
 
   (excluded-elements (target-object func)))
 
+; Additional components of set subfunctions
+(defn excluded-inputs
+  [func]
+
+  (excluded-elements (source-object func)))
+
 (defn included-transition
   [func]
 
   (list (included-inputs func) (included-outputs func)))
+
+; Helper utility functions to handle the input and output components of subfunctions
+(defn modify-subfunction-components
+  [set-subfunction new-in new-out]
+
+  (->SetSubfunction
+    (set-subalgebra new-in (inputs set-subfunction))
+    (set-subalgebra new-out (outputs set-subfunction))
+    (underlying-function set-subfunction)))
+
+(defn modify-subfunction-input
+  [set-subfunction new-in]
+
+  (->SetSubfunction
+    (set-subalgebra new-in (inputs set-subfunction))
+    (target-object set-subfunction)
+    (underlying-function set-subfunction)))
+
+(defn modify-subfunction-output
+  [set-subfunction new-out]
+
+  (->SetSubfunction
+    (source-object set-subfunction)
+    (set-subalgebra new-out (outputs set-subfunction))
+    (underlying-function set-subfunction)))
+
+; The Sierpinski topos has fifteen logical operators on its object of truth values.
+(defn empty-source
+  [set-subfunction]
+
+  (modify-subfunction-input set-subfunction #{}))
+
+(defn hole
+  [set-subfunction]
+
+  (modify-subfunction-input set-subfunction (absent-inputs set-subfunction)))
+
+(defn fill
+  [set-subfunction]
+
+  (modify-subfunction-input
+    set-subfunction
+    (union (included-inputs set-subfunction) (absent-inputs set-subfunction))))
+
+(defn empty-subfunction
+  [set-subfunction]
+
+  (modify-subfunction-components set-subfunction #{} #{}))
+
+(defn subfunction-negation
+  [set-subfunction]
+
+  (modify-subfunction-components
+    set-subfunction
+    (negative-inputs set-subfunction)
+    (excluded-outputs set-subfunction)))
+
+(defn empty-source-subfunction-negation
+  [set-subfunction]
+
+  (modify-subfunction-components set-subfunction #{} (excluded-outputs set-subfunction)))
+
+(defn comiddle
+  [set-subfunction]
+
+  (modify-subfunction-components
+    set-subfunction
+    (union (negative-inputs set-subfunction) (included-inputs set-subfunction))
+    (outputs set-subfunction)))
+
+(defn cosource
+  [set-subfunction]
+
+  (modify-subfunction-components
+    set-subfunction
+    (union (negative-inputs set-subfunction) (absent-inputs set-subfunction))
+    (outputs set-subfunction)))
+
+(defn complete-subfunction
+  [set-subfunction]
+
+  (modify-subfunction-components set-subfunction (inputs set-subfunction) (outputs set-subfunction)))
+
+(defn empty-source-cocompletion
+  [set-subfunction]
+
+  (modify-subfunction-components set-subfunction #{} (outputs set-subfunction)))
+
+(defn negation-cocompletion
+  [set-subfunction]
+
+  (modify-subfunction-components set-subfunction (negative-inputs set-subfunction) (outputs set-subfunction)))
+
+(defn hole-cocompletion
+  [set-subfunction]
+
+  (modify-subfunction-components set-subfunction (absent-inputs set-subfunction) (outputs set-subfunction)))
+
+(defn fill-cocompletion
+  [set-subfunction]
+
+  (modify-subfunction-components
+    set-subfunction
+    (union (included-inputs set-subfunction) (absent-inputs set-subfunction))
+    (outputs set-subfunction)))
+
+(defn cocompletion
+  [set-subfunction]
+
+  (modify-subfunction-components set-subfunction (included-inputs set-subfunction) (outputs set-subfunction)))
+
+; Logical connectives in the Sierpinski topos
+(defn join-subfunctions
+  [& set-subfunctions]
+
+  (->SetSubfunction
+    (apply join-set-subalgebras (map source-object set-subfunctions))
+    (apply join-set-subalgebras (map target-object set-subfunctions))
+    (first set-subfunctions)))
+
+(defn meet-subfunctions
+  [& set-subfunctions]
+
+  (->SetSubfunction
+    (apply meet-set-subalgebras (map source-object set-subfunctions))
+    (apply meet-set-subalgebras (map target-object set-subfunctions))
+    (first set-subfunctions)))
 
 ; A constuctor for set subfunctions
 (defn set-subfunction
@@ -82,11 +230,11 @@
 
   (let [func (underlying-function set-subfunction)]
     (->SetSubfunction
-     (source-object set-subfunction)
-     (set-subalgebra
-       (intersection (included-outputs set-subfunction) (function-image func))
-       (outputs set-subfunction))
-     func)))
+      (source-object set-subfunction)
+      (set-subalgebra
+        (intersection (included-outputs set-subfunction) (function-image func))
+        (outputs set-subfunction))
+      func)))
 
 ; Get the function induced by a set subfunction
 (defmethod get-subobject SetSubfunction
@@ -175,11 +323,11 @@
                           out-seq)])]]
     (output-graph!
       (dot/dot
-       (dot/digraph
-         [{:rankdir "LR"}
-          in-cluster
-          out-cluster
-          (map-indexed
-            (fn [i in-element]
-              [(.toString i) (.toString (+ in-count (.indexOf out-seq (func in-element))))])
-            in-seq)])))))
+        (dot/digraph
+          [{:rankdir "LR"}
+           in-cluster
+           out-cluster
+           (map-indexed
+             (fn [i in-element]
+               [(.toString i) (.toString (+ in-count (.indexOf out-seq (func in-element))))])
+             in-seq)])))))

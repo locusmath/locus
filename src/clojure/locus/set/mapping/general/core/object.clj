@@ -208,6 +208,12 @@
 (defmethod compose* :locus.set.logic.structure.protocols/set-function
   [a b] (compose-functions a b))
 
+; The function image of a function is the set image of its domain
+(defn function-image
+  [func]
+
+  (set (map func (inputs func))))
+
 ; The images and inverse images of functions are one of the basic
 ; computations we can perform with them
 (defn set-image
@@ -227,12 +233,19 @@
 (defn partition-image
   [func partition]
 
-  (partitionize-family
-    (set
-      (map
-        (fn [part]
-          (set-image func part))
-        partition))))
+  (union
+    (partitionize-family
+     (set
+       (map
+         (fn [part]
+           (set-image func part))
+         partition)))
+    (let [coll (difference (outputs func) (function-image func))]
+      (set
+        (map
+          (fn [i]
+            #{i})
+          coll)))))
 
 (defn partition-inverse-image
   [func partition]
@@ -300,12 +313,6 @@
   (->SetSubalgebra
     (set-inverse-image func (included-elements coll))
     (inputs func)))
-
-; The function image of a function is the set image of its domain
-(defn function-image
-  [func]
-
-  (set (map func (inputs func))))
 
 ; The kernel of a function is the partition image of the minimal partition of its codomain
 (defn kernel
@@ -1173,7 +1180,7 @@
     (partition-image func in-partition)))
 
 ; The empty component of a function
-(defn empty-subfunction
+(defn empty-inclusion-subfunction
   [func]
 
   (inclusion-function #{} (outputs func)))
