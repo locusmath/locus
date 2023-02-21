@@ -899,6 +899,21 @@
         b (union cu2 v2)]
     (subalgebra-interior func a b)))
 
+; Efficiency ordering
+(defn less-efficient-subalgebra?
+  [func [a b] [c d]]
+
+  (and
+    (superset? (list c a))
+    (superset? (list b d))))
+
+(defn more-efficient-subalgebra?
+  [func [a b] [c d]]
+
+  (and
+    (superset? (list a c))
+    (superset? (list d b))))
+
 ; We now need something to deal with the enumeration of all
 ; possible subalgebras of a  given function.
 (defn preceding-subalgebra?

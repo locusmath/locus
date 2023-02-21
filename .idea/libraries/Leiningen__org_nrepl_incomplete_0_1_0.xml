@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: org.nrepl/incomplete:0.1.0">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/nrepl/incomplete/0.1.0/incomplete-0.1.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
