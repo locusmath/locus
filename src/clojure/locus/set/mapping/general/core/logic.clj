@@ -139,6 +139,73 @@
    out-false out-false
    out-true out-true})
 
+(def weak-negate
+  {in-false in-true
+   in-middle in-true
+   in-true in-middle
+   out-false out-true
+   out-true out-true})
+
+(defn logical-identity
+  [a]  a)
+
+(defn double-negate
+  [a]
+
+  (negate (negate a)))
+
+(defn middle-of-negation
+  [x]
+
+  (middle (negate x)))
+
+(defn middle-of-double-negation
+  [x]
+
+  (middle (double-negate x)))
+
+(defn weak-double-negation
+  [x]
+
+  (weak-negate (weak-negate x)))
+
+(defn double-weak-negation-of-negation
+  [x]
+
+  (weak-negate (weak-negate (negate x))))
+
+(defn double-weak-negation-of-middle
+  [x]
+
+  (weak-negate (weak-negate (middle x))))
+
+(defn weak-negation-of-middle
+  [x]
+
+  (weak-negate (middle x)))
+
+(defn weak-negation-of-negation
+  [x]
+
+  (weak-negate (negate x)))
+
+(def unary-operatives
+  #{constant-true
+     constant-middle
+     constant-false
+     middle
+     negate
+     weak-negate
+     logical-identity
+     double-negate
+     middle-of-negation
+     middle-of-double-negation
+     weak-double-negation
+     double-weak-negation-of-negation
+     double-weak-negation-of-middle
+     weak-negation-of-middle
+     weak-negation-of-negation})
+
 ; Logical connectives
 (defn p*
   [a b]
@@ -618,15 +685,6 @@
   [a b] (not (or a (not b))))
 
 ; Weak negation with the middle
-(defn weak-negate
-  [a]
-
-  (disjunction (negate a) (middle a)))
-
-(defn double-negate
-  [a]
-
-  (negate (negate a)))
 
 ; get the middle of the conjunction or the disjunction
 (defn middle-of-conjunction
@@ -689,22 +747,6 @@
       (weak-negate a)
       (weak-negate b))))
 
-; Some other unary connectives
-(defn middle-of-negation
-  [x]
-
-  (middle (negate x)))
-
-(defn middle-of-fill
-  [x]
-
-  (middle (fill x)))
-
-(defn output-completion
-  [x]
-
-  (weak-negate (weak-negate x)))
-
 ; The universal image is different from the existence image
 (defn universal-image
   [func coll]
@@ -744,3 +786,70 @@
         (set-pair-universal-image diamond [a b]))
       (all-subalgebras (source-object diamond)))))
 
+; Get all efficient set pairs of a function
+(defn efficient-set-pairs
+  [func]
+
+  (set
+    (map
+      (fn [coll]
+        (vec (list (set-inverse-image func coll) coll)))
+      (power-set (function-image func)))))
+
+(defn efficient-set-pairs-covering
+  [func]
+
+  (let [im (function-image func)]
+    (set
+      (mapcat
+        (fn [coll]
+          (let [remaining-elements (difference im coll)]
+            (map
+              (fn [remaining-element]
+                (list
+                  (vec
+                    (list (set-inverse-image func coll) coll))
+                  (let [parent-coll (conj coll remaining-element)]
+                    (vec
+                      (list (set-inverse-image func parent-coll) parent-coll)))))
+              remaining-elements)))
+        (power-set im)))))
+
+; Test for lawvere topologies
+(defn equal-connectives?
+  [n a b]
+
+  (tautology?
+    n
+    (fn [& args]
+      (logical-equality
+        (apply a args)
+        (apply b args)))))
+
+(defn truth-preserving?
+  [op]
+
+  (equal-connectives? 1 constant-true (comp op constant-true)))
+
+(defn idempotent-operative?
+  [op]
+
+  (equal-connectives? 1 op (comp op op)))
+
+(defn conjunction-preserving?
+  [op]
+
+  (equal-connectives?
+    2
+    (fn [a b]
+      (conjunction (op a) (op b)))
+    (fn [a b]
+      (op (conjunction a b)))))
+
+(defn lawvere-topology?
+  [op]
+
+  (and
+    (truth-preserving? op)
+    (idempotent-operative? op)
+    (conjunction-preserving? op)))
