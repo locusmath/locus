@@ -7,7 +7,9 @@
             [locus.con.core.setpart :refer :all]
             [locus.set.mapping.general.core.object :refer :all]
             [locus.set.quiver.unary.core.morphism :refer :all]
-            [locus.sub.mapping.function :refer :all]))
+            [locus.sub.mapping.function :refer :all]
+            [locus.set.mapping.function.core.functor :refer :all])
+  (:import (locus.set.quiver.unary.core.morphism Diamond)))
 
 ; Two types of truth values
 (deftype InputTruth [val]
@@ -853,3 +855,26 @@
     (truth-preserving? op)
     (idempotent-operative? op)
     (conjunction-preserving? op)))
+
+; internal sub and con
+(defn internal-sub-function
+  [func]
+
+  (let [in (set (all-subalgebras truth-function))
+        out (power-set (outputs func))]
+    (->SetFunction
+      in
+      out
+      (fn [pair]
+        (second pair)))))
+
+(defn internal-con-function
+  [func]
+
+  (let [in (set (all-congruences func))
+        out (set-partitions (outputs func))]
+    (->SetFunction
+      in
+      out
+      (fn [pair]
+        (second pair)))))
