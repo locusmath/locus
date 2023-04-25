@@ -860,7 +860,7 @@
 (defn internal-sub-function
   [func]
 
-  (let [in (set (all-subalgebras truth-function))
+  (let [in (set (map vec (all-subalgebras truth-function)))
         out (power-set (outputs func))]
     (->SetFunction
       in
@@ -871,7 +871,7 @@
 (defn internal-con-function
   [func]
 
-  (let [in (set (all-congruences func))
+  (let [in (set (map vec (all-congruences func)))
         out (set-partitions (outputs func))]
     (->SetFunction
       in
