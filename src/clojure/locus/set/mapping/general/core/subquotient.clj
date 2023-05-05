@@ -10,7 +10,9 @@
             [locus.sub.mapping.function :refer :all]
             [locus.set.mapping.function.core.functor :refer :all]
             [locus.partial.mapping.function :refer :all]
-            [locus.set.quiver.relation.binary.br :refer :all])
+            [locus.set.quiver.relation.binary.br :refer :all]
+
+            [locus.order.lattice.core.object :refer :all])
   (:import (locus.set.quiver.unary.core.morphism Diamond)))
 
 ; Partial partitions of a set
@@ -35,6 +37,71 @@
   (and
     (equivalence-relation? rel)
     (superset? (list (vertices rel) coll))))
+
+; Subcoarsification ordering for partial partitions
+(defn member-union-of-partial-partition?
+  [coll partition]
+
+  (and
+    (let [set (apply union partition)]
+      (superset? (list coll set)))
+    (every?
+     (fn [part]
+       (or
+         (empty? (intersection part coll))
+         (superset? (list part coll))))
+     partition)))
+
+(defn subcoarsification?
+  [partition1 partition2]
+
+  (every?
+    (fn [part]
+      (member-union-of-partial-partition? part partition1))
+    partition2))
+
+; Promote partial partitions by adding dummy variables
+(defn promote-partial-partition
+  [coll partition]
+
+  (let [elems (apply union partition)
+        remaining-elements (difference coll elems)]
+    (conj
+      (set
+        (map
+          (fn [part]
+            (set (map (fn [i] #{i}) part)))
+          partition))
+      (conj
+        (set (map (fn [i] #{i}) remaining-elements))
+        #{}))))
+
+(defn unpromote-partial-partition
+  [partition]
+
+  (list
+    (apply union (map (partial apply union) partition))
+    (set
+     (for [part partition
+           :when (not (contains? part #{}))]
+       (set (map first part))))))
+
+; Meet operations
+(defn unpromote-partial-partition-meet
+  [s p q]
+
+  (meet-set-partitions
+    (promote-partial-partition s p)
+    (promote-partial-partition s q)))
+
+(defn meet-partial-partitions
+  [s p q]
+
+  (second
+    (unpromote-partial-partition
+     (meet-set-partitions
+       (promote-partial-partition s p)
+       (promote-partial-partition s q)))))
 
 ; The ordering on partial partitions
 (defn block-of-partial-partition?
@@ -135,14 +202,6 @@
           :when (not (empty? coll))]
       coll)))
 
-; inclusion relations for subquotients
-(defn included-partial-partition-pair?
-  [[a b] [c d]]
-
-  (and
-    (partial-subpartition? a c)
-    (partial-subpartition? b d)))
-
 ; Get all partial partition pairs of a function
 (defn partial-partition-pairs
   [func]
@@ -157,8 +216,23 @@
             (partial-subpartitions in-partition))))
       (partial-partitions (outputs func)))))
 
-; Aspects of the partial partition pairs system
-(defn partial-partition-pairs-ordering
+; inclusion relations for subquotients
+(defn included-partial-partition-pair?
+  [[a b] [c d]]
+
+  (and
+    (partial-subpartition? a c)
+    (partial-subpartition? b d)))
+
+(defn subcoarsified-pair?
+  [[a b] [c d]]
+
+  (and
+    (subcoarsification? a c)
+    (subcoarsification? b d)))
+
+; partial partiion pairs orderings
+(defn partial-partition-pairs-inclusion-ordering
   [func]
 
   (let [coll (partial-partition-pairs func)]
@@ -168,6 +242,17 @@
           (included-partial-partition-pair? a b))
         (cartesian-product coll coll)))))
 
+(defn partial-partition-pairs-subcoarsification-ordering
+  [func]
+
+  (let [coll (partial-partition-pairs func)]
+    (set
+      (filter
+        (fn [[a b]]
+          (subcoarsified-pair? a b))
+        (cartesian-product coll coll)))))
+
+; partial partition paris covering relations
 (defn covering-partial-partition-pairs
   [func in-partition out-partition]
 
@@ -195,3 +280,14 @@
           (covering-partial-partition-pairs func in-partition out-partition)))
       (partial-partition-pairs func))))
 
+; get a mechanism for handling subquotients of functions
+(defn internal-subquotient-function
+  [func]
+
+  (let [in (set (map vec (partial-partition-pairs func)))
+        out (set (partial-partitions (outputs func)))]
+    (->SetFunction
+      in
+      out
+      (fn [pair]
+        (second pair)))))
