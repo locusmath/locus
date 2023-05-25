@@ -5,6 +5,7 @@
             [locus.sub.core.object :refer :all]
             [locus.con.core.object :refer :all]
             [locus.con.core.setpart :refer :all]
+            [locus.con.mapping.function :refer :all]
             [locus.set.mapping.general.core.object :refer :all]
             [locus.set.quiver.unary.core.morphism :refer :all]
             [locus.sub.mapping.function :refer :all]

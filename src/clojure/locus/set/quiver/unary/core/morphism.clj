@@ -120,6 +120,12 @@
             (get-function (target-object diamond) [v w])
             (diamond-component-function diamond v))))
 
+; Conversion multimethods
+(defmulti to-diamond type)
+
+(defmethod to-diamond Diamond
+  [diamond] diamond)
+
 ; Morphisms of functions especially useful in abstract algebra
 (defn morphism-of-unary-operations
   [source target func]
