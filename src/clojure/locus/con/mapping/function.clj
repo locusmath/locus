@@ -41,8 +41,8 @@
   [func in-partition out-partition]
 
   (->FunctionCongruence
-    in-partition
-    out-partition
+    (->SetPartition in-partition)
+    (->SetPartition out-partition)
     func))
 
 ; Get the injective closure of a function congruence

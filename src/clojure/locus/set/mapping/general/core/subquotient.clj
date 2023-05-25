@@ -7,6 +7,7 @@
             [locus.con.core.setpart :refer :all]
             [locus.con.mapping.function :refer :all]
             [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.quiver.structure.core.protocols :refer :all]
             [locus.set.quiver.unary.core.morphism :refer :all]
             [locus.sub.mapping.function :refer :all]
             [locus.set.mapping.function.core.functor :refer :all]
@@ -14,7 +15,8 @@
             [locus.set.quiver.relation.binary.br :refer :all]
             [locus.set.quiver.relation.binary.sr :refer [coreflexive-relation complete-relation]]
             [locus.order.lattice.core.object :refer :all])
-  (:import (locus.set.quiver.unary.core.morphism Diamond)))
+  (:import (locus.con.mapping.function FunctionCongruence)
+           (locus.set.quiver.unary.core.morphism Diamond)))
 
 ; Partial partitions of a set
 (defn number-of-partial-partitions

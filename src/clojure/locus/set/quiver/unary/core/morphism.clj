@@ -319,6 +319,39 @@
       (inclusion-function #{x} (inputs f))
       (inclusion-function #{out} (outputs f)))))
 
+; Preservation and reflection methods
+(defn set-pair-image
+  [diamond [s t]]
+
+  (let [h (first-function diamond)
+        k (second-function diamond)]
+    [(set-image h s)
+     (set-image k t)]))
+
+(defn set-pair-inverse-image
+  [diamond [s t]]
+
+  (let [h (first-function diamond)
+        k (second-function diamond)]
+    [(set-inverse-image h s)
+     (set-inverse-image k t)]))
+
+(defn partition-pair-image
+  [diamond [p q]]
+
+  (let [h (first-function diamond)
+        k (second-function diamond)]
+    [(partition-pair-image h p)
+     (partition-pair-image k q)]))
+
+(defn partition-pair-inverse-image
+  [diamond [p q]]
+
+  (let [h (first-function diamond)
+        k (second-function diamond)]
+    [(partition-pair-inverse-image h p)
+     (partition-pair-inverse-image k q)]))
+
 ; Products and coproducts in the topos of diamonds
 (defmethod product Diamond
   [& diamonds]
