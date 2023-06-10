@@ -256,7 +256,7 @@
         (= (count (objects index-category)) 3)
         (total-order-category? index-category)))))
 
-(defn hyperdiamond?
+(defn hypersquare?
   [functor]
 
   (and

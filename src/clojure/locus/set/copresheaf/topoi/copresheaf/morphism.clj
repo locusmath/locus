@@ -6,7 +6,7 @@
             [locus.set.quiver.structure.core.protocols :refer :all]
             [locus.set.copresheaf.structure.core.protocols :refer :all]
             [locus.set.quiver.diset.core.object :refer :all]
-            [locus.set.quiver.unary.core.morphism :refer :all]
+            [locus.set.square.core.morphism :refer :all]
             [locus.set.quiver.binary.core.object :refer :all]
             [locus.set.quiver.binary.core.morphism :refer :all]
             [locus.algebra.category.core.object :refer :all]
@@ -17,7 +17,7 @@
             [locus.set.quiver.diset.core.morphism :refer :all])
   (:import (locus.set.copresheaf.topoi.copresheaf.object Copresheaf)
            (locus.set.quiver.diset.core.morphism Difunction)
-           (locus.set.quiver.unary.core.morphism Diamond)))
+           (locus.set.square.core.morphism SetSquare)))
 
 ; Morphisms in a topos of copresheaves
 ; Let C be a category and Sets^C its topos of copresheaves. Then a morphism of copresheaves is a
@@ -81,7 +81,7 @@
   (let [cat (index (source-object morphism))
         source (source-element cat x)
         target (target-element cat x)]
-    (->Diamond
+    (->SetSquare
      (get-function (source-object morphism) x)
      (get-function (target-object morphism) x)
      (morphism source)
@@ -122,7 +122,7 @@
 (defmethod to-morphism-of-copresheaves :locus.set.copresheaf.structure.core.protocols/bijection
   [bijection] (to-morphism-of-copresheaves (underlying-function bijection)))
 
-(defmethod to-morphism-of-copresheaves Diamond
+(defmethod to-morphism-of-copresheaves SetSquare
   [diamond]
 
   (->MorphismOfCopresheaves

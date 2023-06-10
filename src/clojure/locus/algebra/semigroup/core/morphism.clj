@@ -5,14 +5,14 @@
             [locus.set.mapping.general.core.object :refer :all]
             [locus.set.copresheaf.structure.core.protocols :refer :all]
             [locus.set.quiver.relation.binary.product :refer :all]
-            [locus.set.quiver.unary.core.morphism :refer :all]
+            [locus.set.square.core.morphism :refer :all]
             [locus.algebra.commutative.semigroup.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.order.lattice.core.object :refer :all]
             [locus.order.lattice.core.morphism :refer :all]
             [locus.set.quiver.structure.core.protocols :refer :all])
   (:import [locus.set.mapping.general.core.object SetFunction]
-           [locus.set.quiver.unary.core.morphism Diamond]
+           [locus.set.square.core.morphism SetSquare]
            (locus.algebra.semigroup.core.object Semigroup)))
 
 ; A semigroup morphism is a structured function, because the category of semigroups

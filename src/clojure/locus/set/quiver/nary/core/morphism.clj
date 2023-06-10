@@ -12,7 +12,7 @@
             [locus.set.quiver.binary.core.object :refer :all]
             [locus.set.quiver.ternary.core.object :refer :all]
             [locus.set.quiver.nary.core.object :refer :all]
-            [locus.set.quiver.unary.core.morphism :refer :all])
+            [locus.set.square.core.morphism :refer :all])
   (:import (locus.set.quiver.nary.core.object NaryQuiver)))
 
 ; The topoi of nary quivers are the family of topoi of presheaves over the n arrow categories, which
@@ -56,7 +56,7 @@
 (defn morphism-of-nth-component-functions
   [morphism i]
 
-  (->Diamond
+  (->SetSquare
     (nth-component-function (source-object morphism) i)
     (nth-component-function (target-object morphism) i)
     (first-function morphism)

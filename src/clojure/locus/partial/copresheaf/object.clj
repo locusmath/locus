@@ -194,7 +194,7 @@
     (total-order-category? (index x))
     (= (count (objects (index x))) 3)))
 
-(defn partial-diamond?
+(defn partial-square?
   [x]
 
   (and

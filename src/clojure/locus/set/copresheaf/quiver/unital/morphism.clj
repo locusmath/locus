@@ -9,7 +9,7 @@
             [locus.set.quiver.relation.binary.product :refer :all]
             [locus.set.quiver.relation.binary.br :refer :all]
             [locus.set.quiver.relation.binary.sr :refer :all]
-            [locus.set.quiver.unary.core.morphism :refer :all]
+            [locus.set.square.core.morphism :refer :all]
             [locus.set.quiver.binary.core.object :refer :all]
             [locus.set.quiver.binary.core.morphism :refer :all]
             [locus.set.copresheaf.quiver.unital.object :refer :all]
@@ -80,7 +80,7 @@
 (defn morphism-of-identity-element-functions
   [morphism]
 
-  (->Diamond
+  (->SetSquare
     (identity-element-function (source-object morphism))
     (identity-element-function (target-object morphism))
     (second-function morphism)
@@ -89,7 +89,7 @@
 (defn morphism-of-source-identity-functions
   [morphism]
 
-  (->Diamond
+  (->SetSquare
     (source-identity-function (source-object morphism))
     (source-identity-function (target-object morphism))
     (first-function morphism)
@@ -98,7 +98,7 @@
 (defn morphism-of-target-identity-functions
   [morphism]
 
-  (->Diamond
+  (->SetSquare
     (target-identity-function (source-object morphism))
     (target-identity-function (target-object morphism))
     (first-function morphism)

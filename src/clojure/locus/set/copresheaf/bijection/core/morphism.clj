@@ -9,11 +9,11 @@
             [locus.set.quiver.relation.binary.product :refer :all]
             [locus.set.quiver.relation.binary.br :refer :all]
             [locus.set.quiver.relation.binary.sr :refer :all]
-            [locus.set.quiver.unary.core.morphism :refer :all]
+            [locus.set.square.core.morphism :refer :all]
             [locus.set.copresheaf.structure.core.protocols :refer :all]
             [locus.set.copresheaf.bijection.core.object :refer :all])
   (:import [locus.set.mapping.general.core.object SetFunction]
-           [locus.set.quiver.unary.core.morphism Diamond]
+           [locus.set.square.core.morphism SetSquare]
            [locus.set.copresheaf.bijection.core.object Bijection]))
 
 ; Objects in the topos Sets^[2,2]
@@ -31,7 +31,7 @@
 
   ConcreteHigherMorphism
   (underlying-morphism-of-functions [this]
-    (Diamond.
+    (SetSquare.
       (underlying-function source-bijection)
       (underlying-function target-bijection)
       input-function
@@ -285,7 +285,7 @@
 (defn quotient-gem
   [gem [in-partition1 out-partition1] [in-partition2 out-partition2]]
 
-  (Diamond.
+  (SetSquare.
     (quotient-bijection (first-function gem) in-partition1 out-partition1)
     (quotient-bijection (second-function gem) in-partition2 out-partition2)
     (quotient-function (input-set-function gem) in-partition1 in-partition2)

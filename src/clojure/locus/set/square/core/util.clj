@@ -1,4 +1,4 @@
-(ns locus.set.quiver.unary.core.util
+(ns locus.set.square.core.util
   (:require [locus.set.logic.core.set :refer :all]
             [locus.set.logic.limit.product :refer :all]
             [locus.set.logic.sequence.object :refer :all]
@@ -11,12 +11,13 @@
             [locus.set.mapping.general.core.object :refer :all]
             [locus.set.mapping.general.core.util :refer :all]
             [locus.set.mapping.effects.global.identity :refer :all]
-            [locus.set.quiver.unary.core.morphism :refer :all]
+            [locus.set.square.core.morphism :refer :all]
             [locus.set.copresheaf.incidence.core.object :refer :all]
             [locus.set.tree.cospan.core.object :refer :all]
             [locus.set.tree.triangle.core.object :refer :all])
   (:import (locus.set.mapping.effects.global.identity IdentityFunction)
            (locus.set.mapping.general.core.object SetFunction)
+           (locus.set.square.core.morphism SetSquare)
            (locus.set.tree.triangle.core.object SetTriangle)
            (locus.set.tree.cospan.core.object Cospan)
            (locus.set.copresheaf.incidence.core.object Span)))
@@ -38,26 +39,26 @@
     (source-object func)))
 
 ; The cartesian diamond of a cospan copresheaf
-(defn cartesian-diamond
+(defn cartesian-square
   [^Cospan cospan]
 
   (let [cospan1 (first-cospan-function cospan)
         cospan2 (second-cospan-function cospan)
         [predecessor1 predecessor2] (fiber-product-projections cospan1 cospan2)]
-    (Diamond.
+    (SetSquare.
       predecessor1
       cospan2
       predecessor1
       cospan1)))
 
 ; A cocartesian diamond of a span copresheaf
-(defn cocartesian-diamond
+(defn cocartesian-square
   [^Span span]
 
   (let [span1 (edge-function span)
         span2 (vertex-function span)
         [successor1 successor2] (fiber-coproduct-projections span1 span2)]
-    (Diamond.
+    (SetSquare.
       span1
       successor2
       span2
@@ -65,21 +66,21 @@
 
 ; Get triagnles from diamonds
 (defn input-action-triangle
-  [^Diamond diamond]
+  [^SetSquare diamond]
 
   (SetTriangle.
     (target-object diamond)
     (input-set-function diamond)))
 
 (defn output-action-triangle
-  [^Diamond diamond]
+  [^SetSquare diamond]
 
   (SetTriangle.
     (output-set-function diamond)
     (source-object diamond)))
 
-(defn diamond-triangles
-  [^Diamond diamond]
+(defn set-square-triangles
+  [^SetSquare diamond]
 
   (list
     (input-action-triangle diamond)
@@ -93,24 +94,24 @@
         input-function (.-g in)
         output-function (.-f out)
         source-function (.-g out)]
-    (Diamond.
+    (SetSquare.
       source-function
       target-function
       input-function
       output-function)))
 
-(defn to-input-action-diamond
+(defn to-input-action-square
   [^SetTriangle triangle]
 
-  (input-action-diamond (.f triangle) (.g triangle)))
+  (input-action-square (.f triangle) (.g triangle)))
 
-(defn to-output-action-diamond
+(defn to-output-action-square
   [^SetTriangle triangle]
 
-  (output-action-diamond (.g triangle) (.f triangle)))
+  (output-action-square (.g triangle) (.f triangle)))
 
 ; Reduce diamonds to simpler copresheaves if possible
-(defn reduce-diamond
+(defn reduce-square
   [diamond]
 
   (let [id1 (intrinsic-identity-function? (first-function diamond))

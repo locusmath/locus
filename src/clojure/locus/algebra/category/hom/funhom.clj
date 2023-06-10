@@ -6,12 +6,12 @@
             [locus.set.mapping.general.core.object :refer :all]
             [locus.set.logic.structure.protocols :refer :all]
             [locus.set.copresheaf.structure.core.protocols :refer :all]
-            [locus.set.quiver.unary.core.morphism :refer :all]
+            [locus.set.square.core.morphism :refer :all]
             [locus.set.quiver.structure.core.protocols :refer :all]
             [locus.con.core.setpart :refer :all]
             [locus.algebra.category.hom.sethom :refer :all])
   (:import [locus.set.mapping.general.core.object SetFunction]
-           (locus.set.quiver.unary.core.morphism Diamond)))
+           (locus.set.square.core.morphism SetSquare)))
 
 ; Let Sets^(->) be the topos of functions. Suppose that we have an ordered
 ; pair of functions (f,g). Then the hom class of (f,g) consists of all
@@ -52,7 +52,7 @@
         second-output (outputs g)]
     (map
      (fn [[i o]]
-       (Diamond.
+       (SetSquare.
         f
         g
         (SetFunction.
@@ -137,7 +137,7 @@
      (fn [output-mapping]
        (map
         (fn [input-mapping]
-          (Diamond.
+          (SetSquare.
            f
            g
            (SetFunction. (inputs f) (inputs g) input-mapping)
@@ -224,7 +224,7 @@
 
   (map
    (fn [[in-f out-f]]
-     (Diamond.
+     (SetSquare.
       source-function
       target-function
       (SetFunction. (inputs source-function) (inputs target-function) in-f)

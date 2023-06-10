@@ -24,7 +24,7 @@
             [locus.set.quiver.diset.core.object :refer :all]
             [locus.set.copresheaf.bijection.core.object :refer :all]
             [locus.set.copresheaf.bijection.core.morphism :refer :all]
-            [locus.set.quiver.unary.core.morphism :refer :all]
+            [locus.set.square.core.morphism :refer :all]
             [locus.set.copresheaf.incidence.core.object :refer :all]
             [locus.set.tree.triangle.core.object :refer :all]
             [locus.set.copresheaf.dependency.core.object :refer :all]

@@ -5,7 +5,7 @@
             [locus.set.quiver.relation.binary.product :refer :all]
             [locus.set.logic.structure.protocols :refer :all]
             [locus.set.copresheaf.structure.core.protocols :refer :all]
-            [locus.set.quiver.unary.core.morphism :refer :all]
+            [locus.set.square.core.morphism :refer :all]
             [locus.algebra.commutative.semigroup.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.semigroup.core.morphism :refer :all]
@@ -14,7 +14,7 @@
             [locus.algebra.group.core.object :refer :all]
             [locus.set.quiver.structure.core.protocols :refer :all])
   (:import (locus.set.mapping.general.core.object SetFunction)
-           (locus.set.quiver.unary.core.morphism Diamond)
+           (locus.set.square.core.morphism SetSquare)
            (locus.algebra.group.core.object Group)))
 
 ; As groups are monoids with additional structure, the category of groups is equipped
@@ -70,7 +70,7 @@
 (defn morphism-of-inverse-functions
   [morphism]
 
-  (Diamond.
+  (SetSquare.
     (inverse-function (source-object morphism))
     (inverse-function (target-object morphism))
     (underlying-function morphism)

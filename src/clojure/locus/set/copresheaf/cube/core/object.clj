@@ -12,8 +12,8 @@
             [locus.set.quiver.relation.binary.sr :refer :all]
             [locus.set.copresheaf.structure.core.protocols :refer :all]
             [locus.set.quiver.structure.core.protocols :refer :all]
-            [locus.set.quiver.unary.core.morphism :refer :all])
-  (:import (locus.set.quiver.unary.core.morphism Diamond)
+            [locus.set.square.core.morphism :refer :all])
+  (:import (locus.set.square.core.morphism SetSquare)
            (locus.set.mapping.general.core.object SetFunction)))
 
 ; Cubes are morphisms in the topos of diamonds
@@ -87,10 +87,10 @@
             (cube-component-function cube v))))
 
 ; Constructors for cubes
-(defmethod identity-morphism Diamond
-  [diamond]
+(defmethod identity-morphism SetSquare
+  [square]
 
-  (Cube. diamond diamond identity identity identity identity))
+  (Cube. square square identity identity identity identity))
 
 (defmethod compose* Cube
   [a b]
@@ -127,7 +127,7 @@
     (apply coproduct (map target-output-function args))))
 
 ; Subobject classifiers in the topos Sets^{[1,2,1]}
-(def truth-diamond
+(def truth-square
   (let [in '#{((0 0) (1/3 1/3) (1/3 1/2) (1/2 1/3) (1/2 1/2) (1 1))}
         middle '#{0 1/2 1}
         out #{0 1}
@@ -148,18 +148,18 @@
                               (= b 0) 0
                               (= b 1/3) 1/2
                               :else 1)))]
-    (Diamond.
+    (SetSquare.
       first-function
       upper-function
       second-function
       upper-function)))
 
-(defn subdiamond-truth
+(defn subsquare-truth
   [diamond new-source-inputs new-source-outputs new-target-inputs new-target-outputs]
 
   (->Cube
     diamond
-    truth-diamond
+    truth-square
     (fn [source-input]
       (if (contains? new-source-inputs source-input)
         (list 1 1)

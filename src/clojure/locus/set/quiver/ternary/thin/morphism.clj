@@ -11,7 +11,7 @@
             [locus.set.quiver.structure.core.protocols :refer :all]
             [locus.set.quiver.binary.core.object :refer :all]
             [locus.set.quiver.binary.core.morphism :refer :all]
-            [locus.set.quiver.unary.core.morphism :refer :all]
+            [locus.set.square.core.morphism :refer :all]
             [locus.set.quiver.ternary.core.object :refer :all]
             [locus.set.quiver.ternary.core.morphism :refer :all]
             [locus.set.quiver.ternary.thin.object :refer :all])

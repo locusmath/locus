@@ -214,7 +214,7 @@
     (monoidal-functor? functor)
     (discrete-category? (index functor))))
 
-(defn monoid-diamond?
+(defn monoid-square?
   [functor]
 
   (and

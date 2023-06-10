@@ -10,7 +10,7 @@
             [locus.set.quiver.relation.binary.br :refer :all]
             [locus.set.quiver.relation.binary.sr :refer :all]
             [locus.set.quiver.relation.binary.vertexset :refer :all]
-            [locus.set.quiver.unary.core.morphism :refer :all]
+            [locus.set.square.core.morphism :refer :all]
             [locus.set.quiver.binary.core.object :refer :all]
             [locus.set.quiver.binary.core.morphism :refer :all]
             [locus.set.quiver.binary.thin.object :refer :all]

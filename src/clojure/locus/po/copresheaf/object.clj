@@ -259,7 +259,7 @@
         (total-order-category? cat)
         (= (count (objects cat)) 3)))))
 
-(defn preordered-diamond?
+(defn preordered-square?
   [copresheaf]
 
   (and

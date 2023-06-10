@@ -8,7 +8,7 @@
             [locus.set.quiver.structure.core.protocols :refer :all]
             [locus.set.quiver.relation.binary.sr :refer :all]
             [locus.set.quiver.relation.binary.br :refer :all]
-            [locus.set.quiver.unary.core.morphism :refer :all]
+            [locus.set.square.core.morphism :refer :all]
             [locus.set.quiver.binary.core.object :refer :all]
             [locus.set.quiver.diset.core.object :refer :all]
             [locus.set.copresheaf.incidence.system.family :refer :all]
@@ -39,7 +39,7 @@
            (javax.swing.event ListSelectionListener)
            (java.awt.event MouseAdapter ComponentEvent MouseEvent ComponentAdapter)
            (locus.set.copresheaf.topoi.copresheaf.object Copresheaf)
-           (locus.set.quiver.unary.core.morphism Diamond)
+           (locus.set.square.core.morphism SetSquare)
            (java.util ArrayList)
            (java.awt.image BufferedImage)
            (java.awt.geom GeneralPath)
@@ -123,7 +123,7 @@
       (+ 50 (* 7 (.length (.getTitle frame))) (.getIconWidth icon))
       (+ 10 (.-top (.getInsets frame)) (.getIconHeight icon)))))
 
-(defmethod visualize Diamond
+(defmethod visualize SetSquare
   [func] (visualize (to-copresheaf func)))
 
 ; node and arrow images for the copresheaf viewer

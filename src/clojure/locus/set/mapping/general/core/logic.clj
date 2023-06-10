@@ -6,10 +6,10 @@
             [locus.con.core.object :refer :all]
             [locus.con.core.setpart :refer :all]
             [locus.set.mapping.general.core.object :refer :all]
-            [locus.set.quiver.unary.core.morphism :refer :all]
+            [locus.set.square.core.morphism :refer :all]
             [locus.sub.mapping.function :refer :all]
             [locus.set.mapping.function.core.functor :refer :all])
-  (:import (locus.set.quiver.unary.core.morphism Diamond)))
+  (:import (locus.set.square.core.morphism SetSquare)))
 
 ; Two types of truth values
 (deftype InputTruth [val]
@@ -763,7 +763,7 @@
       (outputs func))))
 
 (def m
-  (->Diamond
+  (->SetSquare
     (mapfn {0 0, 1 1, 2 2, 3 3, 4 4, 5 5})
     (mapfn {0 0, 1/2 1, 1 1})
     (mapfn {0 1/2, 1 0, 2 1, 3 0, 4 1/2, 5 0})

@@ -17,9 +17,9 @@
             [locus.algebra.semigroup.monoid.object :refer :all]
             [locus.algebra.group.core.object :refer :all]
             [locus.set.quiver.binary.core.morphism :refer :all]
-            [locus.set.quiver.unary.core.morphism :refer :all]
+            [locus.set.square.core.morphism :refer :all]
             [locus.nonassociative.magma.object :refer :all])
-  (:import (locus.set.quiver.unary.core.morphism Diamond)
+  (:import (locus.set.square.core.morphism SetSquare)
            (locus.set.mapping.general.core.object SetFunction)
            (locus.nonassociative.magma.object Magma)))
 

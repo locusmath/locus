@@ -10,7 +10,7 @@
             [locus.set.quiver.relation.binary.br :refer :all]
             [locus.set.quiver.relation.binary.sr :refer :all]
             [locus.set.quiver.binary.core.object :refer :all]
-            [locus.set.quiver.unary.core.morphism :refer :all])
+            [locus.set.square.core.morphism :refer :all])
   (:import [locus.set.quiver.binary.core.object Quiver]
            [locus.set.mapping.general.core.object SetFunction]))
 
@@ -163,7 +163,7 @@
 (defn morphism-of-source-functions
   [morphism]
 
-  (->Diamond
+  (->SetSquare
     (source-function (source-object morphism))
     (source-function (target-object morphism))
     (first-function morphism)
@@ -172,7 +172,7 @@
 (defn morphism-of-target-functions
   [morphism]
 
-  (->Diamond
+  (->SetSquare
     (target-function (source-object morphism))
     (target-function (target-object morphism))
     (first-function morphism)

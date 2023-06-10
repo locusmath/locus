@@ -47,9 +47,9 @@
 (derive ::difunction ::structured-difunction)
 
 ; Morphisms of unary quivers
-(derive ::structured-diamond ::morphism-of-structured-nary-quivers)
-(derive ::diamond ::morphism-of-nary-quivers)
-(derive ::diamond ::structured-diamond)
+(derive ::structured-set-square ::morphism-of-structured-nary-quivers)
+(derive ::set-square ::morphism-of-nary-quivers)
+(derive ::set-square ::structured-set-square)
 
 ; Morphisms of binary quivers
 (derive ::morphism-of-structured-quivers ::morphism-of-structured-nary-quivers)

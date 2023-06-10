@@ -1,4 +1,4 @@
-(ns locus.set.quiver.unary.core.morphism
+(ns locus.set.square.core.morphism
   (:require [locus.set.logic.core.set :refer :all]
             [locus.set.logic.limit.product :refer :all]
             [locus.set.logic.sequence.object :refer :all]
@@ -15,8 +15,8 @@
            (locus.set.mapping.general.core.object SetFunction)))
 
 ; Objects in the topos Sets^[1, {1,1} 1]
-; A diamond is so called because when depicted its defining commutative diagram appears
-; as a diamond. In other words, it is a copresheaf over the four element diamond shaped
+; A square is so called because when depicted its defining commutative diagram appears
+; as a square. In other words, it is a copresheaf over the four element diamond shaped
 ; partial order. In this file, all relevant operations for objects of this topos
 ; like products and coproducts are defined and implemented.
 
@@ -44,7 +44,7 @@
     "Map a morphism of a category into a morphism in the topos of functions."))
 
 ; Objects in the topos Sets^[1, {1,1} 1]
-(deftype Diamond [source-function target-function input-function output-function]
+(deftype SetSquare [source-function target-function input-function output-function]
   AbstractMorphism
   (source-object [this] source-function)
   (target-object [this] target-function)
@@ -71,11 +71,11 @@
   (applyTo [this args]
     (clojure.lang.AFn/applyToHelper this args)))
 
-(derive Diamond :locus.set.quiver.structure.core.protocols/diamond)
+(derive SetSquare :locus.set.quiver.structure.core.protocols/set-square)
 
 ; Component arrows of diamonds
 (defn input-set-function
-  [^Diamond diamond]
+  [^SetSquare diamond]
 
   (SetFunction.
     (inputs (source-object diamond))
@@ -83,7 +83,7 @@
     (.-input_function diamond)))
 
 (defn output-set-function
-  [^Diamond diamond]
+  [^SetSquare diamond]
 
   (SetFunction.
     (outputs (source-object diamond))
@@ -95,22 +95,30 @@
 
   (compose (output-set-function morphism) (source-object morphism)))
 
-(defn diamond-component-function
-  [^Diamond diamond, x]
+; Component functions
+(defn vertical-function
+  [^SetSquare diamond, x]
+
+  (case x
+    0 (source-object diamond)
+    1 (target-object diamond)))
+
+(defn horizontal-function
+  [^SetSquare diamond, x]
 
   (case x
     0 (input-set-function diamond)
     1 (output-set-function diamond)))
 
 ; Components of diamonds
-(defmethod get-set Diamond
+(defmethod get-set SetSquare
   [diamond [i v]]
 
   (case i
     0 (get-set (source-object diamond) v)
     1 (get-set (target-object diamond) v)))
 
-(defmethod get-function Diamond
+(defmethod get-function SetSquare
   [diamond [[i v] [j w]]]
 
   (case [i j]
@@ -118,19 +126,19 @@
     [1 1] (get-function (target-object diamond) [v w])
     [0 1] (compose
             (get-function (target-object diamond) [v w])
-            (diamond-component-function diamond v))))
+            (horizontal-function diamond v))))
 
 ; Conversion multimethods
-(defmulti to-diamond type)
+(defmulti to-set-square type)
 
-(defmethod to-diamond Diamond
+(defmethod to-set-square SetSquare
   [diamond] diamond)
 
 ; Morphisms of functions especially useful in abstract algebra
 (defn morphism-of-unary-operations
   [source target func]
 
-  (->Diamond
+  (->SetSquare
     source
     target
     func
@@ -139,7 +147,7 @@
 (defn morphism-of-binary-operations
   [source target func]
 
-  (->Diamond
+  (->SetSquare
     source
     target
     (product func func)
@@ -148,7 +156,7 @@
 (defn morphism-of-ternary-operations
   [source target func]
 
-  (->Diamond
+  (->SetSquare
     source
     target
     (product func func func)
@@ -157,7 +165,7 @@
 (defn morphism-of-quaternary-operations
   [source target func]
 
-  (->Diamond
+  (->SetSquare
     source
     target
     (product func func func func)
@@ -167,7 +175,7 @@
 (defn morphism-of-partial-binary-operations
   [source target func]
 
-  (->Diamond
+  (->SetSquare
     source
     target
     (->SetFunction
@@ -181,36 +189,36 @@
       func)))
 
 ; Special types of morphisms of functions
-(defn constant-diamond
+(defn constant-set-square
   [coll]
 
-  (->Diamond
+  (->SetSquare
     (identity-function coll)
     (identity-function coll)
     (identity-function coll)
     (identity-function coll)))
 
 ; Composition and identities in the topos of functions
-(defmethod compose* Diamond
+(defmethod compose* SetSquare
   [f g]
 
-  (Diamond.
+  (SetSquare.
     (source-object g)
     (target-object f)
     (compose-functions (first-function f) (first-function g))
     (compose-functions (second-function f) (second-function g))))
 
-(defn identity-diamond
+(defn identity-set-square
   [f]
 
-  (Diamond.
+  (SetSquare.
     f
     f
     (IdentityFunction. (inputs f))
     (IdentityFunction. (outputs f))))
 
 (defmethod identity-morphism SetFunction
-  [func] (identity-diamond func))
+  [func] (identity-set-square func))
 
 ; Diamonds are structured tetrasets
 (defn source-input-set
@@ -233,7 +241,7 @@
 
   (outputs (target-object diamond)))
 
-(defn diamond-quadruple
+(defn set-square-quadruple
   [diamond]
 
   (list
@@ -243,19 +251,19 @@
     (target-output-set diamond)))
 
 ; Input and output action diamonds
-(defn output-action-diamond
+(defn output-action-square
   [func output-action]
 
-  (Diamond.
+  (SetSquare.
     func
     (compose output-action func)
     (->IdentityFunction (inputs func))
     output-action))
 
-(defn input-action-diamond
+(defn input-action-square
   [func input-action]
 
-  (Diamond.
+  (SetSquare.
     (compose func input-action)
     func
     input-action
@@ -281,39 +289,39 @@
   (list (congruence-component m) (subalgebra-component m)))
 
 ; Get the dual of diamonds
-(defn dual-diamond
+(defn dual-set-square
   [morphism]
 
-  (Diamond.
+  (SetSquare.
     (input-set-function morphism)
     (output-set-function morphism)
     (source-object morphism)
     (target-object morphism)))
 
 ; Inclusion and quotient diamonds
-(defn inclusion-diamond
+(defn inclusion-square
   [f new-in new-out]
 
-  (Diamond.
+  (SetSquare.
     (subfunction f new-in new-out)
     f
     (SetFunction. new-in (inputs f) identity)
     (SetFunction. new-out (outputs f) identity)))
 
-(defn projection-diamond
+(defn projection-square
   [f in-partition out-partition]
 
-  (Diamond.
+  (SetSquare.
     f
     (quotient-function f in-partition out-partition)
     (projection-function in-partition)
     (projection-function out-partition)))
 
-(defn element-diamond
+(defn element-square
   [f x]
 
   (let [out (f x)]
-    (Diamond.
+    (SetSquare.
       (pair-function x out)
       f
       (inclusion-function #{x} (inputs f))
@@ -353,19 +361,19 @@
      (partition-pair-inverse-image k q)]))
 
 ; Products and coproducts in the topos of diamonds
-(defmethod product Diamond
+(defmethod product SetSquare
   [& diamonds]
 
-  (Diamond.
+  (SetSquare.
     (apply product (map source-object diamonds))
     (apply product (map target-object diamonds))
     (apply product (map input-set-function diamonds))
     (apply product (map output-set-function diamonds))))
 
-(defmethod coproduct Diamond
+(defmethod coproduct SetSquare
   [& diamonds]
 
-  (Diamond.
+  (SetSquare.
     (apply coproduct (map source-object diamonds))
     (apply coproduct (map target-object diamonds))
     (apply coproduct (map input-set-function diamonds))
@@ -411,7 +419,7 @@
 (defn subfunction-character
   [func new-in new-out]
 
-  (Diamond.
+  (SetSquare.
     func
     truth-function
     (subfunction-input-classifier func new-in new-out)
@@ -424,7 +432,7 @@
   [func a b]
 
   (and
-    (= (type func) Diamond)
+    (= (type func) SetSquare)
     (equal-functions? a (source-object func))
     (equal-functions? b (target-object func))))
 
@@ -445,7 +453,7 @@
 (defn function-ev
   [f g]
 
-  (Diamond.
+  (SetSquare.
     (product (internal-function-hom f g) f)
     g
     (fn [morphism x]
@@ -453,8 +461,8 @@
     (fn [func x]
       (func x))))
 
-; Subobjects in the topos of diamonds
-(defn subdiamond?
+; Subobjects in the topos of squares of sets
+(defn subsquare?
   [diamond [first-new-in first-new-out] [second-new-in second-new-out]]
 
   (and
@@ -463,17 +471,17 @@
     (subfunction? (input-set-function diamond) first-new-in second-new-in)
     (subfunction? (output-set-function diamond) first-new-out second-new-out)))
 
-(defn subdiamond
+(defn subsquare
   [diamond [first-new-in first-new-out] [second-new-in second-new-out]]
 
-  (Diamond.
+  (SetSquare.
     (subfunction (first-function diamond) first-new-in first-new-out)
     (subfunction (second-function diamond) second-new-in second-new-out)
     (subfunction (input-set-function diamond) first-new-in second-new-in)
     (subfunction (output-set-function diamond) first-new-out second-new-out)))
 
 ; Quotients in the topos of diamonds
-(defn diamond-congruence?
+(defn square-congruence?
   [diamond [in-partition1 out-partition1] [in-partition2 out-partition2]]
 
   (and
@@ -482,147 +490,147 @@
     (io-relation? (input-set-function diamond) in-partition1 in-partition2)
     (io-relation? (output-set-function diamond) out-partition1 out-partition2)))
 
-(defn quotient-diamond
+(defn quotient-square
   [diamond [in-partition1 out-partition1] [in-partition2 out-partition2]]
 
-  (Diamond.
+  (SetSquare.
     (quotient-function (first-function diamond) in-partition1 out-partition1)
     (quotient-function (second-function diamond) in-partition2 out-partition2)
     (quotient-function (input-set-function diamond) in-partition1 in-partition2)
     (quotient-function (output-set-function diamond) out-partition1 out-partition2)))
 
 ; Validity test for diamonds
-(defn valid-diamond?
+(defn valid-commutative-square?
   [m]
 
   (= (compose-functions (target-object m) (first-function m))
      (compose-functions (second-function m) (source-object m))))
 
 ; Ontology of diamonds
-(defn diamond?
+(defn set-square?
   [morphism]
 
-  (= (type morphism) Diamond))
+  (= (type morphism) SetSquare))
 
-(defn epidiamond?
+(defn set-episquare?
   [morphism]
 
   (and
-    (diamond? morphism)
+    (set-square? morphism)
     (surjective? (first-function morphism))
     (surjective? (second-function morphism))))
 
-(defn monodiamond?
+(defn set-monosquare?
   [morphism]
 
   (and
-    (diamond? morphism)
+    (set-square? morphism)
     (injective? (first-function morphism))
     (injective? (second-function morphism))))
 
-(defn isodiamond?
+(defn set-isosquare?
   [morphism]
 
   (and
-    (diamond? morphism)
+    (set-square? morphism)
     (invertible? (first-function morphism))
     (invertible? (second-function morphism))))
 
-(defn inclusion-diamond?
+(defn inclusion-square?
   [morphism]
 
   (and
-    (diamond? morphism)
+    (set-square? morphism)
     (inclusion-function? (first-function morphism))
     (inclusion-function? (second-function morphism))))
 
-(defn identity-diamond?
+(defn identity-set-square?
   [morphism]
 
   (and
-    (diamond? morphism)
+    (set-square? morphism)
     (identity-function? (first-function morphism))
     (identity-function? (second-function morphism))))
 
-(defn input-action-diamond?
+(defn input-action-set-square?
   [morphism]
 
   (and
-    (diamond? morphism)
+    (set-square? morphism)
     (identity-function? (second-function morphism))))
 
-(defn output-action-diamond?
+(defn output-action-set-square?
   [morphism]
 
   (and
-    (diamond? morphism)
+    (set-square? morphism)
     (identity-function? (first-function morphism))))
 
-(defn endodiamond?
+(defn set-endosquare?
   [morphism]
 
   (and
-    (diamond? morphism)
+    (set-square? morphism)
     (equal-functions? (source-object morphism) (target-object morphism))))
 
-(defn autodiamond?
+(defn set-autosquare?
   [morphism]
 
   (and
-    (isodiamond? morphism)
+    (set-isosquare? morphism)
     (equal-functions? (source-object morphism) (target-object morphism))))
 
-(defn element-diamond?
+(defn element-set-square?
   [morphism]
 
   (and
-    (diamond? morphism)
+    (set-square? morphism)
     (ordered-pair-function? (source-object morphism))))
 
 ; Ontology of properties of diamonds
-(defn !=diamond
+(defn !=set-square
   [a b]
 
   (and
-    (diamond? a)
-    (diamond? b)
+    (set-square? a)
+    (set-square? b)
     (not= a b)))
 
-(defn !=diamond-source-function
+(defn !=set-square-vertical-source
   [a b]
 
   (and
-    (diamond? a)
-    (diamond? b)
+    (set-square? a)
+    (set-square? b)
     (not= (source-object a) (source-object b))))
 
-(defn !=diamond-target-function
+(defn !=set-square-vertical-target
   [a b]
 
   (and
-    (diamond? a)
-    (diamond? b)
+    (set-square? a)
+    (set-square? b)
     (not= (target-object a) (target-object b))))
 
-(defn !=diamond-input-function
+(defn !=set-square-horizontal-source
   [a b]
 
   (and
-    (diamond? a)
-    (diamond? b)
+    (set-square? a)
+    (set-square? b)
     (not= (input-set-function a) (input-set-function b))))
 
-(defn !=diamond-output-function
+(defn !=set-square-horizontal-target
   [a b]
 
   (and
-    (diamond? a)
-    (diamond? b)
+    (set-square? a)
+    (set-square? b)
     (not= (output-set-function a) (output-set-function b))))
 
 ; Visualisation of diamond copresheaves
-(defmethod visualize Diamond
-  [^Diamond diamond]
+(defmethod visualize SetSquare
+  [^SetSquare diamond]
 
   (let [[p v] (generate-copresheaf-data
                 {0 (source-input-set diamond)

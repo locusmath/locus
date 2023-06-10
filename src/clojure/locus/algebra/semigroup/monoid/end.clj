@@ -6,7 +6,7 @@
             [locus.set.quiver.diset.core.morphism :refer :all]
             [locus.set.quiver.diset.core.object :refer :all]
             [locus.set.copresheaf.bijection.core.object :refer :all]
-            [locus.set.quiver.unary.core.morphism :refer :all]
+            [locus.set.square.core.morphism :refer :all]
             [locus.set.copresheaf.bijection.core.morphism :refer :all]
             [locus.set.quiver.binary.core.object :refer :all]
             [locus.algebra.commutative.semigroup.object :refer :all]

@@ -23,7 +23,7 @@
             [locus.set.tree.cospan.core.object :refer :all]
             [locus.set.quiver.diset.core.morphism :refer :all]
             [locus.set.copresheaf.dependency.dibijection.object :refer :all]
-            [locus.set.quiver.unary.core.morphism :refer :all]
+            [locus.set.square.core.morphism :refer :all]
             [locus.set.copresheaf.dependency.nset.object :refer :all]
             [locus.set.copresheaf.dependency.nfunction.object :refer :all]
             [locus.set.copresheaf.dependency.nbijection.object :refer :all]
@@ -42,7 +42,7 @@
            (locus.set.copresheaf.incidence.core.object Span)
            (locus.set.tree.cospan.core.object Cospan)
            (locus.set.copresheaf.dependency.dibijection.object Dibijection)
-           (locus.set.quiver.unary.core.morphism Diamond)
+           (locus.set.square.core.morphism SetSquare)
            (locus.set.copresheaf.bijection.core.morphism Gem)
            (locus.set.copresheaf.dependency.nset.object NSet)
            (locus.set.copresheaf.dependency.nfunction.object NFunction)
@@ -167,7 +167,7 @@
     (to-preposet (total-preorder [#{0 1}]))
     (to-preposet (weak-order [#{0 1}]))))
 
-(defmethod index Diamond
+(defmethod index SetSquare
   [diamond]
 
   (product

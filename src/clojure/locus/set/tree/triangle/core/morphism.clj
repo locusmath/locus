@@ -4,7 +4,7 @@
             [locus.set.logic.structure.protocols :refer :all]
             [locus.set.mapping.general.core.object :refer :all]
             [locus.set.quiver.structure.core.protocols :refer :all]
-            [locus.set.quiver.unary.core.morphism :refer :all]
+            [locus.set.square.core.morphism :refer :all]
             [locus.set.tree.triangle.core.object :refer :all])
   (:import (locus.set.tree.triangle.core.object SetTriangle)))
 
@@ -136,35 +136,35 @@
 
 ; A copresheaf in the topos Sets^{T_2 x T_3} is a morphism of triangles, but equal it
 ; could also be considered to be a pair of diamonds.
-(defn prediamond
+(defn presquare
   [morphism]
 
-  (->Diamond
+  (->SetSquare
     (prefunction (source-object morphism))
     (prefunction (target-object morphism))
     (triangle-source-function morphism)
     (triangle-middle-function morphism)))
 
-(defn postdiamond
+(defn postsquare
   [morphism]
 
-  (->Diamond
+  (->SetSquare
     (postfunction (source-object morphism))
     (postfunction (target-object morphism))
     (triangle-middle-function morphism)
     (triangle-target-function morphism)))
 
-(defn compdiamond
+(defn compsquare
   [morphism]
 
-  (->Diamond
+  (->SetSquare
     (compfunction (source-object morphism))
     (compfunction (target-object morphism))
     (triangle-source-function morphism)
     (triangle-target-function morphism)))
 
 ; Combine two diamonds to form a morphism of triangles
-(defn combine-diamonds
+(defn combine-squares
   [f g]
 
   (->TriangleMorphism

@@ -11,7 +11,7 @@
             [locus.set.quiver.structure.core.protocols :refer :all]
             [locus.set.quiver.binary.core.object :refer :all]
             [locus.set.quiver.binary.core.morphism :refer :all]
-            [locus.set.quiver.unary.core.morphism :refer :all]
+            [locus.set.square.core.morphism :refer :all]
             [locus.set.quiver.ternary.core.object :refer :all]))
 
 ; The topos of ternary quivers is the topos of presheaves over the index category T_{2,3} consisting
@@ -70,7 +70,7 @@
 (defn morphism-of-first-component-functions
   [^MorphismOfTernaryQuivers morphism]
 
-  (->Diamond
+  (->SetSquare
     (first-component-function (source-object morphism))
     (first-component-function (target-object morphism))
     (first-function morphism)
@@ -79,7 +79,7 @@
 (defn morphism-of-second-component-functions
   [^MorphismOfTernaryQuivers morphism]
 
-  (->Diamond
+  (->SetSquare
     (second-component-function (source-object morphism))
     (second-component-function (target-object morphism))
     (first-function morphism)
@@ -88,7 +88,7 @@
 (defn morphism-of-third-component-functions
   [^MorphismOfTernaryQuivers morphism]
 
-  (->Diamond
+  (->SetSquare
     (third-component-function (source-object morphism))
     (third-component-function (target-object morphism))
     (first-function morphism)

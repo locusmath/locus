@@ -3,7 +3,7 @@
             [locus.set.mapping.general.core.object :refer :all]
             [locus.set.logic.structure.protocols :refer :all]
             [locus.set.copresheaf.structure.core.protocols :refer :all]
-            [locus.set.quiver.unary.core.morphism :refer :all]
+            [locus.set.square.core.morphism :refer :all]
             [locus.algebra.commutative.semigroup.object :refer :all]
             [locus.algebra.semigroup.core.object :refer :all]
             [locus.algebra.group.core.object :refer :all]
@@ -17,7 +17,7 @@
             [locus.set.quiver.structure.core.protocols :refer :all])
   (:import (locus.algebra.category.core.object Category)
            (locus.algebra.category.element.object CategoryMorphism)
-           (locus.set.quiver.unary.core.morphism Diamond)
+           (locus.set.square.core.morphism SetSquare)
            (locus.set.mapping.general.core.object SetFunction)))
 
 ; Let C be a category. Then its arrow category Arr(C), can be formed by defining the
@@ -70,7 +70,7 @@
 (defmethod to-arrow-transformation ArrowTransformation
   [transformation] transformation)
 
-(defmethod to-arrow-transformation Diamond
+(defmethod to-arrow-transformation SetSquare
   [diamond]
 
   (ArrowTransformation.

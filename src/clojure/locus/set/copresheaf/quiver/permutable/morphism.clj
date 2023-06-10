@@ -9,7 +9,7 @@
             [locus.set.quiver.relation.binary.product :refer :all]
             [locus.set.quiver.relation.binary.br :refer :all]
             [locus.set.quiver.relation.binary.sr :refer :all]
-            [locus.set.quiver.unary.core.morphism :refer :all]
+            [locus.set.square.core.morphism :refer :all]
             [locus.set.quiver.binary.core.object :refer :all]
             [locus.set.quiver.binary.core.morphism :refer :all]
             [locus.set.copresheaf.quiver.permutable.object :refer :all]
@@ -77,7 +77,7 @@
 (defn morphism-of-inverse-functions
   [morphism]
 
-  (->Diamond
+  (->SetSquare
     (inverse-function (source-object morphism))
     (inverse-function (target-object morphism))
     (underlying-function morphism)
