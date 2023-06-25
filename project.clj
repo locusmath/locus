@@ -22,7 +22,7 @@
                  [dorothy "0.0.7"]
                  [org.scilab.forge/jlatexmath "1.0.7"]]
 
-  :main locus.set.square.core.morphism
+  :main locus.set.mapping.general.core.subquotient
 
   :source-paths ["src/clojure"]
   :java-source-paths ["src/java"]

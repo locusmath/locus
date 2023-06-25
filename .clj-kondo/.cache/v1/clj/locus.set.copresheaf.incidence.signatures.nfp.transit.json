@@ -1,0 +1,1 @@
+["^ ","~$nested-additive-partitions",["^ ","~:row",12,"~:col",1,"~:fixed-arities",["~#set",[1]],"~:name","^0","~:ns","~$locus.set.copresheaf.incidence.signatures.nfp","~:top-ns","^7","~:arities",["^ ","~i1",["^ ","~:ret","~:seq","~:arglist-str","[n]"]],"~:type","~:fn"],"~:filename","/home/john/IdeaProjects/locus/src/clojure/locus/set/copresheaf/incidence/signatures/nfp.clj"]

@@ -1,0 +1,1 @@
+["^ ","~$incidence-matrix",["^ ","~:row",15,"~:col",1,"~:name","^0","~:ns","~$locus.matrix.combinatorics.incidence-matrix","~:top-ns","^5"],"~$display-incidence-matrix",["^ ","^1",17,"^2",1,"~:fixed-arities",["~#set",[1]],"^3","^7","^4","^5","^6","^5","~:type","~:fn"],"~:filename","/home/john/IdeaProjects/locus/src/clojure/locus/matrix/combinatorics/incidence_matrix.clj"]

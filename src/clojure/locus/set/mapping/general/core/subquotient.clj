@@ -303,3 +303,9 @@
     (.-func congruence)
     (equivalence-classes (.-source congruence))
     (equivalence-classes (.-target congruence))))
+
+; A new routine for handling the quotients of partitions of sets
+(defn partition-projection
+  [projection-partition source-partition]
+
+  (partition-image (projection-function projection-partition) source-partition))
