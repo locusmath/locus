@@ -28,6 +28,12 @@
 
   (difference (underlying-set coll) (included-elements coll)))
 
+; Deconstructor function
+(defn deconstruct-set-subalgebra
+  [obj]
+
+  [(included-elements obj) (underlying-set obj)])
+
 ; A constructor for set subalgebras
 (defn set-subalgebra
   [a b]
@@ -87,6 +93,7 @@
     (difference (underlying-set coll) (included-elements coll))
     (underlying-set coll)))
 
+; Logical constructors for set subalgebras
 (defn empty-set-subalgebra
   [coll]
 

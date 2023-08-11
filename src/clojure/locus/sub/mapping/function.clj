@@ -29,7 +29,8 @@
   (applyTo [this args]
     (clojure.lang.AFn/applyToHelper this args)))
 
-(derive SetSubfunction :locus.set.logic.structure.protocols/structured-function)
+(derive ::set-subfunction :locus.set.logic.structure.protocols/structured-function)
+(derive SetSubfunction ::set-subfunction)
 
 ; The five main set parts of a subobject in the Sierpinski topos
 (defn included-inputs
@@ -286,7 +287,7 @@
   (= (type obj) SetSubfunction))
 
 ; Visualise subfunctions as graphviz diagrams
-(defmethod visualize SetSubfunction
+(defmethod visualize ::set-subfunction
   [func]
 
   (let [in-seq (vec (seq (inputs func)))

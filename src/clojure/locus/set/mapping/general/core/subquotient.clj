@@ -13,6 +13,9 @@
             [locus.set.mapping.function.core.functor :refer :all]
             [locus.partial.mapping.function :refer :all]
             [locus.set.quiver.relation.binary.br :refer :all]
+
+            [locus.set.copresheaf.incidence.system.family :refer :all]
+
             [locus.set.quiver.relation.binary.sr :refer [coreflexive-relation complete-relation]]
             [locus.order.lattice.core.object :refer :all])
   (:import (locus.con.mapping.function FunctionCongruence)
