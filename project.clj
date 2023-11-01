@@ -22,7 +22,7 @@
                  [dorothy "0.0.7"]
                  [org.scilab.forge/jlatexmath "1.0.7"]]
 
-  :main locus.sub.reflective.arrow
+  :main locus.sub.mapping.function
 
   :source-paths ["src/clojure"]
   :java-source-paths ["src/java"]

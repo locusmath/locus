@@ -6,6 +6,7 @@
             [locus.set.mapping.general.core.object :refer :all]
             [locus.set.mapping.function.inclusion.object :refer :all]
             [locus.set.logic.structure.protocols :refer :all]
+            [locus.set.square.core.morphism :refer :all]
             [locus.sub.core.object :refer :all]
             [dorothy.core :as dot])
   (:import (locus.set.mapping.general.core.object SetFunction)))
@@ -332,3 +333,68 @@
              (fn [i in-element]
                [(.toString i) (.toString (+ in-count (.indexOf out-seq (func in-element))))])
              in-seq)])))))
+
+; some truth theoretic arrows
+(def T
+  (SetSubfunction.
+    (->SetSubalgebra '#{1} '#{0 1})
+    (->SetSubalgebra #{"1F" "1T"} #{"0F" "0T" "1F" "1T"})
+    {0 "0T" 1 "1T"}))
+
+(def F
+  (SetSubfunction.
+    (->SetSubalgebra '#{1} '#{0 1})
+    (->SetSubalgebra #{"1F" "1T"} #{"0F" "0T" "1F" "1T"})
+    {0 "0F" 1 "1F"}))
+
+(def omega
+  (->SetSubalgebra #{"1F" "1T"} #{"0F" "0T" "1F" "1T"}))
+
+(def omega-squared
+  (->SetSubalgebra
+    #{"1FF" "1FT" "1TF" "1TT"}
+    #{"0FF" "0FT" "0TF" "0TT"
+      "1FF" "1FT" "1TF" "1TT"}))
+
+(def AND
+  (SetSubfunction.
+    omega-squared
+    omega
+    {"0FF" "0F"
+     "0TF" "0F"
+     "0FT" "0F"
+     "0TT" "0T"
+     "1FF" "1F"
+     "1TF" "1F"
+     "1FT" "1F"
+     "1TT" "1T"}))
+
+(def OR
+  (SetSubfunction.
+    omega-squared
+    omega
+    {"0FF" "0F"
+     "0TF" "0T"
+     "0FT" "0T"
+     "0TT" "0T"
+     "1FF" "1F"
+     "1TF" "1T"
+     "1FT" "1T"
+     "1TT" "1T"}))
+
+(def IMPL
+  (SetSubfunction.
+    omega-squared
+    omega
+    {"0FF" "0T"
+     "0TF" "0F"
+     "0FT" "0T"
+     "0TT" "0T"
+     "1FF" "1T"
+     "1TF" "1F"
+     "1FT" "1T"
+     "1TT" "1T"}))
+
+
+
+

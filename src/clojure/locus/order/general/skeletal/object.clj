@@ -192,3 +192,28 @@
   (->Poset
     new-objects
     (subrelation (underlying-relation poset) new-objects)))
+
+; Arrow posets
+(defn arrow-relation
+  [relation]
+
+  (set
+    (filter
+      (fn [[[a b] [c d]]]
+        (and
+          (relation (list a c))
+          (relation (list b d))))
+      (complete-relation relation))))
+
+; Tupling functions
+(defn tupling-function
+  [in outs & funcs]
+
+  (->SetFunction
+    in
+    (apply product outs)
+    (fn [i]
+      (map
+        (fn [func]
+          (func i))
+        funcs))))
