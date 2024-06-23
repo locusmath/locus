@@ -69,6 +69,3 @@ Copyright © 2022 John Bernier
 
 ## Version
 1.5.6 release
-
-## Contributing
-Contributions are welcome.
