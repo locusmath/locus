@@ -466,8 +466,8 @@
   [diamond [first-new-in first-new-out] [second-new-in second-new-out]]
 
   (and
-    (subfunction? (first-function diamond) first-new-in first-new-out)
-    (subfunction? (second-function diamond) second-new-in second-new-out)
+    (subfunction? (source-object diamond) first-new-in first-new-out)
+    (subfunction? (target-object diamond) second-new-in second-new-out)
     (subfunction? (input-set-function diamond) first-new-in second-new-in)
     (subfunction? (output-set-function diamond) first-new-out second-new-out)))
 
@@ -475,8 +475,8 @@
   [diamond [first-new-in first-new-out] [second-new-in second-new-out]]
 
   (SetSquare.
-    (subfunction (first-function diamond) first-new-in first-new-out)
-    (subfunction (second-function diamond) second-new-in second-new-out)
+    (subfunction (source-object diamond) first-new-in first-new-out)
+    (subfunction (target-object diamond) second-new-in second-new-out)
     (subfunction (input-set-function diamond) first-new-in second-new-in)
     (subfunction (output-set-function diamond) first-new-out second-new-out)))
 
@@ -485,8 +485,8 @@
   [diamond [in-partition1 out-partition1] [in-partition2 out-partition2]]
 
   (and
-    (io-relation? (first-function diamond) in-partition1 out-partition1)
-    (io-relation? (second-function diamond) in-partition2 out-partition2)
+    (io-relation? (source-object diamond) in-partition1 out-partition1)
+    (io-relation? (target-object diamond) in-partition2 out-partition2)
     (io-relation? (input-set-function diamond) in-partition1 in-partition2)
     (io-relation? (output-set-function diamond) out-partition1 out-partition2)))
 
@@ -494,10 +494,116 @@
   [diamond [in-partition1 out-partition1] [in-partition2 out-partition2]]
 
   (SetSquare.
-    (quotient-function (first-function diamond) in-partition1 out-partition1)
-    (quotient-function (second-function diamond) in-partition2 out-partition2)
+    (quotient-function (source-object diamond) in-partition1 out-partition1)
+    (quotient-function (target-object diamond) in-partition2 out-partition2)
     (quotient-function (input-set-function diamond) in-partition1 in-partition2)
     (quotient-function (output-set-function diamond) out-partition1 out-partition2)))
+
+; Get all subobjects or congruences
+(defn all-subsquares
+  [diamond]
+
+  (filter
+    (fn [[a b]]
+      (subsquare? diamond a b))
+    (cartesian-product
+      (set (all-subalgebras (source-object diamond)))
+      (set (all-subalgebras (target-object diamond))))))
+
+(defn subsquares-ordering
+  [diamond]
+
+  (set
+    (filter
+      (fn [ [ [[a1 b1] [c1 d1]] [[a2 b2] [c2 d2]] ] ]
+        (and
+          (superset? (list a1 a2))
+          (superset? (list b1 b2))
+          (superset? (list c1 c2))
+          (superset? (list d1 d2))))
+      (cartesian-power (set (all-subsquares diamond)) 2))))
+
+(defn all-square-congruences
+  [diamond]
+
+  (filter
+    (fn [[a b]]
+      (square-congruence? diamond a b))
+    (cartesian-product
+      (set (all-congruences (source-object diamond)))
+      (set (all-congruences (target-object diamond))))))
+
+(defn square-congruences-ordering
+  [diamond]
+
+  (set
+    (filter
+      (fn [ [ [[a1 b1] [c1 d1]] [[a2 b2] [c2 d2]] ] ]
+        (and
+          (set-superpartition? (list a1 a2))
+          (set-superpartition? (list b1 b2))
+          (set-superpartition? (list c1 c2))
+          (set-superpartition? (list d1 d2))))
+      (cartesian-power (set (all-square-congruences diamond)) 2))))
+
+; Example squares
+(defn boundary-equal-square
+  [func]
+
+  (->SetSquare func func func func))
+
+(def one-square
+  (boundary-equal-square (identity-function #{0})))
+
+(def two-square
+  (boundary-equal-square (identity-function #{0 1})))
+
+(def three-square
+  (boundary-equal-square (identity-function #{0 1 2})))
+
+(def true-square
+  (->SetSquare
+    (->SetFunction #{1} #{1} {1 1})
+    (->SetFunction #{0 1/2 1} #{0 1} {0 0, 1/2 1, 1 1})
+    (->SetFunction #{1} #{0 1/2 1} {1 1})
+    (->SetFunction #{1} #{0 1} {1 1})))
+
+(def truth-squares
+  '#{((0 0)
+      (0 0))
+     ((0 0)
+      (0 1))
+     ((0 0)
+      (1 1))
+     ((0 1)
+      (0 1))
+     ((0 1)
+      (1 1))
+     ((1 1)
+      (1 1))})
+
+(def truth-arrows
+  '#{(0 0) (0 1) (1 1)})
+
+(defn horizontal-target
+  [coll]
+
+  (list
+    (second (first coll))
+    (second (second coll))))
+
+(def square-of-truth-values
+  (->SetSquare
+    (->SetFunction
+      truth-squares
+      truth-arrows
+      horizontal-target)
+    (->SetFunction truth-arrows #{0 1} second)
+    (->SetFunction
+      truth-squares
+      truth-arrows
+      second)
+    (->SetFunction truth-arrows #{0 1} second)))
 
 ; Validity test for diamonds
 (defn valid-commutative-square?

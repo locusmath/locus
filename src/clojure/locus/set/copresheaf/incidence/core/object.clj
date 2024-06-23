@@ -103,11 +103,14 @@
 
 ; Create a span copresheaf from a relation by functional dependencies
 (defn relation-to-span
-  [rel]
-
-  (span
-    (relation-transition-map rel 0 1)
-    (relation-transition-map rel 0 2)))
+  ([rel]
+    (span
+      (relation-transition-map rel 0 1)
+      (relation-transition-map rel 0 2)))
+  ([rel source target]
+    (span
+      (SetFunction. rel source first)
+      (SetFunction. rel target second))))
 
 ; Conversion routines for span copresheaves
 (defmulti to-span type)

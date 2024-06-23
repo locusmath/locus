@@ -22,7 +22,7 @@
                  [dorothy "0.0.7"]
                  [org.scilab.forge/jlatexmath "1.0.7"]]
 
-  :main locus.sub.mapping.function
+  :main locus.graphics.graph.view
 
   :source-paths ["src/clojure"]
   :java-source-paths ["src/java"]

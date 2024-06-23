@@ -3,8 +3,12 @@
             [locus.set.logic.limit.product :refer :all]
             [locus.set.logic.structure.protocols :refer :all]
             [locus.set.mapping.general.core.object :refer :all]
+            [locus.set.quiver.relation.binary.br :refer :all]
             [locus.con.core.object :refer :all]
-            [dorothy.core :as dot]))
+            [locus.con.core.setpart :refer :all]
+            [locus.hyper.mapping.function :refer :all]
+            [dorothy.core :as dot])
+  (:import (locus.hyper.mapping.function Hyperfunction)))
 
 ; Function congruences are also presheaves of equivalence relations. In fact, for any presheaf
 ; its congruence lattice is the same as its lattice of structure presheaves of equivalence
@@ -145,3 +149,126 @@
                  [(str (.indexOf in-coll in))
                   (str (+ (count in-coll) (.indexOf out-coll out)))]))
              (inputs function-congruence))])))))
+
+; Proof of non-associativity
+(def ex1 
+  [#{#{0}}
+   #{#{1 2} #{4 5}}
+   #{#{[0 1] [0 2]}
+     #{[0 4] [0 5]}}])
+
+(def ex2 
+  [#{#{1 2} #{4 5}}
+   #{#{1 2 3}}
+   #{#{[1 1] [2 2]}
+     #{[4 2] [5 3]}}])
+
+(def ex3 
+  [#{#{1 2 3}}
+   #{#{1 3}}
+   #{#{[1 1] [3 3]}}])
+
+; Determine the composition of the partitions of relations
+(defn get-all-composed-relations 
+  [rel1 rel2]
+  
+  (set
+   (for [class1 rel1 
+         class2 rel2
+         :let [rel (compose-relations class1 class2)]
+         :when (not (empty? rel))]
+     rel)))
+
+(defn get-composed-partitioned-relation  
+  [rel1 rel2]
+  
+  (partitionize-family (get-all-composed-relations rel1 rel2)))
+
+(defn compose-examples 
+  [example2 example1]
+  
+  [
+  (first example1)
+  (second example2)
+  (get-composed-partitioned-relation (nth example2 2) (nth example1 2))])
+  
+(defn associativity-check 
+  [a b c]
+  
+  (= (compose-examples a (compose-examples b c))
+     (compose-examples (compose-examples a b) c)))
+
+; Flip a relation around
+(defn get-converse-partitioned-relation 
+  [rel]
+  
+  (set 
+   (map 
+    (fn [i]
+      (set (map (comp vec reverse) i)))
+    rel)))
+
+(defn identity-partitioned-relation 
+  [partition]
+  
+  (set 
+   (map 
+    (fn [part]
+      (set 
+       (map 
+        (fn [i]
+          [i i])
+        part)))
+    partition)))
+
+; Tests for relations
+(defn valid-partitioned-relation? 
+  [[source-partition target-partition relation-partition]]
+  
+  (let [induced-source-partition (set 
+                                  (map 
+                                  (comp set (partial map first))
+                                  relation-partition))
+        induced-target-partition (set 
+                                  (map 
+                                   (comp set (partial map second))
+                                   relation-partition))]
+    (= source-partition (partitionize-family (union source-partition induced-source-partition)))
+    (= target-partition (partitionize-family (union target-partition induced-target-partition)))))
+
+(defn double-partition? 
+  [rel]
+  
+  (and 
+   (valid-partitioned-relation? rel)
+   (let [[source target edges] rel
+         id (identity-partitioned-relation source)
+         flip (get-converse-partitioned-relation edges)
+         square (get-composed-partitioned-relation edges edges)]
+     (and 
+      (= source target)
+      (= edges (partitionize-family (union edges id)))
+      (= edges (partitionize-family (union edges flip)))
+      (= edges (partitionize-family (union edges square)))))))
+
+; Equivalence relations
+(def exp0
+  [#{#{0} #{1}}
+   #{#{0} #{1}}
+   #{#{[0 0] [1 1]}}])
+
+(def exp1
+  [#{#{0 1}}
+   #{#{0 1}}
+   #{#{[0 0] [1 1]}
+     #{[0 1] [1 0]}}])
+
+(def exp2 
+  [#{#{0 1}}
+   #{#{0 1}}
+   #{#{[0 0] [1 1]}}])
+
+(def exp3 
+  [#{#{0 1}}
+   #{#{0 1}}
+   #{#{[0 0] [1 1] [0 1] [1 0]}}])

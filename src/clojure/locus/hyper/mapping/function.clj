@@ -58,6 +58,7 @@
 
 (derive ::hyperfunction :locus.set.logic.structure.protocols/structured-function)
 (derive ::hypertransformation ::hyperfunction)
+(derive Hyperfunction ::hyperfunction)
 
 ; Convert hyperfunctions into set functions
 (defmethod to-function ::hyperfunction

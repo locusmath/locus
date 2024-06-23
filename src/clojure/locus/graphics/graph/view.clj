@@ -9,7 +9,15 @@
             [locus.set.logic.limit.product :refer :all]
             [locus.set.square.core.morphism :refer :all]
             [locus.set.quiver.relation.binary.br :refer :all]
-            [locus.set.mapping.general.core.subquotient :refer :all])
+            [locus.set.mapping.general.core.subquotient :refer :all]
+            [ locus.set.tree.cospan.core.object :refer :all]
+            [locus.order.general.skeletal.object :refer :all]
+
+            [locus.order.lattice.core.object :refer :all]
+            [locus.set.copresheaf.topoi.copresheaf.object :refer :all]
+
+            [locus.set.copresheaf.incidence.system.family :refer :all]
+            [locus.set.copresheaf.incidence.core.object :refer :all])
   (:import (locus.graph.base DenseDigraph IDigraph IGraph DenseGraph)
            (locus.graph.factories BasicGraphFactory BasicDigraphFactory)))
 
@@ -110,3 +118,35 @@
       (unlabeled-digraph
         (apply union (map set edges))
         edges))))
+
+; Proper pairs
+(defn proper-pair?
+  [[coll rel]]
+
+  (and
+    (symmetric-binary-relation? rel)
+    (transitive? rel)
+    (superset? (list (vertices rel) coll))))
+
+(defn get-all-pairs
+  []
+
+  (cartesian-product
+    (power-set #{1 2})
+    (power-set '#{(1 1) (2 2) (1 2) (2 1)})))
+
+(defn get-all-proper-pairs
+  []
+
+  (filter proper-pair? (get-all-pairs)))
+
+(defn preceding-proper-pair?
+  [[a b]]
+
+  (and
+    (superset? (list (first a) (first b)))
+    (superset? (list (second a) (second b)))
+    ))
+
+
+
